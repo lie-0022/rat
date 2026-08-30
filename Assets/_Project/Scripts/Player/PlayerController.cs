@@ -29,6 +29,7 @@ namespace RatGame.Player
 
         private float _lastGroundedTime = float.NegativeInfinity;
         private float _jumpRequestTime = float.NegativeInfinity;
+        private float _staggerUntil = float.NegativeInfinity;
         private bool _isGrounded;
         private bool _isCrouching;
         private Vector3 _baseScale;
@@ -71,6 +72,13 @@ namespace RatGame.Player
 
         private void OnJumpPerformed(InputAction.CallbackContext ctx) => _jumpRequestTime = Time.time;
 
+        /// <summary>던진 아이템 피격 등 짧은 조작 불능 (docs/05 — 연출만, 데미지 없음). 호스트가 호출.</summary>
+        [Unity.Netcode.ClientRpc]
+        public void StaggerClientRpc(float duration)
+        {
+            if (IsOwner) _staggerUntil = Time.time + duration;
+        }
+
         private void Update()
         {
             // 웅크리기: 홀드 기본 (docs/04). 그레이박스 단계라 스케일로 콜라이더+비주얼 동시 축소.
@@ -103,7 +111,8 @@ namespace RatGame.Player
 
         private void ApplyMovement()
         {
-            Vector2 input = DevAutoWander ? GetWanderInput() : _moveAction.ReadValue<Vector2>();
+            Vector2 input = Time.time < _staggerUntil ? Vector2.zero
+                : DevAutoWander ? GetWanderInput() : _moveAction.ReadValue<Vector2>();
 
             // 카메라 기준 입력 → 월드 방향 (docs/04)
             var cam = Camera.main;

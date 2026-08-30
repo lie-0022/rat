@@ -28,6 +28,7 @@ namespace RatGame.World
         private readonly Dictionary<ulong, ConfigurableJoint> _joints = new();
 
         private Rigidbody _rb;
+        private float _thrownUntil; // 던져진 직후 1.5s — 이 동안 플레이어 맞으면 비틀거림 (docs/05)
 
         private void Awake()
         {
@@ -92,7 +93,10 @@ namespace RatGame.World
             CarrierIds.Remove(clientId);
 
             if (thrown)
+            {
                 _rb.AddForce(throwDir.normalized * _balance.GetThrowImpulse(charge, _rb.mass), ForceMode.Impulse);
+                _thrownUntil = Time.time + 1.5f;
+            }
             Log.Dev($"놓기: client {clientId} ← {name}{(thrown ? " (던짐)" : "")}");
         }
 
@@ -119,6 +123,18 @@ namespace RatGame.World
             }
             if (broken != null)
                 foreach (var id in broken) ServerRelease(id);
+        }
+
+        // 던진 아이템에 맞은 플레이어: 비틀거림 연출만, 데미지 없음 — 트롤 허용 지점 (docs/05)
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (!IsServer || Time.time > _thrownUntil) return;
+            if (collision.relativeVelocity.magnitude < 1.5f) return;
+            var pc = collision.rigidbody != null
+                ? collision.rigidbody.GetComponent<Player.PlayerController>() : null;
+            if (pc == null) return;
+            pc.StaggerClientRpc(_balance.ThrowHitStagger);
+            Log.Dev($"명중: {name} → client {pc.OwnerClientId} 비틀거림");
         }
 
         private int FindNearestFreeGrip(Vector3 fromPos)

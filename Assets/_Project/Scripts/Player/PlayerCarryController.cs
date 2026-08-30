@@ -26,6 +26,11 @@ namespace RatGame.Player
         private PlayerController _movement;
         private Rigidbody _rb;
 
+        // 던지기 차지 (docs/05: 홀드 0→1, 만충 1.2s. 궤적 프리뷰는 소유 클라 로컬만)
+        private bool _charging;
+        private float _chargeStart;
+        private LineRenderer _trajectoryLine;
+
         private void Awake()
         {
             _movement = GetComponent<PlayerController>();
@@ -40,7 +45,8 @@ namespace RatGame.Player
             _throwAction = map.FindAction("Throw", true);
             _grabAction.performed += OnGrabPressed;
             _grabAction.canceled += OnGrabReleased;
-            _throwAction.performed += OnThrowPressed;
+            _throwAction.started += OnThrowStarted;
+            _throwAction.canceled += OnThrowReleased;
         }
 
         public override void OnNetworkDespawn()
@@ -48,13 +54,15 @@ namespace RatGame.Player
             if (!IsOwner) return;
             _grabAction.performed -= OnGrabPressed;
             _grabAction.canceled -= OnGrabReleased;
-            _throwAction.performed -= OnThrowPressed;
+            _throwAction.started -= OnThrowStarted;
+            _throwAction.canceled -= OnThrowReleased;
         }
 
         private void Update()
         {
             if (!IsOwner) return;
             ApplyCarryPenalty();
+            if (_charging) UpdateTrajectoryPreview();
         }
 
         // ---- 소유 클라: 입력 → 요청 ----
@@ -71,13 +79,62 @@ namespace RatGame.Player
             if (CarriedItemNetId.Value != 0) ReleaseRequestServerRpc();
         }
 
-        private void OnThrowPressed(InputAction.CallbackContext ctx)
+        private void OnThrowStarted(InputAction.CallbackContext ctx)
         {
             if (CarriedItemNetId.Value == 0) return;
+            _charging = true;
+            _chargeStart = Time.time;
+        }
+
+        private void OnThrowReleased(InputAction.CallbackContext ctx)
+        {
+            if (!_charging) return;
+            _charging = false;
+            HideTrajectory();
+            if (CarriedItemNetId.Value == 0) return;
+            float charge = Mathf.Clamp01((Time.time - _chargeStart) / _balance.ThrowChargeTime);
+            ThrowRequestServerRpc(GetThrowDirection(), charge);
+        }
+
+        private Vector3 GetThrowDirection()
+        {
             var cam = Camera.main;
             Vector3 dir = cam != null ? cam.transform.forward : transform.forward;
-            dir = (dir + Vector3.up * 0.3f).normalized; // 살짝 위로 — 손맛
-            ThrowRequestServerRpc(dir);
+            return (dir + Vector3.up * 0.3f).normalized; // 살짝 위로 — 손맛
+        }
+
+        // 궤적 프리뷰: 소유 클라 로컬 전용, 점 10개 (docs/05)
+        private void UpdateTrajectoryPreview()
+        {
+            var item = GetCarriedItem();
+            if (item == null) { HideTrajectory(); return; }
+
+            if (_trajectoryLine == null)
+            {
+                var go = new GameObject("ThrowTrajectory");
+                go.transform.SetParent(transform, false);
+                _trajectoryLine = go.AddComponent<LineRenderer>();
+                _trajectoryLine.material = new Material(Shader.Find("Sprites/Default"));
+                _trajectoryLine.startWidth = _trajectoryLine.endWidth = 0.05f;
+                _trajectoryLine.positionCount = 10;
+                _trajectoryLine.useWorldSpace = true;
+            }
+            _trajectoryLine.enabled = true;
+
+            float charge = Mathf.Clamp01((Time.time - _chargeStart) / _balance.ThrowChargeTime);
+            float v0 = _balance.GetThrowImpulse(charge, item.Mass) / item.Mass;
+            Vector3 vel = GetThrowDirection() * v0;
+            Vector3 pos = _handAnchor != null ? _handAnchor.position : transform.position;
+            for (int i = 0; i < 10; i++)
+            {
+                float t = i * 0.12f;
+                _trajectoryLine.SetPosition(i, pos + vel * t + 0.5f * Physics.gravity * t * t);
+            }
+        }
+
+        private void HideTrajectory()
+        {
+            if (_trajectoryLine != null) _trajectoryLine.enabled = false;
         }
 
         private CarryableItem FindGrabCandidate()
@@ -120,10 +177,10 @@ namespace RatGame.Player
         }
 
         [ServerRpc]
-        private void ThrowRequestServerRpc(Vector3 dir)
+        private void ThrowRequestServerRpc(Vector3 dir, float charge)
         {
             var item = GetCarriedItem();
-            item?.ServerRelease(OwnerClientId, thrown: true, throwDir: dir);
+            item?.ServerRelease(OwnerClientId, thrown: true, throwDir: dir, charge: Mathf.Clamp01(charge));
             CarriedItemNetId.Value = 0;
         }
 

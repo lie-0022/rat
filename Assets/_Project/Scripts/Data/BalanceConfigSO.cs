@@ -46,6 +46,8 @@ namespace RatGame.Data
         [SerializeField] private float _throwForceMin = 2f;
         [SerializeField] private float _throwForceMax = 9f;
         [SerializeField] private float _throwMassDampNumerator = 3f; // massDamp = Clamp01(3/mass)
+        [SerializeField] private float _throwChargeTime = 1.2f;      // 홀드 만충 시간
+        [SerializeField] private float _throwHitStagger = 0.5f;      // 맞은 플레이어 비틀거림
 
         public int MaxPlayers => _maxPlayers;
         public int MaxZonesPerRun => _maxZonesPerRun;
@@ -73,6 +75,8 @@ namespace RatGame.Data
         public float JumpBlockLoad => _jumpBlockLoad;
         public float ThrowForceMin => _throwForceMin;
         public float ThrowForceMax => _throwForceMax;
+        public float ThrowChargeTime => _throwChargeTime;
+        public float ThrowHitStagger => _throwHitStagger;
 
         /// <summary>1인당 하중 → 이동 속도 배수 (docs/05 공식).</summary>
         public float GetCarrySpeedMultiplier(float loadPerRat) =>
