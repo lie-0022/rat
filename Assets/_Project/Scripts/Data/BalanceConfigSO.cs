@@ -223,13 +223,24 @@ namespace RatGame.Data
         public float GetThrowImpulse(float charge, float mass) =>
             Mathf.Lerp(_throwForceMin, _throwForceMax, charge) * Mathf.Clamp01(_throwMassDampNumerator / mass);
 
-        /// <summary>Zone n(1부터)의 할당량. 솔로면 solo 배수 적용 (docs/00 표).</summary>
+        /// <summary>Zone n(1부터)의 할당량 × 인원 배수 (docs/00·09: 솔로 0.55 / 2인 0.75 / 3인 0.9).</summary>
         public int GetQuota(int zoneNumber, int playerCount)
         {
             float quota = _quotaBase * Mathf.Pow(_quotaGrowth, zoneNumber - 1);
-            if (playerCount <= 1) quota *= _soloQuotaMultiplier;
+            quota *= playerCount switch
+            {
+                <= 1 => _soloQuotaMultiplier,
+                2 => 0.75f,
+                3 => 0.9f,
+                _ => 1f
+            };
             return Mathf.RoundToInt(quota);
         }
+
+        /// <summary>탈출 코인 (docs/08): 총정산 × (1 + 0.15×클리어존수). 전멸은 30%.</summary>
+        public int GetExtractCoins(int totalValue, int zonesCleared) =>
+            Mathf.RoundToInt(totalValue * (1f + 0.15f * zonesCleared));
+        public int GetWipeCoins(int totalValue) => Mathf.RoundToInt(totalValue * 0.3f);
 
         /// <summary>구역별 고양이 수: Zone1: 1, Zone3+: 2 (docs/00 표).</summary>
         public int GetCatCount(int zoneNumber) => zoneNumber >= 3 ? 2 : 1;

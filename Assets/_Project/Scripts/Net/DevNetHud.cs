@@ -27,6 +27,20 @@ namespace RatGame.Net
                 string role = nm.IsHost ? "Host" : "Client";
                 GUILayout.Label($"[DEV] {role} — 접속 {nm.ConnectedClientsIds.Count}명");
                 if (GUILayout.Button("Shutdown")) NetworkLauncher.Instance.Shutdown();
+
+                var run = Run.RunManager.Instance;
+                if (run != null)
+                {
+                    GUILayout.Label($"런: {run.Phase.Value} 존{run.CurrentZoneIndex.Value} {run.DepositedValue.Value}/{run.CurrentQuota.Value}");
+                    if (nm.IsHost && run.Phase.Value == Run.RunPhase.Loading && GUILayout.Button("Start Run"))
+                        run.ServerStartRun(Random.Range(0, int.MaxValue));
+                    if (run.Phase.Value == Run.RunPhase.Voting)
+                    {
+                        var vote = run.GetComponent<Run.ExtractionVote>();
+                        if (GUILayout.Button("투표: 더 간다")) vote.CastVoteServerRpc(true);
+                        if (GUILayout.Button("투표: 나간다")) vote.CastVoteServerRpc(false);
+                    }
+                }
             }
             GUILayout.EndArea();
         }
