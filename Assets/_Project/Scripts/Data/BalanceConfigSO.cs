@@ -33,6 +33,20 @@ namespace RatGame.Data
         [SerializeField] private float _jumpBuffer = 0.1f;
         [SerializeField] private float _rotationSlerp = 12f;
 
+        [Header("운반 (docs/05)")]
+        [SerializeField] private float _grabSpring = 600f;
+        [SerializeField] private float _grabDamper = 40f;
+        [SerializeField] private float _grabMaxForce = 80f;   // mass 무관 고정 — 무거우면 끌리는 게 의도
+        [SerializeField] private float _grabAngularSpring = 50f;
+        [SerializeField] private float _grabRange = 1.2f;     // 호스트 검증 관용치
+        [SerializeField] private float _grabBreakDistance = 3f;
+        [SerializeField] private float _heavyThreshold = 6f;
+        [SerializeField] private float _sprintBlockLoad = 3f;
+        [SerializeField] private float _jumpBlockLoad = 4.5f;
+        [SerializeField] private float _throwForceMin = 2f;
+        [SerializeField] private float _throwForceMax = 9f;
+        [SerializeField] private float _throwMassDampNumerator = 3f; // massDamp = Clamp01(3/mass)
+
         public int MaxPlayers => _maxPlayers;
         public int MaxZonesPerRun => _maxZonesPerRun;
         public Vector2Int RoomModulesPerZone => _roomModulesPerZone;
@@ -48,6 +62,25 @@ namespace RatGame.Data
         public float CoyoteTime => _coyoteTime;
         public float JumpBuffer => _jumpBuffer;
         public float RotationSlerp => _rotationSlerp;
+
+        public float GrabSpring => _grabSpring;
+        public float GrabDamper => _grabDamper;
+        public float GrabMaxForce => _grabMaxForce;
+        public float GrabAngularSpring => _grabAngularSpring;
+        public float GrabRange => _grabRange;
+        public float GrabBreakDistance => _grabBreakDistance;
+        public float SprintBlockLoad => _sprintBlockLoad;
+        public float JumpBlockLoad => _jumpBlockLoad;
+        public float ThrowForceMin => _throwForceMin;
+        public float ThrowForceMax => _throwForceMax;
+
+        /// <summary>1인당 하중 → 이동 속도 배수 (docs/05 공식).</summary>
+        public float GetCarrySpeedMultiplier(float loadPerRat) =>
+            Mathf.Clamp01(1.2f - loadPerRat / _heavyThreshold);
+
+        /// <summary>던지기 임펄스 크기 (docs/05 — 무거운 건 못 던진다).</summary>
+        public float GetThrowImpulse(float charge, float mass) =>
+            Mathf.Lerp(_throwForceMin, _throwForceMax, charge) * Mathf.Clamp01(_throwMassDampNumerator / mass);
 
         /// <summary>Zone n(1부터)의 할당량. 솔로면 solo 배수 적용 (docs/00 표).</summary>
         public int GetQuota(int zoneNumber, int playerCount)

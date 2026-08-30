@@ -2,7 +2,8 @@
     "name": "RatGame.Editor",
     "rootNamespace": "RatGame.Editor",
     "references": [
-        "RatGame.Runtime"
+        "RatGame.Runtime",
+        "Unity.Netcode.Runtime"
     ],
     "includePlatforms": [
         "Editor"

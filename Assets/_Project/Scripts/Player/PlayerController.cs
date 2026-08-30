@@ -16,6 +16,11 @@ namespace RatGame.Player
         /// <summary>무인 테스트용 자동 배회 (DevAutoConnect -autowander). 사람 입력 대신 펄린 노이즈 방향.</summary>
         public static bool DevAutoWander;
 
+        // 운반 페널티 (PlayerCarryController가 소유 클라에서 세팅 — docs/05)
+        public float CarrySpeedMultiplier { get; set; } = 1f;
+        public bool BlockSprint { get; set; }
+        public bool BlockJump { get; set; }
+
         [SerializeField] private BalanceConfigSO _balance;
         [SerializeField] private InputActionAsset _inputAsset;
 
@@ -109,8 +114,9 @@ namespace RatGame.Player
             if (wishDir.sqrMagnitude > 1f) wishDir.Normalize();
 
             float speed = _isCrouching ? _balance.CrouchSpeed
-                : _sprintAction.IsPressed() ? _balance.SprintSpeed
+                : (_sprintAction.IsPressed() && !BlockSprint) ? _balance.SprintSpeed
                 : _balance.WalkSpeed;
+            speed *= CarrySpeedMultiplier;
             float accel = _isGrounded ? _balance.GroundAcceleration : _balance.AirAcceleration;
 
             Vector3 current = _rb.linearVelocity;
@@ -137,6 +143,7 @@ namespace RatGame.Player
 
         private void TryJump()
         {
+            if (BlockJump) return;
             bool buffered = Time.time - _jumpRequestTime <= _balance.JumpBuffer;
             bool coyote = Time.time - _lastGroundedTime <= _balance.CoyoteTime;
             if (!buffered || !coyote) return;
