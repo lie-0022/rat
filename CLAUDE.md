@@ -25,8 +25,7 @@
 - 등록: `.mcp.json` (프로젝트 스코프)
 - 켜는 법: Unity 에디터 `Window > MCP For Unity > Connect > Start Server`
   → `Advanced > Auto-Start Server on Editor Load` 체크하면 이후 자동 기동
-- ⚠️ Unity 패키지는 아직 미설치 — Package Manager에서 git URL 추가 필요:
-  `https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main`
+- 패키지: `Packages/manifest.json`에 등록됨 — Unity 처음 열 때 자동 임포트
 - AI가 되는 일 / 안 되는 일 경계: `.claude/docs/mcp-capabilities.md`
 
 ## ⚙️ 에이전트 세팅
