@@ -49,6 +49,9 @@ GameObject:
   - component: {fileID: 7151625810066023316}
   - component: {fileID: 1037351376390170415}
   - component: {fileID: 1461145785990684863}
+  - component: {fileID: 8218523055754132488}
+  - component: {fileID: 2214361482663412767}
+  - component: {fileID: 5224409843546768758}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -304,6 +307,54 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
   _inputAsset: {fileID: -944628639613478452, guid: a6ae873b4a3514af1808b795abeae039, type: 3}
+--- !u!114 &8218523055754132488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1184508645d324fd28aa690a6a1c2ff5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerCondition
+  ShowTopMostFoldoutHeaderGroup: 1
+  _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
+  State:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &2214361482663412767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f714a029a33c74d0f9be28de017a05b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerInteractor
+  ShowTopMostFoldoutHeaderGroup: 1
+  _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
+  _inputAsset: {fileID: -944628639613478452, guid: a6ae873b4a3514af1808b795abeae039, type: 3}
+--- !u!114 &5224409843546768758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b193fb92129a545abaa68fae55f0b8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerStamina
+  ShowTopMostFoldoutHeaderGroup: 1
+  _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
 --- !u!1 &5417322158775654346
 GameObject:
   m_ObjectHideFlags: 0

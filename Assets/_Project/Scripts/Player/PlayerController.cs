@@ -20,6 +20,10 @@ namespace RatGame.Player
         public float CarrySpeedMultiplier { get; set; } = 1f;
         public bool BlockSprint { get; set; }
         public bool BlockJump { get; set; }
+        // 스태미나 고갈 sprint 차단 (PlayerStamina — docs/04)
+        public bool BlockSprintStamina { get; set; }
+        /// <summary>지금 실제로 달리는 중인가 (스태미나 소모 판정용).</summary>
+        public bool IsSprinting { get; private set; }
 
         [SerializeField] private BalanceConfigSO _balance;
         [SerializeField] private InputActionAsset _inputAsset;
@@ -111,9 +115,16 @@ namespace RatGame.Player
             if (_isGrounded) _lastGroundedTime = Time.time;
         }
 
+        private bool IsIncapacitated()
+        {
+            if (Time.time < _staggerUntil) return true;
+            var condition = GetComponent<PlayerCondition>();
+            return condition != null && condition.State.Value != ConditionState.Active;
+        }
+
         private void ApplyMovement()
         {
-            Vector2 input = Time.time < _staggerUntil ? Vector2.zero
+            Vector2 input = IsIncapacitated() ? Vector2.zero
                 : DevAutoWander ? GetWanderInput() : _moveAction.ReadValue<Vector2>();
 
             // 카메라 기준 입력 → 월드 방향 (docs/04)
@@ -124,8 +135,10 @@ namespace RatGame.Player
             Vector3 wishDir = (forward.normalized * input.y + right.normalized * input.x);
             if (wishDir.sqrMagnitude > 1f) wishDir.Normalize();
 
+            bool sprinting = !_isCrouching && _sprintAction.IsPressed() && !BlockSprint && !BlockSprintStamina;
+            IsSprinting = sprinting && input.sqrMagnitude > 0.01f;
             float speed = _isCrouching ? _balance.CrouchSpeed
-                : (_sprintAction.IsPressed() && !BlockSprint) ? _balance.SprintSpeed
+                : sprinting ? _balance.SprintSpeed
                 : _balance.WalkSpeed;
             speed *= CarrySpeedMultiplier;
             float accel = _isGrounded ? _balance.GroundAcceleration : _balance.AirAcceleration;
@@ -154,7 +167,7 @@ namespace RatGame.Player
 
         private void TryJump()
         {
-            if (BlockJump) return;
+            if (BlockJump || IsIncapacitated()) return;
             bool buffered = Time.time - _jumpRequestTime <= _balance.JumpBuffer;
             bool coyote = Time.time - _lastGroundedTime <= _balance.CoyoteTime;
             if (!buffered || !coyote) return;

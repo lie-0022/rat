@@ -158,6 +158,8 @@ namespace RatGame.Player
         private void GrabRequestServerRpc(ulong itemNetId)
         {
             if (CarriedItemNetId.Value != 0) return;
+            var condition = GetComponent<PlayerCondition>();
+            if (condition != null && condition.State.Value != ConditionState.Active) return; // docs/05 검증 3
             if (!NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(itemNetId, out var netObj)) return;
             var item = netObj.GetComponent<CarryableItem>();
             if (item == null) return;
@@ -174,6 +176,25 @@ namespace RatGame.Player
             var item = GetCarriedItem();
             item?.ServerRelease(OwnerClientId);
             CarriedItemNetId.Value = 0;
+        }
+
+        /// <summary>호스트 전용 — 다운·속박·접속 해제 시 강제 드랍 (docs/04·05).</summary>
+        public void ServerForceDrop()
+        {
+            if (!IsServer || CarriedItemNetId.Value == 0) return;
+            GetCarriedItem()?.ServerRelease(OwnerClientId);
+            CarriedItemNetId.Value = 0;
+        }
+
+        /// <summary>현재 1인당 하중 (스태미나 소모 판정용 — docs/04).</summary>
+        public float CurrentLoadPerRat
+        {
+            get
+            {
+                var item = GetCarriedItem();
+                if (item == null) return 0f;
+                return item.Mass / Mathf.Max(1, item.CarrierIds.Count);
+            }
         }
 
         [ServerRpc]

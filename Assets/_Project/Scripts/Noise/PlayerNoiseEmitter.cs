@@ -80,9 +80,11 @@ namespace RatGame.Noise
             {
                 _wasAirborne = false;
                 // 재접지는 발밑 0.35m 여유에서 미리 감지되므로 그만큼 낙하 높이에 보정
-                float landing = _balance.GetLandingLoudness(_peakY - pos.y + 0.35f);
+                float fallHeight = _peakY - pos.y + 0.35f;
+                float landing = _balance.GetLandingLoudness(fallHeight);
                 if (landing > 0f)
                     NoiseSystem.Emit(pos, landing, NoiseType.Impact, OwnerClientId);
+                GetComponent<Player.PlayerCondition>()?.ServerOnLanded(fallHeight); // 6m+ 기절 (docs/04)
             }
 
             // 발걸음 (웅크림 0 — docs/06)

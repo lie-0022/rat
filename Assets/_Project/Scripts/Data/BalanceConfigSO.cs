@@ -71,6 +71,20 @@ namespace RatGame.Data
         [SerializeField] private float _slipperyInterval = 3f;
         [SerializeField, Range(0f, 1f)] private float _slipperyChance = 0.12f;
 
+        [Header("상태이상·구출 (docs/04)")]
+        [SerializeField] private float _stunSeconds = 2f;
+        [SerializeField] private float _highFallStunHeight = 6f;   // 이 높이(m) 초과 낙하 → Stunned
+        [SerializeField] private float _rescueHoldSeconds = 1.5f;  // Trapped 동료 구출 홀드
+
+        [Header("스태미나 (docs/04)")]
+        [SerializeField] private float _staminaMax = 100f;
+        [SerializeField] private float _staminaSprintDrain = 20f;  // /s
+        [SerializeField] private float _staminaHeavyDrain = 15f;   // /s — 무거운 운반(sprint 차단 하중)
+        [SerializeField] private float _staminaRegen = 25f;        // /s, 미소모 1s 후
+        [SerializeField] private float _staminaRegenDelay = 1f;
+        [SerializeField] private float _exhaustPantSeconds = 1.5f; // 0 도달 시 헐떡임
+        [SerializeField] private float _pantLoudness = 18f;
+
         public int MaxPlayers => _maxPlayers;
         public int MaxZonesPerRun => _maxZonesPerRun;
         public Vector2Int RoomModulesPerZone => _roomModulesPerZone;
@@ -128,6 +142,17 @@ namespace RatGame.Data
         /// <summary>파손 데미지: 문턱 초과분 × 0.15 (docs/05).</summary>
         public float GetFragileDamage(float impactSpeed) =>
             impactSpeed <= _fragileBreakSpeed ? 0f : (impactSpeed - _fragileBreakSpeed) * _fragileDamagePerSpeed;
+
+        public float StunSeconds => _stunSeconds;
+        public float HighFallStunHeight => _highFallStunHeight;
+        public float RescueHoldSeconds => _rescueHoldSeconds;
+        public float StaminaMax => _staminaMax;
+        public float StaminaSprintDrain => _staminaSprintDrain;
+        public float StaminaHeavyDrain => _staminaHeavyDrain;
+        public float StaminaRegen => _staminaRegen;
+        public float StaminaRegenDelay => _staminaRegenDelay;
+        public float ExhaustPantSeconds => _exhaustPantSeconds;
+        public float PantLoudness => _pantLoudness;
 
         /// <summary>1인당 하중 → 이동 속도 배수 (docs/05 공식).</summary>
         public float GetCarrySpeedMultiplier(float loadPerRat) =>
