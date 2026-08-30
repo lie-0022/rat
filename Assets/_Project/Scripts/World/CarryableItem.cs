@@ -125,11 +125,23 @@ namespace RatGame.World
                 foreach (var id in broken) ServerRelease(id);
         }
 
-        // 던진 아이템에 맞은 플레이어: 비틀거림 연출만, 데미지 없음 — 트롤 허용 지점 (docs/05)
+        private float _nextImpactNoiseTime; // 연쇄 충돌 스팸 방지
+
         private void OnCollisionEnter(Collision collision)
         {
-            if (!IsServer || Time.time > _thrownUntil) return;
-            if (collision.relativeVelocity.magnitude < 1.5f) return;
+            if (!IsServer) return;
+            float impact = collision.relativeVelocity.magnitude;
+
+            // 충돌 소음 (docs/06: impact × mass계수, 최대 70) — 호스트 판정
+            if (impact > 1.5f && Time.time >= _nextImpactNoiseTime)
+            {
+                _nextImpactNoiseTime = Time.time + 0.2f;
+                Noise.NoiseSystem.Emit(transform.position,
+                    _balance.GetImpactLoudness(impact, _rb.mass), Noise.NoiseType.Impact);
+            }
+
+            // 던진 아이템에 맞은 플레이어: 비틀거림 연출만, 데미지 없음 — 트롤 허용 지점 (docs/05)
+            if (Time.time > _thrownUntil || impact < 1.5f) return;
             var pc = collision.rigidbody != null
                 ? collision.rigidbody.GetComponent<Player.PlayerController>() : null;
             if (pc == null) return;

@@ -102,10 +102,12 @@ namespace RatGame.Player
         private void CheckGrounded()
         {
             // 자기 자신(Player 레이어)은 제외 — 쥐가 쥐를 밟는 건 이후 웃기면 사양으로 재검토
+            // 캐스트는 캡슐 "중심"에서 발밑까지: 반높이(스케일 반영) − 반경 + 여유 0.25 (docs/04)
             int mask = ~LayerMask.GetMask("Player", "Ragdoll");
-            Vector3 origin = transform.position + Vector3.up * (GroundCastRadius + 0.05f);
-            _isGrounded = Physics.SphereCast(origin, GroundCastRadius, Vector3.down,
-                out _, GroundCastDistance, mask, QueryTriggerInteraction.Ignore);
+            float halfHeight = 1f * transform.localScale.y; // 프리미티브 캡슐 height 2 기준
+            float castDistance = halfHeight - GroundCastRadius + GroundCastDistance;
+            _isGrounded = Physics.SphereCast(transform.position, GroundCastRadius, Vector3.down,
+                out _, castDistance, mask, QueryTriggerInteraction.Ignore);
             if (_isGrounded) _lastGroundedTime = Time.time;
         }
 

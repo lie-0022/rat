@@ -49,6 +49,21 @@ namespace RatGame.Data
         [SerializeField] private float _throwChargeTime = 1.2f;      // 홀드 만충 시간
         [SerializeField] private float _throwHitStagger = 0.5f;      // 맞은 플레이어 비틀거림
 
+        [Header("소음 (docs/06)")]
+        [SerializeField] private float _maxNoiseRadius = 14f;        // loudness 100 기준 전파 반경
+        [SerializeField] private float _wallAttenuation = 0.6f;      // NoiseBlocker 1장 통과 시 ×0.6 (−40%)
+        [SerializeField] private float _footstepWalkLoudness = 8f;
+        [SerializeField] private float _footstepRunLoudness = 22f;
+        [SerializeField] private float _footstepWalkInterval = 0.35f;
+        [SerializeField] private float _footstepRunInterval = 0.25f;
+        [SerializeField] private float _landingBaseLoudness = 15f;   // + 낙하높이 × 5, 1m 이상만
+        [SerializeField] private float _landingPerMeter = 5f;
+        [SerializeField] private float _squeakLoudness = 30f;
+        [SerializeField] private float _impactMaxLoudness = 70f;
+        [SerializeField] private float _breakLoudness = 60f;
+        [SerializeField] private float _alarmingLoudness = 50f;
+        [SerializeField] private float _rippleThreshold = 40f;       // 이상이면 파문 이펙트
+
         public int MaxPlayers => _maxPlayers;
         public int MaxZonesPerRun => _maxZonesPerRun;
         public Vector2Int RoomModulesPerZone => _roomModulesPerZone;
@@ -77,6 +92,26 @@ namespace RatGame.Data
         public float ThrowForceMax => _throwForceMax;
         public float ThrowChargeTime => _throwChargeTime;
         public float ThrowHitStagger => _throwHitStagger;
+
+        public float MaxNoiseRadius => _maxNoiseRadius;
+        public float WallAttenuation => _wallAttenuation;
+        public float FootstepWalkLoudness => _footstepWalkLoudness;
+        public float FootstepRunLoudness => _footstepRunLoudness;
+        public float FootstepWalkInterval => _footstepWalkInterval;
+        public float FootstepRunInterval => _footstepRunInterval;
+        public float SqueakLoudness => _squeakLoudness;
+        public float ImpactMaxLoudness => _impactMaxLoudness;
+        public float BreakLoudness => _breakLoudness;
+        public float AlarmingLoudness => _alarmingLoudness;
+        public float RippleThreshold => _rippleThreshold;
+
+        /// <summary>착지 소음: 낙하 1m 미만은 0 (docs/06).</summary>
+        public float GetLandingLoudness(float fallHeight) =>
+            fallHeight < 1f ? 0f : _landingBaseLoudness + fallHeight * _landingPerMeter;
+
+        /// <summary>아이템 충돌 소음: impact × mass계수(0.5~3), 상한 70 (docs/06).</summary>
+        public float GetImpactLoudness(float impactSpeed, float mass) =>
+            Mathf.Min(impactSpeed * Mathf.Clamp(mass, 0.5f, 3f), _impactMaxLoudness);
 
         /// <summary>1인당 하중 → 이동 속도 배수 (docs/05 공식).</summary>
         public float GetCarrySpeedMultiplier(float loadPerRat) =>
