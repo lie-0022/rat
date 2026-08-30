@@ -13,14 +13,19 @@ namespace RatGame.Editor
     /// </summary>
     public static class SandboxTools
     {
-        // (이름, mass, 가치, 스케일, grip 수) — docs/05 무게 기준표의 회색 박스 대응
-        private static readonly (string name, float mass, int value, float scale, int grips)[] Boxes =
+        // (이름, mass, 가치, 스케일, grip 수, 트레잇, 프리미티브) — docs/05 무게 기준표 + 트레잇 견본
+        private static readonly (string name, float mass, int value, float scale, int grips, ItemTrait traits, PrimitiveType prim)[] Boxes =
         {
-            ("GrayBox_S",   0.5f,  10, 0.4f, 1),
-            ("GrayBox_M",   2f,    20, 0.6f, 1),
-            ("GrayBox_L",   5f,    50, 0.9f, 2),
-            ("GrayBox_XL",  10f,  100, 1.2f, 2),
-            ("GrayBox_XXL", 20f,  200, 1.5f, 4),
+            ("GrayBox_S",   0.5f,  10, 0.4f, 1, ItemTrait.None, PrimitiveType.Cube),
+            ("GrayBox_M",   2f,    20, 0.6f, 1, ItemTrait.None, PrimitiveType.Cube),
+            ("GrayBox_L",   5f,    50, 0.9f, 2, ItemTrait.None, PrimitiveType.Cube),
+            ("GrayBox_XL",  10f,  100, 1.2f, 2, ItemTrait.None, PrimitiveType.Cube),
+            ("GrayBox_XXL", 20f,  200, 1.5f, 4, ItemTrait.None, PrimitiveType.Cube),
+            // 트레잇 견본 (docs/05 표의 예시 대응 — 그레이박스 대체물)
+            ("Test_Egg",    1.5f,  30, 0.35f, 1, ItemTrait.Fragile | ItemTrait.Rolling, PrimitiveType.Sphere),
+            ("Test_Plate",  1.5f,  25, 0.5f,  1, ItemTrait.Slippery, PrimitiveType.Cylinder),
+            ("Test_Phone",  0.8f,  40, 0.4f,  1, ItemTrait.Alarming, PrimitiveType.Cube),
+            ("Test_Jelly",  3f,    35, 0.6f,  2, ItemTrait.Wobbly, PrimitiveType.Cube),
         };
 
         [MenuItem("Tools/RatGame/Create Sandbox Boxes")]
@@ -42,13 +47,14 @@ namespace RatGame.Editor
                 serialized.FindProperty("_displayName").stringValue = box.name;
                 serialized.FindProperty("_baseValue").intValue = box.value;
                 serialized.FindProperty("_mass").floatValue = box.mass;
+                serialized.FindProperty("_traits").intValue = (int)box.traits;
                 serialized.ApplyModifiedPropertiesWithoutUndo();
 
                 // 2) 프리팹
                 string prefabPath = $"Assets/_Project/Prefabs/Items/{box.name}.prefab";
                 if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) == null)
                 {
-                    var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    var go = GameObject.CreatePrimitive(box.prim);
                     go.name = box.name;
                     go.layer = LayerMask.NameToLayer("Carryable");
                     go.transform.localScale = Vector3.one * box.scale;
@@ -98,7 +104,9 @@ namespace RatGame.Editor
                     if (GameObject.Find(instName) != null) continue;
                     var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/_Project/Prefabs/Items/{instName}.prefab");
                     var inst = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                    inst.transform.position = new Vector3(-6f + i * 3f, 1f, 6f);
+                    inst.transform.position = i < 5
+                        ? new Vector3(-6f + i * 3f, 1f, 6f)          // 회색 박스 줄
+                        : new Vector3(-6f + (i - 5) * 3f, 1f, 3f);   // 트레잇 견본 줄
                 }
                 if (GameObject.Find("RatHole") == null)
                 {

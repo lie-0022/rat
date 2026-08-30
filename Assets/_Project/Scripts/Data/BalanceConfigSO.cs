@@ -64,6 +64,13 @@ namespace RatGame.Data
         [SerializeField] private float _alarmingLoudness = 50f;
         [SerializeField] private float _rippleThreshold = 40f;       // 이상이면 파문 이펙트
 
+        [Header("트레잇 (docs/05)")]
+        [SerializeField] private float _fragileBreakSpeed = 5f;      // 이 속도(m/s) 초과 충돌만 파손
+        [SerializeField] private float _fragileDamagePerSpeed = 0.15f;
+        [SerializeField, Range(0f, 1f)] private float _crackedValueMultiplier = 0.5f; // Durability<0.5
+        [SerializeField] private float _slipperyInterval = 3f;
+        [SerializeField, Range(0f, 1f)] private float _slipperyChance = 0.12f;
+
         public int MaxPlayers => _maxPlayers;
         public int MaxZonesPerRun => _maxZonesPerRun;
         public Vector2Int RoomModulesPerZone => _roomModulesPerZone;
@@ -112,6 +119,15 @@ namespace RatGame.Data
         /// <summary>아이템 충돌 소음: impact × mass계수(0.5~3), 상한 70 (docs/06).</summary>
         public float GetImpactLoudness(float impactSpeed, float mass) =>
             Mathf.Min(impactSpeed * Mathf.Clamp(mass, 0.5f, 3f), _impactMaxLoudness);
+
+        public float FragileBreakSpeed => _fragileBreakSpeed;
+        public float CrackedValueMultiplier => _crackedValueMultiplier;
+        public float SlipperyInterval => _slipperyInterval;
+        public float SlipperyChance => _slipperyChance;
+
+        /// <summary>파손 데미지: 문턱 초과분 × 0.15 (docs/05).</summary>
+        public float GetFragileDamage(float impactSpeed) =>
+            impactSpeed <= _fragileBreakSpeed ? 0f : (impactSpeed - _fragileBreakSpeed) * _fragileDamagePerSpeed;
 
         /// <summary>1인당 하중 → 이동 속도 배수 (docs/05 공식).</summary>
         public float GetCarrySpeedMultiplier(float loadPerRat) =>

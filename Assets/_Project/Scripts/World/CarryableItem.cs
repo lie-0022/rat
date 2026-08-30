@@ -19,9 +19,25 @@ namespace RatGame.World
         [SerializeField] private Transform[] _gripPoints;
 
         public NetworkList<ulong> CarrierIds = new NetworkList<ulong>();
+        public NetworkVariable<float> Durability = new NetworkVariable<float>(1f); // Fragile만 사용
 
         public LootItemSO Data => _data;
         public float Mass => _data != null ? _data.Mass : GetComponent<Rigidbody>().mass;
+
+        /// <summary>정산 가치: 금 갔으면(Durability<0.5) 50% (docs/05).</summary>
+        public int EffectiveValue
+        {
+            get
+            {
+                if (_data == null) return 0;
+                if (!_data.Has(ItemTrait.Fragile)) return _data.BaseValue;
+                return Durability.Value < 0.5f
+                    ? Mathf.RoundToInt(_data.BaseValue * _balance.CrackedValueMultiplier)
+                    : _data.BaseValue;
+            }
+        }
+
+        private bool Has(ItemTrait t) => _data != null && _data.Has(t);
 
         // 호스트 전용 상태: gripIndex → (잡은 클라, 조인트)
         private readonly Dictionary<int, ulong> _gripOwners = new();
@@ -37,7 +53,9 @@ namespace RatGame.World
 
         public override void OnNetworkSpawn()
         {
-            if (IsServer && _data != null) _rb.mass = _data.Mass; // SO가 물리 질량의 SSOT
+            if (!IsServer) return;
+            if (_data != null) _rb.mass = _data.Mass; // SO가 물리 질량의 SSOT
+            if (Has(ItemTrait.Rolling)) _rb.angularDamping = 0.05f; // 놓으면 굴러간다 (docs/05)
         }
 
         /// <summary>호스트 전용. 빈 GripPoint 중 플레이어와 가장 가까운 곳에 조인트 생성.</summary>
@@ -56,21 +74,27 @@ namespace RatGame.World
             joint.xMotion = joint.yMotion = joint.zMotion = ConfigurableJointMotion.Free;
             joint.angularXMotion = joint.angularYMotion = joint.angularZMotion = ConfigurableJointMotion.Free;
 
+            // Wobbly: damper 1/4 — 출렁임 증폭 (docs/05 트레잇)
+            float damper = Has(ItemTrait.Wobbly) ? _balance.GrabDamper * 0.25f : _balance.GrabDamper;
             var drive = new JointDrive
             {
                 positionSpring = _balance.GrabSpring,
-                positionDamper = _balance.GrabDamper,
+                positionDamper = damper,
                 maximumForce = _balance.GrabMaxForce
             };
             joint.xDrive = joint.yDrive = joint.zDrive = drive;
             joint.rotationDriveMode = RotationDriveMode.Slerp;
             joint.slerpDrive = new JointDrive
             {
-                positionSpring = _balance.GrabAngularSpring,
-                positionDamper = _balance.GrabDamper * 0.25f,
+                // Rolling: 잡기 중 각도 드라이브 끔 — 손에서도 데굴거림 (docs/05)
+                positionSpring = Has(ItemTrait.Rolling) ? 0f : _balance.GrabAngularSpring,
+                positionDamper = damper * 0.25f,
                 maximumForce = _balance.GrabMaxForce
             };
             joint.targetPosition = Vector3.zero;
+
+            if (Has(ItemTrait.Alarming)) // 잡기 소음 (docs/05·06)
+                Noise.NoiseSystem.Emit(transform.position, _balance.AlarmingLoudness, Noise.NoiseType.Item, clientId);
 
             _gripOwners[grip] = clientId;
             _joints[clientId] = joint;
@@ -109,6 +133,8 @@ namespace RatGame.World
             foreach (var id in carriers) ServerRelease(id);
         }
 
+        private float _nextSlipperyRoll;
+
         private void FixedUpdate()
         {
             if (!IsServer || _joints.Count == 0) return;
@@ -123,6 +149,27 @@ namespace RatGame.World
             }
             if (broken != null)
                 foreach (var id in broken) ServerRelease(id);
+
+            // Slippery: 잡기 유지 중 3s마다 12% 강제 놓침 (docs/05)
+            if (Has(ItemTrait.Slippery) && _joints.Count > 0 && Time.time >= _nextSlipperyRoll)
+            {
+                _nextSlipperyRoll = Time.time + _balance.SlipperyInterval;
+                if (UnityEngine.Random.value < _balance.SlipperyChance)
+                {
+                    Log.Dev($"미끌! {name}");
+                    ServerReleaseAll();
+                }
+            }
+        }
+
+        /// <summary>Fragile 파괴 (docs/05): 소음 60 + 가치 0 + LootBroken + 디스폰. 파편 파티클은 아트 단계.</summary>
+        private void ServerBreak()
+        {
+            Log.Dev($"파괴: {name}");
+            ServerReleaseAll();
+            Noise.NoiseSystem.Emit(transform.position, _balance.BreakLoudness, Noise.NoiseType.Break);
+            EventBus.RaiseLootBroken(_data);
+            NetworkObject.Despawn();
         }
 
         private float _nextImpactNoiseTime; // 연쇄 충돌 스팸 방지
@@ -136,8 +183,21 @@ namespace RatGame.World
             if (impact > 1.5f && Time.time >= _nextImpactNoiseTime)
             {
                 _nextImpactNoiseTime = Time.time + 0.2f;
-                Noise.NoiseSystem.Emit(transform.position,
-                    _balance.GetImpactLoudness(impact, _rb.mass), Noise.NoiseType.Impact);
+                float loudness = _balance.GetImpactLoudness(impact, _rb.mass);
+                if (Has(ItemTrait.Alarming)) loudness = Mathf.Max(loudness, _balance.AlarmingLoudness);
+                Noise.NoiseSystem.Emit(transform.position, loudness, Noise.NoiseType.Impact);
+            }
+
+            // Fragile 파손 (docs/05): 문턱 초과 충돌 → 내구도 감소 → 0이면 파괴
+            if (Has(ItemTrait.Fragile))
+            {
+                float damage = _balance.GetFragileDamage(impact);
+                if (damage > 0f)
+                {
+                    Durability.Value = Mathf.Max(0f, Durability.Value - damage);
+                    Log.Dev($"파손 진행: {name} 내구도 {Durability.Value:F2} (충돌 {impact:F1}m/s)");
+                    if (Durability.Value <= 0f) { ServerBreak(); return; }
+                }
             }
 
             // 던진 아이템에 맞은 플레이어: 비틀거림 연출만, 데미지 없음 — 트롤 허용 지점 (docs/05)

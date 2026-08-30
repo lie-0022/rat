@@ -19,7 +19,7 @@ namespace RatGame.World
                 ? other.attachedRigidbody.GetComponent<CarryableItem>() : null;
             if (item == null) return;
 
-            int value = item.Data != null ? item.Data.BaseValue : 0;
+            int value = item.EffectiveValue; // 금 간 Fragile은 50% (docs/05)
             item.ServerReleaseAll();
             EventBus.RaiseLootDeposited(item.Data, value);
             Log.Dev($"정산: {item.name} → {value} 가치");

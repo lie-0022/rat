@@ -19,3 +19,44 @@ MonoBehaviour:
   _quotaGrowth: 1.6
   _soloQuotaMultiplier: 0.55
   _soloCatVisionMultiplier: 0.8
+  _walkSpeed: 4.5
+  _sprintSpeed: 7
+  _crouchSpeed: 2.2
+  _groundAcceleration: 40
+  _airAcceleration: 10
+  _jumpImpulse: 5.5
+  _coyoteTime: 0.1
+  _jumpBuffer: 0.1
+  _rotationSlerp: 12
+  _grabSpring: 600
+  _grabDamper: 40
+  _grabMaxForce: 80
+  _grabAngularSpring: 50
+  _grabRange: 1.2
+  _grabBreakDistance: 3
+  _heavyThreshold: 6
+  _sprintBlockLoad: 3
+  _jumpBlockLoad: 4.5
+  _throwForceMin: 2
+  _throwForceMax: 9
+  _throwMassDampNumerator: 3
+  _throwChargeTime: 1.2
+  _throwHitStagger: 0.5
+  _maxNoiseRadius: 14
+  _wallAttenuation: 0.6
+  _footstepWalkLoudness: 8
+  _footstepRunLoudness: 22
+  _footstepWalkInterval: 0.35
+  _footstepRunInterval: 0.25
+  _landingBaseLoudness: 15
+  _landingPerMeter: 5
+  _squeakLoudness: 30
+  _impactMaxLoudness: 70
+  _breakLoudness: 60
+  _alarmingLoudness: 50
+  _rippleThreshold: 40
+  _fragileBreakSpeed: 5
+  _fragileDamagePerSpeed: 0.15
+  _crackedValueMultiplier: 0.5
+  _slipperyInterval: 3
+  _slipperyChance: 0.12
