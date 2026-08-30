@@ -1,0 +1,21 @@
+{
+    "name": "RatGame.Runtime",
+    "rootNamespace": "RatGame",
+    "references": [
+        "Unity.Netcode.Runtime",
+        "Unity.Networking.Transport",
+        "Unity.InputSystem",
+        "Unity.Cinemachine",
+        "Unity.AI.Navigation",
+        "Unity.RenderPipelines.Universal.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

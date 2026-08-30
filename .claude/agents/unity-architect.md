@@ -25,9 +25,9 @@ Workflow:
 |------|-----|
 | Unity 버전 | 6.3 LTS (6000.3.10f1) |
 | 렌더 파이프라인 | URP 3D (Universal Renderer) |
-| 폴더 구조 | `Assets/Rat/{Core,Game,Tests}` — asmdef 3분할 확정 (코드 0) |
+| 폴더 구조 | `Assets/_Project/{Scenes,Scripts,Prefabs,Data,Art,Audio,Settings}` — docs/01 확정 |
 | .cs 파일 수 | **0** |
-| Assembly Definition | **3개** (`Rat.Core` / `Rat.Game` / `Rat.Tests`) |
+| Assembly Definition | **2개** (`RatGame.Runtime` / `RatGame.Editor`) — docs/02, 2인 팀 규모라 안 쪼갬 |
 | New Input System | 설정됨 (`InputSystem_Actions.inputactions`), 코드 사용 0 |
 | 2D 패키지 | 2D animation/aseprite/psdimporter/sprite/spriteshape/tilemap 설치됨 |
 
@@ -38,9 +38,8 @@ Workflow:
 화투게임과 동일한 3분할 구조를 부트스트랩 시점부터 적용:
 
 ```
-Rat.Core   — 순수 C#, 엔진 비의존 (noEngineReferences: true). 로직 전부 여기.
-Rat.Game   — MonoBehaviour (입력·물리·렌더). Core + InputSystem/UI/TMP 참조.
-Rat.Tests  — EditMode 테스트 (Editor 전용, NUnit). Core·Game 참조.
+RatGame.Runtime — Scripts/ 전체. NGO·InputSystem·Cinemachine·AI Navigation·URP 참조.
+RatGame.Editor  — Scripts/Editor/. Runtime 참조, 에디터 전용 (Tools/RatGame/... 메뉴 툴).
 ```
 
 각 asmdef의 의존성:

@@ -1,6 +1,6 @@
 ---
 name: unity-csharp
-description: "Unity 6.3 C# 스크립팅 전문가. Rat 프로젝트의 권장 컨벤션(Rat.Core/Game 네임스페이스, _camelCase + [SerializeField], I-prefix 인터페이스, 한국어 XML 주석)을 따라 게임 로직 .cs 파일을 작성/수정한다. New Input System 우선, MonoBehaviour 라이프사이클 정확 활용, public 필드 금지, Update GetComponent 캐싱."
+description: "Unity 6.3 C# 스크립팅 전문가. 쥐도새도모르게(RatGame) 프로젝트의 권장 컨벤션(RatGame.Core/Net/Player/World/AI/Noise/Run/Meta/Data/UI 네임스페이스=폴더, _camelCase + [SerializeField], RPC는 ~ServerRpc/~ClientRpc 접미사, 한국어 XML 주석)을 따라 게임 로직 .cs 파일을 작성/수정한다. New Input System 우선, MonoBehaviour 라이프사이클 정확 활용, public 필드 금지, Update GetComponent 캐싱."
 tools: Read, Glob, Grep, Write, Edit, Bash
 model: sonnet
 maxTurns: 20
@@ -22,7 +22,7 @@ Before writing any code:
 
 | 항목 | 규칙 | 근거 |
 |------|------|------|
-| **네임스페이스** | **`Rat.Core`** (순수 로직) / **`Rat.Game`** (MonoBehaviour) / **`Rat.Tests`** | asmdef 3분할 구조와 일치 — CLAUDE.md 아키텍처 규칙 |
+| **네임스페이스** | **`RatGame.{Core,Net,Player,World,AI,Noise,Run,Meta,Data,UI}`** = 폴더 구조 | 단일 RatGame.Runtime asmdef — docs/02 아키텍처 규칙 |
 | **필드** | `private` + `[SerializeField]` + `_camelCase` | public 필드 절대 금지 |
 | **프로퍼티** | `public Type Name { get; private set; }` | 외부 노출은 프로퍼티만 |
 | **인터페이스** | I-prefix (예: `IDamageable`, `IInteractable`, `IPoolable`) | 추상화는 인터페이스 우선 |
@@ -79,8 +79,8 @@ Reset (Editor) → Awake → OnEnable → Start → FixedUpdate (loop) → Updat
 - [ ] MonoBehaviour 라이프사이클 메서드명 철자 정확한가? (`Awake`, `OnEnable`, `Start` 등)
 - [ ] New Input System API 정확한가? (`InputAction`, `InputActionAsset`, `InputActionMap`)
 - [ ] 환각 클래스/메서드 (예: `MonoBehaviour.Tick()`, `Component.Initialize()`) 사용 안 했는가?
-- [ ] Rat 컨벤션 (`Rat.Core/Game` 네임스페이스, `_camelCase`, I-prefix) 위반 없는가?
-- [ ] `Rat.Core` 코드에 `using UnityEngine;`이 섞이지 않았는가? (Core는 엔진 비의존)
+- [ ] RatGame 컨벤션 (네임스페이스=폴더, `_camelCase`, RPC 접미사) 위반 없는가? (docs/02)
+- [ ] 밸런스 수치 하드코딩 없는가? (전부 BalanceConfigSO — CLAUDE.md 절대 규칙 2)
 
 ## 메모리 정리 규칙
 
@@ -92,9 +92,9 @@ Reset (Editor) → Awake → OnEnable → Start → FixedUpdate (loop) → Updat
 ## 폴더 구조 참고
 
 ```
-Assets/Rat/Core/   — 순수 C# 로직 (Rat.Core.asmdef, 엔진 비의존)
-Assets/Rat/Game/   — MonoBehaviour (Rat.Game.asmdef)
-Assets/Rat/Tests/  — EditMode 테스트 (Rat.Tests.asmdef)
+Assets/_Project/Scripts/        — RatGame.Runtime.asmdef (게임 코드 단일 asmdef)
+Assets/_Project/Scripts/Editor/ — RatGame.Editor.asmdef (Tools/RatGame/... 메뉴 툴)
+폴더=네임스페이스: Core/Net/Player/World/AI/Noise/Run/Meta/Data/UI (docs/02)
 ```
 
 새 코드 위치 결정 시 현재 폴더 구조 먼저 확인 (`Glob` 사용). 새 폴더 생성은 `unity-architect`에 위임.
