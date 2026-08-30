@@ -13,6 +13,9 @@ namespace RatGame.Player
     /// </summary>
     public class PlayerController : NetworkBehaviour
     {
+        /// <summary>무인 테스트용 자동 배회 (DevAutoConnect -autowander). 사람 입력 대신 펄린 노이즈 방향.</summary>
+        public static bool DevAutoWander;
+
         [SerializeField] private BalanceConfigSO _balance;
         [SerializeField] private InputActionAsset _inputAsset;
 
@@ -95,7 +98,7 @@ namespace RatGame.Player
 
         private void ApplyMovement()
         {
-            Vector2 input = _moveAction.ReadValue<Vector2>();
+            Vector2 input = DevAutoWander ? GetWanderInput() : _moveAction.ReadValue<Vector2>();
 
             // 카메라 기준 입력 → 월드 방향 (docs/04)
             var cam = Camera.main;
@@ -123,6 +126,13 @@ namespace RatGame.Player
                 _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, targetRot,
                     _balance.RotationSlerp * Time.fixedDeltaTime));
             }
+        }
+
+        private Vector2 GetWanderInput()
+        {
+            float seed = OwnerClientId * 7.31f;
+            float angle = Mathf.PerlinNoise(Time.time * 0.15f, seed) * Mathf.PI * 4f;
+            return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 0.8f;
         }
 
         private void TryJump()

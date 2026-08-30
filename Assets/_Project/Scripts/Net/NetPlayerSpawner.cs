@@ -31,27 +31,29 @@ namespace RatGame.Net
             nm.OnServerStarted -= OnServerStarted;
             nm.OnClientConnectedCallback -= OnClientConnected;
             nm.OnClientDisconnectCallback -= OnClientDisconnected;
+            if (nm.SceneManager != null)
+                nm.SceneManager.OnLoadComplete -= OnClientSceneLoadComplete;
         }
 
         private void OnServerStarted()
         {
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += OnSceneLoadCompleted;
+            // 개별 클라의 씬 로드 "완료" 시점에 스폰 — 로드 전에 스폰하면 그 클라(소유 물리 시뮬)
+            // 화면엔 바닥이 아직 없어서 무한 낙하한다 (첫 4인 테스트에서 실측한 버그)
+            NetworkManager.Singleton.SceneManager.OnLoadComplete += OnClientSceneLoadComplete;
         }
 
-        private void OnSceneLoadCompleted(string sceneName, LoadSceneMode mode,
-            System.Collections.Generic.List<ulong> clientsCompleted,
-            System.Collections.Generic.List<ulong> clientsTimedOut)
+        private void OnClientSceneLoadComplete(ulong clientId, string sceneName, LoadSceneMode mode)
         {
+            if (!NetworkManager.Singleton.IsServer) return;
             if (!IsGameplayScene(sceneName)) return;
-            foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
-                SpawnIfMissing(clientId);
+            SpawnIfMissing(clientId);
         }
 
         private void OnClientConnected(ulong clientId)
         {
+            // 스폰은 OnLoadComplete에서만. 여기선 로그만 (접속 자체의 관측용)
             if (!NetworkManager.Singleton.IsServer) return;
-            if (!IsGameplayScene(SceneManager.GetActiveScene().name)) return;
-            SpawnIfMissing(clientId);
+            Log.Dev($"클라 접속: client {clientId}");
         }
 
         private void OnClientDisconnected(ulong clientId)
