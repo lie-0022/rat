@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
+  m_Name: loot_candy
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: loot_candy
+  _displayName: "\uC0AC\uD0D5"
+  _codexFlavor: "\uD600\uC5D0 \uBD99\uB294\uB2E4. \uD600\uC9F8\uB85C \uC6B4\uBC18\uD558\uC9C0
+    \uB9D0 \uAC83."
+  _baseValue: 12
+  _mass: 0.3
+  _traits: 0
+  _tier: 0
+  _prefab: {fileID: 5887710078448121572, guid: 665b8a9520f694c45b23898d2b7e0465, type: 3}
+  _icon: {fileID: 0}

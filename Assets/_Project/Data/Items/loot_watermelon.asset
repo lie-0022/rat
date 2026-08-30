@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
+  m_Name: loot_watermelon
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: loot_watermelon
+  _displayName: "\uC218\uBC15 \uC870\uAC01"
+  _codexFlavor: "\uC999\uC774 \uC190\uC7A1\uC774\uB97C \uBC30\uC2E0\uD55C\uB2E4."
+  _baseValue: 160
+  _mass: 18
+  _traits: 8
+  _tier: 2
+  _prefab: {fileID: 3256913328549321310, guid: bec70d488f7a049f783be214cda2ef0b, type: 3}
+  _icon: {fileID: 0}

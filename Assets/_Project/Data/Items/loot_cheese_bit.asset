@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
+  m_Name: loot_cheese_bit
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: loot_cheese_bit
+  _displayName: "\uCE58\uC988 \uC870\uAC01"
+  _codexFlavor: "\uBE44\uC0C1\uC2DD\uB7C9. \uD558\uC9C0\uB9CC \uC9C0\uAE08\uC774
+    \uBE44\uC0C1 \uC544\uB2CC\uAC00?"
+  _baseValue: 14
+  _mass: 0.6
+  _traits: 32
+  _tier: 0
+  _prefab: {fileID: 4932056295605621321, guid: 43168e06d334344c8b2eb4b86553176e, type: 3}
+  _icon: {fileID: 0}

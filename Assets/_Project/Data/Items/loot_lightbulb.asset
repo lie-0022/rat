@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
+  m_Name: loot_lightbulb
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: loot_lightbulb
+  _displayName: "\uC804\uAD6C"
+  _codexFlavor: "\uC544\uC774\uB514\uC5B4\uAC00 \uB5A0\uC62C\uB790\uB2E4: \uC870\uC2EC\uD788
+    \uB4E4\uC790."
+  _baseValue: 42
+  _mass: 1.2
+  _traits: 1
+  _tier: 1
+  _prefab: {fileID: 7252074072982538198, guid: e91b42f8517d04550a76e187da05a052, type: 3}
+  _icon: {fileID: 0}

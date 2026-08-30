@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
+  m_Name: loot_plate
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: loot_plate
+  _displayName: "\uC811\uC2DC"
+  _codexFlavor: "\uC124\uAC70\uC9C0 \uC9C1\uD6C4\uAC00 \uC81C\uC77C \uC704\uD5D8\uD558\uB2E4."
+  _baseValue: 45
+  _mass: 2.5
+  _traits: 9
+  _tier: 1
+  _prefab: {fileID: 1085239708210452491, guid: abcfe2709e87048aba62a43e8e94b01a, type: 3}
+  _icon: {fileID: 0}

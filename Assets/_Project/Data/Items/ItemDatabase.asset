@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c89a2b124d74e79b45cfaa5f48d297, type: 3}
+  m_Name: ItemDatabase
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.ItemDatabase
+  _items:
+  - {fileID: 11400000, guid: d4f0962d535c8479fbb3d139df9e7c0f, type: 2}
+  - {fileID: 11400000, guid: 01d4ae35d20a34b41b7364dc66d40e4f, type: 2}
+  - {fileID: 11400000, guid: 11bb82af90f98464198339c205b9ff2f, type: 2}
+  - {fileID: 11400000, guid: 84a947654efdb4ced9bf6656b36b8647, type: 2}
+  - {fileID: 11400000, guid: 7a7026feb9648492da23a9cc0c337547, type: 2}
+  - {fileID: 11400000, guid: d22603786f9ff4a018bf20468574b5a6, type: 2}
+  - {fileID: 11400000, guid: 0c3069d63492d41eeb90ee0286497294, type: 2}
+  - {fileID: 11400000, guid: 4e798f950786b49ca8354b7f30987f82, type: 2}
+  - {fileID: 11400000, guid: 89eeaa7a1e78f45748d4c727d55a8930, type: 2}
+  - {fileID: 11400000, guid: 72cc2738aa1d4482c8fe6b8ce20d70d1, type: 2}
+  - {fileID: 11400000, guid: d80fb2978289f4dae84c818ea83dd83d, type: 2}
+  - {fileID: 11400000, guid: 240d217b735304b109c80e6da77cfa95, type: 2}
+  - {fileID: 11400000, guid: a9592075f128b4a99a4c0dba791829e6, type: 2}
+  - {fileID: 11400000, guid: 6d05d51bd028d43b89d417dedec00f8b, type: 2}
+  - {fileID: 11400000, guid: 6127dacd84ef44d49a420c15429456e4, type: 2}
+  - {fileID: 11400000, guid: 48ec23824032a488da5b7b191b3a6bb3, type: 2}
+  - {fileID: 11400000, guid: 39b1540f6587e4dc2ba6ecc43874bf99, type: 2}
+  - {fileID: 11400000, guid: 620107da5dde24c718e86a67c27df00a, type: 2}
+  - {fileID: 11400000, guid: 98c9f39e5ff374f0ca98ffb71b76c3af, type: 2}
+  - {fileID: 11400000, guid: 7efd81d05f5c24b1bb7d7f054eaf176d, type: 2}

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RatGame.Data
 {
-    /// <summary>아이템 트레잇 (docs/05). 구현은 CarryableItem — Edible은 스태미나 생기는 태스크 1-4에서.</summary>
+    /// <summary>아이템 트레잇 (docs/05). 구현은 CarryableItem — Edible은 스태미나 회복(치즈류).</summary>
     [Flags]
     public enum ItemTrait
     {
@@ -16,19 +16,31 @@ namespace RatGame.Data
         Edible = 32     // Interact 홀드로 먹기 (스태미나 회복)
     }
 
-    /// <summary>전리품 아이템 데이터 (docs/05·08). 수치 표는 docs 표와 일치시킬 것.</summary>
+    public enum LootTier { Small, Tricky, Large, Special }
+
+    /// <summary>전리품 데이터 원장 (docs/08). Id는 저장·도감 키 — 절대 변경 금지.</summary>
     [CreateAssetMenu(fileName = "Loot_", menuName = "RatGame/Loot Item")]
     public class LootItemSO : ScriptableObject
     {
-        [SerializeField] private string _displayName;
+        [SerializeField] private string _id;            // "loot_egg"
+        [SerializeField] private string _displayName;   // "계란"
+        [SerializeField, TextArea] private string _codexFlavor; // 댕청한 도감 한 줄 (B급)
         [SerializeField] private int _baseValue;
         [SerializeField] private float _mass = 1f;
         [SerializeField] private ItemTrait _traits = ItemTrait.None;
+        [SerializeField] private LootTier _tier = LootTier.Small;
+        [SerializeField] private GameObject _prefab;    // CarryableItem 프리팹
+        [SerializeField] private Sprite _icon;          // 도감·HUD (아트 단계)
 
+        public string Id => _id;
         public string DisplayName => _displayName;
+        public string CodexFlavor => _codexFlavor;
         public int BaseValue => _baseValue;
         public float Mass => _mass;
         public ItemTrait Traits => _traits;
+        public LootTier Tier => _tier;
+        public GameObject Prefab => _prefab;
+        public Sprite Icon => _icon;
         public bool Has(ItemTrait trait) => (_traits & trait) != 0;
     }
 }

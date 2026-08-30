@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
+  m_Name: loot_grape
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: loot_grape
+  _displayName: "\uD3EC\uB3C4\uC54C"
+  _codexFlavor: "\uAD74\uB7EC\uAC04\uB2E4. \uC5B4\uB514\uAE4C\uC9C0? \uB05D\uAE4C\uC9C0."
+  _baseValue: 10
+  _mass: 0.4
+  _traits: 2
+  _tier: 0
+  _prefab: {fileID: 2697601816006205625, guid: e2757809ea8d149cf824b7a92aa39903, type: 3}
+  _icon: {fileID: 0}

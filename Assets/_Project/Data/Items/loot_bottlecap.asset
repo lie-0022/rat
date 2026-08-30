@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
+  m_Name: loot_bottlecap
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: loot_bottlecap
+  _displayName: "\uBCD1\uB69C\uAED1"
+  _codexFlavor: "\uC950 \uC0AC\uD68C\uC758 \uBC29\uD328. \uC720\uD589\uC740 \uB3CC\uACE0
+    \uB3C8\uB2E4."
+  _baseValue: 8
+  _mass: 0.3
+  _traits: 0
+  _tier: 0
+  _prefab: {fileID: 3734017394393347839, guid: 89dd35ec1c4dd4dac8c1b3482d81122b, type: 3}
+  _icon: {fileID: 0}
