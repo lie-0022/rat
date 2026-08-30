@@ -38,7 +38,8 @@ namespace RatGame.Core
         private void CreateManagers()
         {
             CreateManager<GameStateMachine>("GameStateMachine");
-            // 이후 태스크에서 추가: NetworkLauncher(0-3), SaveService(2-4) 등 — docs/02 싱글톤 허용 목록만
+            CreateManager<Net.NetworkLauncher>("NetworkLauncher");
+            // 이후 태스크에서 추가: SaveService(2-4) 등 — docs/02 싱글톤 허용 목록만
         }
 
         private static T CreateManager<T>(string objectName) where T : Component
