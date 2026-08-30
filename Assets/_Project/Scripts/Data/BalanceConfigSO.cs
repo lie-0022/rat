@@ -22,11 +22,32 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 1f)] private float _soloQuotaMultiplier = 0.55f;
         [SerializeField, Range(0f, 1f)] private float _soloCatVisionMultiplier = 0.8f; // 시야 -20%
 
+        [Header("플레이어 이동 (docs/04)")]
+        [SerializeField] private float _walkSpeed = 4.5f;
+        [SerializeField] private float _sprintSpeed = 7f;
+        [SerializeField] private float _crouchSpeed = 2.2f;
+        [SerializeField] private float _groundAcceleration = 40f;
+        [SerializeField] private float _airAcceleration = 10f;
+        [SerializeField] private float _jumpImpulse = 5.5f;
+        [SerializeField] private float _coyoteTime = 0.1f;
+        [SerializeField] private float _jumpBuffer = 0.1f;
+        [SerializeField] private float _rotationSlerp = 12f;
+
         public int MaxPlayers => _maxPlayers;
         public int MaxZonesPerRun => _maxZonesPerRun;
         public Vector2Int RoomModulesPerZone => _roomModulesPerZone;
         public float SoloQuotaMultiplier => _soloQuotaMultiplier;
         public float SoloCatVisionMultiplier => _soloCatVisionMultiplier;
+
+        public float WalkSpeed => _walkSpeed;
+        public float SprintSpeed => _sprintSpeed;
+        public float CrouchSpeed => _crouchSpeed;
+        public float GroundAcceleration => _groundAcceleration;
+        public float AirAcceleration => _airAcceleration;
+        public float JumpImpulse => _jumpImpulse;
+        public float CoyoteTime => _coyoteTime;
+        public float JumpBuffer => _jumpBuffer;
+        public float RotationSlerp => _rotationSlerp;
 
         /// <summary>Zone n(1부터)의 할당량. 솔로면 solo 배수 적용 (docs/00 표).</summary>
         public int GetQuota(int zoneNumber, int playerCount)

@@ -32,6 +32,17 @@ namespace RatGame.Net
             Instance = this;
         }
 
+        // 플레이 종료 시 NGO의 지연 셧다운이 완료되지 못하면 UTP 소켓(7777)이 에디터 프로세스에
+        // 남아 다음 세션 바인딩이 실패한다 — 트랜스포트를 즉시 닫아 방지.
+        private void OnApplicationQuit()
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null) return;
+            if (nm.IsListening) nm.Shutdown(true);
+            var utp = nm.GetComponent<UnityTransport>();
+            if (utp != null) utp.Shutdown();
+        }
+
         public Task<bool> StartHostAsync()
         {
             var nm = NetworkManager.Singleton;

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3839131561219187865}
   - component: {fileID: 3468535543866643919}
   - component: {fileID: 4114864087032960387}
+  - component: {fileID: 7151625810066023316}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -218,6 +219,21 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &7151625810066023316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fed9028b5fb94ccaaf8487fec8d04c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerController
+  ShowTopMostFoldoutHeaderGroup: 1
+  _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
+  _inputAsset: {fileID: -944628639613478452, guid: a6ae873b4a3514af1808b795abeae039, type: 3}
 --- !u!1 &5417322158775654346
 GameObject:
   m_ObjectHideFlags: 0
