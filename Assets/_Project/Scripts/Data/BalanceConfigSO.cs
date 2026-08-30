@@ -76,6 +76,31 @@ namespace RatGame.Data
         [SerializeField] private float _highFallStunHeight = 6f;   // 이 높이(m) 초과 낙하 → Stunned
         [SerializeField] private float _rescueHoldSeconds = 1.5f;  // Trapped 동료 구출 홀드
 
+        [Header("고양이 (docs/07)")]
+        [SerializeField] private float _catPatrolSpeed = 2f;
+        [SerializeField] private float _catSuspiciousSpeed = 3f;
+        [SerializeField] private float _catChaseSpeed = 5.5f;   // sprint 7보다 느림 — 밸런스의 축, 신중히
+        [SerializeField] private float _catReturnSpeed = 2f;
+        [SerializeField] private float _catViewDistance = 8f;
+        [SerializeField, Range(0f, 1f)] private float _catCrouchViewMultiplier = 0.5f;
+        [SerializeField] private float _catViewHalfAngle = 35f; // 시야각 70°
+        [SerializeField] private float _catGazeGainPerSec = 60f;
+        [SerializeField] private float _catGaugeDecayPerSec = 20f;
+        [SerializeField, Range(0f, 1f)] private float _catHearingGain = 0.8f;
+        [SerializeField] private float _catHearThreshold = 10f;
+        [SerializeField] private float _catSuspicionThreshold = 30f;
+        [SerializeField] private float _catChaseThreshold = 100f;
+        [SerializeField] private float _catDirectSightChaseSeconds = 1f;
+        [SerializeField] private float _catCloseSightDistance = 2f;
+        [SerializeField] private float _catLoseSightSeconds = 3f;
+        [SerializeField] private float _catCaptureRange = 1.0f;
+        [SerializeField] private float _catCaptureSwingSeconds = 0.4f;
+        [SerializeField] private float _catCaptureRadius = 1.2f;
+        [SerializeField] private float _catGroomSeconds = 3f;
+        [SerializeField] private float _catSuspiciousWanderSeconds = 6f;
+        [SerializeField, Range(0f, 1f)] private float _catSleepSenseMultiplier = 0.3f;
+        [SerializeField] private Vector2 _catPatrolWaitRange = new(2f, 5f);
+
         [Header("스태미나 (docs/04)")]
         [SerializeField] private float _staminaMax = 100f;
         [SerializeField] private float _staminaSprintDrain = 20f;  // /s
@@ -142,6 +167,30 @@ namespace RatGame.Data
         /// <summary>파손 데미지: 문턱 초과분 × 0.15 (docs/05).</summary>
         public float GetFragileDamage(float impactSpeed) =>
             impactSpeed <= _fragileBreakSpeed ? 0f : (impactSpeed - _fragileBreakSpeed) * _fragileDamagePerSpeed;
+
+        public float CatPatrolSpeed => _catPatrolSpeed;
+        public float CatSuspiciousSpeed => _catSuspiciousSpeed;
+        public float CatChaseSpeed => _catChaseSpeed;
+        public float CatReturnSpeed => _catReturnSpeed;
+        public float CatViewDistance => _catViewDistance;
+        public float CatCrouchViewMultiplier => _catCrouchViewMultiplier;
+        public float CatViewHalfAngle => _catViewHalfAngle;
+        public float CatGazeGainPerSec => _catGazeGainPerSec;
+        public float CatGaugeDecayPerSec => _catGaugeDecayPerSec;
+        public float CatHearingGain => _catHearingGain;
+        public float CatHearThreshold => _catHearThreshold;
+        public float CatSuspicionThreshold => _catSuspicionThreshold;
+        public float CatChaseThreshold => _catChaseThreshold;
+        public float CatDirectSightChaseSeconds => _catDirectSightChaseSeconds;
+        public float CatCloseSightDistance => _catCloseSightDistance;
+        public float CatLoseSightSeconds => _catLoseSightSeconds;
+        public float CatCaptureRange => _catCaptureRange;
+        public float CatCaptureSwingSeconds => _catCaptureSwingSeconds;
+        public float CatCaptureRadius => _catCaptureRadius;
+        public float CatGroomSeconds => _catGroomSeconds;
+        public float CatSuspiciousWanderSeconds => _catSuspiciousWanderSeconds;
+        public float CatSleepSenseMultiplier => _catSleepSenseMultiplier;
+        public Vector2 CatPatrolWaitRange => _catPatrolWaitRange;
 
         public float StunSeconds => _stunSeconds;
         public float HighFallStunHeight => _highFallStunHeight;
