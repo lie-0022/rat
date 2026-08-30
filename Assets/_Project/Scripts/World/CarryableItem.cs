@@ -46,6 +46,9 @@ namespace RatGame.World
         private Rigidbody _rb;
         private float _thrownUntil; // 던져진 직후 1.5s — 이 동안 플레이어 맞으면 비틀거림 (docs/05)
 
+        /// <summary>던져진 직후인가 (CatLure 털실뭉치 착지 판정용 — docs/07).</summary>
+        public bool IsRecentlyThrown => Time.time <= _thrownUntil;
+
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();

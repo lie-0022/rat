@@ -59,6 +59,16 @@ namespace RatGame.AI
             SetState(CatState.Patrol);
         }
 
+        private Vector3? _tempWaypoint; // 쿠키 부스러기 — 1회 경유 (docs/07)
+
+        /// <summary>쿠키 부스러기: 순찰 경로에 임시 삽입, 1회 경유 (docs/07·08).</summary>
+        public void ServerInsertWaypoint(Vector3 pos)
+        {
+            if (!IsServer) return;
+            _tempWaypoint = pos;
+            Log.Dev($"고양이 [{name}]: 임시 웨이포인트 삽입 {pos:F1}");
+        }
+
         /// <summary>유인 아이템 진입점 (docs/07 — Chase보다 우선순위 낮음). 태스크 1-6에서 호출.</summary>
         public void ServerDistract(Vector3 pos, float seconds)
         {
@@ -114,7 +124,7 @@ namespace RatGame.AI
                         _movement.MoveTo(NearestWaypoint(), _balance.CatReturnSpeed);
                     break;
                 case CatState.Distracted:
-                    _movement.MoveTo(_distractPos, 4f);
+                    _movement.MoveTo(_distractPos, _balance.CatDistractedSpeed);
                     break;
             }
         }
@@ -131,6 +141,18 @@ namespace RatGame.AI
         private void TickPatrol()
         {
             if (CheckEscalation()) return;
+
+            // 임시 웨이포인트(쿠키) 우선 — 도착하면 소비
+            if (_tempWaypoint.HasValue)
+            {
+                _movement.MoveTo(_tempWaypoint.Value, _balance.CatPatrolSpeed);
+                if (Vector3.Distance(transform.position, _tempWaypoint.Value) < 1f)
+                {
+                    _tempWaypoint = null;
+                    _waitUntil = Time.time + Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y);
+                }
+                return;
+            }
 
             if (_waypoints.Length == 0) { _movement.Stop(); return; }
             if (Time.time < _waitUntil) return;
@@ -233,7 +255,7 @@ namespace RatGame.AI
                 return;
             }
             if (_movement.Arrived)
-                _movement.MoveTo(_movement.RandomPointAround(_distractPos, 1.5f), 4f);
+                _movement.MoveTo(_movement.RandomPointAround(_distractPos, 1.5f), _balance.CatDistractedSpeed);
         }
 
         private void TickReturn()

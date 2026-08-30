@@ -100,6 +100,13 @@ namespace RatGame.Data
         [SerializeField] private float _catSuspiciousWanderSeconds = 6f;
         [SerializeField, Range(0f, 1f)] private float _catSleepSenseMultiplier = 0.3f;
         [SerializeField] private Vector2 _catPatrolWaitRange = new(2f, 5f);
+        [SerializeField] private float _catDistractedSpeed = 4f;
+
+        [Header("유인 아이템 (docs/07·08)")]
+        [SerializeField] private float _lureYarnSeconds = 8f;
+        [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
+        [SerializeField] private float _lureCatnipSeconds = 15f;
+        [SerializeField] private float _lureCatnipRadius = 3f;
 
         [Header("스태미나 (docs/04)")]
         [SerializeField] private float _staminaMax = 100f;
@@ -191,6 +198,11 @@ namespace RatGame.Data
         public float CatSuspiciousWanderSeconds => _catSuspiciousWanderSeconds;
         public float CatSleepSenseMultiplier => _catSleepSenseMultiplier;
         public Vector2 CatPatrolWaitRange => _catPatrolWaitRange;
+        public float CatDistractedSpeed => _catDistractedSpeed;
+        public float LureYarnSeconds => _lureYarnSeconds;
+        public float LureYarnRadius => _lureYarnRadius;
+        public float LureCatnipSeconds => _lureCatnipSeconds;
+        public float LureCatnipRadius => _lureCatnipRadius;
 
         public float StunSeconds => _stunSeconds;
         public float HighFallStunHeight => _highFallStunHeight;
