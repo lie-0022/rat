@@ -43,6 +43,17 @@ namespace RatGame.Net
             if (utp != null) utp.Shutdown();
         }
 
+        /// <summary>DevSceneAutoBoot용 — NetworkManager 초기화(Awake) 한 프레임 뒤 호스트 시작.</summary>
+        public void StartCoroutineHost() => StartCoroutine(DelayedHost());
+
+        private System.Collections.IEnumerator DelayedHost()
+        {
+            yield return null;
+            var task = StartHostAsync();
+            yield return new WaitUntil(() => task.IsCompleted);
+            Log.Dev($"[AutoBoot] 자동 호스트 {(task.Result ? "성공" : "실패")}");
+        }
+
         public Task<bool> StartHostAsync()
         {
             var nm = NetworkManager.Singleton;

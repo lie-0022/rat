@@ -81,6 +81,7 @@ namespace RatGame.AI
 
         private void Update()
         {
+            if (!IsSpawned || _waypoints == null) return; // 자동 부트 등 스폰 전 프레임 가드
             switch (State.Value)
             {
                 case CatState.Sleep: TickSleep(); break;

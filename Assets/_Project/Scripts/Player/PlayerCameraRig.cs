@@ -27,13 +27,30 @@ namespace RatGame.Player
             _cam = Camera.main;
             _lookAction = _inputAsset.FindActionMap("Player", true).FindAction("Look", true);
             _yaw = transform.eulerAngles.y;
+            SetCursorLocked(true); // 플레이 중 커서 잠금 — Esc로 해제 (DEV HUD 클릭용)
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            if (IsOwner) SetCursorLocked(false);
+        }
+
+        private static void SetCursorLocked(bool locked)
+        {
+            Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !locked;
         }
 
         private void LateUpdate()
         {
             if (_cam == null) { _cam = Camera.main; return; }
 
-            Vector2 look = _lookAction.ReadValue<Vector2>();
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+                SetCursorLocked(Cursor.lockState != CursorLockMode.Locked);
+            // 커서가 풀려 있으면(메뉴 조작 중) 카메라 회전 정지 — 클릭이 새지 않게
+            bool rotating = Cursor.lockState == CursorLockMode.Locked;
+
+            Vector2 look = rotating ? _lookAction.ReadValue<Vector2>() : Vector2.zero;
             _yaw += look.x * Sensitivity;
             _pitch = Mathf.Clamp(_pitch - look.y * Sensitivity, -10f, 70f);
 

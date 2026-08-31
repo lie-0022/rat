@@ -69,6 +69,7 @@ namespace RatGame.Player
 
         private void OnGrabPressed(InputAction.CallbackContext ctx)
         {
+            if (Cursor.lockState != CursorLockMode.Locked) return; // 커서 풀림 = 메뉴 조작 중
             if (CarriedItemNetId.Value != 0) return; // 한 번에 한 아이템 (docs/05)
             var item = FindGrabCandidate();
             if (item != null) GrabRequestServerRpc(item.NetworkObjectId);
@@ -81,6 +82,7 @@ namespace RatGame.Player
 
         private void OnThrowStarted(InputAction.CallbackContext ctx)
         {
+            if (Cursor.lockState != CursorLockMode.Locked) return;
             if (CarriedItemNetId.Value == 0) return;
             _charging = true;
             _chargeStart = Time.time;

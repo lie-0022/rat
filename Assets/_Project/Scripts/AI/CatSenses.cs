@@ -46,6 +46,7 @@ namespace RatGame.AI
 
         private void Update()
         {
+            if (!IsSpawned) return; // 스폰 전 프레임 가드
             if (Time.time >= _nextVisionTick)
             {
                 _nextVisionTick = Time.time + 0.2f;

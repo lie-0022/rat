@@ -40,6 +40,10 @@ namespace RatGame.Net
             // 개별 클라의 씬 로드 "완료" 시점에 스폰 — 로드 전에 스폰하면 그 클라(소유 물리 시뮬)
             // 화면엔 바닥이 아직 없어서 무한 낙하한다 (첫 4인 테스트에서 실측한 버그)
             NetworkManager.Singleton.SceneManager.OnLoadComplete += OnClientSceneLoadComplete;
+
+            // 이미 게임플레이 씬에서 호스트가 시작된 경우(DevSceneAutoBoot) — 로드 이벤트가 안 오므로 즉시 스폰
+            if (IsGameplayScene(SceneManager.GetActiveScene().name))
+                SpawnIfMissing(NetworkManager.Singleton.LocalClientId);
         }
 
         private void OnClientSceneLoadComplete(ulong clientId, string sceneName, LoadSceneMode mode)
