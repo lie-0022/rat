@@ -323,6 +323,7 @@ GameObject:
   - component: {fileID: 2214361482663412767}
   - component: {fileID: 5224409843546768758}
   - component: {fileID: 5671409034416424758}
+  - component: {fileID: 4396278490931489414}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -643,6 +644,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerVisual
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &4396278490931489414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdbfa8aaf8e7b42f784eff896b155a31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerCameraRig
+  ShowTopMostFoldoutHeaderGroup: 1
+  _inputAsset: {fileID: -944628639613478452, guid: a6ae873b4a3514af1808b795abeae039, type: 3}
 --- !u!1 &4262434128330920448
 GameObject:
   m_ObjectHideFlags: 0
