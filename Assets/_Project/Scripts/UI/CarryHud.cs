@@ -89,7 +89,8 @@ namespace RatGame.UI
             if (_carry.IsHolding)
             {
                 if (_carry.IsDraggingHeavy) prompt = "[좌클릭] 놓기   (무거워서 던질 수 없음)";
-                else prompt = _carry.ThrowCharge > 0f ? null : "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
+                else if (_carry.ThrowCharge > 0f) prompt = "[우클릭 떼기] 던지기   [좌클릭] 취소";
+                else prompt = "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
             }
             else if (_carry.GrabCandidate != null)
             {

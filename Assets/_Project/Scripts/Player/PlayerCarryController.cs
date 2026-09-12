@@ -81,7 +81,7 @@ namespace RatGame.Player
         private void OnGrabPressed(InputAction.CallbackContext ctx)
         {
             if (Cursor.lockState != CursorLockMode.Locked) return; // 커서 풀림 = 메뉴 조작 중
-            if (_charging) return; // 던지기 차지 중엔 무시
+            if (_charging) { CancelCharge(); return; } // 차지 중 좌클릭 = 던지기 취소 (물건은 계속 들고 있음)
             if (CarriedItemNetId.Value != 0)
             {
                 PutDownRequestServerRpc();
@@ -100,9 +100,16 @@ namespace RatGame.Player
             _chargeStart = Time.time;
         }
 
+        /// <summary>차지 중단 — 던지지 않고 계속 들고 있는다.</summary>
+        private void CancelCharge()
+        {
+            _charging = false;
+            HideTrajectory();
+        }
+
         private void OnThrowReleased(InputAction.CallbackContext ctx)
         {
-            if (!_charging) return;
+            if (!_charging) return; // 이미 취소됐으면 던지지 않는다
             _charging = false;
             HideTrajectory();
             if (CarriedItemNetId.Value == 0) return;
