@@ -16,7 +16,7 @@ MonoBehaviour:
   _displayName: "\uC2A4\uB9C8\uD2B8\uD3F0"
   _codexFlavor: "\uB9CC\uC9C0\uBA74 \uC6B4\uB2E4. \uC778\uAC04\uB3C4 \uADF8\uB807\uB2E4."
   _baseValue: 220
-  _mass: 2.5
+  _mass: 5
   _traits: 16
   _tier: 3
   _prefab: {fileID: 5690725073647008060, guid: 591f9c8346c42471abc4bf7be0fa8f30, type: 3}
