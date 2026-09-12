@@ -56,10 +56,16 @@ namespace RatGame.Player
             _throwAction.canceled -= OnThrowReleased;
         }
 
+        /// <summary>UI용 읽기 전용 상태 (소유 클라). 집을 수 있는 후보 / 던지기 차지 진행도.</summary>
+        public CarryableItem GrabCandidate { get; private set; }
+        public bool IsHolding => CarriedItemNetId.Value != 0;
+        public float ThrowCharge => _charging ? Mathf.Clamp01((Time.time - _chargeStart) / _balance.ThrowChargeTime) : 0f;
+
         private void Update()
         {
             if (!IsOwner) return;
             ApplyCarryPenalty();
+            GrabCandidate = IsHolding ? null : FindGrabCandidate();
             if (_charging) UpdateTrajectoryPreview();
         }
 
