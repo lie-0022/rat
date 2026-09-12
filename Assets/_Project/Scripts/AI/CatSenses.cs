@@ -73,7 +73,7 @@ namespace RatGame.AI
                 float dist = toPlayer.magnitude;
 
                 // 웅크림(동기화 스케일)이면 시야 거리 절반 (docs/07)
-                bool crouching = playerObj.transform.localScale.y < 0.75f;
+                bool crouching = playerObj.transform.localScale.y < Player.PlayerController.BaseScaleY * 0.75f;
                 float viewDist = _balance.CatViewDistance * (crouching ? _balance.CatCrouchViewMultiplier : 1f)
                                  * SensitivityMultiplier;
                 if (dist > viewDist) continue;

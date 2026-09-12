@@ -117,13 +117,13 @@ namespace RatGame.Editor
         // (모델명, 위치, Y회전, 스케일) — 쥐 스케일에 맞춰 가구는 크게
         private static readonly (string model, Vector3 pos, float yaw, float scale)[] Furniture =
         {
-            ("table",          new Vector3(7f, 0f, -4f),   0f,  1.6f),
-            ("chair",          new Vector3(5f, 0f, -5.5f), 30f, 1.6f),
-            ("chair",          new Vector3(9f, 0f, -2.5f), 200f, 1.6f),
-            ("kitchenFridge",  new Vector3(-16f, 0f, 9f),  90f, 1.8f),
-            ("kitchenCabinet", new Vector3(-16f, 0f, 4f),  90f, 1.8f),
-            ("loungeSofa",     new Vector3(16f, 0f, 3f),  -90f, 1.6f),
-            ("cardboardBoxOpen", new Vector3(-9f, 0f, -14f), 15f, 1.5f),
+            ("table",          new Vector3(7f, 0f, -4f),   0f,  2.2f),
+            ("chair",          new Vector3(5f, 0f, -5.5f), 30f, 2.2f),
+            ("chair",          new Vector3(9f, 0f, -2.5f), 200f, 2.2f),
+            ("kitchenFridge",  new Vector3(-16f, 0f, 9f),  90f, 2.4f),
+            ("kitchenCabinet", new Vector3(-16f, 0f, 4f),  90f, 2.4f),
+            ("loungeSofa",     new Vector3(16f, 0f, 3f),  -90f, 2.2f),
+            ("cardboardBoxOpen", new Vector3(-9f, 0f, -14f), 15f, 2.0f),
         };
 
         private static void PlaceFurnitureInSandbox()

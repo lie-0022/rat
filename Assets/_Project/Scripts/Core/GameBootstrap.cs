@@ -45,6 +45,7 @@ namespace RatGame.Core
         private static T CreateManager<T>(string objectName) where T : Component
         {
             var go = new GameObject(objectName);
+            DontDestroyOnLoad(go); // 씬 전환 생존 보장 (각자 Awake에서도 하지만 이중 안전)
             return go.AddComponent<T>();
         }
     }

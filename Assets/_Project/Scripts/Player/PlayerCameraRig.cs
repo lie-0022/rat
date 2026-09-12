@@ -17,8 +17,8 @@ namespace RatGame.Player
         private float _yaw;
         private float _pitch = 25f;
 
-        private const float Distance = 3.5f;
-        private const float HeightOffset = 0.4f;   // CameraTarget 위치와 일치
+        private const float Distance = 2.5f;
+        private const float HeightOffset = 0.3f;
         private const float Sensitivity = 0.15f;
 
         public override void OnNetworkSpawn()

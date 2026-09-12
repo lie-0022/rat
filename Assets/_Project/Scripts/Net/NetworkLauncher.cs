@@ -30,11 +30,19 @@ namespace RatGame.Net
                 return;
             }
             Instance = this;
+            DontDestroyOnLoad(gameObject); // 씬 전환에 파괴되면 종료 정리가 안 불려 소켓이 샌다
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) CleanupTransport();
         }
 
         // 플레이 종료 시 NGO의 지연 셧다운이 완료되지 못하면 UTP 소켓(7777)이 에디터 프로세스에
         // 남아 다음 세션 바인딩이 실패한다 — 트랜스포트를 즉시 닫아 방지.
-        private void OnApplicationQuit()
+        private void OnApplicationQuit() => CleanupTransport();
+
+        private void CleanupTransport()
         {
             var nm = NetworkManager.Singleton;
             if (nm == null) return;
