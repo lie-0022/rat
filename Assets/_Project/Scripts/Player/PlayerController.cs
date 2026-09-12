@@ -156,9 +156,15 @@ namespace RatGame.Player
             Vector3 change = Vector3.ClampMagnitude(delta, accel * Time.fixedDeltaTime);
             _rb.AddForce(change, ForceMode.VelocityChange);
 
-            // 이동 방향으로 회전 (카메라 방향 아님 — docs/04)
-            if (wishDir.sqrMagnitude > 0.0001f)
+            // 1인칭: 몸은 시선(카메라 yaw)을 따라 돈다 — 옆걸음·뒷걸음이 생김 (2026-09-12 결정)
+            var rig = GetComponent<PlayerCameraRig>();
+            if (rig != null && rig.enabled)
             {
+                _rb.MoveRotation(Quaternion.Euler(0f, rig.Yaw, 0f));
+            }
+            else if (wishDir.sqrMagnitude > 0.0001f)
+            {
+                // 카메라 리그 없을 때(자동 배회 봇 등) 예전 규칙: 이동 방향으로 회전
                 var targetRot = Quaternion.LookRotation(wishDir);
                 _rb.MoveRotation(Quaternion.Slerp(_rb.rotation, targetRot,
                     _balance.RotationSlerp * Time.fixedDeltaTime));

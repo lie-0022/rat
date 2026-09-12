@@ -117,8 +117,13 @@ namespace RatGame.Player
             ThrowRequestServerRpc(GetThrowDirection(), charge);
         }
 
-        // 쥐가 바라보는 방향으로 던진다 (카메라 방향 아님 — 사용자 결정 2026-09-12)
-        private Vector3 GetThrowDirection() => (transform.forward + Vector3.up * 0.3f).normalized;
+        // 1인칭: 시선 방향으로 던진다 (위아래 조준 포함). 카메라 없으면 몸 정면
+        private Vector3 GetThrowDirection()
+        {
+            var cam = Camera.main;
+            Vector3 dir = cam != null ? cam.transform.forward : transform.forward;
+            return (dir + Vector3.up * 0.15f).normalized;
+        }
 
         // 궤적 프리뷰: 소유 클라 로컬 전용, 점 10개 (docs/05)
         private void UpdateTrajectoryPreview()
