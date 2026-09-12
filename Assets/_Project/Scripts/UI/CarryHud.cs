@@ -56,6 +56,23 @@ namespace RatGame.UI
             GUI.color = Color.white;
             GUI.Label(countRect, $"납품 {_deposited}", _promptStyle);
 
+            // 인벤 슬롯 (하단 중앙) — 선택 슬롯 = 손에 든 것. 대형 끌기 중엔 흐리게
+            const float slotW = 150f, slotH = 40f, gap = 8f;
+            float totalW = PlayerCarryController.SlotCount * slotW + (PlayerCarryController.SlotCount - 1) * gap;
+            for (int i = 0; i < PlayerCarryController.SlotCount; i++)
+            {
+                var r = new Rect(cx - totalW * 0.5f + i * (slotW + gap), Screen.height - slotH - 20, slotW, slotH);
+                bool selected = _carry.SelectedSlot.Value == i;
+                GUI.color = selected ? new Color(1f, 0.9f, 0.4f, 0.85f) : new Color(0f, 0f, 0f, 0.55f);
+                GUI.DrawTexture(r, _dot);
+                if (selected) { GUI.color = new Color(0f, 0f, 0f, 0.6f); GUI.DrawTexture(new Rect(r.x + 3, r.y + 3, r.width - 6, r.height - 6), _dot); }
+                GUI.color = _carry.IsDraggingHeavy ? new Color(1f, 1f, 1f, 0.4f) : Color.white;
+                var item = _carry.GetSlotItem(i);
+                string label = item != null ? (item.Data != null ? item.Data.DisplayName : item.name) : "—";
+                GUI.Label(r, $"{i + 1}  {label}", _promptStyle);
+            }
+            GUI.color = Color.white;
+
             // 조준점: 십자 (가운데 비움)
             GUI.color = new Color(1f, 1f, 1f, 0.85f);
             GUI.DrawTexture(new Rect(cx - 1, cy - 9, 2, 6), _dot);

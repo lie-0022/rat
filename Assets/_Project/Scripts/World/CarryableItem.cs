@@ -20,6 +20,9 @@ namespace RatGame.World
 
         public NetworkList<ulong> CarrierIds = new NetworkList<ulong>();
         public NetworkVariable<float> Durability = new NetworkVariable<float>(1f); // Fragile만 사용
+        /// <summary>인벤 주머니에 들어간 상태 — 안 보이고, 충돌 없고, 주인을 따라다님 (호스트 기록).</summary>
+        public NetworkVariable<bool> Pocketed = new NetworkVariable<bool>(false);
+        private Transform _pocketOwner;
 
         public LootItemSO Data => _data;
         /// <summary>대형/특수 티어 = 머리에 못 올림, 앞에서 끌기만 (기획 v2 스케일 규칙: 휴대폰 = 2~4인 판때기).</summary>
@@ -60,9 +63,44 @@ namespace RatGame.World
 
         public override void OnNetworkSpawn()
         {
+            Pocketed.OnValueChanged += OnPocketedChanged;
+            ApplyPocketVisual(Pocketed.Value);
             if (!IsServer) return;
             if (_data != null) _rb.mass = _data.Mass; // SO가 물리 질량의 SSOT
             if (Has(ItemTrait.Rolling)) _rb.angularDamping = 0.05f; // 놓으면 굴러간다 (docs/05)
+        }
+
+        public override void OnNetworkDespawn() => Pocketed.OnValueChanged -= OnPocketedChanged;
+
+        private void OnPocketedChanged(bool _, bool now) => ApplyPocketVisual(now);
+
+        // 전 클라 공통: 주머니 안이면 렌더러·콜라이더 끔 (납품 트리거에도 안 걸림)
+        private void ApplyPocketVisual(bool pocketed)
+        {
+            foreach (var r in GetComponentsInChildren<Renderer>(true)) r.enabled = !pocketed;
+            foreach (var c in GetComponentsInChildren<Collider>(true)) c.enabled = !pocketed;
+        }
+
+        /// <summary>호스트 전용. 조인트 해제 후 주머니에 넣기 — 물리 정지, 주인 따라다님.</summary>
+        public void ServerPocket(ulong clientId, Transform owner)
+        {
+            if (!IsServer) return;
+            ServerRelease(clientId);
+            _pocketOwner = owner;
+            _rb.isKinematic = true;
+            Pocketed.Value = true;
+        }
+
+        /// <summary>호스트 전용. 주머니에서 꺼내 지정 위치에 놓기 (조인트는 호출부가 다시 건다).</summary>
+        public void ServerUnpocket(Vector3 worldPos)
+        {
+            if (!IsServer) return;
+            Pocketed.Value = false;
+            _pocketOwner = null;
+            _rb.isKinematic = false;
+            _rb.position = worldPos;
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
         }
 
         /// <summary>호스트 전용. 빈 GripPoint 중 플레이어와 가장 가까운 곳에 조인트 생성.</summary>
@@ -155,7 +193,13 @@ namespace RatGame.World
 
         private void FixedUpdate()
         {
-            if (!IsServer || _joints.Count == 0) return;
+            if (!IsServer) return;
+            if (Pocketed.Value && _pocketOwner != null)
+            {
+                _rb.MovePosition(_pocketOwner.position); // 주머니 안: 주인과 함께 이동 (동기화 범위 유지)
+                return;
+            }
+            if (_joints.Count == 0) return;
 
             // 거리 초과 시 끊김 (docs/05 판정 플로우 5)
             List<ulong> broken = null;
