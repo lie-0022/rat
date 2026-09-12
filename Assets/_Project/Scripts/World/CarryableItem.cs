@@ -22,6 +22,8 @@ namespace RatGame.World
         public NetworkVariable<float> Durability = new NetworkVariable<float>(1f); // Fragile만 사용
 
         public LootItemSO Data => _data;
+        /// <summary>마지막으로 놓은 클라 (호스트 전용 값) — 내려놓은 뒤 납품 판정 시 기여자.</summary>
+        public ulong LastCarrierId { get; private set; }
         public float Mass => _data != null ? _data.Mass : GetComponent<Rigidbody>().mass;
 
         /// <summary>정산 가치: 금 갔으면(Durability<0.5) 50% (docs/05).</summary>
@@ -118,6 +120,7 @@ namespace RatGame.World
                 if (kv.Value == clientId) { _gripOwners.Remove(kv.Key); break; }
             }
             CarrierIds.Remove(clientId);
+            LastCarrierId = clientId; // 내려놓고 납품될 때 기여자 집계용
 
             if (thrown)
             {

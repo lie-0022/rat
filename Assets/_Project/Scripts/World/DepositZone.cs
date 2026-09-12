@@ -16,7 +16,8 @@ namespace RatGame.World
     [RequireComponent(typeof(Collider))]
     public class DepositZone : NetworkBehaviour
     {
-        private void OnTriggerEnter(Collider other)
+        // Stay 판정: 이고 들어와서 안에서 내려놓는 경우도 잡아야 함. 들고 있는 동안(캐리어>0)은 납품 아님 — "두면" 납품.
+        private void OnTriggerStay(Collider other)
         {
             if (!IsServer || other.attachedRigidbody == null) return;
 
@@ -31,12 +32,11 @@ namespace RatGame.World
 
             // ② 전리품 정산
             var item = other.attachedRigidbody.GetComponent<CarryableItem>();
-            if (item == null) return;
+            if (item == null || !item.IsSpawned) return;
+            if (item.CarrierIds.Count > 0) return; // 아직 들고 있음 — 내려놓아야 납품
 
             int value = item.EffectiveValue;
-            ulong lastCarrier = 0;
-            if (item.CarrierIds.Count > 0) lastCarrier = item.CarrierIds[0];
-            item.ServerReleaseAll();
+            ulong lastCarrier = item.LastCarrierId;
             EventBus.RaiseLootDeposited(item.Data, value);
             if (RunManager.Instance != null)
                 RunManager.Instance.ServerDeposit(value, lastCarrier);

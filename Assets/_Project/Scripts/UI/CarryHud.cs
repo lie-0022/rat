@@ -14,11 +14,21 @@ namespace RatGame.UI
         private Texture2D _dot;
         private GUIStyle _promptStyle;
 
+        private int _deposited; // 이 세션 납품 수 (로컬 표시용 — 정식 할당량 HUD는 2-6)
+
         public override void OnNetworkSpawn()
         {
             if (!IsOwner) { enabled = false; return; }
             _carry = GetComponent<PlayerCarryController>();
+            Core.EventBus.LootDeposited += OnLootDeposited;
         }
+
+        public override void OnNetworkDespawn()
+        {
+            if (IsOwner) Core.EventBus.LootDeposited -= OnLootDeposited;
+        }
+
+        private void OnLootDeposited(Data.LootItemSO item, int value) => _deposited++;
 
         private void OnGUI()
         {
@@ -38,6 +48,13 @@ namespace RatGame.UI
             }
 
             float cx = Screen.width * 0.5f, cy = Screen.height * 0.5f;
+
+            // 납품 카운트 (상단 중앙)
+            var countRect = new Rect(cx - 80, 12, 160, 30);
+            GUI.color = new Color(0f, 0f, 0f, 0.55f);
+            GUI.DrawTexture(countRect, _dot);
+            GUI.color = Color.white;
+            GUI.Label(countRect, $"납품 {_deposited}", _promptStyle);
 
             // 조준점: 십자 (가운데 비움)
             GUI.color = new Color(1f, 1f, 1f, 0.85f);
