@@ -23,6 +23,7 @@ namespace RatGame.World
         {
             var nm = NetworkManager.Singleton;
             if (nm == null || !nm.IsServer || _boxPrefab == null) return;
+            if (item == null || item.DisplayName != _boxPrefab.name) return; // 이 리스포너가 맡은 박스만
             StartCoroutine(Respawn());
         }
 

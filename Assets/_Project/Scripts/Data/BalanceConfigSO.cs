@@ -41,6 +41,7 @@ namespace RatGame.Data
         [SerializeField] private float _grabRange = 1.2f;     // 호스트 검증 관용치
         [SerializeField] private float _grabBreakDistance = 3f;
         [SerializeField] private float _heavyThreshold = 6f;
+        [SerializeField, Range(0f, 0.5f)] private float _carryMinSpeedMultiplier = 0.15f; // 혼자 대형 끌 때 기어가는 최저 속도 (0이면 정지 — 재미 없음)
         [SerializeField] private float _sprintBlockLoad = 3f;
         [SerializeField] private float _jumpBlockLoad = 4.5f;
         [SerializeField] private float _throwForceMin = 2f;
@@ -217,7 +218,7 @@ namespace RatGame.Data
 
         /// <summary>1인당 하중 → 이동 속도 배수 (docs/05 공식).</summary>
         public float GetCarrySpeedMultiplier(float loadPerRat) =>
-            Mathf.Clamp01(1.2f - loadPerRat / _heavyThreshold);
+            Mathf.Clamp(1.2f - loadPerRat / _heavyThreshold, _carryMinSpeedMultiplier, 1f);
 
         /// <summary>던지기 임펄스 크기 (docs/05 — 무거운 건 못 던진다).</summary>
         public float GetThrowImpulse(float charge, float mass) =>

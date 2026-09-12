@@ -59,6 +59,12 @@ namespace RatGame.Player
         /// <summary>UI용 읽기 전용 상태 (소유 클라). 집을 수 있는 후보 / 던지기 차지 진행도.</summary>
         public CarryableItem GrabCandidate { get; private set; }
         public bool IsHolding => CarriedItemNetId.Value != 0;
+        /// <summary>들고 있는 게 대형(끌기 모드)인가.</summary>
+        public bool IsDraggingHeavy { get { var it = GetCarriedItem(); return it != null && it.IsHeavy; } }
+
+        // 대형 끌기 앵커: 몸 "뒤" 낮은 위치 (루트 스케일 공간). 쥐는 이동 방향을 보므로 앞에 두면
+        // 자기 박스에 막혀 못 간다 — 썰매처럼 뒤에 매달아 끈다
+        private static readonly Vector3 DragAnchorLocal = new Vector3(0f, 0.3f, -1.3f);
         public float ThrowCharge => _charging ? Mathf.Clamp01((Time.time - _chargeStart) / _balance.ThrowChargeTime) : 0f;
 
         private void Update()
@@ -89,6 +95,7 @@ namespace RatGame.Player
         {
             if (Cursor.lockState != CursorLockMode.Locked) return;
             if (CarriedItemNetId.Value == 0) return;
+            if (IsDraggingHeavy) return; // 대형은 못 던진다
             _charging = true;
             _chargeStart = Time.time;
         }
@@ -103,12 +110,8 @@ namespace RatGame.Player
             ThrowRequestServerRpc(GetThrowDirection(), charge);
         }
 
-        private Vector3 GetThrowDirection()
-        {
-            var cam = Camera.main;
-            Vector3 dir = cam != null ? cam.transform.forward : transform.forward;
-            return (dir + Vector3.up * 0.3f).normalized; // 살짝 위로 — 손맛
-        }
+        // 쥐가 바라보는 방향으로 던진다 (카메라 방향 아님 — 사용자 결정 2026-09-12)
+        private Vector3 GetThrowDirection() => (transform.forward + Vector3.up * 0.3f).normalized;
 
         // 궤적 프리뷰: 소유 클라 로컬 전용, 점 10개 (docs/05)
         private void UpdateTrajectoryPreview()
@@ -174,10 +177,18 @@ namespace RatGame.Player
             if (item == null) return;
             if (Vector3.Distance(item.transform.position, transform.position) > _balance.GrabRange + 1f) return;
 
-            // 머리 위 앵커 + 아이템 반높이만큼 더 올림 — 아이템 바닥이 머리 캡슐과 안 겹치게
-            Vector3 handLocal = _handAnchor != null ? _handAnchor.localPosition : new Vector3(0f, 1.3f, 0f);
-            float itemHalf = item.GetComponent<Collider>().bounds.extents.y;
-            handLocal.y += (itemHalf + 0.1f) / Mathf.Max(transform.localScale.y, 0.01f); // 앵커는 루트 스케일 공간
+            Vector3 handLocal;
+            if (item.IsHeavy)
+            {
+                handLocal = DragAnchorLocal; // 대형: 앞에서 끌기
+            }
+            else
+            {
+                // 머리 위 앵커 + 아이템 반높이만큼 더 올림 — 아이템 바닥이 머리 캡슐과 안 겹치게
+                handLocal = _handAnchor != null ? _handAnchor.localPosition : new Vector3(0f, 1.3f, 0f);
+                float itemHalf = item.GetComponent<Collider>().bounds.extents.y;
+                handLocal.y += (itemHalf + 0.1f) / Mathf.Max(transform.localScale.y, 0.01f); // 앵커는 루트 스케일 공간
+            }
             if (item.ServerTryGrab(OwnerClientId, _rb, handLocal))
                 CarriedItemNetId.Value = itemNetId;
         }
@@ -187,7 +198,11 @@ namespace RatGame.Player
         private void PutDownRequestServerRpc()
         {
             var item = GetCarriedItem();
-            if (item != null)
+            if (item != null && item.IsHeavy)
+            {
+                item.ServerRelease(OwnerClientId); // 대형은 이미 바닥에 있음 — 그냥 놓기
+            }
+            else if (item != null)
             {
                 float halfHeight = item.GetComponent<Collider>().bounds.extents.y;
                 Vector3 pos = transform.position + transform.forward * 0.7f;

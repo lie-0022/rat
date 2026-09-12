@@ -15,6 +15,8 @@ namespace RatGame.Player
     {
         /// <summary>무인 테스트용 자동 배회 (DevAutoConnect -autowander). 사람 입력 대신 펄린 노이즈 방향.</summary>
         public static bool DevAutoWander;
+        /// <summary>무인 테스트용 고정 입력 (월드 XZ). 0이 아니면 사람 입력 대신 이 방향으로 걷는다.</summary>
+        public static Vector2 DevForcedInput;
 
         /// <summary>프리팹 기준 스케일 (쥐 비율). 웅크림 판정(스케일 절반) 공유 기준 — CatSenses·이미터가 사용.</summary>
         public const float BaseScaleY = 0.6f;
@@ -136,6 +138,8 @@ namespace RatGame.Player
             Vector3 right = cam != null ? cam.transform.right : Vector3.right;
             forward.y = 0f; right.y = 0f;
             Vector3 wishDir = (forward.normalized * input.y + right.normalized * input.x);
+            if (DevForcedInput.sqrMagnitude > 0.0001f && !IsIncapacitated())
+                wishDir = new Vector3(DevForcedInput.x, 0f, DevForcedInput.y); // 테스트: 월드 방향 직접
             if (wishDir.sqrMagnitude > 1f) wishDir.Normalize();
 
             bool sprinting = !_isCrouching && _sprintAction.IsPressed() && !BlockSprint && !BlockSprintStamina;

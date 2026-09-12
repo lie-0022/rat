@@ -22,6 +22,8 @@ namespace RatGame.World
         public NetworkVariable<float> Durability = new NetworkVariable<float>(1f); // Fragile만 사용
 
         public LootItemSO Data => _data;
+        /// <summary>대형/특수 티어 = 머리에 못 올림, 앞에서 끌기만 (기획 v2 스케일 규칙: 휴대폰 = 2~4인 판때기).</summary>
+        public bool IsHeavy => _data != null && (_data.Tier == LootTier.Large || _data.Tier == LootTier.Special);
         /// <summary>마지막으로 놓은 클라 (호스트 전용 값) — 내려놓은 뒤 납품 판정 시 기여자.</summary>
         public ulong LastCarrierId { get; private set; }
         public float Mass => _data != null ? _data.Mass : GetComponent<Rigidbody>().mass;

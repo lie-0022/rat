@@ -88,13 +88,14 @@ namespace RatGame.UI
             string prompt = null;
             if (_carry.IsHolding)
             {
-                prompt = _carry.ThrowCharge > 0f ? null : "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
+                if (_carry.IsDraggingHeavy) prompt = "[좌클릭] 놓기   (무거워서 던질 수 없음)";
+                else prompt = _carry.ThrowCharge > 0f ? null : "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
             }
             else if (_carry.GrabCandidate != null)
             {
-                string name = _carry.GrabCandidate.Data != null
-                    ? _carry.GrabCandidate.Data.DisplayName : _carry.GrabCandidate.name;
-                prompt = $"[좌클릭] 집기 — {name}";
+                var cand = _carry.GrabCandidate;
+                string name = cand.Data != null ? cand.Data.DisplayName : cand.name;
+                prompt = cand.IsHeavy ? $"[좌클릭] 끌기 — {name} (대형)" : $"[좌클릭] 집기 — {name}";
             }
             if (prompt != null)
             {
