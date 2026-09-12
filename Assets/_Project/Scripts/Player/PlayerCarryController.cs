@@ -44,7 +44,6 @@ namespace RatGame.Player
             _grabAction = map.FindAction("Grab", true);
             _throwAction = map.FindAction("Throw", true);
             _grabAction.performed += OnGrabPressed;
-            _grabAction.canceled += OnGrabReleased;
             _throwAction.started += OnThrowStarted;
             _throwAction.canceled += OnThrowReleased;
         }
@@ -53,7 +52,6 @@ namespace RatGame.Player
         {
             if (!IsOwner) return;
             _grabAction.performed -= OnGrabPressed;
-            _grabAction.canceled -= OnGrabReleased;
             _throwAction.started -= OnThrowStarted;
             _throwAction.canceled -= OnThrowReleased;
         }
@@ -67,17 +65,18 @@ namespace RatGame.Player
 
         // ---- 소유 클라: 입력 → 요청 ----
 
+        // 토글: 빈손이면 집기, 들고 있으면 발 앞에 살짝 내려놓기 (던지기는 우클릭 별도)
         private void OnGrabPressed(InputAction.CallbackContext ctx)
         {
             if (Cursor.lockState != CursorLockMode.Locked) return; // 커서 풀림 = 메뉴 조작 중
-            if (CarriedItemNetId.Value != 0) return; // 한 번에 한 아이템 (docs/05)
+            if (_charging) return; // 던지기 차지 중엔 무시
+            if (CarriedItemNetId.Value != 0)
+            {
+                PutDownRequestServerRpc();
+                return;
+            }
             var item = FindGrabCandidate();
             if (item != null) GrabRequestServerRpc(item.NetworkObjectId);
-        }
-
-        private void OnGrabReleased(InputAction.CallbackContext ctx)
-        {
-            if (CarriedItemNetId.Value != 0) ReleaseRequestServerRpc();
         }
 
         private void OnThrowStarted(InputAction.CallbackContext ctx)
@@ -139,19 +138,21 @@ namespace RatGame.Player
             if (_trajectoryLine != null) _trajectoryLine.enabled = false;
         }
 
+        // 주변 GrabRange 안에서 가장 가까운 물건 하나 — 방향 안 따짐 (토글 조작에 맞춘 단순 규칙)
         private CarryableItem FindGrabCandidate()
         {
-            // 카메라 전방 SphereCast (docs/05: r 0.35, d 1.0, Carryable 레이어)
-            var cam = Camera.main;
-            Vector3 origin = _handAnchor != null ? _handAnchor.position : transform.position;
-            Vector3 dir = cam != null ? cam.transform.forward : transform.forward;
             int mask = LayerMask.GetMask("Carryable");
-
-            if (Physics.SphereCast(origin, 0.35f, dir, out var hit, 1.0f, mask, QueryTriggerInteraction.Ignore))
-                return hit.rigidbody != null ? hit.rigidbody.GetComponent<CarryableItem>() : null;
-            // 배회/근접 폴백: 주변 반경 탐색 (자동 테스트와 등 뒤 아이템 관용)
-            var overlaps = Physics.OverlapSphere(origin, 0.9f, mask, QueryTriggerInteraction.Ignore);
-            return overlaps.Length > 0 ? overlaps[0].GetComponentInParent<CarryableItem>() : null;
+            var overlaps = Physics.OverlapSphere(transform.position, _balance.GrabRange, mask, QueryTriggerInteraction.Ignore);
+            CarryableItem best = null;
+            float bestDist = float.MaxValue;
+            foreach (var col in overlaps)
+            {
+                var item = col.GetComponentInParent<CarryableItem>();
+                if (item == null) continue;
+                float d = Vector3.Distance(item.transform.position, transform.position);
+                if (d < bestDist) { bestDist = d; best = item; }
+            }
+            return best;
         }
 
         // ---- 호스트: 검증 + 실행 ----
@@ -167,16 +168,26 @@ namespace RatGame.Player
             if (item == null) return;
             if (Vector3.Distance(item.transform.position, transform.position) > _balance.GrabRange + 1f) return;
 
-            Vector3 handLocal = _handAnchor != null ? _handAnchor.localPosition : new Vector3(0f, 0f, 0.6f);
+            // 머리 위 앵커 + 아이템 반높이만큼 더 올림 — 아이템 바닥이 머리 캡슐과 안 겹치게
+            Vector3 handLocal = _handAnchor != null ? _handAnchor.localPosition : new Vector3(0f, 1.3f, 0f);
+            float itemHalf = item.GetComponent<Collider>().bounds.extents.y;
+            handLocal.y += (itemHalf + 0.1f) / Mathf.Max(transform.localScale.y, 0.01f); // 앵커는 루트 스케일 공간
             if (item.ServerTryGrab(OwnerClientId, _rb, handLocal))
                 CarriedItemNetId.Value = itemNetId;
         }
 
+        // 내려놓기: 발 앞 0.7m, 속도 0 — 머리 위에서 떨어뜨리는 게 아니라 "두는" 동작
         [ServerRpc]
-        private void ReleaseRequestServerRpc()
+        private void PutDownRequestServerRpc()
         {
             var item = GetCarriedItem();
-            item?.ServerRelease(OwnerClientId);
+            if (item != null)
+            {
+                float halfHeight = item.GetComponent<Collider>().bounds.extents.y;
+                Vector3 pos = transform.position + transform.forward * 0.7f;
+                pos.y = transform.position.y - transform.localScale.y + halfHeight + 0.05f; // 발밑 기준
+                item.ServerPutDown(OwnerClientId, pos);
+            }
             CarriedItemNetId.Value = 0;
         }
 

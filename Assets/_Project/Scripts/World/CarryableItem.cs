@@ -127,6 +127,16 @@ namespace RatGame.World
             Log.Dev($"놓기: client {clientId} ← {name}{(thrown ? " (던짐)" : "")}");
         }
 
+        /// <summary>호스트 전용. 조인트 해제 후 지정 위치에 정지 상태로 놓기 (토글 내려놓기).</summary>
+        public void ServerPutDown(ulong clientId, Vector3 position)
+        {
+            ServerRelease(clientId);
+            if (_joints.Count > 0) return; // 다른 캐리어가 아직 들고 있으면 위치 강제 안 함
+            _rb.position = position;
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+        }
+
         /// <summary>호스트 전용. 다운·정산 시 전원 강제 해제 (docs/05).</summary>
         public void ServerReleaseAll()
         {
