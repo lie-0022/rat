@@ -64,13 +64,31 @@ namespace RatGame.UI
             GUI.DrawTexture(new Rect(cx + 3, cy - 1, 6, 2), _dot);
             GUI.color = Color.white;
 
+            // 던지기 차지 게이지: 머리 약간 오른쪽, 아래서 위로 참
+            if (_carry.ThrowCharge > 0f && Camera.main != null)
+            {
+                var head = transform.Find("HeadAnchor");
+                Vector3 headWorld = head != null ? head.position : transform.position + Vector3.up * transform.localScale.y;
+                Vector3 sp = Camera.main.WorldToScreenPoint(headWorld);
+                if (sp.z > 0f)
+                {
+                    const float w = 14f, h = 70f;
+                    float gx = sp.x + 45f;
+                    float gy = Screen.height - sp.y - h * 0.5f;
+                    GUI.color = new Color(0f, 0f, 0f, 0.6f);
+                    GUI.DrawTexture(new Rect(gx - 2, gy - 2, w + 4, h + 4), _dot);
+                    float fill = h * _carry.ThrowCharge;
+                    GUI.color = Color.Lerp(new Color(1f, 0.85f, 0.2f), new Color(1f, 0.3f, 0.2f), _carry.ThrowCharge);
+                    GUI.DrawTexture(new Rect(gx, gy + (h - fill), w, fill), _dot);
+                    GUI.color = Color.white;
+                }
+            }
+
             // 프롬프트
             string prompt = null;
             if (_carry.IsHolding)
             {
-                prompt = _carry.ThrowCharge > 0f
-                    ? $"던지기 {Mathf.RoundToInt(_carry.ThrowCharge * 100)}%"
-                    : "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
+                prompt = _carry.ThrowCharge > 0f ? null : "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
             }
             else if (_carry.GrabCandidate != null)
             {
