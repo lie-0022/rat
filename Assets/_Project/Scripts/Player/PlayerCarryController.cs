@@ -132,7 +132,7 @@ namespace RatGame.Player
             _trajectoryLine.enabled = true;
 
             float charge = Mathf.Clamp01((Time.time - _chargeStart) / _balance.ThrowChargeTime);
-            float v0 = _balance.GetThrowImpulse(charge, item.Mass) / item.Mass;
+            float v0 = _balance.GetThrowSpeed(charge, item.Mass);
             Vector3 vel = GetThrowDirection() * v0;
             Vector3 pos = _handAnchor != null ? _handAnchor.position : transform.position;
             for (int i = 0; i < 10; i++)

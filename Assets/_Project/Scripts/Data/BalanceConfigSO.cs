@@ -44,8 +44,9 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 0.5f)] private float _carryMinSpeedMultiplier = 0.15f; // 혼자 대형 끌 때 기어가는 최저 속도 (0이면 정지 — 재미 없음)
         [SerializeField] private float _sprintBlockLoad = 3f;
         [SerializeField] private float _jumpBlockLoad = 4.5f;
-        [SerializeField] private float _throwForceMin = 2f;
-        [SerializeField] private float _throwForceMax = 9f;
+        // 던지기는 "속도" 기준 — 임펄스 고정이면 가벼운 물건이 총알이 된다 (치즈 0.6kg → 15m/s 사고)
+        [SerializeField] private float _throwSpeedMin = 2f;   // m/s, 차지 0
+        [SerializeField] private float _throwSpeedMax = 6f;   // m/s, 만차지
         [SerializeField] private float _throwMassDampNumerator = 3f; // massDamp = Clamp01(3/mass)
         [SerializeField] private float _throwChargeTime = 1.2f;      // 홀드 만충 시간
         [SerializeField] private float _throwHitStagger = 0.5f;      // 맞은 플레이어 비틀거림
@@ -142,8 +143,8 @@ namespace RatGame.Data
         public float GrabBreakDistance => _grabBreakDistance;
         public float SprintBlockLoad => _sprintBlockLoad;
         public float JumpBlockLoad => _jumpBlockLoad;
-        public float ThrowForceMin => _throwForceMin;
-        public float ThrowForceMax => _throwForceMax;
+        public float ThrowSpeedMin => _throwSpeedMin;
+        public float ThrowSpeedMax => _throwSpeedMax;
         public float ThrowChargeTime => _throwChargeTime;
         public float ThrowHitStagger => _throwHitStagger;
 
@@ -221,8 +222,12 @@ namespace RatGame.Data
             Mathf.Clamp(1.2f - loadPerRat / _heavyThreshold, _carryMinSpeedMultiplier, 1f);
 
         /// <summary>던지기 임펄스 크기 (docs/05 — 무거운 건 못 던진다).</summary>
-        public float GetThrowImpulse(float charge, float mass) =>
-            Mathf.Lerp(_throwForceMin, _throwForceMax, charge) * Mathf.Clamp01(_throwMassDampNumerator / mass);
+        /// <summary>발사 속도 (m/s). 무거울수록 감쇠 — docs/05 "무거운 건 못 던진다".</summary>
+        public float GetThrowSpeed(float charge, float mass) =>
+            Mathf.Lerp(_throwSpeedMin, _throwSpeedMax, charge) * Mathf.Clamp01(_throwMassDampNumerator / mass);
+
+        /// <summary>속도를 임펄스로 환산 (AddForce Impulse용) — 질량과 무관하게 같은 속도로 날아간다.</summary>
+        public float GetThrowImpulse(float charge, float mass) => GetThrowSpeed(charge, mass) * mass;
 
         /// <summary>Zone n(1부터)의 할당량 × 인원 배수 (docs/00·09: 솔로 0.55 / 2인 0.75 / 3인 0.9).</summary>
         public int GetQuota(int zoneNumber, int playerCount)
