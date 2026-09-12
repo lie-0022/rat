@@ -325,6 +325,7 @@ GameObject:
   - component: {fileID: 5671409034416424758}
   - component: {fileID: 4396278490931489414}
   - component: {fileID: 6238603153277997214}
+  - component: {fileID: 6305106658479211622}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -680,6 +681,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8973c5acbf0af4ede81c036e8cf06e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.CarryHud
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &6305106658479211622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16df1f00dfc5a4a8ab69708e91d7bfa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Net.DevRemoteControl
   ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &4262434128330920448
 GameObject:

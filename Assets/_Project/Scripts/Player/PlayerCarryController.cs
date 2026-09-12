@@ -88,6 +88,14 @@ namespace RatGame.Player
             ReadSlotInput();
         }
 
+        /// <summary>무인 테스트용 — 소유 클라에서 가장 가까운 물건 집기 (커서 잠금 무시).</summary>
+        public void DevGrabNearest()
+        {
+            if (!IsOwner || IsHolding) return;
+            var item = FindGrabCandidate();
+            if (item != null) GrabRequestServerRpc(item.NetworkObjectId);
+        }
+
         // ---- 소유 클라: 입력 ----
 
         private void ReadSlotInput()
