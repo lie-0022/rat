@@ -6,50 +6,35 @@ using UnityEngine;
 namespace RatGame.UI
 {
     /// <summary>
-    /// 조준점 + 집기 프롬프트 + 런 진행 (소유 클라 로컬 IMGUI). 시스템 상태를 읽기만 한다 — 호출 없음 (CLAUDE.md 규칙 3).
-    /// 런 표시는 RunManager의 NetworkVariable을 읽으므로 호스트·클라 모두 같은 값을 본다.
-    /// 정식 HUD(태스크 2-6)가 생기면 그쪽으로 흡수.
+    /// 조준점 + 집기 프롬프트 + 인벤 슬롯 + 결과 패널 (소유 클라 로컬 IMGUI). 시스템 상태를 읽기만 한다 — 호출 없음 (CLAUDE.md 규칙 3).
+    /// 상단 런 표시는 uGUI RunBar로 옮겼다 — 여기서 생성·파괴만 한다.
+    /// 정식 HUD(태스크 2-6)가 생기면 나머지도 그쪽으로 흡수.
     /// </summary>
     public class CarryHud : NetworkBehaviour
     {
+        [SerializeField] private RunBar _runBarPrefab;
+
         private PlayerCarryController _carry;
+        private RunBar _runBar;
         private Texture2D _dot;
         private GUIStyle _promptStyle;
         private GUIStyle _bigStyle;
-
-        // 적립 "+N" 팝업 — StashedValue 변화로 감지 (EventBus 적립 이벤트는 호스트에서만 발생하므로 클라는 못 받음)
-        private RunManager _boundRun;
-        private RatGame.World.DeparturePad _pad;
-        private float _padSearchAt;
-        private int _popupValue;
-        private float _popupUntil;
 
         public override void OnNetworkSpawn()
         {
             if (!IsOwner) { enabled = false; return; }
             _carry = GetComponent<PlayerCarryController>();
+            if (_runBarPrefab != null)
+            {
+                // 플레이어는 씬 전환에도 살아남으므로 바도 같이 유지
+                _runBar = Instantiate(_runBarPrefab);
+                DontDestroyOnLoad(_runBar.gameObject);
+            }
         }
 
-        public override void OnNetworkDespawn() => BindRun(null);
-
-        private void Update()
+        public override void OnNetworkDespawn()
         {
-            if (!IsOwner) return;
-            if (_boundRun != RunManager.Instance) BindRun(RunManager.Instance);
-        }
-
-        private void BindRun(RunManager run)
-        {
-            if (_boundRun != null) _boundRun.StashedValue.OnValueChanged -= OnStashedChanged;
-            _boundRun = run;
-            if (_boundRun != null) _boundRun.StashedValue.OnValueChanged += OnStashedChanged;
-        }
-
-        private void OnStashedChanged(int prev, int now)
-        {
-            if (now <= prev) return; // 출발 시 리셋(→0)은 팝업 없음
-            _popupValue = now - prev;
-            _popupUntil = Time.time + 1.5f;
+            if (_runBar != null) Destroy(_runBar.gameObject);
         }
 
         private void OnGUI()
@@ -72,10 +57,14 @@ namespace RatGame.UI
 
             float cx = Screen.width * 0.5f, cy = Screen.height * 0.5f;
 
-            DrawRun(cx, cy);
             // 결과 화면 중엔 조작 UI(슬롯·조준점·게이지·프롬프트)를 숨긴다 — 결과 패널 위에 겹쳐 그려져 글자를 가림
             var runNow = RunManager.Instance;
-            if (runNow != null && runNow.IsShowingResult) return;
+            if (runNow != null && runNow.IsShowingResult)
+            {
+                if (runNow.Phase.Value == RunPhase.Returned) DrawReturnedPanel(runNow, cx, cy);
+                else DrawWipedPanel(runNow, cx, cy);
+                return;
+            }
 
             // 인벤 슬롯 (하단 중앙) — 선택 슬롯 = 손에 든 것. 대형 끌기 중엔 흐리게
             const float slotW = 150f, slotH = 40f, gap = 8f;
@@ -149,70 +138,6 @@ namespace RatGame.UI
             }
         }
 
-        // 상단 중앙: 출발 안내 / 쥐구멍 적립·누계·집합 인원 / 귀환 카운트다운 / 결과 화면
-        private void DrawRun(float cx, float cy)
-        {
-            var run = RunManager.Instance;
-            if (run == null) { DrawDeparturePad(cx); return; }
-            var phase = run.Phase.Value;
-
-            if (phase == RunPhase.Returned) { DrawReturnedPanel(run, cx, cy); return; }
-            if (phase == RunPhase.Wiped) { DrawWipedPanel(run, cx, cy); return; }
-
-            if (phase == RunPhase.Ready)
-            {
-                bool host = NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
-                string msg = host
-                    ? $"[Enter] 출발   누계 {run.RunTotalValue.Value}"
-                    : $"호스트 출발 대기   누계 {run.RunTotalValue.Value}";
-                DrawBox(new Rect(cx - 220, 12, 440, 34), msg, _promptStyle, new Color(0f, 0f, 0f, 0.55f));
-                return;
-            }
-
-            DrawBox(new Rect(cx - 160, 12, 320, 34), $"쥐구멍 {run.StashedValue.Value}   누계 {run.RunTotalValue.Value}",
-                _promptStyle, new Color(0f, 0f, 0f, 0.55f));
-            if (Time.time < _popupUntil)
-                DrawBox(new Rect(cx - 60, 50, 120, 30), $"+{_popupValue}", _promptStyle, new Color(0.2f, 0.6f, 0.25f, 0.8f));
-
-            int ready = run.ReturnReadyCount.Value, needed = run.ReturnNeededCount.Value;
-            if (phase == RunPhase.Returning)
-            {
-                double remain = System.Math.Max(0.0, run.ReturnAt.Value - NetworkManager.ServerTime.Time);
-                DrawBox(new Rect(cx - 200, 90, 400, 46), $"귀환 중… {System.Math.Ceiling(remain):0}",
-                    _bigStyle, new Color(0.15f, 0.45f, 0.2f, 0.85f));
-            }
-            else if (ready > 0)
-            {
-                // 누가 쥐구멍에 들어가 있을 때만 — 나머지를 부르는 신호
-                DrawBox(new Rect(cx - 200, 90, 400, 34), $"쥐구멍에 모이면 귀환   {ready}/{needed}",
-                    _promptStyle, new Color(0f, 0f, 0f, 0.6f));
-            }
-        }
-
-        // 기지: 출발 발판 집합 인원 / 출발 카운트다운 / 누계 (런 매니저가 없는 씬)
-        private void DrawDeparturePad(float cx)
-        {
-            if (_pad == null && Time.time >= _padSearchAt)
-            {
-                _pad = FindFirstObjectByType<RatGame.World.DeparturePad>();
-                _padSearchAt = Time.time + 1f;
-            }
-            if (_pad == null || !_pad.IsSpawned) return;
-
-            if (_pad.Counting.Value)
-            {
-                double remain = System.Math.Max(0.0, _pad.DepartAt.Value - NetworkManager.ServerTime.Time);
-                DrawBox(new Rect(cx - 200, 12, 400, 46), $"출발… {System.Math.Ceiling(remain):0}",
-                    _bigStyle, new Color(0.15f, 0.45f, 0.2f, 0.85f));
-            }
-            else
-            {
-                DrawBox(new Rect(cx - 220, 12, 440, 34), $"출발 발판에 모이면 출발   {_pad.ReadyCount.Value}/{_pad.NeededCount.Value}",
-                    _promptStyle, new Color(0f, 0f, 0f, 0.55f));
-            }
-            DrawBox(new Rect(cx - 120, 64, 240, 30), $"누계 {_pad.TotalValue.Value}", _promptStyle, new Color(0f, 0f, 0f, 0.55f));
-        }
-
         private void DrawReturnedPanel(RunManager run, float cx, float cy)
         {
             int stashed = run.StashedValue.Value, carried = run.ResultCarriedValue.Value;
@@ -240,14 +165,6 @@ namespace RatGame.UI
             GUI.Label(new Rect(panel.x, panel.y + 102, panel.width, 30), $"누계  {run.RunTotalValue.Value}  (유지)", _promptStyle);
             GUI.Label(new Rect(panel.x, panel.y + 134, panel.width, 30), $"잃은 쥐구멍 적립  {run.StashedValue.Value}", _promptStyle);
             GUI.Label(new Rect(panel.x, panel.y + 200, panel.width, 30), $"{remain:0}초 뒤 기지로", _promptStyle);
-        }
-
-        private void DrawBox(Rect r, string text, GUIStyle style, Color bg)
-        {
-            GUI.color = bg;
-            GUI.DrawTexture(r, _dot);
-            GUI.color = Color.white;
-            GUI.Label(r, text, style);
         }
     }
 }

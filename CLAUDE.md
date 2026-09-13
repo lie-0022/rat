@@ -52,4 +52,5 @@
 - Unity MCP 브리지: CoplayDev `com.coplaydev.unity-mcp`, HTTP `127.0.0.1:8080/mcp`, `.mcp.json` 등록됨.
   씬·프리팹·패키지 조작과 콘솔 확인은 MCP로 직접 한다. 안 되는 것만 에디터 체크리스트로.
 - `.claude/` 에이전트 42개·스킬 37개 활성 — `.claude/docs/quick-start.md` 참조.
+- Unity 공식 플러그인 `unity@unity-agent-plugin` (프로젝트 스코프, 스킬만·MCP 없음). UI 작업은 `/ui-ugui`·`/optimize-text-mesh-pro` 규칙을 따른다 (uGUI + TMP, 한 번에 하나, 파괴 대신 수정).
 - 세션 로그: `production/session-logs/session-log.md`

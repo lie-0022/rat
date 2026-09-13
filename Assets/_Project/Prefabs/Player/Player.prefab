@@ -682,6 +682,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.CarryHud
   ShowTopMostFoldoutHeaderGroup: 1
+  _runBarPrefab: {fileID: 3329782662998077939, guid: dcc19ad3cd51e4f08b7bdb9ec6dace7f, type: 3}
 --- !u!114 &6305106658479211622
 MonoBehaviour:
   m_ObjectHideFlags: 0
