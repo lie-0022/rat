@@ -10,6 +10,18 @@ namespace RatGame.Net
     /// </summary>
     public class DevNetHud : MonoBehaviour
     {
+        // 호스트 Enter = 스테이지 출발. 버튼은 Esc로 커서를 풀어야 눌러져 테스트가 번거롭다
+        private void Update()
+        {
+            var nm = NetworkManager.Singleton;
+            var run = Run.RunManager.Instance;
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            if (nm == null || !nm.IsHost || run == null || kb == null) return;
+            if (run.Phase.Value != Run.RunPhase.Ready) return;
+            if (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame)
+                run.ServerStartStage(Random.Range(0, int.MaxValue));
+        }
+
         private void OnGUI()
         {
             var nm = NetworkManager.Singleton;
@@ -31,15 +43,9 @@ namespace RatGame.Net
                 var run = Run.RunManager.Instance;
                 if (run != null)
                 {
-                    GUILayout.Label($"런: {run.Phase.Value} 존{run.CurrentZoneIndex.Value} {run.DepositedValue.Value}/{run.CurrentQuota.Value}");
-                    if (nm.IsHost && run.Phase.Value == Run.RunPhase.Loading && GUILayout.Button("Start Run"))
-                        run.ServerStartRun(Random.Range(0, int.MaxValue));
-                    if (run.Phase.Value == Run.RunPhase.Voting)
-                    {
-                        var vote = run.GetComponent<Run.ExtractionVote>();
-                        if (GUILayout.Button("투표: 더 간다")) vote.CastVoteServerRpc(true);
-                        if (GUILayout.Button("투표: 나간다")) vote.CastVoteServerRpc(false);
-                    }
+                    GUILayout.Label($"런: {run.Phase.Value} 스테이지{run.StageNumber.Value} 쥐구멍{run.StashedValue.Value} 누계{run.RunTotalValue.Value}");
+                    if (nm.IsHost && run.Phase.Value == Run.RunPhase.Ready && GUILayout.Button("출발"))
+                        run.ServerStartStage(Random.Range(0, int.MaxValue));
                 }
             }
             GUILayout.EndArea();

@@ -26,10 +26,10 @@ Scripts/
   World/       RatGame.World       — CarryableItem, DepositZone, TrapBase+파생, InteractableBase, DoorSocket
   AI/          RatGame.AI          — CatBrain, CatSenses, CatMovement
   Noise/       RatGame.Noise       — NoiseSystem, NoiseEmitter, INoiseListener
-  Run/         RatGame.Run         — RunManager, ZoneGenerator, LootSpawner, ExtractionVote
+  Run/         RatGame.Run         — RunManager, RunSession, ZoneGenerator, LootSpawner
   Meta/        RatGame.Meta        — MetaWallet, HubManager, VendingMachine, ProgressionService
   Data/        RatGame.Data        — 모든 ScriptableObject 정의 (LootItemSO, ZoneDefinitionSO...)
-  UI/          RatGame.UI          — HudController, QuotaBar, LobbyUI, ResultScreen, PingMarker
+  UI/          RatGame.UI          — HudController, RunBar, LobbyUI, ResultScreen, PingMarker
   Editor/      RatGame.Editor
 ```
 

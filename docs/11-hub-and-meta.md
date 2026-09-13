@@ -3,7 +3,7 @@
 ## Hub 씬 = 로비
 
 - 쥐구멍 안 아지트. 최대 4인이 돌아다니는 **플레이 가능한 로비** (레포·피크 방식).
-- 배치물: 런 시작 레버(전원 근처 시 시작 투표), 자판기(상점), 거울(스킨), 도감 책, 연습용 전리품 몇 개.
+- 배치물: 출발 지점(전원 모이면 출발), 자판기(상점), 거울(스킨), 도감 책, 연습용 전리품 몇 개.
 - 호스트가 만든 세션에 친구가 스팀 초대로 합류 → Hub에 스폰. 런 시작 = 호스트가 레버 Interact.
 
 ## Meta/MetaWallet.cs + SaveService
@@ -79,7 +79,7 @@ public class AchievementSO : ScriptableObject
 | ach_deep_rat | 존4 도달 | 스킨: 검은 쥐 |
 | ach_rich | 누적 코인 1000 | 모자: 병뚜껑 |
 | ach_chef_enemy | 치킨 정산 1 | 모자: 치즈 헬멧 |
-| ach_survivor | 솔로 탈출 1 | 스킨: 흰 쥐 |
+| ach_survivor | 솔로 귀환 1 | 스킨: 흰 쥐 |
 | ach_collector | 도감 15종 | 모자: 반지 왕관 |
 | ach_troll | 동료를 던진 아이템으로 비틀거리게 30회 | 모자: 광대 |
 

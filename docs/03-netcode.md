@@ -79,12 +79,11 @@ public class SteamLobbyService
 
 | 위치 | 변수 | 타입 |
 |---|---|---|
-| RunManager | CurrentZoneIndex, CurrentQuota, DepositedValue, RunPhase | int, int, int, enum |
+| RunManager | Phase, StageNumber, RunTotalValue, StashedValue, ReturnReadyCount/NeededCount, ReturnAt, ResultCarriedValue, ResultEndsAt (docs/09) | enum, int…, double |
 | PlayerCondition | State (Active/Stunned/Trapped/Downed) | enum |
 | PlayerCarryController | CarriedItemNetId (0=빈손) | ulong |
 | CarryableItem | CarrierIds (최대4), Durability | NetworkList<ulong>, float |
 | CatBrain | State, TargetClientId | enum, ulong |
-| ExtractionVote | Votes | NetworkList |
 
 ## 씬 동기화
 

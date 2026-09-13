@@ -7,15 +7,18 @@ using UnityEngine;
 namespace RatGame.World
 {
     /// <summary>
-    /// 쥐구멍 정산 트리거 (docs/08). 판정은 호스트 기준만 (docs/03).
+    /// 쥐구멍 = 적립 트리거 + 귀환 지점 (docs/08·09). 판정은 호스트 기준만 (docs/03).
     ///  ① Downed 플레이어 몸 → RunManager.ServerRevive
-    ///  ② CarryableItem → 가치 정산 (금 간 Fragile 50%) → RunManager.ServerDeposit + 디스폰
+    ///  ② CarryableItem → 가치 적립 (금 간 Fragile 50%) → RunManager.ServerDeposit + 디스폰
+    ///  ③ 귀환 판정용 ContainsFootprint — RunManager가 플레이어 위치로 조회
     /// 런이 없으면(RunManager 부재/비활성) 로그 정산만 — 샌드박스 단독 테스트 호환.
     /// 흡입 연출 ClientRpc·도감 언락은 아트/2-5 단계.
     /// </summary>
     [RequireComponent(typeof(Collider))]
     public class DepositZone : NetworkBehaviour
     {
+        private BoxCollider _box;
+
         // Stay 판정: 이고 들어와서 안에서 내려놓는 경우도 잡아야 함. 들고 있는 동안(캐리어>0)은 납품 아님 — "두면" 납품.
         private void OnTriggerStay(Collider other)
         {
@@ -34,6 +37,8 @@ namespace RatGame.World
             var item = other.attachedRigidbody.GetComponent<CarryableItem>();
             if (item == null || !item.IsSpawned) return;
             if (item.CarrierIds.Count > 0) return; // 아직 들고 있음 — 내려놓아야 납품
+            // 런이 있는데 적립 받는 페이즈가 아니면(출발 전·결과 화면) 물건을 삼키지 않는다 — 가치만 사라지는 함정 방지
+            if (RunManager.Instance != null && !RunManager.Instance.AcceptsDeposits) return;
 
             int value = item.EffectiveValue;
             ulong lastCarrier = item.LastCarrierId;
@@ -42,6 +47,20 @@ namespace RatGame.World
                 RunManager.Instance.ServerDeposit(value, lastCarrier);
             Log.Dev($"정산: {item.name} → {value} 가치");
             item.NetworkObject.Despawn();
+        }
+
+        /// <summary>
+        /// 위치가 쥐구멍 위인지 (귀환 판정). 트리거가 바닥에 얇게 깔려 있어 수평 범위만 엄격히 보고 높이는 여유를 둔다.
+        /// </summary>
+        public bool ContainsFootprint(Vector3 worldPos)
+        {
+            if (_box == null) _box = GetComponent<BoxCollider>();
+            if (_box == null) return false;
+            var bounds = _box.bounds;
+            if (worldPos.y < bounds.min.y - 0.5f || worldPos.y > bounds.max.y + 2f) return false;
+            Vector3 local = transform.InverseTransformPoint(worldPos) - _box.center;
+            Vector3 half = _box.size * 0.5f;
+            return Mathf.Abs(local.x) <= half.x && Mathf.Abs(local.z) <= half.z;
         }
     }
 }

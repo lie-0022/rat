@@ -6,7 +6,7 @@
 ## 한 줄 정의
 
 1~4인 온라인 협동 은신 약탈 게임. 쥐가 되어 인간의 집에 잠입해 전리품을 물리 기반으로 쥐구멍까지 운반하고,
-고양이·함정을 피해 할당량을 채우면 다음 구역으로 진행하는 익스트랙션 루프. 전투 없음.
+고양이·함정을 피해 파밍한 만큼 살아서 기지로 가져오는 익스트랙션 루프(레포식 — 기지→스테이지→귀환 반복, 전멸하면 런 종료). 전투 없음. (2026-09-13 개편: 할당량·탈출 투표 삭제, docs/09)
 
 ## 디자인 필러 (구현 중 모든 판단 기준)
 
@@ -29,18 +29,17 @@
 |---|---|
 | 플레이어 수 | 1~4 |
 | 1런 목표 시간 | 15~25분 |
-| 구역(Zone) 수 / 런 | 1~5 (진행 선택제) |
+| 스테이지 수 / 런 | 제한 없음 — 전멸할 때까지 (docs/09) |
 | 구역당 방 모듈 수 | 3~4 |
 | 구역당 고양이 수 | Zone1: 1, Zone3+: 2 |
-| 할당량 곡선 | Zone n 할당량 = 100 × 1.6^(n-1) |
-| 솔로 보정 | 할당량 × 0.55, 고양이 시야 -20% |
+| 솔로 보정 | 고양이 시야 -20% |
 
 ## 시스템 지도 (구현 대상 전체)
 
 ```
 [Bootstrap/Netcode]  GameBootstrap, NetworkLauncher, SteamLobbyService
         │
-[Run Flow]           GameStateMachine, RunManager(할당량·구역·탈출투표), ZoneGenerator
+[Run Flow]           GameStateMachine, RunManager(스테이지·쥐구멍 적립·귀환·전멸), ZoneGenerator
         │
 [Player]             PlayerController, PlayerInteractor, PlayerCarryController,
                      PlayerCondition(다운/속박), PlayerStamina, PlayerNoiseEmitter
@@ -68,7 +67,7 @@
 | 06-noise-system | 소음 발생·전파·리스너 | W4 |
 | 07-cat-ai | 고양이 FSM·감각·추격 | W5–6 |
 | 08-loot-and-economy | 아이템 데이터·가치·지갑 | W5–6 |
-| 09-round-flow | 런 상태머신·할당량·다운/구출·탈출 투표 | W6–7 |
+| 09-round-flow | 런 상태머신·귀환·다운/구출·전멸 | W6–7 |
 | 10-map-generation | 방 모듈 조합·스폰 테이블 | W7–8 |
 | 11-hub-and-meta | 허브·상점·장비·스킨·저장 | W8–9 |
 | 12-ui | HUD·메뉴·핑 | W9–10 |
@@ -79,11 +78,11 @@
 
 | 용어 | 코드 명칭 | 의미 |
 |---|---|---|
-| 런 | Run | 허브 출발~탈출/전멸까지 1회 |
+| 런 | Run | 기지 출발~전멸까지 1회 (스테이지 여러 번 귀환) |
 | 구역 | Zone | 방 3~4개 묶음, 할당량 단위 |
 | 방 모듈 | RoomModule | 미리 제작된 방 프리팹 |
 | 쥐구멍 | RatHole / DepositZone | 입출구 + 전리품 정산 지점 |
 | 전리품 | Loot / CarryableItem | 운반 대상 |
-| 할당량 | Quota | 구역 통과 요구 가치 |
+| 귀환 | Return | 다운 안 된 전원이 쥐구멍에 모여 기지로 돌아감 (할당량은 2026-09-13 삭제) |
 | 치즈코인 | CheeseCoin | 메타 재화 |
 | 다운 | Downed | 잡힘/함정으로 무력화, 운반 가능 오브젝트화 |

@@ -116,13 +116,7 @@ namespace RatGame.Player
                 if (kb.digit1Key.wasPressedThisFrame) want = 0;
                 if (kb.digit2Key.wasPressedThisFrame) want = 1;
             }
-            var mouse = Mouse.current;
-            if (mouse != null)
-            {
-                float scroll = mouse.scroll.ReadValue().y;
-                if (scroll > 0.01f) want = (want + SlotCount - 1) % SlotCount;
-                else if (scroll < -0.01f) want = (want + 1) % SlotCount;
-            }
+            // 마우스 휠 전환은 끔 (2026-09-13 사용자 요청 — 테스트 중 휠 오작동). 1·2 키만
             if (want != SelectedSlot.Value) { CancelCharge(); SelectedSlot.Value = want; }
         }
 

@@ -64,10 +64,10 @@ public class DepositZone : NetworkBehaviour
 
 | 지갑 | 위치 | 수명 | 용도 |
 |---|---|---|---|
-| RunWallet (DepositedValue) | RunManager NetworkVariable | 런 | 할당량 판정 |
+| 스테이지 적립 (StashedValue) / 런 누계 (RunTotalValue) | RunManager NetworkVariable + RunSession | 스테이지 / 런 | 귀환 정산 (docs/09) |
 | CheeseCoin (메타) | MetaWallet + SaveService | 영구 | 상점 구매 |
 
-- 런 종료(탈출 성공) 시: `CheeseCoin += 총정산가치 × 탈출보너스(1.0 + 0.15×클리어존수)` — 호스트가 계산, 전원 동일 지급.
+- 메타 보상(치즈코인 적립) 규칙은 미정 — 레포식 루프(docs/09)에 맞춰 새로 정한다.
 - 전멸 시: 이미 정산한 가치의 30%만 지급 (완전 0은 라이트 유저에게 가혹 — "그래도 조금 벌었다").
 
 ## 소모품 (상점 구매 → 런에 들고 입장, 11 문서 상점과 연결)
@@ -89,5 +89,4 @@ public class DepositZone : NetworkBehaviour
 
 - [ ] 표의 20종 SO + 임시 프리미티브 프리팹 생성, 스폰→운반→정산 전 루프
 - [ ] 계란을 던져 넣으면 깨져서 0원, 굴려 넣으면 40원 재현
-- [ ] 전멸 vs 탈출의 코인 차이 로그 검증
 - [ ] 털실뭉치 구매→입장→사용 플로우

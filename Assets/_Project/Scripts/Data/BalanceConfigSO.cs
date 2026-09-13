@@ -14,12 +14,11 @@ namespace RatGame.Data
         [SerializeField] private int _maxZonesPerRun = 5;
         [SerializeField] private Vector2Int _roomModulesPerZone = new(3, 4);
 
-        [Header("할당량 곡선 — Zone n 할당량 = base × growth^(n-1)")]
-        [SerializeField] private int _quotaBase = 100;
-        [SerializeField] private float _quotaGrowth = 1.6f;
+        [Header("귀환 (docs/09)")]
+        [SerializeField] private float _returnCountdownSeconds = 3f; // 전원 쥐구멍 집합 후 귀환까지 (s)
+        [SerializeField] private float _resultScreenSeconds = 8f;    // 귀환·전멸 결과 화면 표시 시간 (s)
 
         [Header("솔로 보정")]
-        [SerializeField, Range(0f, 1f)] private float _soloQuotaMultiplier = 0.55f;
         [SerializeField, Range(0f, 1f)] private float _soloCatVisionMultiplier = 0.8f; // 시야 -20%
 
         [Header("플레이어 이동 (docs/04)")]
@@ -124,8 +123,9 @@ namespace RatGame.Data
         public int MaxPlayers => _maxPlayers;
         public int MaxZonesPerRun => _maxZonesPerRun;
         public Vector2Int RoomModulesPerZone => _roomModulesPerZone;
-        public float SoloQuotaMultiplier => _soloQuotaMultiplier;
         public float SoloCatVisionMultiplier => _soloCatVisionMultiplier;
+        public float ReturnCountdownSeconds => _returnCountdownSeconds;
+        public float ResultScreenSeconds => _resultScreenSeconds;
 
         public float WalkSpeed => _walkSpeed;
         public float SprintSpeed => _sprintSpeed;
@@ -233,24 +233,6 @@ namespace RatGame.Data
         /// <summary>속도를 임펄스로 환산 (AddForce Impulse용) — 질량과 무관하게 같은 속도로 날아간다.</summary>
         public float GetThrowImpulse(float charge, float mass) => GetThrowSpeed(charge, mass) * mass;
 
-        /// <summary>Zone n(1부터)의 할당량 × 인원 배수 (docs/00·09: 솔로 0.55 / 2인 0.75 / 3인 0.9).</summary>
-        public int GetQuota(int zoneNumber, int playerCount)
-        {
-            float quota = _quotaBase * Mathf.Pow(_quotaGrowth, zoneNumber - 1);
-            quota *= playerCount switch
-            {
-                <= 1 => _soloQuotaMultiplier,
-                2 => 0.75f,
-                3 => 0.9f,
-                _ => 1f
-            };
-            return Mathf.RoundToInt(quota);
-        }
-
-        /// <summary>탈출 코인 (docs/08): 총정산 × (1 + 0.15×클리어존수). 전멸은 30%.</summary>
-        public int GetExtractCoins(int totalValue, int zonesCleared) =>
-            Mathf.RoundToInt(totalValue * (1f + 0.15f * zonesCleared));
-        public int GetWipeCoins(int totalValue) => Mathf.RoundToInt(totalValue * 0.3f);
 
         /// <summary>구역별 고양이 수: Zone1: 1, Zone3+: 2 (docs/00 표).</summary>
         public int GetCatCount(int zoneNumber) => zoneNumber >= 3 ? 2 : 1;
