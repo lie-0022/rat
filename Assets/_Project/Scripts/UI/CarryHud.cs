@@ -105,7 +105,13 @@ namespace RatGame.UI
             string prompt = null;
             if (_carry.IsHolding)
             {
-                if (_carry.IsDraggingHeavy) prompt = "[좌클릭] 놓기   (무거워서 던질 수 없음)";
+                if (_carry.IsDraggingHeavy)
+                {
+                    var held = _carry.CarriedItem;
+                    prompt = held != null
+                        ? $"[좌클릭] 놓기   함께 드는 중 {held.CarrierIds.Count}/{held.CarrySlotCount}"
+                        : "[좌클릭] 놓기";
+                }
                 else if (_carry.ThrowCharge > 0f) prompt = "[우클릭 떼기] 던지기   [좌클릭] 취소";
                 else prompt = "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
             }
@@ -113,7 +119,9 @@ namespace RatGame.UI
             {
                 var cand = _carry.GrabCandidate;
                 string name = cand.Data != null ? cand.Data.DisplayName : cand.name;
-                prompt = cand.IsHeavy ? $"[좌클릭] 끌기 — {name} (대형)" : $"[좌클릭] 집기 — {name}";
+                if (!cand.IsHeavy) prompt = $"[좌클릭] 집기 — {name}";
+                else if (cand.IsCarrySlotsFull) prompt = $"{name} — 자리 없음 ({cand.CarrierIds.Count}/{cand.CarrySlotCount})";
+                else prompt = $"[좌클릭] 같이 들기 — {name} ({cand.CarrierIds.Count}/{cand.CarrySlotCount})";
             }
             if (prompt != null)
             {

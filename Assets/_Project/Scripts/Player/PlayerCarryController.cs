@@ -37,8 +37,15 @@ namespace RatGame.Player
         private float _chargeStart;
         private LineRenderer _trajectoryLine;
 
-        // 대형 앵커: 손보다 더 앞 (아이템 몸통이 내 콜라이더와 안 겹치게)
-        private static readonly Vector3 HeavyAnchorLocal = new Vector3(0f, 0.3f, 2.0f);
+        // 대형 앵커: 몸 수직축 위 (루트 스케일 공간). 앞뒤 오프셋이 없어야 시선 따라 몸이 돌아도 물건이 안 휘둘린다 —
+        // 물건과의 간격은 아이템 쪽 자리(CarrySlot)가 갖는다
+        private static readonly Vector3 HeavyAnchorLocal = new Vector3(0f, 0.3f, 0f);
+
+        // 자동 대형: 자리 배정 받으면 소유 클라가 짧게 미끄러져 붙는다
+        private bool _snapping;
+        private float _snapT;
+        private Vector3 _snapFrom, _snapTo;
+        private Collider[] _snapIgnored;
 
         private void Awake()
         {
@@ -75,6 +82,7 @@ namespace RatGame.Player
         public CarryableItem GrabCandidate { get; private set; }
         public bool IsHolding => CarriedItemNetId.Value != 0;
         public bool IsDraggingHeavy { get { var it = GetCarriedItem(); return it != null && it.IsHeavy; } }
+        public CarryableItem CarriedItem => GetCarriedItem();
         public float ThrowCharge => _charging ? Mathf.Clamp01((Time.time - _chargeStart) / _balance.ThrowChargeTime) : 0f;
         public CarryableItem GetSlotItem(int slot) =>
             slot < Slots.Count && Slots[slot] != 0 ? Resolve(Slots[slot]) : null;
@@ -220,7 +228,13 @@ namespace RatGame.Player
 
             if (item.IsHeavy)
             {
-                if (item.ServerTryGrab(OwnerClientId, _rb, HeavyAnchorLocal)) CarriedItemNetId.Value = itemNetId;
+                // 자동 대형: 서버가 자리 배정 → 소유 클라에게 "거기로 붙어라" 통보 (혼자 잡아도 동일)
+                if (!item.ServerTryGrabSlot(OwnerClientId, _rb, HeavyAnchorLocal, out Vector3 stand)) return;
+                CarriedItemNetId.Value = itemNetId;
+                SnapToSlotClientRpc(stand, itemNetId, new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams { TargetClientIds = new[] { OwnerClientId } }
+                });
                 return;
             }
 
@@ -307,9 +321,45 @@ namespace RatGame.Player
             }
         }
 
+        // 소유 클라: 배정된 자리로 이동. 반대편 자리면 물건을 가로질러야 해서 이동 중엔 그 물건과 충돌을 끈다
+        [ClientRpc]
+        private void SnapToSlotClientRpc(Vector3 standWorld, ulong itemNetId, ClientRpcParams rpcParams = default)
+        {
+            if (!IsOwner) return;
+            _snapFrom = _rb.position;
+            _snapTo = new Vector3(standWorld.x, _rb.position.y, standWorld.z);
+            _snapT = 0f;
+            _snapping = true;
+
+            var item = Resolve(itemNetId);
+            _snapIgnored = item != null ? item.GetComponentsInChildren<Collider>() : null;
+            SetIgnoreItemCollision(true);
+        }
+
+        private void SetIgnoreItemCollision(bool ignore)
+        {
+            if (_snapIgnored == null) return;
+            foreach (var mine in GetComponentsInChildren<Collider>())
+                foreach (var theirs in _snapIgnored)
+                    if (mine != null && theirs != null) Physics.IgnoreCollision(mine, theirs, ignore);
+        }
+
         // 끊김(거리 초과 등)으로 아이템 쪽에서 해제됐을 때 손·슬롯 정리
         private void FixedUpdate()
         {
+            if (IsOwner && _snapping)
+            {
+                _snapT += Time.fixedDeltaTime / Mathf.Max(_balance.CarrySlotSnapTime, 0.01f);
+                float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(_snapT));
+                _rb.MovePosition(Vector3.Lerp(_snapFrom, _snapTo, t));
+                if (_snapT >= 1f)
+                {
+                    _snapping = false;
+                    SetIgnoreItemCollision(false);
+                    _snapIgnored = null;
+                }
+            }
+
             if (!IsServer || CarriedItemNetId.Value == 0) return;
             var item = GetCarriedItem();
             if (item == null || !item.CarrierIds.Contains(OwnerClientId))

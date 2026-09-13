@@ -42,6 +42,8 @@ namespace RatGame.Data
         [SerializeField] private float _grabBreakDistance = 3f;
         [SerializeField] private float _heavyThreshold = 6f;
         [SerializeField, Range(0f, 0.5f)] private float _carryMinSpeedMultiplier = 0.15f; // 혼자 대형 끌 때 기어가는 최저 속도 (0이면 정지 — 재미 없음)
+        [SerializeField] private float _carrySlotStandDistance = 0.45f; // 자동 대형: 물건 면에서 쥐 몸 중심까지 (m). 쥐 반경 0.3 + 여유
+        [SerializeField] private float _carrySlotSnapTime = 0.2f;       // 자동 대형: 자리로 붙는 데 걸리는 시간 (s)
         [SerializeField] private float _sprintBlockLoad = 3f;
         [SerializeField] private float _jumpBlockLoad = 4.5f;
         // 던지기는 "속도" 기준 — 임펄스 고정이면 가벼운 물건이 총알이 된다 (치즈 0.6kg → 15m/s 사고)
@@ -141,6 +143,8 @@ namespace RatGame.Data
         public float GrabAngularSpring => _grabAngularSpring;
         public float GrabRange => _grabRange;
         public float GrabBreakDistance => _grabBreakDistance;
+        public float CarrySlotStandDistance => _carrySlotStandDistance;
+        public float CarrySlotSnapTime => _carrySlotSnapTime;
         public float SprintBlockLoad => _sprintBlockLoad;
         public float JumpBlockLoad => _jumpBlockLoad;
         public float ThrowSpeedMin => _throwSpeedMin;
