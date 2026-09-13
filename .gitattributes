@@ -1,0 +1,89 @@
+# ===================================================================
+# 줄바꿈 정규화 — 윈도우/맥 혼용 대비 (hwatu 규칙 동일, 2026-09-13)
+# 저장소에는 항상 LF로 저장하고, 체크아웃도 LF로 통일한다.
+# ===================================================================
+* text=auto eol=lf
+
+# 소스/설정 — 명시적으로 텍스트
+*.cs        text diff=csharp
+*.md        text
+*.json      text
+*.txt       text
+*.xml       text
+*.yml       text
+*.yaml      text
+*.asmdef    text
+*.asmref    text
+*.shader    text
+*.hlsl      text
+*.cginc     text
+*.uss       text
+*.uxml      text
+*.inputactions text
+*.sh        text eol=lf
+*.bat       text eol=crlf
+
+# ===================================================================
+# Unity YAML — Smart Merge (UnityYAMLMerge) 대상
+# 로컬 등록 (클론마다 1회):
+#   git config merge.unityyamlmerge.name "Unity SmartMerge"
+#   git config merge.unityyamlmerge.driver '"<Unity 설치 경로>/Unity.app/Contents/Tools/UnityYAMLMerge" merge -p %O %B %A %A'
+# ===================================================================
+*.unity           merge=unityyamlmerge eol=lf
+*.prefab          merge=unityyamlmerge eol=lf
+*.asset           merge=unityyamlmerge eol=lf
+*.mat             merge=unityyamlmerge eol=lf
+*.anim            merge=unityyamlmerge eol=lf
+*.controller      merge=unityyamlmerge eol=lf
+*.overrideController merge=unityyamlmerge eol=lf
+*.physicMaterial  merge=unityyamlmerge eol=lf
+*.physicsMaterial2D merge=unityyamlmerge eol=lf
+*.playable        merge=unityyamlmerge eol=lf
+*.mask            merge=unityyamlmerge eol=lf
+*.brush           merge=unityyamlmerge eol=lf
+*.flare           merge=unityyamlmerge eol=lf
+*.fontsettings    merge=unityyamlmerge eol=lf
+*.guiskin         merge=unityyamlmerge eol=lf
+*.giparams        merge=unityyamlmerge eol=lf
+*.renderTexture   merge=unityyamlmerge eol=lf
+*.spriteatlas     merge=unityyamlmerge eol=lf
+*.terrainlayer    merge=unityyamlmerge eol=lf
+*.mixer           merge=unityyamlmerge eol=lf
+*.shadervariants  merge=unityyamlmerge eol=lf
+*.preset          merge=unityyamlmerge eol=lf
+*.meta            text eol=lf
+
+# ===================================================================
+# 바이너리 — 절대 줄바꿈 변환 금지
+# Kenney 가구 .fbx는 텍스트(ASCII) FBX라 CRLF가 들어 있음 — binary로 둬야 모델 파일이 안 바뀐다
+# ===================================================================
+*.ttf   binary
+*.otf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.psd   binary
+*.tga   binary
+*.tif   binary
+*.exr   binary
+*.aseprite binary
+*.ase   binary
+*.wav   binary
+*.mp3   binary
+*.ogg   binary
+*.aif   binary
+*.mp4   binary
+*.mov   binary
+*.fbx   binary
+*.glb   binary
+*.blend binary
+*.obj   binary
+*.dll   binary
+*.so    binary
+*.dylib binary
+*.bundle binary
+*.a     binary
+*.pdf   binary
+*.zip   binary
+*.unitypackage binary
