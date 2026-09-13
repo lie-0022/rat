@@ -17,7 +17,8 @@ namespace RatGame.Player
     /// </summary>
     public class PlayerCarryController : NetworkBehaviour
     {
-        public const int SlotCount = 2; // 기본 2칸 — 상점 확장은 메타(2-4)에서
+        /// <summary>인벤 칸 수 — 기본은 Balance.BaseCarrySlots, 상점 업그레이드로 늘어난다 (PlayerUpgrades가 서버에서 맞춤).</summary>
+        public int SlotCount => Slots.Count;
 
         [SerializeField] private BalanceConfigSO _balance;
         [SerializeField] private InputActionAsset _inputAsset;
@@ -32,6 +33,7 @@ namespace RatGame.Player
         private InputAction _grabAction, _throwAction;
         private PlayerController _movement;
         private Rigidbody _rb;
+        private PlayerUpgrades _upgrades;
 
         private bool _charging;
         private float _chargeStart;
@@ -51,13 +53,14 @@ namespace RatGame.Player
         {
             _movement = GetComponent<PlayerController>();
             _rb = GetComponent<Rigidbody>();
+            _upgrades = GetComponent<PlayerUpgrades>();
         }
 
         public override void OnNetworkSpawn()
         {
             if (IsServer)
             {
-                while (Slots.Count < SlotCount) Slots.Add(0);
+                ServerEnsureSlots(_balance.BaseCarrySlots);
                 SelectedSlot.OnValueChanged += OnSelectedSlotChangedServer;
             }
             if (!IsOwner) return;
@@ -115,7 +118,10 @@ namespace RatGame.Player
             {
                 if (kb.digit1Key.wasPressedThisFrame) want = 0;
                 if (kb.digit2Key.wasPressedThisFrame) want = 1;
+                if (kb.digit3Key.wasPressedThisFrame) want = 2;
+                if (kb.digit4Key.wasPressedThisFrame) want = 3;
             }
+            if (want >= SlotCount) want = SelectedSlot.Value; // 아직 안 산 칸
             // 마우스 휠 전환은 끔 (2026-09-13 사용자 요청 — 테스트 중 휠 오작동). 1·2 키만
             if (want != SelectedSlot.Value) { CancelCharge(); SelectedSlot.Value = want; }
         }
@@ -174,7 +180,7 @@ namespace RatGame.Player
                 _trajectoryLine.useWorldSpace = true;
             }
             _trajectoryLine.enabled = true;
-            float v0 = _balance.GetThrowSpeed(ThrowCharge, item.Mass);
+            float v0 = _balance.GetThrowSpeed(ThrowCharge, item.Mass) * (_upgrades != null ? _upgrades.ThrowPowerMultiplier : 1f);
             Vector3 vel = GetThrowDirection() * v0;
             Vector3 pos = _handAnchor != null ? _handAnchor.position : transform.position;
             for (int i = 0; i < 10; i++)
@@ -286,7 +292,8 @@ namespace RatGame.Player
         {
             var item = GetCarriedItem();
             if (item == null) return;
-            item.ServerRelease(OwnerClientId, thrown: true, throwDir: dir, charge: Mathf.Clamp01(charge));
+            item.ServerRelease(OwnerClientId, thrown: true, throwDir: dir, charge: Mathf.Clamp01(charge),
+                throwPower: _upgrades != null ? _upgrades.ThrowPowerMultiplier : 1f); // 상점 업그레이드 (docs/11)
             ClearSlotOf(item.NetworkObjectId);
             CarriedItemNetId.Value = 0;
         }
@@ -361,6 +368,13 @@ namespace RatGame.Player
                 ClearSlotOf(CarriedItemNetId.Value);
                 CarriedItemNetId.Value = 0;
             }
+        }
+
+        /// <summary>호스트: 칸을 count까지 늘린다 (줄이지 않는다 — 든 물건이 사라지지 않게).</summary>
+        public void ServerEnsureSlots(int count)
+        {
+            if (!IsServer) return;
+            while (Slots.Count < count) Slots.Add(0);
         }
 
         private int FindEmptySlot()

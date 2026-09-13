@@ -168,7 +168,7 @@ namespace RatGame.Run
                 var carry = client.PlayerObject.GetComponent<PlayerCarryController>();
                 if (carry == null) continue;
                 if (carry.CarriedItem != null) carried.Add(carry.CarriedItem);
-                for (int i = 0; i < PlayerCarryController.SlotCount; i++)
+                for (int i = 0; i < carry.SlotCount; i++)
                 {
                     var item = carry.GetSlotItem(i);
                     if (item != null) carried.Add(item);

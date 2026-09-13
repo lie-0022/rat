@@ -119,6 +119,12 @@ namespace RatGame.Data
         [SerializeField] private float _staminaRegen = 25f;        // /s, 미소모 1s 후
         [SerializeField] private float _staminaRegenDelay = 1f;
         [SerializeField] private float _exhaustPantSeconds = 1.5f; // 0 도달 시 헐떡임
+
+        [Header("업그레이드 (docs/11 상점) — 레벨당 가산")]
+        [SerializeField] private int _baseCarrySlots = 2;                 // 인벤 기본 칸 (2026-09-12 결정)
+        [SerializeField] private float _upgradeMoveSpeedPerLevel = 0.08f; // 걷기·달리기 +8%/Lv
+        [SerializeField] private float _upgradeStaminaPerLevel = 0.2f;    // 최대 스태미나 +20%/Lv
+        [SerializeField] private float _upgradeThrowPerLevel = 0.15f;     // 던지기 속도 +15%/Lv
         [SerializeField] private float _pantLoudness = 18f;
 
         public int MaxPlayers => _maxPlayers;
@@ -213,6 +219,11 @@ namespace RatGame.Data
         public float LureCatnipRadius => _lureCatnipRadius;
 
         public float StunSeconds => _stunSeconds;
+
+        public int BaseCarrySlots => _baseCarrySlots;
+        public float UpgradeMoveSpeedPerLevel => _upgradeMoveSpeedPerLevel;
+        public float UpgradeStaminaPerLevel => _upgradeStaminaPerLevel;
+        public float UpgradeThrowPerLevel => _upgradeThrowPerLevel;
         public float HighFallStunHeight => _highFallStunHeight;
         public float RescueHoldSeconds => _rescueHoldSeconds;
         public float StaminaMax => _staminaMax;

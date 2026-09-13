@@ -12,6 +12,23 @@
 2. 스테이지 씬 `Stage_Warehouse01` (맵 1개, 구역 3개는 6단계)
 3. 기지 출발 발판(`World/DeparturePad`, 호스트 권한): 다운 안 된 전원이 발판 위 → departCountdownSeconds 카운트다운(이탈 시 취소) → 스테이지 씬 로드 → RunManager가 전원 로드 완료(OnLoadEventCompleted) 후 PlayerSpawn으로 순간이동(소유 클라 RPC) + 자동 출발. 집합 판정은 쥐구멍 귀환과 공용(`World/GatherCheck`) / 4. 귀환·전멸 → 결과 화면 뒤 기지 로드 (전원 드랍·상태 초기화, 기지 도착 시 PlayerSpawn으로 이동 — `Player/PlayerPlacement` 공용) / 5. 기지 누계 표시 (`DeparturePad.TotalValue` 복제 — 저장값, 스테이지 번호 없음)
 
+## 상점 = 자판기 (2026-09-14 구현 — 스탯 업그레이드)
+
+- `World/VendingMachine` (NetworkObject, IInteractable "상점", 홀드 0) — 기지 서쪽 벽 앞. E로 열면 그 클라에만 `UI/ShopPanel`(uGUI) 표시. 열면 커서 해제(시선·클릭은 lockState로 자동 정지), Esc/닫기로 잠금.
+- **통화 = 팀 누계(HaulTotal)**. 레포식이라 업그레이드도 팀 공유·호스트 저장(`SaveData.Upgrades`). 구매 판정·차감·저장은 호스트만(`PurchaseServerRpc`), 패널은 `HaulTotal`·`Levels` NetworkVariable만 읽는다.
+- 효과 적용: `Player/PlayerUpgrades` NetworkVariable<UpgradeLevels> — 호스트가 스폰 시·구매 시 전원에게 쓴다. 이동·스태미나·던지기는 소유 클라가 배율 적용, 인벤 칸은 서버가 `ServerEnsureSlots`(늘기만 함).
+- 레벨당 수치는 BalanceConfigSO `업그레이드` 헤더 (BaseCarrySlots 2, MoveSpeed +8%/Lv, Stamina +20%/Lv, Throw +15%/Lv). 항목은 `Data/Upgrades/UpgradeSO` ×4:
+
+| 항목 (Effect) | 설명 | 최대 Lv | 가격 (Lv1 → 이후 +) |
+|---|---|---|---|
+| 주머니 확장 (CarrySlots) | 인벤 칸 +1 (3·4키 전환, HUD 슬롯 자동 확장) | 2 | 150 → +150 |
+| 튼튼한 다리 (MoveSpeed) | 걷기·달리기 +8% | 3 | 100 → +100 |
+| 큰 허파 (StaminaMax) | 최대 스태미나 +20% | 3 | 80 → +80 |
+| 힘센 앞발 (ThrowPower) | 던지기 속도 +15% (궤적선도 반영) | 2 | 120 → +120 |
+
+- 장비 4종(아래 표)·소모품·치즈코인은 아직 미구현 — 업그레이드 상점이 먼저 (사용자 요청: 스탯·인벤 증가 필수).
+- 연습용 전리품: 기지 동쪽 구석에 GrayBox_S ×2 + Test_Phone (씬 배치, `PracticeLoot`).
+
 ## Meta/MetaWallet.cs + SaveService
 
 ```csharp

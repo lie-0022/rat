@@ -17,18 +17,23 @@ namespace RatGame.Player
 
         private PlayerController _movement;
         private PlayerCarryController _carry;
+        private PlayerUpgrades _upgrades;
         private float _lastDrainTime;
         private float _pantEndTime;
+
+        /// <summary>최대치 — 상점 업그레이드 배율 포함 (docs/11).</summary>
+        public float Max => _balance.StaminaMax * (_upgrades != null ? _upgrades.StaminaMaxMultiplier : 1f);
 
         private void Awake()
         {
             _movement = GetComponent<PlayerController>();
             _carry = GetComponent<PlayerCarryController>();
+            _upgrades = GetComponent<PlayerUpgrades>();
         }
 
         public override void OnNetworkSpawn()
         {
-            Current = _balance.StaminaMax;
+            Current = Max;
             if (!IsOwner) enabled = false;
         }
 
@@ -52,7 +57,7 @@ namespace RatGame.Player
             }
             else if (Time.time - _lastDrainTime >= _balance.StaminaRegenDelay)
             {
-                Current = Mathf.Min(_balance.StaminaMax, Current + _balance.StaminaRegen * Time.deltaTime);
+                Current = Mathf.Min(Max, Current + _balance.StaminaRegen * Time.deltaTime);
             }
 
             _movement.BlockSprintStamina = Current <= 0f || Time.time < _pantEndTime;

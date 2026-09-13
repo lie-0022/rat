@@ -191,7 +191,8 @@ namespace RatGame.World
         }
 
         /// <summary>호스트 전용. thrown=true면 던지기 임펄스 적용.</summary>
-        public void ServerRelease(ulong clientId, bool thrown = false, Vector3 throwDir = default, float charge = 0.5f)
+        public void ServerRelease(ulong clientId, bool thrown = false, Vector3 throwDir = default, float charge = 0.5f,
+                                  float throwPower = 1f)
         {
             if (!IsServer || !_joints.TryGetValue(clientId, out var joint)) return;
 
@@ -206,7 +207,7 @@ namespace RatGame.World
 
             if (thrown)
             {
-                _rb.AddForce(throwDir.normalized * _balance.GetThrowImpulse(charge, _rb.mass), ForceMode.Impulse);
+                _rb.AddForce(throwDir.normalized * _balance.GetThrowImpulse(charge, _rb.mass) * throwPower, ForceMode.Impulse);
                 _thrownUntil = Time.time + 1.5f;
             }
             Log.Dev($"놓기: client {clientId} ← {name}{(thrown ? " (던짐)" : "")}");

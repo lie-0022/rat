@@ -34,6 +34,7 @@ namespace RatGame.Player
         [SerializeField] private InputActionAsset _inputAsset;
 
         private Rigidbody _rb;
+        private PlayerUpgrades _upgrades;
         private InputAction _moveAction, _jumpAction, _sprintAction, _crouchAction;
 
         private float _lastGroundedTime = float.NegativeInfinity;
@@ -49,6 +50,7 @@ namespace RatGame.Player
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
+            _upgrades = GetComponent<PlayerUpgrades>();
             _baseScale = transform.localScale;
         }
 
@@ -163,6 +165,7 @@ namespace RatGame.Player
                 : sprinting ? _balance.SprintSpeed
                 : _balance.WalkSpeed;
             speed *= CarrySpeedMultiplier;
+            if (_upgrades != null) speed *= _upgrades.MoveSpeedMultiplier; // 상점 업그레이드 (docs/11)
             float accel = _isGrounded ? _balance.GroundAcceleration : _balance.AirAcceleration;
 
             Vector3 current = _rb.linearVelocity;

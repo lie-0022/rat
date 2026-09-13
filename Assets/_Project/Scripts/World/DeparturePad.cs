@@ -55,6 +55,8 @@ namespace RatGame.World
         private void Update()
         {
             if (_departing) return;
+            // 상점 구매로 누계가 줄면 바로 비춘다 (같으면 안 보냄)
+            if (TotalValue.Value != RunSession.TotalValue) TotalValue.Value = RunSession.TotalValue;
             GatherCheck.Count(_box, out int ready, out int needed);
             ReadyCount.Value = ready;
             NeededCount.Value = needed;

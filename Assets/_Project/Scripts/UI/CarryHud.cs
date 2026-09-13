@@ -68,8 +68,9 @@ namespace RatGame.UI
 
             // 인벤 슬롯 (하단 중앙) — 선택 슬롯 = 손에 든 것. 대형 끌기 중엔 흐리게
             const float slotW = 150f, slotH = 40f, gap = 8f;
-            float totalW = PlayerCarryController.SlotCount * slotW + (PlayerCarryController.SlotCount - 1) * gap;
-            for (int i = 0; i < PlayerCarryController.SlotCount; i++)
+            int slotCount = _carry.SlotCount;
+            float totalW = slotCount * slotW + (slotCount - 1) * gap;
+            for (int i = 0; i < slotCount; i++)
             {
                 var r = new Rect(cx - totalW * 0.5f + i * (slotW + gap), Screen.height - slotH - 20, slotW, slotH);
                 bool selected = _carry.SelectedSlot.Value == i;

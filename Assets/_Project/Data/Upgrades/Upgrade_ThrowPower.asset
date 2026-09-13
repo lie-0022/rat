@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8f71b5f392c641b78c3affaf3b629c4, type: 3}
+  m_Name: Upgrade_ThrowPower
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.UpgradeSO
+  _displayName: "\uD798\uC13C \uC55E\uBC1C"
+  _description: "\uB358\uC9C0\uAE30 \uC18D\uB3C4 +15%"
+  _effect: 3
+  _maxLevel: 2
+  _basePrice: 120
+  _priceStep: 120

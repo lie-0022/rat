@@ -11,6 +11,8 @@ namespace RatGame.Core
         public int Version = 1;
         /// <summary>팀 누계 — 귀환으로 가져온 가치의 합. 호스트 기기에만 쌓인다 (세션 주인 기준, 레포식).</summary>
         public int HaulTotal;
+        /// <summary>팀 업그레이드 레벨 (docs/11 상점) — 누계로 사고 누계와 같은 파일에 산다.</summary>
+        public RatGame.Data.UpgradeLevels Upgrades;
     }
 
     /// <summary>
