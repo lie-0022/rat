@@ -19,6 +19,8 @@ namespace RatGame.UI
 
         // 적립 "+N" 팝업 — StashedValue 변화로 감지 (EventBus 적립 이벤트는 호스트에서만 발생하므로 클라는 못 받음)
         private RunManager _boundRun;
+        private RatGame.World.DeparturePad _pad;
+        private float _padSearchAt;
         private int _popupValue;
         private float _popupUntil;
 
@@ -147,11 +149,11 @@ namespace RatGame.UI
             }
         }
 
-        // 상단 중앙: 출발 안내 / 스테이지·쥐구멍 적립·집합 인원 / 귀환 카운트다운 / 결과 화면
+        // 상단 중앙: 출발 안내 / 쥐구멍 적립·누계·집합 인원 / 귀환 카운트다운 / 결과 화면
         private void DrawRun(float cx, float cy)
         {
             var run = RunManager.Instance;
-            if (run == null) return;
+            if (run == null) { DrawDeparturePad(cx); return; }
             var phase = run.Phase.Value;
 
             if (phase == RunPhase.Returned) { DrawReturnedPanel(run, cx, cy); return; }
@@ -160,15 +162,14 @@ namespace RatGame.UI
             if (phase == RunPhase.Ready)
             {
                 bool host = NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
-                string total = run.RunTotalValue.Value > 0 ? $"   누계 {run.RunTotalValue.Value}" : "";
                 string msg = host
-                    ? $"[Enter] 스테이지 {run.StageNumber.Value} 출발{total}"
-                    : $"호스트 출발 대기 — 스테이지 {run.StageNumber.Value}{total}";
+                    ? $"[Enter] 출발   누계 {run.RunTotalValue.Value}"
+                    : $"호스트 출발 대기   누계 {run.RunTotalValue.Value}";
                 DrawBox(new Rect(cx - 220, 12, 440, 34), msg, _promptStyle, new Color(0f, 0f, 0f, 0.55f));
                 return;
             }
 
-            DrawBox(new Rect(cx - 160, 12, 320, 34), $"스테이지 {run.StageNumber.Value}   쥐구멍 {run.StashedValue.Value}",
+            DrawBox(new Rect(cx - 160, 12, 320, 34), $"쥐구멍 {run.StashedValue.Value}   누계 {run.RunTotalValue.Value}",
                 _promptStyle, new Color(0f, 0f, 0f, 0.55f));
             if (Time.time < _popupUntil)
                 DrawBox(new Rect(cx - 60, 50, 120, 30), $"+{_popupValue}", _promptStyle, new Color(0.2f, 0.6f, 0.25f, 0.8f));
@@ -188,6 +189,30 @@ namespace RatGame.UI
             }
         }
 
+        // 기지: 출발 발판 집합 인원 / 출발 카운트다운 / 누계 (런 매니저가 없는 씬)
+        private void DrawDeparturePad(float cx)
+        {
+            if (_pad == null && Time.time >= _padSearchAt)
+            {
+                _pad = FindFirstObjectByType<RatGame.World.DeparturePad>();
+                _padSearchAt = Time.time + 1f;
+            }
+            if (_pad == null || !_pad.IsSpawned) return;
+
+            if (_pad.Counting.Value)
+            {
+                double remain = System.Math.Max(0.0, _pad.DepartAt.Value - NetworkManager.ServerTime.Time);
+                DrawBox(new Rect(cx - 200, 12, 400, 46), $"출발… {System.Math.Ceiling(remain):0}",
+                    _bigStyle, new Color(0.15f, 0.45f, 0.2f, 0.85f));
+            }
+            else
+            {
+                DrawBox(new Rect(cx - 220, 12, 440, 34), $"출발 발판에 모이면 출발   {_pad.ReadyCount.Value}/{_pad.NeededCount.Value}",
+                    _promptStyle, new Color(0f, 0f, 0f, 0.55f));
+            }
+            DrawBox(new Rect(cx - 120, 64, 240, 30), $"누계 {_pad.TotalValue.Value}", _promptStyle, new Color(0f, 0f, 0f, 0.55f));
+        }
+
         private void DrawReturnedPanel(RunManager run, float cx, float cy)
         {
             int stashed = run.StashedValue.Value, carried = run.ResultCarriedValue.Value;
@@ -196,11 +221,11 @@ namespace RatGame.UI
             GUI.color = new Color(0.1f, 0.3f, 0.15f, 0.9f);
             GUI.DrawTexture(panel, _dot);
             GUI.color = Color.white;
-            GUI.Label(new Rect(panel.x, panel.y + 14, panel.width, 44), $"스테이지 {run.StageNumber.Value} 귀환!", _bigStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 14, panel.width, 44), "귀환!", _bigStyle);
             GUI.Label(new Rect(panel.x, panel.y + 70, panel.width, 30), $"쥐구멍 {stashed}  +  들고 온 것 {carried}", _promptStyle);
             GUI.Label(new Rect(panel.x, panel.y + 102, panel.width, 30), $"이번 수확  {stashed + carried}", _promptStyle);
-            GUI.Label(new Rect(panel.x, panel.y + 134, panel.width, 30), $"런 누계  {run.RunTotalValue.Value}", _promptStyle);
-            GUI.Label(new Rect(panel.x, panel.y + 200, panel.width, 30), $"{remain:0}초 뒤 다음 스테이지 준비", _promptStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 134, panel.width, 30), $"누계  {run.RunTotalValue.Value}", _promptStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 200, panel.width, 30), $"{remain:0}초 뒤 기지로", _promptStyle);
         }
 
         private void DrawWipedPanel(RunManager run, float cx, float cy)
@@ -210,11 +235,11 @@ namespace RatGame.UI
             GUI.color = new Color(0.35f, 0.1f, 0.1f, 0.9f);
             GUI.DrawTexture(panel, _dot);
             GUI.color = Color.white;
-            GUI.Label(new Rect(panel.x, panel.y + 14, panel.width, 44), "전멸… 런 종료", _bigStyle);
-            GUI.Label(new Rect(panel.x, panel.y + 70, panel.width, 30), $"스테이지 {run.StageNumber.Value}에서 전멸", _promptStyle);
-            GUI.Label(new Rect(panel.x, panel.y + 102, panel.width, 30), $"기지로 가져온 가치  {run.RunTotalValue.Value}", _promptStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 14, panel.width, 44), "전멸…", _bigStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 70, panel.width, 30), "이번 파밍분을 잃었다", _promptStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 102, panel.width, 30), $"누계  {run.RunTotalValue.Value}  (유지)", _promptStyle);
             GUI.Label(new Rect(panel.x, panel.y + 134, panel.width, 30), $"잃은 쥐구멍 적립  {run.StashedValue.Value}", _promptStyle);
-            GUI.Label(new Rect(panel.x, panel.y + 200, panel.width, 30), $"{remain:0}초 뒤 새 런", _promptStyle);
+            GUI.Label(new Rect(panel.x, panel.y + 200, panel.width, 30), $"{remain:0}초 뒤 기지로", _promptStyle);
         }
 
         private void DrawBox(Rect r, string text, GUIStyle style, Color bg)

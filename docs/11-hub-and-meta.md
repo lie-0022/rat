@@ -4,7 +4,13 @@
 
 - 쥐구멍 안 아지트. 최대 4인이 돌아다니는 **플레이 가능한 로비** (레포·피크 방식).
 - 배치물: 출발 지점(전원 모이면 출발), 자판기(상점), 거울(스킨), 도감 책, 연습용 전리품 몇 개.
-- 호스트가 만든 세션에 친구가 스팀 초대로 합류 → Hub에 스폰. 런 시작 = 호스트가 레버 Interact.
+- 호스트가 만든 세션에 친구가 스팀 초대로 합류 → Hub에 스폰. 런 시작 = **출발 발판에 전원이 올라서면** 카운트다운 후 출발 (2026-09-14 결정 — 귀환과 같은 방식, 레버 없음).
+
+### 단계 구현 (2026-09-14 — 기지·맵 분리)
+
+1. 기지 씬 기본: 벽으로 둘러싼 작은 방 + 스폰 4개. **호스트 시작(DevNetHud Host 버튼·`-autohost`) = 기지 로드** (샌드박스 직행 폐지 — 샌드박스는 에디터에서 직접 열어 테스트용으로만).
+2. 스테이지 씬 `Stage_Warehouse01` (맵 1개, 구역 3개는 6단계)
+3. 기지 출발 발판(`World/DeparturePad`, 호스트 권한): 다운 안 된 전원이 발판 위 → departCountdownSeconds 카운트다운(이탈 시 취소) → 스테이지 씬 로드 → RunManager가 전원 로드 완료(OnLoadEventCompleted) 후 PlayerSpawn으로 순간이동(소유 클라 RPC) + 자동 출발. 집합 판정은 쥐구멍 귀환과 공용(`World/GatherCheck`) / 4. 귀환·전멸 → 결과 화면 뒤 기지 로드 (전원 드랍·상태 초기화, 기지 도착 시 PlayerSpawn으로 이동 — `Player/PlayerPlacement` 공용) / 5. 기지 누계 표시 (`DeparturePad.TotalValue` 복제 — 저장값, 스테이지 번호 없음)
 
 ## Meta/MetaWallet.cs + SaveService
 
@@ -25,6 +31,7 @@ public class SaveData   // JSON 직렬화 (Application.persistentDataPath/save.j
 - **저장은 로컬 개인별** (각자 자기 코인·스킨). 런 보상 지급은 호스트가 액수만 ClientRpc → 각 클라가 자기 저장에 반영.
   (치팅 가능하지만 코옵 게임 — 신경 쓰지 않는다. v1 결정)
 - SaveService: Load(부트 시)/Save(변경 시 debounce 2s)/백업 1개(save.bak). Version 필드로 마이그레이션 대비.
+- **2026-09-14 1차 구현**: `Core/SaveService`(정적) + `SaveData { Version, HaulTotal }`. 팀 누계(HaulTotal)는 **호스트 기기에만** 저장(세션 주인 기준, 레포식) — 귀환 정산 시 즉시 저장(지금은 1회라 debounce 없음). 전멸해도 누계 유지·초기화 없음. 코인·스킨 등 개인 필드는 메타 단계에서 추가.
 
 ## 장비 (Data/EquipmentSO)
 

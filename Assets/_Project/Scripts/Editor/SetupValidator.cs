@@ -12,7 +12,7 @@ namespace RatGame.Editor
     {
         private static readonly string[] RequiredTags = { "RatHole", "LootSpawn", "CatSpawn", "PlayerSpawn", "DoorSocket" };
         private static readonly string[] RequiredLayers = { "Player", "Carryable", "Cat", "Trap", "RoomStatic", "InteractTrigger", "NoiseBlocker", "Ragdoll" };
-        private static readonly string[] RequiredScenes = { "Boot", "MainMenu", "Hub", "Run_Kitchen", "Run_Basement", "Sandbox_Net" };
+        private static readonly string[] RequiredScenes = { "Boot", "MainMenu", "Hub", "Stage_Warehouse01", "Sandbox_Net" };
 
         [MenuItem("Tools/RatGame/Validate Setup")]
         public static void Validate()

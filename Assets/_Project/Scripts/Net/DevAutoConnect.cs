@@ -8,7 +8,7 @@ namespace RatGame.Net
 {
     /// <summary>
     /// 커맨드라인 자동 접속 — 무인 멀티 테스트용 (사람 없이 4인 접속 검증).
-    ///   -autohost   : 부팅 후 호스트 시작 + Sandbox_Net 로드
+    ///   -autohost   : 부팅 후 호스트 시작 + 기지(Hub) 로드
     ///   -autojoin   : 부팅 후 127.0.0.1 접속 (재시도 5회)
     ///   -autowander : 스폰된 자기 플레이어가 자동 배회 (이동 동기화 검증용)
     /// 릴리즈 빌드에서는 스트립까진 안 하지만 인자 없으면 아무것도 안 한다.
@@ -33,7 +33,7 @@ namespace RatGame.Net
             var task = NetworkLauncher.Instance.StartHostAsync();
             yield return new WaitUntil(() => task.IsCompleted);
             if (task.Result)
-                NetworkManager.Singleton.SceneManager.LoadScene("Sandbox_Net",
+                NetworkManager.Singleton.SceneManager.LoadScene("Hub",
                     UnityEngine.SceneManagement.LoadSceneMode.Single);
             else
                 Log.Error("[AutoConnect] 호스트 시작 실패");

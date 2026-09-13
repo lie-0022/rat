@@ -10,7 +10,7 @@ namespace RatGame.World
     /// 쥐구멍 = 적립 트리거 + 귀환 지점 (docs/08·09). 판정은 호스트 기준만 (docs/03).
     ///  ① Downed 플레이어 몸 → RunManager.ServerRevive
     ///  ② CarryableItem → 가치 적립 (금 간 Fragile 50%) → RunManager.ServerDeposit + 디스폰
-    ///  ③ 귀환 판정용 ContainsFootprint — RunManager가 플레이어 위치로 조회
+    ///  ③ 귀환 집합 판정 영역(Area) — RunManager가 GatherCheck로 조회
     /// 런이 없으면(RunManager 부재/비활성) 로그 정산만 — 샌드박스 단독 테스트 호환.
     /// 흡입 연출 ClientRpc·도감 언락은 아트/2-5 단계.
     /// </summary>
@@ -18,6 +18,9 @@ namespace RatGame.World
     public class DepositZone : NetworkBehaviour
     {
         private BoxCollider _box;
+
+        /// <summary>귀환 집합 판정 영역 (GatherCheck).</summary>
+        public BoxCollider Area => _box != null ? _box : _box = GetComponent<BoxCollider>();
 
         // Stay 판정: 이고 들어와서 안에서 내려놓는 경우도 잡아야 함. 들고 있는 동안(캐리어>0)은 납품 아님 — "두면" 납품.
         private void OnTriggerStay(Collider other)
@@ -49,18 +52,5 @@ namespace RatGame.World
             item.NetworkObject.Despawn();
         }
 
-        /// <summary>
-        /// 위치가 쥐구멍 위인지 (귀환 판정). 트리거가 바닥에 얇게 깔려 있어 수평 범위만 엄격히 보고 높이는 여유를 둔다.
-        /// </summary>
-        public bool ContainsFootprint(Vector3 worldPos)
-        {
-            if (_box == null) _box = GetComponent<BoxCollider>();
-            if (_box == null) return false;
-            var bounds = _box.bounds;
-            if (worldPos.y < bounds.min.y - 0.5f || worldPos.y > bounds.max.y + 2f) return false;
-            Vector3 local = transform.InverseTransformPoint(worldPos) - _box.center;
-            Vector3 half = _box.size * 0.5f;
-            return Mathf.Abs(local.x) <= half.x && Mathf.Abs(local.z) <= half.z;
-        }
     }
 }

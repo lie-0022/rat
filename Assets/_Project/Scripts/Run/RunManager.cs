@@ -13,19 +13,20 @@ namespace RatGame.Run
 
     /// <summary>
     /// 런의 심장 (docs/09, 호스트 권한, 런 씬 수명). 레포식 루프: 기지 출발 → 스테이지 파밍 → 전원 쥐구멍 집합 → 귀환.
-    /// 목표 금액 없음 — 쥐구멍 적립 + 귀환자가 들고 온 물건이 수확. 전원 다운 = 전멸 = 런 종료.
-    /// 스테이지 생성(ZoneGenerator)은 태스크 2-1 — 지금은 같은 샌드박스를 다시 로드해 다음 스테이지로 쓴다.
+    /// 목표 금액 없음 — 쥐구멍 적립 + 귀환자가 들고 온 물건이 수확. 누계는 저장되고 초기화되지 않는다.
+    /// 전원 다운 = 전멸 = 이번 적립만 잃고 기지로.
+    /// 스테이지 생성(ZoneGenerator)은 태스크 2-1 — 지금은 맵 1개(Stage_Warehouse01)를 스테이지마다 다시 로드해 쓴다.
     /// </summary>
     public class RunManager : NetworkBehaviour
     {
         public static RunManager Instance { get; private set; }
 
         [SerializeField] private BalanceConfigSO _balance;
+        [SerializeField] private string _baseScene = "Hub";   // 결과 화면 뒤 돌아갈 기지 씬
 
         public NetworkVariable<RunPhase> Phase = new(RunPhase.Ready);
         public NetworkVariable<int> RunSeed = new(0);
-        public NetworkVariable<int> StageNumber = new(1);        // 1부터
-        public NetworkVariable<int> RunTotalValue = new(0);      // 기지로 가져온 런 누계
+        public NetworkVariable<int> RunTotalValue = new(0);      // 저장된 누계 (RunSession → SaveService)
         public NetworkVariable<int> StashedValue = new(0);       // 이번 스테이지 쥐구멍 적립
         public NetworkVariable<int> ReturnReadyCount = new(0);   // 쥐구멍 위 인원
         public NetworkVariable<int> ReturnNeededCount = new(0);  // 귀환에 필요한 인원 (다운 제외)
@@ -48,22 +49,37 @@ namespace RatGame.Run
         {
             Instance = this;
             if (!IsServer) { enabled = false; return; }
-            StageNumber.Value = RunSession.StageNumber;
             RunTotalValue.Value = RunSession.TotalValue;
             _returnZone = FindFirstObjectByType<DepositZone>();
             if (_returnZone == null) Log.Dev("RunManager: 쥐구멍(DepositZone)이 없어 귀환할 수 없음");
             EventBus.PlayerDowned += OnPlayerDowned;
+            // 기지 발판으로 들어온 경우: 전원이 씬 로드를 끝내면 시작 위치로 옮기고 자동 출발.
+            // 에디터에서 스테이지 씬을 직접 플레이하면 로드 이벤트가 없어 Ready로 대기 (개발용 Enter)
+            if (RunSession.DepartPending)
+                NetworkManager.SceneManager.OnLoadEventCompleted += OnStageLoaded;
         }
 
         public override void OnNetworkDespawn()
         {
             if (Instance == this) Instance = null;
-            if (IsServer) EventBus.PlayerDowned -= OnPlayerDowned;
+            if (!IsServer) return;
+            EventBus.PlayerDowned -= OnPlayerDowned;
+            if (NetworkManager != null && NetworkManager.SceneManager != null)
+                NetworkManager.SceneManager.OnLoadEventCompleted -= OnStageLoaded;
+        }
+
+        private void OnStageLoaded(string sceneName, LoadSceneMode mode, List<ulong> completed, List<ulong> timedOut)
+        {
+            if (sceneName != gameObject.scene.name) return;
+            NetworkManager.SceneManager.OnLoadEventCompleted -= OnStageLoaded;
+            RunSession.DepartPending = false;
+            PlayerPlacement.TeleportAllToSpawns();
+            ServerStartStage(Random.Range(0, int.MaxValue));
         }
 
         // ---- 호스트 API ----
 
-        /// <summary>기지에서 출발 (지금은 샌드박스 Ready에서 호스트 Enter).</summary>
+        /// <summary>파밍 출발 — 기지 발판으로 들어오면 자동 호출. 스테이지 씬 직접 플레이 시엔 개발용 Enter.</summary>
         public void ServerStartStage(int seed)
         {
             if (!IsServer || Phase.Value != RunPhase.Ready) return;
@@ -73,8 +89,8 @@ namespace RatGame.Run
             _returnArmed = false;
             GameStateMachine.Instance.TransitionTo(GameState.InRun);
             SetPhase(RunPhase.StageActive);
-            EventBus.RaiseZoneStarted(StageNumber.Value - 1);
-            Log.Dev($"스테이지 {StageNumber.Value} 출발 — 누계 {RunTotalValue.Value}");
+            EventBus.RaiseZoneStarted(0);
+            Log.Dev($"파밍 출발 — 누계 {RunTotalValue.Value}");
         }
 
         public void ServerDeposit(int value, ulong byClientId)
@@ -116,15 +132,7 @@ namespace RatGame.Run
         // 다운 안 된 전원이 쥐구멍 위면 카운트다운, 한 명이라도 벗어나면 취소
         private void UpdateReturn()
         {
-            int needed = 0, ready = 0;
-            foreach (var client in NetworkManager.ConnectedClientsList)
-            {
-                if (client.PlayerObject == null) continue;
-                var condition = client.PlayerObject.GetComponent<PlayerCondition>();
-                if (condition != null && condition.State.Value == ConditionState.Downed) continue; // 쓰러진 사람은 두고 간다
-                needed++;
-                if (_returnZone != null && _returnZone.ContainsFootprint(client.PlayerObject.transform.position)) ready++;
-            }
+            GatherCheck.Count(_returnZone != null ? _returnZone.Area : null, out int ready, out int needed);
             ReturnNeededCount.Value = needed;
             ReturnReadyCount.Value = ready;
 
@@ -170,13 +178,13 @@ namespace RatGame.Run
             foreach (var item in carried) carriedValue += item.EffectiveValue;
 
             int haul = StashedValue.Value + carriedValue;
-            RunSession.AdvanceStage(haul);
+            RunSession.AddHaul(haul); // 누계에 더하고 바로 저장
             ResultCarriedValue.Value = carriedValue;
             RunTotalValue.Value = RunSession.TotalValue;
             ResultEndsAt.Value = NetworkManager.ServerTime.Time + _balance.ResultScreenSeconds;
             SetPhase(RunPhase.Returned);
-            EventBus.RaiseZoneEnded(StageNumber.Value - 1, true);
-            Log.Dev($"귀환: 스테이지 {StageNumber.Value} — 쥐구멍 {StashedValue.Value} + 들고 온 {carriedValue} = {haul}, 누계 {RunTotalValue.Value}");
+            EventBus.RaiseZoneEnded(0, true);
+            Log.Dev($"귀환: 쥐구멍 {StashedValue.Value} + 들고 온 {carriedValue} = {haul}, 누계 {RunTotalValue.Value}");
         }
 
         private void OnPlayerDowned(ulong clientId)
@@ -197,20 +205,18 @@ namespace RatGame.Run
             ResultEndsAt.Value = NetworkManager.ServerTime.Time + _balance.ResultScreenSeconds;
             var result = new RunResult
             {
-                ZonesCleared = StageNumber.Value - 1,
                 TotalValue = RunTotalValue.Value,
                 CoinsAwarded = 0, // 메타 보상 규칙 미정 (docs/09)
                 DepositCounts = new Dictionary<ulong, int>(_depositCounts),
                 NewCodexIds = new List<string>()
             };
             EventBus.RaiseRunEnded(result);
-            RunSession.Reset();
-            Log.Dev($"전멸 — 스테이지 {StageNumber.Value}에서 런 종료, 가져온 누계 {RunTotalValue.Value}");
+            Log.Dev($"전멸 — 이번 적립 {StashedValue.Value} 잃음, 누계 {RunTotalValue.Value} 유지");
             GameStateMachine.Instance.TransitionTo(GameState.RunResult);
         }
 
-        // 결과 화면 뒤: 기지 씬이 아직 없어 런 씬(현재 씬)을 다시 연다 → 물건·RunManager 초기화, RunSession이 다음 스테이지를 넘겨줌.
-        // 기지 씬 구현 시 이 지점을 기지 씬 로드로 바꾼다
+        // 결과 화면 뒤 기지로. 플레이어 오브젝트는 씬을 넘어 유지되므로 손·주머니와 상태이상을 여기서 비운다
+        // (전멸 후 다운 상태가 다음 런까지 남던 문제). 기지 도착 위치는 DeparturePad가 잡는다
         private void LeaveStage()
         {
             _leaving = true;
@@ -219,11 +225,13 @@ namespace RatGame.Run
                 if (client.PlayerObject == null) continue;
                 var carry = client.PlayerObject.GetComponent<PlayerCarryController>();
                 if (carry != null) carry.ServerForceDrop(); // 손·주머니 참조가 다음 씬으로 새지 않게
+                var condition = client.PlayerObject.GetComponent<PlayerCondition>();
+                if (condition != null) condition.ServerSetState(ConditionState.Active);
             }
             GameStateMachine.Instance.TransitionTo(GameState.Lobby);
-            string scene = SceneManager.GetActiveScene().name;
-            Log.Dev($"결과 화면 종료 — {scene} 다시 로드 (다음: 스테이지 {RunSession.StageNumber})");
-            NetworkManager.SceneManager.LoadScene(scene, LoadSceneMode.Single);
+            RunSession.DepartPending = false;
+            Log.Dev($"결과 화면 종료 — 기지({_baseScene})로 (누계 {RunSession.TotalValue})");
+            NetworkManager.SceneManager.LoadScene(_baseScene, LoadSceneMode.Single);
         }
 
         private void SetPhase(RunPhase next)

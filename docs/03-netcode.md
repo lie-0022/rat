@@ -79,15 +79,16 @@ public class SteamLobbyService
 
 | 위치 | 변수 | 타입 |
 |---|---|---|
-| RunManager | Phase, StageNumber, RunTotalValue, StashedValue, ReturnReadyCount/NeededCount, ReturnAt, ResultCarriedValue, ResultEndsAt (docs/09) | enum, int…, double |
+| RunManager | Phase, RunTotalValue, StashedValue, ReturnReadyCount/NeededCount, ReturnAt, ResultCarriedValue, ResultEndsAt (docs/09) | enum, int…, double |
 | PlayerCondition | State (Active/Stunned/Trapped/Downed) | enum |
 | PlayerCarryController | CarriedItemNetId (0=빈손) | ulong |
 | CarryableItem | CarrierIds (최대4), Durability | NetworkList<ulong>, float |
 | CatBrain | State, TargetClientId | enum, ulong |
+| DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue | int, int, bool, double, int |
 
 ## 씬 동기화
 
-- 호스트: `NetworkManager.SceneManager.LoadScene("Run_Kitchen", Single)` → 클라 자동 로드.
+- 호스트: `NetworkManager.SceneManager.LoadScene("Stage_Warehouse01", Single)` → 클라 자동 로드.
 - 방 모듈 스폰(10 문서)은 씬 로드 완료 이벤트(OnLoadEventCompleted) 후 호스트가 NetworkObject.Spawn.
 - 시드는 RunManager NetworkVariable로 전달 → 클라는 스폰 결과를 받기만 함 (직접 생성 안 함).
 

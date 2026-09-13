@@ -14,7 +14,8 @@ namespace RatGame.Data
         [SerializeField] private int _maxZonesPerRun = 5;
         [SerializeField] private Vector2Int _roomModulesPerZone = new(3, 4);
 
-        [Header("귀환 (docs/09)")]
+        [Header("기지 출발·귀환 (docs/09·11)")]
+        [SerializeField] private float _departCountdownSeconds = 3f; // 전원 출발 발판 집합 후 출발까지 (s)
         [SerializeField] private float _returnCountdownSeconds = 3f; // 전원 쥐구멍 집합 후 귀환까지 (s)
         [SerializeField] private float _resultScreenSeconds = 8f;    // 귀환·전멸 결과 화면 표시 시간 (s)
 
@@ -124,6 +125,7 @@ namespace RatGame.Data
         public int MaxZonesPerRun => _maxZonesPerRun;
         public Vector2Int RoomModulesPerZone => _roomModulesPerZone;
         public float SoloCatVisionMultiplier => _soloCatVisionMultiplier;
+        public float DepartCountdownSeconds => _departCountdownSeconds;
         public float ReturnCountdownSeconds => _returnCountdownSeconds;
         public float ResultScreenSeconds => _resultScreenSeconds;
 

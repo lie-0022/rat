@@ -88,6 +88,21 @@ namespace RatGame.Player
             if (IsOwner) _staggerUntil = Time.time + duration;
         }
 
+        /// <summary>
+        /// 스테이지 도착 시 시작 위치로 이동 (docs/11). 이동은 소유 클라 권한이라 호스트가 옮기면 곧 덮어써진다 — 소유자가 직접 옮긴다.
+        /// </summary>
+        [Unity.Netcode.ClientRpc]
+        public void TeleportClientRpc(Vector3 position, Quaternion rotation, ClientRpcParams rpcParams = default)
+        {
+            if (!IsOwner) return;
+            _rb.linearVelocity = Vector3.zero;
+            _rb.position = position;
+            _rb.rotation = rotation;
+            transform.SetPositionAndRotation(position, rotation);
+            // 보간 없이 끊어서 이동 — 원격 사본이 먼 거리를 미끄러져 오지 않게
+            GetComponent<Unity.Netcode.Components.NetworkTransform>()?.Teleport(position, rotation, transform.localScale);
+        }
+
         private void Update()
         {
             // 웅크리기: 홀드 기본 (docs/04). 그레이박스 단계라 스케일로 콜라이더+비주얼 동시 축소.

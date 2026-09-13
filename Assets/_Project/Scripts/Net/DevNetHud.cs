@@ -6,11 +6,12 @@ namespace RatGame.Net
     /// <summary>
     /// 임시 IMGUI 네트워크 패널 — 진짜 메뉴 UI(태스크 2-6)가 생기면 삭제한다.
     /// MPPM 가상 플레이어에서도 버튼만으로 호스트/참가할 수 있게 하는 게 목적.
-    /// 호스트는 접속 후 Sandbox_Net을 로드한다 (docs/03 — 씬은 호스트가 로드, 클라 자동 동기화).
+    /// 호스트는 시작 후 기지(Hub)를 로드한다 (docs/03 — 씬은 호스트가 로드, 클라 자동 동기화; docs/11 — 런은 기지에서 출발).
     /// </summary>
     public class DevNetHud : MonoBehaviour
     {
-        // 호스트 Enter = 스테이지 출발. 버튼은 Esc로 커서를 풀어야 눌러져 테스트가 번거롭다
+        // 개발용: 에디터에서 스테이지 씬을 직접 플레이할 때만 쓰는 출발 (정식 흐름은 기지 출발 발판 — docs/11).
+        // 버튼은 Esc로 커서를 풀어야 눌러져 테스트가 번거로워 Enter도 받는다
         private void Update()
         {
             var nm = NetworkManager.Singleton;
@@ -31,7 +32,7 @@ namespace RatGame.Net
             if (!nm.IsListening)
             {
                 GUILayout.Label("[DEV] 넷 테스트");
-                if (GUILayout.Button("Host + Sandbox_Net")) StartHostToSandbox();
+                if (GUILayout.Button("Host + 기지")) StartHostToHub();
                 if (GUILayout.Button("Join 127.0.0.1")) _ = NetworkLauncher.Instance.JoinAsync();
             }
             else
@@ -43,19 +44,19 @@ namespace RatGame.Net
                 var run = Run.RunManager.Instance;
                 if (run != null)
                 {
-                    GUILayout.Label($"런: {run.Phase.Value} 스테이지{run.StageNumber.Value} 쥐구멍{run.StashedValue.Value} 누계{run.RunTotalValue.Value}");
-                    if (nm.IsHost && run.Phase.Value == Run.RunPhase.Ready && GUILayout.Button("출발"))
+                    GUILayout.Label($"런: {run.Phase.Value} 쥐구멍{run.StashedValue.Value} 누계{run.RunTotalValue.Value}");
+                    if (nm.IsHost && run.Phase.Value == Run.RunPhase.Ready && GUILayout.Button("출발 (개발용)"))
                         run.ServerStartStage(Random.Range(0, int.MaxValue));
                 }
             }
             GUILayout.EndArea();
         }
 
-        private async void StartHostToSandbox()
+        private async void StartHostToHub()
         {
             bool ok = await NetworkLauncher.Instance.StartHostAsync();
             if (ok)
-                NetworkManager.Singleton.SceneManager.LoadScene("Sandbox_Net",
+                NetworkManager.Singleton.SceneManager.LoadScene("Hub",
                     UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
     }

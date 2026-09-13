@@ -31,8 +31,7 @@ Assets/
       Boot.unity               ← 부트스트랩 전용 (항상 빌드 0번)
       MainMenu.unity
       Hub.unity                ← 쥐구멍 허브 (로비 겸용)
-      Run_Kitchen.unity        ← 구역 생성용 베이스 씬 (테마별 1개)
-      Run_Basement.unity
+      Stage_Warehouse01.unity  ← 창고 스테이지 맵 (2026-09-14: 옛 사람 집 테마 Run_Kitchen·Run_Basement 삭제, 맵 1개부터)
       Sandbox_Net.unity        ← 넷코드 검증용 회색 박스 씬 (W1)
     Scripts/                   ← 02-architecture의 네임스페이스 구조와 1:1
     Prefabs/
