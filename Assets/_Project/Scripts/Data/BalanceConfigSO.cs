@@ -52,6 +52,8 @@ namespace RatGame.Data
         [SerializeField] private float _throwMassDampNumerator = 3f; // massDamp = Clamp01(3/mass)
         [SerializeField] private float _throwChargeTime = 1.2f;      // 홀드 만충 시간
         [SerializeField] private float _throwHitStagger = 0.5f;      // 맞은 플레이어 비틀거림
+        [SerializeField] private float _throwAimMinDistance = 1.5f;  // 1인칭 조준 수렴 거리 하한 (m) — 코앞 벽이면 손에서 옆으로 꺾이지 않게
+        [SerializeField] private float _throwAimMaxDistance = 6f;    // 상한 (m) — 조준선이 아무것도 안 맞으면 이 거리로 모은다
 
         [Header("소음 (docs/06)")]
         [SerializeField] private float _maxNoiseRadius = 14f;        // loudness 100 기준 전파 반경
@@ -159,6 +161,8 @@ namespace RatGame.Data
         public float ThrowSpeedMax => _throwSpeedMax;
         public float ThrowChargeTime => _throwChargeTime;
         public float ThrowHitStagger => _throwHitStagger;
+        public float ThrowAimMinDistance => _throwAimMinDistance;
+        public float ThrowAimMaxDistance => _throwAimMaxDistance;
 
         public float MaxNoiseRadius => _maxNoiseRadius;
         public float WallAttenuation => _wallAttenuation;

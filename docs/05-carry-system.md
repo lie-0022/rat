@@ -66,7 +66,8 @@ sprint 금지  = loadPerRat > 3
 
 ## 던지기
 
-- Throw 홀드로 차지 0→1 (1.2s 만충). 궤적 프리뷰는 소유 클라 로컬로만 (점선 10개).
+- Throw 홀드로 차지 0→1 (1.2s 만충). 궤적 프리뷰는 소유 클라 로컬로만 (점선 10개, 손 쪽 폭 0.008 → 끝 0.05 — 눈앞 시작이라 굵으면 화면을 가림). 처음 부딪히는 지점(Linecast)에서 선을 끊는다 — 바닥 아래 점까지 그리면 화면 아래로 휘어 갈고리처럼 보임.
+- **던지는 방향 (1인칭, 2026-09-14)**: 손(HandAnchor)이 화면 오른쪽 아래라 시선과 평행하게 던지면 손 오프셋만큼 옆에 떨어진다 → 카메라 조준선이 닿는 점(레이캐스트, `throwAimMinDistance` 1.5m ~ `throwAimMaxDistance` 6m로 제한)을 향해 손에서 던지고 위로 0.15 보정.
 - `ThrowRequestServerRpc(dir, charge)` → 호스트: 조인트 해제 + `AddForce(dir * lerp(2, 9, charge) * massDamp, Impulse)`
   massDamp = `Clamp01(3 / mass)` — 무거운 건 못 던진다(굴리기 유도).
 - 던진 아이템에 맞은 플레이어: 0.5s 비틀거림(연출만, 데미지 없음) — 트롤 허용 지점.

@@ -27,11 +27,14 @@ namespace RatGame.Player
         private const float EyeForward = 0.12f;    // 캡슐 앞면 근처 — 자기 콜라이더 안쪽에서 렌더 안 되게
         private const float Sensitivity = 0.15f;
         private const float PitchLimit = 75f;
+        // 손에 든 물건이 눈앞 0.3~0.5m에 있다 — 기본 0.3이면 가까운 면이 잘려 물건이 통째로 사라지거나 번쩍인다
+        private const float NearClip = 0.05f;
 
         public override void OnNetworkSpawn()
         {
             if (!IsOwner) { enabled = false; return; }
             _cam = Camera.main;
+            if (_cam != null) _cam.nearClipPlane = NearClip;
             _lookAction = _inputAsset.FindActionMap("Player", true).FindAction("Look", true);
             _yaw = transform.eulerAngles.y;
             _pitch = 0f;
@@ -69,7 +72,8 @@ namespace RatGame.Player
 
         private void LateUpdate()
         {
-            if (_cam == null) { _cam = Camera.main; return; }
+            // 씬이 바뀌면 Main Camera도 새것 — 다시 잡을 때 near도 맞춘다
+            if (_cam == null) { _cam = Camera.main; if (_cam != null) _cam.nearClipPlane = NearClip; return; }
 
             // 메뉴 패널이 떠 있으면 커서는 InputFocus가 관리 — 여기선 건드리지 않는다
             if (!InputFocus.IsUiOpen)

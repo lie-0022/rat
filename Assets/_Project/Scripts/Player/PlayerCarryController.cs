@@ -157,12 +157,19 @@ namespace RatGame.Player
             ThrowRequestServerRpc(GetThrowDirection(), Mathf.Clamp01((Time.time - _chargeStart) / _balance.ThrowChargeTime));
         }
 
-        // 1인칭: 시선 방향으로 던진다 (위아래 조준 포함)
+        // 1인칭: 조준점을 향해 던진다 (위아래 조준 포함). 손이 화면 오른쪽 아래에 있어 시선과 평행하게 던지면
+        // 손 오프셋(약 0.45m)만큼 옆에 떨어진다 — 시선이 닿는 곳(최소~최대 거리로 제한)으로 모은다
         private Vector3 GetThrowDirection()
         {
             var cam = Camera.main;
-            Vector3 dir = cam != null ? cam.transform.forward : transform.forward;
-            return (dir + Vector3.up * 0.15f).normalized;
+            if (cam == null || _handAnchor == null) return (transform.forward + Vector3.up * 0.15f).normalized;
+            Vector3 origin = cam.transform.position, forward = cam.transform.forward;
+            int mask = ~LayerMask.GetMask("Player", "Carryable", "Ragdoll");
+            float dist = Physics.Raycast(origin, forward, out var hit, _balance.ThrowAimMaxDistance, mask, QueryTriggerInteraction.Ignore)
+                ? Mathf.Max(hit.distance, _balance.ThrowAimMinDistance)
+                : _balance.ThrowAimMaxDistance;
+            Vector3 aimDir = (origin + forward * dist - _handAnchor.position).normalized;
+            return (aimDir + Vector3.up * 0.15f).normalized;
         }
 
         private void UpdateTrajectoryPreview()
@@ -175,7 +182,9 @@ namespace RatGame.Player
                 go.transform.SetParent(transform, false);
                 _trajectoryLine = go.AddComponent<LineRenderer>();
                 _trajectoryLine.material = new Material(Shader.Find("Sprites/Default"));
-                _trajectoryLine.startWidth = _trajectoryLine.endWidth = 0.05f;
+                // 시작점이 눈앞 0.4m라 굵기가 같으면 화면을 가르는 흰 띠가 된다 — 손 쪽을 가늘게
+                _trajectoryLine.startWidth = 0.008f;
+                _trajectoryLine.endWidth = 0.05f;
                 _trajectoryLine.positionCount = 10;
                 _trajectoryLine.useWorldSpace = true;
             }
@@ -183,11 +192,26 @@ namespace RatGame.Player
             float v0 = _balance.GetThrowSpeed(ThrowCharge, item.Mass) * (_upgrades != null ? _upgrades.ThrowPowerMultiplier : 1f);
             Vector3 vel = GetThrowDirection() * v0;
             Vector3 pos = _handAnchor != null ? _handAnchor.position : transform.position;
-            for (int i = 0; i < 10; i++)
+            // 처음 부딪히는 곳에서 끊는다 — 안 끊으면 바닥 아래로 이어진 점들이 화면 아래로 휘어 갈고리처럼 보인다
+            int mask = ~LayerMask.GetMask("Player", "Carryable", "Ragdoll");
+            Vector3 prev = pos;
+            int count = 10;
+            _trajectoryLine.positionCount = 10;
+            _trajectoryLine.SetPosition(0, pos);
+            for (int i = 1; i < 10; i++)
             {
                 float t = i * 0.12f;
-                _trajectoryLine.SetPosition(i, pos + vel * t + 0.5f * Physics.gravity * t * t);
+                Vector3 p = pos + vel * t + 0.5f * Physics.gravity * t * t;
+                if (Physics.Linecast(prev, p, out var hit, mask, QueryTriggerInteraction.Ignore))
+                {
+                    _trajectoryLine.SetPosition(i, hit.point);
+                    count = i + 1;
+                    break;
+                }
+                _trajectoryLine.SetPosition(i, p);
+                prev = p;
             }
+            _trajectoryLine.positionCount = count;
         }
 
         private void HideTrajectory()
