@@ -24,6 +24,9 @@ namespace RatGame.Player
         /// <summary>최대치 — 상점 업그레이드 배율 포함 (docs/11).</summary>
         public float Max => _balance.StaminaMax * (_upgrades != null ? _upgrades.StaminaMaxMultiplier : 1f);
 
+        /// <summary>지친 상태 — 0이거나 헐떡이는 중 (달리기 불가). HUD 링 색 표시용.</summary>
+        public bool IsExhausted => Current <= 0f || Time.time < _pantEndTime;
+
         private void Awake()
         {
             _movement = GetComponent<PlayerController>();
@@ -60,7 +63,7 @@ namespace RatGame.Player
                 Current = Mathf.Min(Max, Current + _balance.StaminaRegen * Time.deltaTime);
             }
 
-            _movement.BlockSprintStamina = Current <= 0f || Time.time < _pantEndTime;
+            _movement.BlockSprintStamina = IsExhausted;
         }
 
         [ServerRpc]

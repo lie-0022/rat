@@ -13,9 +13,11 @@ namespace RatGame.UI
     public class CarryHud : NetworkBehaviour
     {
         [SerializeField] private RunBar _runBarPrefab;
+        [SerializeField] private StaminaRing _staminaRingPrefab;
 
         private PlayerCarryController _carry;
         private RunBar _runBar;
+        private StaminaRing _staminaRing;
         private Texture2D _dot;
         private GUIStyle _promptStyle;
         private GUIStyle _bigStyle;
@@ -30,11 +32,18 @@ namespace RatGame.UI
                 _runBar = Instantiate(_runBarPrefab);
                 DontDestroyOnLoad(_runBar.gameObject);
             }
+            if (_staminaRingPrefab != null)
+            {
+                _staminaRing = Instantiate(_staminaRingPrefab);
+                DontDestroyOnLoad(_staminaRing.gameObject);
+                _staminaRing.Bind(GetComponent<PlayerStamina>());
+            }
         }
 
         public override void OnNetworkDespawn()
         {
             if (_runBar != null) Destroy(_runBar.gameObject);
+            if (_staminaRing != null) Destroy(_staminaRing.gameObject);
         }
 
         private void OnGUI()
