@@ -1,18 +1,19 @@
 using System.Collections.Generic;
 using RatGame.Core;
+using RatGame.Data;
 using RatGame.World;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace RatGame.UI
 {
     /// <summary>
     /// 자판기 상점 패널 (uGUI, 로컬). VendingMachine NetworkVariable(누계·레벨)만 읽어 그린다 — 구매는 RequestPurchase로 요청.
-    /// 열려 있는 동안 InputFocus가 커서를 풀고 이동·시선·상호작용을 멈춘다.
+    /// 열려 있는 동안 InputFocus가 커서를 풀고 이동·시선·상호작용을 멈춘다. 결과 문구 색은 테마 역할(PositiveText/DangerText).
     /// </summary>
     public class ShopPanel : MonoBehaviour
     {
+        [SerializeField] private UiThemeSO _theme;
         [SerializeField] private GameObject _root;
         [SerializeField] private TMP_Text _totalText;
         [SerializeField] private TMP_Text _messageText;
@@ -20,8 +21,6 @@ namespace RatGame.UI
         [SerializeField] private ShopRow _rowPrefab;
         [SerializeField] private UnityEngine.UI.Button _closeButton;
         [SerializeField] private float _messageSeconds = 2f;
-        [SerializeField] private Color _okColor = new(0.75f, 1f, 0.75f);
-        [SerializeField] private Color _failColor = new(1f, 0.6f, 0.6f);
 
         private VendingMachine _machine;
         private readonly List<ShopRow> _rows = new();
@@ -70,7 +69,7 @@ namespace RatGame.UI
         public void ShowMessage(bool ok, string message)
         {
             _messageText.text = message;
-            _messageText.color = ok ? _okColor : _failColor;
+            if (_theme != null) _messageText.color = _theme.GetColor(ok ? UiColorRole.PositiveText : UiColorRole.DangerText);
             _messageUntil = Time.time + _messageSeconds;
         }
 

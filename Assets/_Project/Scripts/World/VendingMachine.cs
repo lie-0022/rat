@@ -67,8 +67,9 @@ namespace RatGame.World
         /// <summary>패널 → 호스트: index 항목 한 레벨 구매.</summary>
         public void RequestPurchase(int index) => PurchaseServerRpc(index);
 
-        [ServerRpc(RequireOwnership = false)]
-        private void PurchaseServerRpc(int index, ServerRpcParams rpcParams = default)
+        // 자판기는 호스트 소유 — 누구나 요청할 수 있어야 한다 (NGO 2.x Rpc API, RequireOwnership 대체)
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        private void PurchaseServerRpc(int index, RpcParams rpcParams = default)
         {
             ulong buyer = rpcParams.Receive.SenderClientId;
             var reply = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { buyer } } };

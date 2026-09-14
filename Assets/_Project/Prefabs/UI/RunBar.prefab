@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6648559286892407926}
   - component: {fileID: 2303892888005745572}
   - component: {fileID: 8750856844482470315}
+  - component: {fileID: 2742871845324553618}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -137,6 +138,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2742871845324553618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227422275607645040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 8
+  _text: 2
 --- !u!1 &813313943069028087
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,6 +164,7 @@ GameObject:
   - component: {fileID: 6558851764671470350}
   - component: {fileID: 4603788208819197478}
   - component: {fileID: 1295023360460064376}
+  - component: {fileID: 3387172633558178515}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -274,6 +291,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3387172633558178515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813313943069028087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 8
+  _text: 2
 --- !u!1 &1424627221609628819
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,6 +317,7 @@ GameObject:
   - component: {fileID: 3549699634554060526}
   - component: {fileID: 704303244898807270}
   - component: {fileID: 9204228638050629369}
+  - component: {fileID: 7488235654286241317}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -366,8 +399,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -411,6 +444,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7488235654286241317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1424627221609628819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 8
+  _text: 2
 --- !u!1 &1874284828542362788
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,6 +659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe992843a02b1409a9943f86aec854a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.RunBar
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _mainBox: {fileID: 6199314883679399129}
   _mainText: {fileID: 8750856844482470315}
   _popupBox: {fileID: 5192943030552183857}
@@ -619,8 +668,6 @@ MonoBehaviour:
   _subBox: {fileID: 1874284828542362788}
   _subBackground: {fileID: 6630193981217857208}
   _subText: {fileID: 1295023360460064376}
-  _subNormalColor: {r: 0, g: 0, b: 0, a: 0.6}
-  _subCountdownColor: {r: 0.15, g: 0.45, b: 0.2, a: 0.85}
 --- !u!1 &5192943030552183857
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,6 +680,7 @@ GameObject:
   - component: {fileID: 1006535743235552687}
   - component: {fileID: 1629466813055235924}
   - component: {fileID: 6324150744595142210}
+  - component: {fileID: 6618494078285997741}
   m_Layer: 0
   m_Name: PopupBox
   m_TagString: Untagged
@@ -681,7 +729,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2, g: 0.6, b: 0.25, a: 0.8}
+  m_Color: {r: 0.2, g: 0.6, b: 0.25, a: 0.85}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -724,6 +772,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &6618494078285997741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5192943030552183857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 10
+  _text: 0
 --- !u!1 &6199314883679399129
 GameObject:
   m_ObjectHideFlags: 0
@@ -736,6 +799,7 @@ GameObject:
   - component: {fileID: 8948883195651640545}
   - component: {fileID: 132071154999973123}
   - component: {fileID: 8943561734361874725}
+  - component: {fileID: 7899398876685016447}
   m_Layer: 0
   m_Name: MainBox
   m_TagString: Untagged
@@ -827,6 +891,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &7899398876685016447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6199314883679399129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 1
+  _text: 0
 --- !u!1 &7750828893212168475
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using RatGame.Data;
 using RatGame.Run;
 using RatGame.World;
 using TMPro;
@@ -7,12 +8,14 @@ using UnityEngine;
 namespace RatGame.UI
 {
     /// <summary>
-    /// 상단 중앙 런 바 (uGUI). 기지: 출발 발판 집합·카운트다운 + 누계 / 스테이지: 출발 대기·쥐구멍 적립·누계 + "+N" + 귀환 집합·카운트다운.
+    /// 상단 중앙 런 바 (uGUI). 기지: 출발 발판 집합·카운트다운 + 누계 / 스테이지: 출발 대기·쥐구멍·누계 + "+N" + 귀환 집합·카운트다운.
     /// NetworkVariable을 읽기만 한다 — 적립 EventBus 이벤트는 호스트에서만 발생해 클라는 못 받으므로 값 변화로 감지.
-    /// 소유 플레이어의 CarryHud가 생성·파괴한다. 결과 화면 중엔 숨긴다 (결과 패널은 아직 CarryHud).
+    /// HUD(HudController) 안에 있고, 결과 화면 중엔 숨긴다. 둘째 줄 배경색은 상태에 따라 테마 역할로 바꾼다.
     /// </summary>
     public class RunBar : MonoBehaviour
     {
+        [SerializeField] private UiThemeSO _theme;
+
         [Header("메인 줄")]
         [SerializeField] private GameObject _mainBox;
         [SerializeField] private TMP_Text _mainText;
@@ -26,8 +29,6 @@ namespace RatGame.UI
         [SerializeField] private GameObject _subBox;
         [SerializeField] private UnityEngine.UI.Image _subBackground;
         [SerializeField] private TMP_Text _subText;
-        [SerializeField] private Color _subNormalColor = new(0f, 0f, 0f, 0.6f);
-        [SerializeField] private Color _subCountdownColor = new(0.15f, 0.45f, 0.2f, 0.85f);
 
         private RunManager _boundRun;
         private DeparturePad _pad;
@@ -109,7 +110,9 @@ namespace RatGame.UI
         private void ShowSub(string text, bool countdown)
         {
             SetText(_subText, text);
-            _subBackground.color = countdown ? _subCountdownColor : _subNormalColor;
+            if (_theme == null) return;
+            Color color = _theme.GetColor(countdown ? UiColorRole.Positive : UiColorRole.Dim);
+            if (_subBackground.color != color) _subBackground.color = color;
         }
 
         private void SetVisible(bool main, bool popup, bool sub)

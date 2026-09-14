@@ -202,18 +202,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edb9b1483fb534af1864c49900e7ccd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.StaminaRing
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _group: {fileID: 5482410843842456760}
   _fill: {fileID: 3770065044850566888}
   _track: {fileID: 4900881068293187576}
-  _trackColor: {r: 0, g: 0, b: 0, a: 0.5}
-  _trackExhaustedColor: {r: 0.8, g: 0.15, b: 0.1, a: 0.7}
   _fadeInSpeed: 8
   _fadeOutSpeed: 2.5
   _hideDelay: 0.6
   _lowRatio: 0.25
-  _normalColor: {r: 1, g: 1, b: 1, a: 0.9}
-  _lowColor: {r: 1, g: 0.7, b: 0.2, a: 0.95}
-  _exhaustedColor: {r: 1, g: 0.3, b: 0.25, a: 1}
 --- !u!1 &6045303094397686410
 GameObject:
   m_ObjectHideFlags: 0

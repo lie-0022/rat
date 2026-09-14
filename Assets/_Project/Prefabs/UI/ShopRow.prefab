@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7464017504267467984}
   - component: {fileID: 5235419759581767457}
   - component: {fileID: 2311016759640512465}
+  - component: {fileID: 4668203370716274154}
   m_Layer: 0
   m_Name: DescText
   m_TagString: Untagged
@@ -137,6 +138,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4668203370716274154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347316685505199643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 9
+  _text: 4
 --- !u!1 &2207113189815651408
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,6 +166,7 @@ GameObject:
   - component: {fileID: 7207201878256422224}
   - component: {fileID: 3478352011734615683}
   - component: {fileID: 8323660323641880027}
+  - component: {fileID: 5152160624308281245}
   m_Layer: 0
   m_Name: BuyButton
   m_TagString: Untagged
@@ -279,6 +296,21 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5152160624308281245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2207113189815651408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 5
+  _text: 0
 --- !u!1 &2670286087941503288
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,6 +322,7 @@ GameObject:
   - component: {fileID: 8150656164477101827}
   - component: {fileID: 3009756868456420245}
   - component: {fileID: 8844423892097695104}
+  - component: {fileID: 2854111633625692113}
   m_Layer: 0
   m_Name: NameText
   m_TagString: Untagged
@@ -371,8 +404,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -416,6 +449,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2854111633625692113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2670286087941503288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 8
+  _text: 3
 --- !u!1 &3009343023966670636
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,6 +475,7 @@ GameObject:
   - component: {fileID: 5845188686283908841}
   - component: {fileID: 2903087966122496277}
   - component: {fileID: 2237569758802849329}
+  - component: {fileID: 8309368519747556395}
   m_Layer: 0
   m_Name: PriceText
   m_TagString: Untagged
@@ -553,6 +602,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8309368519747556395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3009343023966670636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 6
+  _text: 3
 --- !u!1 &3479691150098879843
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,6 +631,7 @@ GameObject:
   - component: {fileID: 8846872812417687088}
   - component: {fileID: 4071462992859163466}
   - component: {fileID: 8409604748469283918}
+  - component: {fileID: 5928053624896448094}
   m_Layer: 0
   m_Name: ShopRow
   m_TagString: Untagged
@@ -697,6 +762,21 @@ MonoBehaviour:
   _levelText: {fileID: 5351072466255042009}
   _priceText: {fileID: 2237569758802849329}
   _buyButton: {fileID: 3478352011734615683}
+--- !u!114 &5928053624896448094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3479691150098879843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 3
+  _text: 0
 --- !u!1 &5205814152307325077
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,6 +874,7 @@ GameObject:
   - component: {fileID: 3262225907497094592}
   - component: {fileID: 5351072466255042009}
   - component: {fileID: 994910197923144505}
+  - component: {fileID: 8902132465164858832}
   m_Layer: 0
   m_Name: LevelText
   m_TagString: Untagged
@@ -940,3 +1021,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8902132465164858832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6024763382896603293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 7
+  _text: 3

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2562239110516859392}
   - component: {fileID: 6298789490417863895}
   - component: {fileID: 2287673126846200579}
+  - component: {fileID: 3645191269887571693}
   m_Layer: 0
   m_Name: CloseButton
   m_TagString: Untagged
@@ -142,6 +143,21 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3645191269887571693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51274552530204160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 4
+  _text: 0
 --- !u!1 &418289546592540000
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,6 +169,7 @@ GameObject:
   - component: {fileID: 7868288219757933469}
   - component: {fileID: 6644420839480079423}
   - component: {fileID: 2308367996701992177}
+  - component: {fileID: 3386073330148219392}
   m_Layer: 0
   m_Name: CountText
   m_TagString: Untagged
@@ -279,6 +296,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3386073330148219392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418289546592540000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 8
+  _text: 2
 --- !u!1 &559935562996502246
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,6 +324,7 @@ GameObject:
   - component: {fileID: 6727288314921520200}
   - component: {fileID: 3298402396059355284}
   - component: {fileID: 6557946862173993992}
+  - component: {fileID: 8221083667956953200}
   m_Layer: 0
   m_Name: ScrollView
   m_TagString: Untagged
@@ -340,7 +373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.2}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.35}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -407,6 +440,21 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8221083667956953200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559935562996502246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 3
+  _text: 0
 --- !u!1 &1040981054000582509
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,6 +466,7 @@ GameObject:
   - component: {fileID: 3553969620849122880}
   - component: {fileID: 5018593187119810199}
   - component: {fileID: 6804380205492607469}
+  - component: {fileID: 6313151692574522871}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -499,8 +548,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -544,6 +593,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6313151692574522871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040981054000582509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 8
+  _text: 3
 --- !u!1 &1658366255341888848
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,6 +619,7 @@ GameObject:
   - component: {fileID: 7647098098078232921}
   - component: {fileID: 5194624512390488143}
   - component: {fileID: 6305511693613584554}
+  - component: {fileID: 3805739092586732890}
   m_Layer: 0
   m_Name: Dim
   m_TagString: Untagged
@@ -620,6 +685,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3805739092586732890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658366255341888848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 1
+  _text: 0
 --- !u!1 &3440327120896432742
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,6 +909,7 @@ GameObject:
   - component: {fileID: 6756044823785934680}
   - component: {fileID: 253812485158661798}
   - component: {fileID: 444441267533036840}
+  - component: {fileID: 4859015469083820526}
   m_Layer: 0
   m_Name: Window
   m_TagString: Untagged
@@ -879,7 +960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.14, g: 0.11, b: 0.08, a: 0.96}
+  m_Color: {r: 0.12, g: 0.1, b: 0.08, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -922,6 +1003,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &4859015469083820526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4617343059738593625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 2
+  _text: 0
 --- !u!1 &5528068725451552729
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,6 +1114,7 @@ GameObject:
   - component: {fileID: 3453076929048502054}
   - component: {fileID: 5439171148067646402}
   - component: {fileID: 2910171287721249307}
+  - component: {fileID: 81953871263657007}
   m_Layer: 0
   m_Name: TitleText
   m_TagString: Untagged
@@ -1082,7 +1179,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 0.85, b: 0.55, a: 1}
+  m_fontColor: {r: 1, g: 0.9, b: 0.5, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1144,6 +1241,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &81953871263657007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6853858385618512592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba8fac29fd0334cee85519b939e83c78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.ThemedGraphic
+  _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
+  _color: 7
+  _text: 1
 --- !u!1 &7503312776832140367
 GameObject:
   m_ObjectHideFlags: 0
