@@ -29,6 +29,12 @@
 - 장비 4종(아래 표)·소모품·치즈코인은 아직 미구현 — 업그레이드 상점이 먼저 (사용자 요청: 스탯·인벤 증가 필수).
 - 연습용 전리품: 기지 동쪽 구석에 GrayBox_S ×2 + Test_Phone (씬 배치, `PracticeLoot`).
 
+## 거울·도감 (2026-09-14 구현 — 1차)
+
+- **거울** `World/Mirror` (북쪽 벽 오른쪽, IInteractable "거울") → `UI/MirrorPanel`: 기본(팀 색) + `Data/Skins` 4종(노란·검은·흰·분홍 쥐, 틴트만·모자 없음). 착용 = `Player/PlayerSkin` NetworkVariable<FixedString32Bytes>(소유 클라 쓰기) → 전 클라 `PlayerVisual.SetBodyColor`. 개인 저장 `SaveData.EquippedSkinId`. **도전과제 미구현이라 전부 해금** (AchievementId 빈 값).
+- **도감** `World/CodexBook` (북쪽 벽 왼쪽, "도감") → `UI/CodexPanel` (ScrollRect): ItemDatabase 중 Id `loot_*` 20종. 해금 = 정산 이벤트(EventBus.LootDeposited, 호스트) → 각 플레이어의 `Player/PlayerCodex`가 자기 소유 클라에 ClientRpc → `SaveData.UnlockedCodexIds`에 저장. 미해금은 "???". 토스트는 아직 없음.
+- 상호작용 프롬프트 HUD가 아직 없어 각 배치물 위에 월드 TMP 라벨 "[E] 거울/도감/쥐 상점".
+
 ## Meta/MetaWallet.cs + SaveService
 
 ```csharp

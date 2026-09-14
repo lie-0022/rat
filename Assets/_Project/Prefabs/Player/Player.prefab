@@ -327,6 +327,8 @@ GameObject:
   - component: {fileID: 6238603153277997214}
   - component: {fileID: 6305106658479211622}
   - component: {fileID: 1616387095400616965}
+  - component: {fileID: 1105088405875469566}
+  - component: {fileID: 8749629657434418913}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -720,6 +722,75 @@ MonoBehaviour:
       MoveSpeed: 0
       StaminaMax: 0
       ThrowPower: 0
+--- !u!114 &1105088405875469566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9321803faf354fa3b1dd3e0d0d579c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerSkin
+  ShowTopMostFoldoutHeaderGroup: 1
+  _skins:
+  - {fileID: 11400000, guid: fdabe07a27cee45c388d5ed2a6dc3c13, type: 2}
+  - {fileID: 11400000, guid: 491cd80b5a5d4474dbaa96fb46383e94, type: 2}
+  - {fileID: 11400000, guid: 6785b201db0034ce9819b440f23f9a61, type: 2}
+  - {fileID: 11400000, guid: c491c9c272c98486b88df3808be9f992, type: 2}
+  SkinId:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue:
+      utf8LengthInBytes: 0
+      bytes:
+        offset0000:
+          byte0000: 0
+          byte0001: 0
+          byte0002: 0
+          byte0003: 0
+          byte0004: 0
+          byte0005: 0
+          byte0006: 0
+          byte0007: 0
+          byte0008: 0
+          byte0009: 0
+          byte0010: 0
+          byte0011: 0
+          byte0012: 0
+          byte0013: 0
+          byte0014: 0
+          byte0015: 0
+        byte0016: 0
+        byte0017: 0
+        byte0018: 0
+        byte0019: 0
+        byte0020: 0
+        byte0021: 0
+        byte0022: 0
+        byte0023: 0
+        byte0024: 0
+        byte0025: 0
+        byte0026: 0
+        byte0027: 0
+        byte0028: 0
+        byte0029: 0
+--- !u!114 &8749629657434418913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd2bb530eb5764e04a91a846ed2ab2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerCodex
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &4262434128330920448
 GameObject:
   m_ObjectHideFlags: 0

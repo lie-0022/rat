@@ -13,6 +13,10 @@ namespace RatGame.Core
         public int HaulTotal;
         /// <summary>팀 업그레이드 레벨 (docs/11 상점) — 누계로 사고 누계와 같은 파일에 산다.</summary>
         public RatGame.Data.UpgradeLevels Upgrades;
+        /// <summary>개인: 착용 스킨 Id (빈 문자열 = 기본 팀 색).</summary>
+        public string EquippedSkinId = "";
+        /// <summary>개인: 도감 해금 아이템 Id (첫 정산 시 호스트 ClientRpc → 각자 저장, docs/08).</summary>
+        public System.Collections.Generic.List<string> UnlockedCodexIds = new();
     }
 
     /// <summary>

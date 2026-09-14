@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using RatGame.Core;
 using RatGame.World;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.UI;
 
 namespace RatGame.UI
 {
@@ -33,7 +30,7 @@ namespace RatGame.UI
 
         private void Awake()
         {
-            EnsureEventSystem();
+            UiCommon.EnsureEventSystem();
             _closeButton.onClick.AddListener(Close);
             _root.SetActive(false);
         }
@@ -47,16 +44,14 @@ namespace RatGame.UI
             }
             _root.SetActive(true);
             _messageText.text = "";
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            UiCommon.SetCursorFree(true);
         }
 
         public void Close()
         {
             if (!IsOpen) return;
             _root.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            UiCommon.SetCursorFree(false);
         }
 
         public void ShowMessage(bool ok, string message)
@@ -95,15 +90,6 @@ namespace RatGame.UI
                 row.Bind(i, _machine.Upgrades[i], _machine.RequestPurchase);
                 _rows.Add(row);
             }
-        }
-
-        // 씬에 EventSystem이 없으면 버튼이 조용히 안 눌린다 (ui-ugui 스킬 규칙) — 정확히 하나만 보장
-        private static void EnsureEventSystem()
-        {
-            if (EventSystem.current != null) return;
-            var go = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
-            DontDestroyOnLoad(go);
-            Log.Dev("EventSystem 생성 (ShopPanel)");
         }
 
         private static void SetText(TMP_Text label, string text)

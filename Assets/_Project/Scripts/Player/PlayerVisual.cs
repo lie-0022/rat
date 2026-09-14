@@ -4,7 +4,7 @@ using UnityEngine;
 namespace RatGame.Player
 {
     /// <summary>
-    /// 클라별 몸 색 (그레이박스 구분용 — 진짜 스킨 시스템은 태스크 2-5).
+    /// 몸 색. 기본은 클라별 팔레트(그레이박스 구분용), 스킨(PlayerSkin)이 있으면 그 틴트.
     /// MaterialPropertyBlock이라 머티리얼 에셋은 오염 안 됨.
     /// </summary>
     public class PlayerVisual : NetworkBehaviour
@@ -17,9 +17,14 @@ namespace RatGame.Player
             new(0.95f, 0.85f, 0.45f), // P4 노랑 쥐
         };
 
-        public override void OnNetworkSpawn()
+        public override void OnNetworkSpawn() => ResetBodyColor();
+
+        public Color DefaultColor => Palette[(int)(OwnerClientId % (ulong)Palette.Length)];
+
+        public void ResetBodyColor() => SetBodyColor(DefaultColor);
+
+        public void SetBodyColor(Color color)
         {
-            var color = Palette[(int)(OwnerClientId % (ulong)Palette.Length)];
             var block = new MaterialPropertyBlock();
             block.SetColor("_BaseColor", color);
             // 몸통(루트 렌더러)만 — 귀·코·꼬리는 핑크 유지

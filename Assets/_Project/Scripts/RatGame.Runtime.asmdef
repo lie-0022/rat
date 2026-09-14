@@ -9,7 +9,8 @@
         "Unity.AI.Navigation",
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.TextMeshPro",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "Unity.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
