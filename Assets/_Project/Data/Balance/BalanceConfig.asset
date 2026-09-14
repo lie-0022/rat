@@ -15,13 +15,13 @@ MonoBehaviour:
   _maxPlayers: 4
   _maxZonesPerRun: 5
   _roomModulesPerZone: {x: 3, y: 4}
-  _quotaBase: 100
-  _quotaGrowth: 1.6
-  _soloQuotaMultiplier: 0.55
+  _departCountdownSeconds: 3
+  _returnCountdownSeconds: 3
+  _resultScreenSeconds: 8
   _soloCatVisionMultiplier: 0.8
-  _walkSpeed: 4.5
-  _sprintSpeed: 7
-  _crouchSpeed: 2.2
+  _walkSpeed: 3.8
+  _sprintSpeed: 6
+  _crouchSpeed: 1.9
   _groundAcceleration: 40
   _airAcceleration: 10
   _jumpImpulse: 5.5
@@ -35,13 +35,18 @@ MonoBehaviour:
   _grabRange: 1.2
   _grabBreakDistance: 3
   _heavyThreshold: 6
+  _carryMinSpeedMultiplier: 0.15
+  _carrySlotStandDistance: 0.45
+  _carrySlotSnapTime: 0.2
   _sprintBlockLoad: 3
   _jumpBlockLoad: 4.5
-  _throwForceMin: 2
-  _throwForceMax: 9
+  _throwSpeedMin: 2
+  _throwSpeedMax: 6
   _throwMassDampNumerator: 3
   _throwChargeTime: 1.2
   _throwHitStagger: 0.5
+  _throwAimMinDistance: 1.5
+  _throwAimMaxDistance: 6
   _maxNoiseRadius: 14
   _wallAttenuation: 0.6
   _footstepWalkLoudness: 8
@@ -60,3 +65,46 @@ MonoBehaviour:
   _crackedValueMultiplier: 0.5
   _slipperyInterval: 3
   _slipperyChance: 0.12
+  _stunSeconds: 2
+  _highFallStunHeight: 6
+  _rescueHoldSeconds: 1.5
+  _catPatrolSpeed: 2
+  _catSuspiciousSpeed: 3
+  _catChaseSpeed: 5.5
+  _catReturnSpeed: 2
+  _catViewDistance: 8
+  _catCrouchViewMultiplier: 0.5
+  _catViewHalfAngle: 35
+  _catGazeGainPerSec: 60
+  _catGaugeDecayPerSec: 20
+  _catHearingGain: 0.8
+  _catHearThreshold: 10
+  _catSuspicionThreshold: 30
+  _catChaseThreshold: 100
+  _catDirectSightChaseSeconds: 1
+  _catCloseSightDistance: 2
+  _catLoseSightSeconds: 3
+  _catCaptureRange: 1
+  _catCaptureSwingSeconds: 0.4
+  _catCaptureRadius: 1.2
+  _catGroomSeconds: 3
+  _catSuspiciousWanderSeconds: 6
+  _catSleepSenseMultiplier: 0.3
+  _catPatrolWaitRange: {x: 2, y: 5}
+  _catDistractedSpeed: 4
+  _lureYarnSeconds: 8
+  _lureYarnRadius: 10
+  _lureCatnipSeconds: 15
+  _lureCatnipRadius: 3
+  _staminaMax: 100
+  _staminaSprintDrain: 20
+  _staminaHeavyDrain: 15
+  _staminaRegen: 25
+  _staminaRegenDelay: 1
+  _exhaustPantSeconds: 1.5
+  _baseCarrySlots: 2
+  _upgradeMoveSpeedPerLevel: 0.08
+  _upgradeStaminaPerLevel: 0.2
+  _upgradeThrowPerLevel: 0.15
+  _upgradeJumpPerLevel: 0.1
+  _pantLoudness: 18

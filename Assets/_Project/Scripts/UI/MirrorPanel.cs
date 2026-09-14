@@ -21,6 +21,7 @@ namespace RatGame.UI
         private PlayerSkin _skin;
         private readonly List<MirrorRow> _rows = new();
         private bool _open;
+        private float _openedAt;
 
         public bool IsOpen => _open;
 
@@ -44,6 +45,7 @@ namespace RatGame.UI
             if (_skin != skin) { _skin = skin; BuildRows(); }
             if (_open) return;
             _open = true;
+            _openedAt = Time.unscaledTime;
             _root.SetActive(true);
             InputFocus.PanelOpened();
         }
@@ -59,7 +61,7 @@ namespace RatGame.UI
         private void Update()
         {
             if (!_open || _skin == null) return;
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(true); return; }
+            if (UiCommon.ClosePressed(_openedAt, out bool byEscape)) { Close(byEscape); return; }
             string current = _skin.CurrentId;
             foreach (var row in _rows) row.Refresh(current);
         }

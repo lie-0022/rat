@@ -27,6 +27,7 @@ namespace RatGame.UI
         private readonly List<ShopRow> _rows = new();
         private float _messageUntil;
         private bool _open;
+        private float _openedAt;
 
         public bool IsOpen => _open;
 
@@ -53,6 +54,7 @@ namespace RatGame.UI
             _messageText.text = "";
             if (_open) return;
             _open = true;
+            _openedAt = Time.unscaledTime;
             _root.SetActive(true);
             InputFocus.PanelOpened();
         }
@@ -75,7 +77,7 @@ namespace RatGame.UI
         private void Update()
         {
             if (!_open || _machine == null) return;
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(true); return; }
+            if (UiCommon.ClosePressed(_openedAt, out bool byEscape)) { Close(byEscape); return; }
 
             int total = _machine.HaulTotal.Value;
             SetText(_totalText, $"누계 {total}");

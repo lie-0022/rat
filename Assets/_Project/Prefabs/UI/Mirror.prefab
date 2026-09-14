@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7190687332062112425}
   - component: {fileID: 2409209027385406661}
   - component: {fileID: 4225084337753839054}
+  - component: {fileID: 4494149845945764182}
   m_Layer: 0
   m_Name: Mirror
   m_TagString: Untagged
@@ -33,8 +34,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6953682830405076042}
-  - {fileID: 2846242970702494019}
   - {fileID: 5963390002236397276}
+  - {fileID: 1820331123359892484}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &7190687332062112425
@@ -99,6 +100,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.World.Mirror
   ShowTopMostFoldoutHeaderGroup: 1
   _panelPrefab: {fileID: 5747573621488925790, guid: 655603d74767f49bd8d63e85abf3b71e, type: 3}
+--- !u!114 &4494149845945764182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46595040290650892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67565ea4d6df64e60bbf31355a8fe756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.World.MirrorReflection
+  _glass: {fileID: 3488205677376290552}
+  _textureSize: 1024
+  _maxDistance: 10
+  _farClip: 30
+  _tint: {r: 0.92, g: 0.95, b: 1, a: 1}
 --- !u!1 &108946004309626809
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,7 +388,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 6023639523836457931}
   m_maskType: 0
---- !u!1 &3696668393739103640
+--- !u!1 &4320057096205469640
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -378,9 +396,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2846242970702494019}
-  - component: {fileID: 511705065047640861}
-  - component: {fileID: 9177885055173799389}
+  - component: {fileID: 1820331123359892484}
+  - component: {fileID: 4128500261423821883}
+  - component: {fileID: 3488205677376290552}
   m_Layer: 0
   m_Name: Glass
   m_TagString: Untagged
@@ -388,38 +406,38 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2846242970702494019
+--- !u!4 &1820331123359892484
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3696668393739103640}
+  m_GameObject: {fileID: 4320057096205469640}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.75, z: 0}
-  m_LocalScale: {x: 0.95, y: 1.35, z: 0.03}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0.005}
+  m_LocalScale: {x: 0.95, y: 1.35, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1624739928439821846}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &511705065047640861
+--- !u!33 &4128500261423821883
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3696668393739103640}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &9177885055173799389
+  m_GameObject: {fileID: 4320057096205469640}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &3488205677376290552
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3696668393739103640}
+  m_GameObject: {fileID: 4320057096205469640}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -436,7 +454,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 795530be347de4d579e7ef9d6e6d9704, type: 2}
+  - {fileID: 2100000, guid: e5391055ae49242d581420b0c18125bb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -102,6 +102,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7f6acda674531421cb2b5b159769cc37, type: 2}
   - {fileID: 11400000, guid: ab0ee37a0b29e4306b4a0d1d95d2e0bd, type: 2}
   - {fileID: 11400000, guid: 8e6ff0708737f4046a38268a40aa8db7, type: 2}
+  - {fileID: 11400000, guid: 6a1897eece44a4d7294492bcc9e3c28c, type: 2}
   _panelPrefab: {fileID: 6125324764225488796, guid: d6385c4d15d3b4f52aace00664eb8497, type: 3}
   HaulTotal:
     UpdateTraits:
@@ -117,6 +118,7 @@ MonoBehaviour:
       MoveSpeed: 0
       StaminaMax: 0
       ThrowPower: 0
+      JumpPower: 0
 --- !u!1 &1802713077603178303
 GameObject:
   m_ObjectHideFlags: 0

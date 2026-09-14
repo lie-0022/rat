@@ -23,9 +23,9 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 1f)] private float _soloCatVisionMultiplier = 0.8f; // 시야 -20%
 
         [Header("플레이어 이동 (docs/04)")]
-        [SerializeField] private float _walkSpeed = 4.5f;
-        [SerializeField] private float _sprintSpeed = 7f;
-        [SerializeField] private float _crouchSpeed = 2.2f;
+        [SerializeField] private float _walkSpeed = 3.8f;   // 2026-09-14 4.5 → 3.8 (기본 속도 낮춤, 상점 튼튼한 다리로 회복)
+        [SerializeField] private float _sprintSpeed = 6f;   // 7 → 6
+        [SerializeField] private float _crouchSpeed = 1.9f; // 2.2 → 1.9
         [SerializeField] private float _groundAcceleration = 40f;
         [SerializeField] private float _airAcceleration = 10f;
         [SerializeField] private float _jumpImpulse = 5.5f;
@@ -127,6 +127,7 @@ namespace RatGame.Data
         [SerializeField] private float _upgradeMoveSpeedPerLevel = 0.08f; // 걷기·달리기 +8%/Lv
         [SerializeField] private float _upgradeStaminaPerLevel = 0.2f;    // 최대 스태미나 +20%/Lv
         [SerializeField] private float _upgradeThrowPerLevel = 0.15f;     // 던지기 속도 +15%/Lv
+        [SerializeField] private float _upgradeJumpPerLevel = 0.1f;       // 점프 임펄스 +10%/Lv (높이는 제곱이라 약 +21%/Lv)
         [SerializeField] private float _pantLoudness = 18f;
 
         public int MaxPlayers => _maxPlayers;
@@ -228,6 +229,7 @@ namespace RatGame.Data
         public float UpgradeMoveSpeedPerLevel => _upgradeMoveSpeedPerLevel;
         public float UpgradeStaminaPerLevel => _upgradeStaminaPerLevel;
         public float UpgradeThrowPerLevel => _upgradeThrowPerLevel;
+        public float UpgradeJumpPerLevel => _upgradeJumpPerLevel;
         public float HighFallStunHeight => _highFallStunHeight;
         public float RescueHoldSeconds => _rescueHoldSeconds;
         public float StaminaMax => _staminaMax;

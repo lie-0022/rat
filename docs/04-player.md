@@ -21,9 +21,9 @@ Rigidbody 기반 (CharacterController 아님 — 물리 상호작용 필수).
 
 | 수치 (BalanceConfigSO) | 값 |
 |---|---|
-| walkSpeed | 4.5 m/s |
-| sprintSpeed | 7 m/s |
-| crouchSpeed | 2.2 m/s |
+| walkSpeed | 3.8 m/s (2026-09-14 4.5에서 낮춤) |
+| sprintSpeed | 6 m/s (7에서) |
+| crouchSpeed | 1.9 m/s (2.2에서) |
 | acceleration | 40 (지상) / 10 (공중) |
 | jumpImpulse | 5.5 |
 | coyoteTime | 0.1s |

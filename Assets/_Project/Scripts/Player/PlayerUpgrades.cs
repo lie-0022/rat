@@ -18,6 +18,7 @@ namespace RatGame.Player
         public float MoveSpeedMultiplier => 1f + Levels.Value.MoveSpeed * _balance.UpgradeMoveSpeedPerLevel;
         public float StaminaMaxMultiplier => 1f + Levels.Value.StaminaMax * _balance.UpgradeStaminaPerLevel;
         public float ThrowPowerMultiplier => 1f + Levels.Value.ThrowPower * _balance.UpgradeThrowPerLevel;
+        public float JumpPowerMultiplier => 1f + Levels.Value.JumpPower * _balance.UpgradeJumpPerLevel;
         public int CarrySlotCount => _balance.BaseCarrySlots + Levels.Value.CarrySlots;
 
         public override void OnNetworkSpawn()

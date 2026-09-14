@@ -3,7 +3,7 @@ using UnityEngine;
 namespace RatGame.Data
 {
     /// <summary>상점 업그레이드 효과 종류 — 효과당 업그레이드 1개, 수치는 BalanceConfigSO (docs/11 상점).</summary>
-    public enum UpgradeEffect { CarrySlots, MoveSpeed, StaminaMax, ThrowPower }
+    public enum UpgradeEffect { CarrySlots, MoveSpeed, StaminaMax, ThrowPower, JumpPower }
 
     /// <summary>
     /// 기지 상점 업그레이드 항목 (docs/11). 팀 누계(HaulTotal)로 산다 — 레포식이라 팀 공유·호스트 저장.

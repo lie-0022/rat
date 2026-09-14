@@ -212,7 +212,8 @@ namespace RatGame.Player
             var v = _rb.linearVelocity;
             v.y = 0f;
             _rb.linearVelocity = v; // 점프 순간 수직 속도 리셋만 — 수평은 유지
-            _rb.AddForce(Vector3.up * _balance.JumpImpulse, ForceMode.VelocityChange);
+            float jump = _balance.JumpImpulse * (_upgrades != null ? _upgrades.JumpPowerMultiplier : 1f); // 상점 업그레이드 (docs/11)
+            _rb.AddForce(Vector3.up * jump, ForceMode.VelocityChange);
         }
     }
 }

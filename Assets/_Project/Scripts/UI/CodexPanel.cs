@@ -24,6 +24,7 @@ namespace RatGame.UI
         private readonly List<(LootItemSO item, CodexRow row)> _rows = new();
         private PlayerCodex _codex;
         private bool _open;
+        private float _openedAt;
 
         public bool IsOpen => _open;
 
@@ -47,6 +48,7 @@ namespace RatGame.UI
             Refresh();
             if (_open) return;
             _open = true;
+            _openedAt = Time.unscaledTime;
             _root.SetActive(true);
             InputFocus.PanelOpened();
         }
@@ -61,7 +63,7 @@ namespace RatGame.UI
 
         private void Update()
         {
-            if (_open && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) Close(true);
+            if (_open && UiCommon.ClosePressed(_openedAt, out bool byEscape)) Close(byEscape);
         }
 
         private void BuildRows(ItemDatabase database)
