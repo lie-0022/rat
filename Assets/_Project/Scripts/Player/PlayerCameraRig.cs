@@ -1,3 +1,4 @@
+using RatGame.Core;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -56,14 +57,31 @@ namespace RatGame.Player
             Cursor.visible = !locked;
         }
 
+        // DEV IMGUI 패널 위 클릭은 버튼 조작이라 잠금으로 먹지 않는다
+        private static bool WantsRelockClick()
+        {
+            var mouse = Mouse.current;
+            if (mouse == null || !mouse.leftButton.wasPressedThisFrame) return false;
+            Vector2 p = mouse.position.ReadValue();
+            var guiPoint = new Vector2(p.x, Screen.height - p.y); // GUI 좌표는 좌상단 원점
+            return !InputFocus.NoRelockGuiRect.Contains(guiPoint);
+        }
+
         private void LateUpdate()
         {
             if (_cam == null) { _cam = Camera.main; return; }
 
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-                SetCursorLocked(Cursor.lockState != CursorLockMode.Locked);
+            // 메뉴 패널이 떠 있으면 커서는 InputFocus가 관리 — 여기선 건드리지 않는다
+            if (!InputFocus.IsUiOpen)
+            {
+                var kb = Keyboard.current;
+                if (kb != null && kb.escapeKey.wasPressedThisFrame && !InputFocus.EscConsumedThisFrame)
+                    SetCursorLocked(Cursor.lockState != CursorLockMode.Locked);
+                else if (Cursor.lockState != CursorLockMode.Locked && WantsRelockClick())
+                    SetCursorLocked(true); // 메뉴를 닫았거나 에디터가 Esc로 잠금을 푼 뒤 — 게임 화면 클릭으로 다시 잠금
+            }
             // 커서가 풀려 있으면(메뉴 조작 중) 시선 회전 정지 — 클릭이 새지 않게
-            bool rotating = Cursor.lockState == CursorLockMode.Locked;
+            bool rotating = !InputFocus.IsUiOpen && Cursor.lockState == CursorLockMode.Locked;
 
             Vector2 look = rotating ? _lookAction.ReadValue<Vector2>() : Vector2.zero;
             _yaw += look.x * Sensitivity;

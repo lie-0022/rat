@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RatGame.Core;
 using RatGame.Data;
 using RatGame.Player;
 using TMPro;
@@ -22,14 +23,20 @@ namespace RatGame.UI
 
         private readonly List<(LootItemSO item, CodexRow row)> _rows = new();
         private PlayerCodex _codex;
+        private bool _open;
 
-        public bool IsOpen => _root.activeSelf;
+        public bool IsOpen => _open;
 
         private void Awake()
         {
             UiCommon.EnsureEventSystem();
-            _closeButton.onClick.AddListener(Close);
+            _closeButton.onClick.AddListener(() => Close(false));
             _root.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (_open) InputFocus.PanelClosed(false);
         }
 
         public void Open(ItemDatabase database)
@@ -38,20 +45,23 @@ namespace RatGame.UI
             _codex = player != null ? player.GetComponent<PlayerCodex>() : null;
             if (_rows.Count == 0) BuildRows(database);
             Refresh();
+            if (_open) return;
+            _open = true;
             _root.SetActive(true);
-            UiCommon.SetCursorFree(true);
+            InputFocus.PanelOpened();
         }
 
-        public void Close()
+        public void Close(bool byEscape = false)
         {
-            if (!IsOpen) return;
+            if (!_open) return;
+            _open = false;
             _root.SetActive(false);
-            UiCommon.SetCursorFree(false);
+            InputFocus.PanelClosed(byEscape);
         }
 
         private void Update()
         {
-            if (IsOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) Close();
+            if (_open && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) Close(true);
         }
 
         private void BuildRows(ItemDatabase database)

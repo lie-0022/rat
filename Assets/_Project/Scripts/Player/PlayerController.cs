@@ -81,7 +81,10 @@ namespace RatGame.Player
             _inputAsset.FindActionMap("Player").Disable();
         }
 
-        private void OnJumpPerformed(InputAction.CallbackContext ctx) => _jumpRequestTime = Time.time;
+        private void OnJumpPerformed(InputAction.CallbackContext ctx)
+        {
+            if (!RatGame.Core.InputFocus.IsUiOpen) _jumpRequestTime = Time.time;
+        }
 
         /// <summary>던진 아이템 피격 등 짧은 조작 불능 (docs/05 — 연출만, 데미지 없음). 호스트가 호출.</summary>
         [Unity.Netcode.ClientRpc]
@@ -108,7 +111,7 @@ namespace RatGame.Player
         private void Update()
         {
             // 웅크리기: 홀드 기본 (docs/04). 그레이박스 단계라 스케일로 콜라이더+비주얼 동시 축소.
-            bool wantCrouch = _crouchAction.IsPressed();
+            bool wantCrouch = _crouchAction.IsPressed() && !RatGame.Core.InputFocus.IsUiOpen;
             if (wantCrouch != _isCrouching)
             {
                 _isCrouching = wantCrouch;
@@ -146,7 +149,8 @@ namespace RatGame.Player
 
         private void ApplyMovement()
         {
-            Vector2 input = IsIncapacitated() ? Vector2.zero
+            // 메뉴 패널 조작 중엔 WASD가 몸을 움직이지 않게
+            Vector2 input = IsIncapacitated() || RatGame.Core.InputFocus.IsUiOpen ? Vector2.zero
                 : DevAutoWander ? GetWanderInput() : _moveAction.ReadValue<Vector2>();
 
             // 카메라 기준 입력 → 월드 방향 (docs/04)

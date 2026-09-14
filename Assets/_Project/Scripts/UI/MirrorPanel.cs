@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using RatGame.Core;
 using RatGame.Player;
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,14 +20,20 @@ namespace RatGame.UI
 
         private PlayerSkin _skin;
         private readonly List<MirrorRow> _rows = new();
+        private bool _open;
 
-        public bool IsOpen => _root.activeSelf;
+        public bool IsOpen => _open;
 
         private void Awake()
         {
             UiCommon.EnsureEventSystem();
-            _closeButton.onClick.AddListener(Close);
+            _closeButton.onClick.AddListener(() => Close(false));
             _root.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            if (_open) InputFocus.PanelClosed(false);
         }
 
         public void Open()
@@ -36,21 +42,24 @@ namespace RatGame.UI
             var skin = player != null ? player.GetComponent<PlayerSkin>() : null;
             if (skin == null) return;
             if (_skin != skin) { _skin = skin; BuildRows(); }
+            if (_open) return;
+            _open = true;
             _root.SetActive(true);
-            UiCommon.SetCursorFree(true);
+            InputFocus.PanelOpened();
         }
 
-        public void Close()
+        public void Close(bool byEscape = false)
         {
-            if (!IsOpen) return;
+            if (!_open) return;
+            _open = false;
             _root.SetActive(false);
-            UiCommon.SetCursorFree(false);
+            InputFocus.PanelClosed(byEscape);
         }
 
         private void Update()
         {
-            if (!IsOpen || _skin == null) return;
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(); return; }
+            if (!_open || _skin == null) return;
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(true); return; }
             string current = _skin.CurrentId;
             foreach (var row in _rows) row.Refresh(current);
         }

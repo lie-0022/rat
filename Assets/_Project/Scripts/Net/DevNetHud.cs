@@ -28,7 +28,9 @@ namespace RatGame.Net
             var nm = NetworkManager.Singleton;
             if (nm == null) return;
 
-            GUILayout.BeginArea(new Rect(10, 10, 220, 200), GUI.skin.box);
+            var area = new Rect(10, 10, 220, 200);
+            RatGame.Core.InputFocus.NoRelockGuiRect = area; // 이 패널 위 클릭은 커서 재잠금으로 먹지 않게
+            GUILayout.BeginArea(area, GUI.skin.box);
             if (!nm.IsListening)
             {
                 GUILayout.Label("[DEV] 넷 테스트");

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RatGame.Core;
 using RatGame.World;
 using TMPro;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace RatGame.UI
 {
     /// <summary>
     /// 자판기 상점 패널 (uGUI, 로컬). VendingMachine NetworkVariable(누계·레벨)만 읽어 그린다 — 구매는 RequestPurchase로 요청.
-    /// 열면 커서를 풀고(시선·클릭 정지는 PlayerCameraRig·CarryController가 lockState로 판단), 닫으면 다시 잠근다.
+    /// 열려 있는 동안 InputFocus가 커서를 풀고 이동·시선·상호작용을 멈춘다.
     /// </summary>
     public class ShopPanel : MonoBehaviour
     {
@@ -25,14 +26,21 @@ namespace RatGame.UI
         private VendingMachine _machine;
         private readonly List<ShopRow> _rows = new();
         private float _messageUntil;
+        private bool _open;
 
-        public bool IsOpen => _root.activeSelf;
+        public bool IsOpen => _open;
 
         private void Awake()
         {
             UiCommon.EnsureEventSystem();
-            _closeButton.onClick.AddListener(Close);
+            _closeButton.onClick.AddListener(() => Close(false));
             _root.SetActive(false);
+        }
+
+        // 씬 전환으로 열린 채 파괴돼도 입력이 묶여 있지 않게
+        private void OnDestroy()
+        {
+            if (_open) InputFocus.PanelClosed(false);
         }
 
         public void Open(VendingMachine machine)
@@ -42,16 +50,19 @@ namespace RatGame.UI
                 _machine = machine;
                 BuildRows();
             }
-            _root.SetActive(true);
             _messageText.text = "";
-            UiCommon.SetCursorFree(true);
+            if (_open) return;
+            _open = true;
+            _root.SetActive(true);
+            InputFocus.PanelOpened();
         }
 
-        public void Close()
+        public void Close(bool byEscape = false)
         {
-            if (!IsOpen) return;
+            if (!_open) return;
+            _open = false;
             _root.SetActive(false);
-            UiCommon.SetCursorFree(false);
+            InputFocus.PanelClosed(byEscape);
         }
 
         public void ShowMessage(bool ok, string message)
@@ -63,9 +74,8 @@ namespace RatGame.UI
 
         private void Update()
         {
-            if (!IsOpen || _machine == null) return;
-            // Esc: PlayerCameraRig도 같은 프레임에 커서를 토글하지만 결과는 같다 (풀림 → 잠금)
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(); return; }
+            if (!_open || _machine == null) return;
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(true); return; }
 
             int total = _machine.HaulTotal.Value;
             SetText(_totalText, $"누계 {total}");

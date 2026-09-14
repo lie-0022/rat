@@ -31,7 +31,7 @@ namespace RatGame.Player
         {
             if (!IsOwner || _interactAction == null) return;
 
-            if (!_interactAction.IsPressed())
+            if (!_interactAction.IsPressed() || InputFocus.IsUiOpen) // 메뉴가 떠 있으면 E로 또 열지 않게
             {
                 _holdTarget = null;
                 return;
