@@ -685,8 +685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.CarryHud
   ShowTopMostFoldoutHeaderGroup: 1
-  _runBarPrefab: {fileID: 3329782662998077939, guid: dcc19ad3cd51e4f08b7bdb9ec6dace7f, type: 3}
-  _staminaRingPrefab: {fileID: 6692288350674211765, guid: 630b6851ce7eb4fa2af4077f3d62a10f, type: 3}
+  _hudPrefab: {fileID: 3430841215707521231, guid: 8ddcddb81c4a04318ba1a4c5269df010, type: 3}
 --- !u!114 &6305106658479211622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -723,6 +722,7 @@ MonoBehaviour:
       MoveSpeed: 0
       StaminaMax: 0
       ThrowPower: 0
+      JumpPower: 0
 --- !u!114 &1105088405875469566
 MonoBehaviour:
   m_ObjectHideFlags: 0

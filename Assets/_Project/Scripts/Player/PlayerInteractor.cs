@@ -39,6 +39,8 @@ namespace RatGame.Player
 
             if (_holdTarget == null)
             {
+                // 새로 누른 E로만 시작 — 패널을 닫은 E를 계속 누르고 있으면 곧바로 다시 열리던 문제
+                if (!_interactAction.WasPressedThisFrame() || InputFocus.PanelClosedThisFrame) return;
                 _holdTarget = FindTarget();
                 _holdStartTime = Time.time;
                 if (_holdTarget != null)

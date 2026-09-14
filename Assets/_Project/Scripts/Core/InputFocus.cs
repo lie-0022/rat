@@ -10,11 +10,15 @@ namespace RatGame.Core
     {
         private static int _openPanels;
         private static int _escConsumedFrame = -1;
+        private static int _closedFrame = -1;
 
         public static bool IsUiOpen => _openPanels > 0;
 
         /// <summary>패널이 Esc로 닫힌 프레임 — 시선 리그가 같은 Esc로 커서를 다시 풀지 않게.</summary>
         public static bool EscConsumedThisFrame => _escConsumedFrame == Time.frameCount;
+
+        /// <summary>패널이 닫힌 프레임 — 닫는 데 쓴 E가 같은 프레임에 상호작용으로 새지 않게.</summary>
+        public static bool PanelClosedThisFrame => _closedFrame == Time.frameCount;
 
         /// <summary>커서 재잠금 클릭을 무시할 화면 영역 (DEV IMGUI 패널 — 버튼 클릭이 잠금으로 먹히지 않게). GUI 좌표(좌상단 원점).</summary>
         public static Rect NoRelockGuiRect { get; set; }
@@ -29,6 +33,7 @@ namespace RatGame.Core
         {
             _openPanels = Mathf.Max(0, _openPanels - 1);
             if (byEscape) _escConsumedFrame = Time.frameCount;
+            _closedFrame = Time.frameCount;
             ApplyCursor();
         }
 
