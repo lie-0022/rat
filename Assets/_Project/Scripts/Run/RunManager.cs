@@ -35,8 +35,9 @@ namespace RatGame.Run
         // 결과 화면용 — EventBus는 호스트 로컬이라 클라 HUD가 못 받는다
         public NetworkVariable<int> ResultCarriedValue = new(0);
         public NetworkVariable<double> ResultEndsAt = new(0);
+        /// <summary>플레이어별 기여 (결과 화면 "오늘의 쥐들"). 출발 시 접속 인원으로 채우고 적립·귀환·전멸에 갱신.</summary>
+        public NetworkList<PlayerContribution> Contributions;
 
-        private readonly Dictionary<ulong, int> _depositCounts = new();
         private DepositZone _returnZone;
         private bool _leaving;
         private bool _returnArmed;
@@ -44,6 +45,9 @@ namespace RatGame.Run
         /// <summary>쥐구멍 적립을 받는 페이즈. 귀환 카운트다운 중에도 받는다.</summary>
         public bool AcceptsDeposits => Phase.Value is RunPhase.StageActive or RunPhase.Returning;
         public bool IsShowingResult => Phase.Value is RunPhase.Returned or RunPhase.Wiped;
+
+        // NetworkList는 스폰 전(Awake)에 만들어야 동기화 대상에 들어간다
+        private void Awake() => Contributions = new NetworkList<PlayerContribution>();
 
         public override void OnNetworkSpawn()
         {
@@ -85,7 +89,9 @@ namespace RatGame.Run
             if (!IsServer || Phase.Value != RunPhase.Ready) return;
             RunSeed.Value = seed;
             StashedValue.Value = 0;
-            _depositCounts.Clear();
+            Contributions.Clear();
+            foreach (ulong clientId in NetworkManager.ConnectedClientsIds)
+                Contributions.Add(new PlayerContribution { ClientId = clientId });
             _returnArmed = false;
             GameStateMachine.Instance.TransitionTo(GameState.InRun);
             SetPhase(RunPhase.StageActive);
@@ -97,8 +103,12 @@ namespace RatGame.Run
         {
             if (!IsServer || !AcceptsDeposits) return;
             StashedValue.Value += value;
-            _depositCounts[byClientId] = _depositCounts.GetValueOrDefault(byClientId) + 1;
-            Log.Dev($"쥐구멍 적립: +{value} → {StashedValue.Value}");
+            int i = ContributionIndex(byClientId);
+            var c = Contributions[i];
+            c.DepositedValue += value;
+            c.DepositCount++;
+            Contributions[i] = c;
+            Log.Dev($"쥐구멍 적립: +{value} → {StashedValue.Value} (client {byClientId})");
         }
 
         /// <summary>다운 몸이 쥐구멍 진입 시 (DepositZone 분기 — docs/08·09).</summary>
@@ -158,24 +168,25 @@ namespace RatGame.Run
 
         private void CompleteReturn()
         {
-            // 귀환자가 손·주머니에 든 물건 (대형을 여럿이 들고 있으면 한 번만)
-            var carried = new HashSet<CarryableItem>();
+            // 귀환자가 손·주머니에 든 물건 (대형을 여럿이 들고 있으면 먼저 센 한 명에게 한 번만)
+            var counted = new HashSet<CarryableItem>();
+            int carriedValue = 0;
             foreach (var client in NetworkManager.ConnectedClientsList)
             {
                 if (client.PlayerObject == null) continue;
+                int i = ContributionIndex(client.ClientId);
+                var c = Contributions[i];
                 var condition = client.PlayerObject.GetComponent<PlayerCondition>();
-                if (condition != null && condition.State.Value == ConditionState.Downed) continue;
+                c.Downed = condition != null && condition.State.Value == ConditionState.Downed;
                 var carry = client.PlayerObject.GetComponent<PlayerCarryController>();
-                if (carry == null) continue;
-                if (carry.CarriedItem != null) carried.Add(carry.CarriedItem);
-                for (int i = 0; i < carry.SlotCount; i++)
+                if (!c.Downed && carry != null)
                 {
-                    var item = carry.GetSlotItem(i);
-                    if (item != null) carried.Add(item);
+                    c.CarriedValue += CountItem(carry.CarriedItem, counted);
+                    for (int s = 0; s < carry.SlotCount; s++) c.CarriedValue += CountItem(carry.GetSlotItem(s), counted);
                 }
+                carriedValue += c.CarriedValue;
+                Contributions[i] = c;
             }
-            int carriedValue = 0;
-            foreach (var item in carried) carriedValue += item.EffectiveValue;
 
             int haul = StashedValue.Value + carriedValue;
             RunSession.AddHaul(haul); // 누계에 더하고 바로 저장
@@ -185,6 +196,18 @@ namespace RatGame.Run
             SetPhase(RunPhase.Returned);
             EventBus.RaiseZoneEnded(0, true);
             Log.Dev($"귀환: 쥐구멍 {StashedValue.Value} + 들고 온 {carriedValue} = {haul}, 누계 {RunTotalValue.Value}");
+        }
+
+        private static int CountItem(CarryableItem item, HashSet<CarryableItem> counted) =>
+            item != null && counted.Add(item) ? item.EffectiveValue : 0;
+
+        // 출발 뒤 들어온 기여자(개발용 직접 플레이 등)도 줄을 만든다
+        private int ContributionIndex(ulong clientId)
+        {
+            for (int i = 0; i < Contributions.Count; i++)
+                if (Contributions[i].ClientId == clientId) return i;
+            Contributions.Add(new PlayerContribution { ClientId = clientId });
+            return Contributions.Count - 1;
         }
 
         private void OnPlayerDowned(ulong clientId)
@@ -203,11 +226,19 @@ namespace RatGame.Run
         {
             SetPhase(RunPhase.Wiped);
             ResultEndsAt.Value = NetworkManager.ServerTime.Time + _balance.ResultScreenSeconds;
+            var depositCounts = new Dictionary<ulong, int>();
+            for (int i = 0; i < Contributions.Count; i++)
+            {
+                var c = Contributions[i];
+                c.Downed = true;
+                Contributions[i] = c;
+                depositCounts[c.ClientId] = c.DepositCount;
+            }
             var result = new RunResult
             {
                 TotalValue = RunTotalValue.Value,
                 CoinsAwarded = 0, // 메타 보상 규칙 미정 (docs/09)
-                DepositCounts = new Dictionary<ulong, int>(_depositCounts),
+                DepositCounts = depositCounts,
                 NewCodexIds = new List<string>()
             };
             EventBus.RaiseRunEnded(result);
