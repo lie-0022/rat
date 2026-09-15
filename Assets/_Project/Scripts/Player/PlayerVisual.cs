@@ -17,9 +17,16 @@ namespace RatGame.Player
             new(0.95f, 0.85f, 0.45f), // P4 노랑 쥐
         };
 
+        // HUD 이름 — 팀 상태·토스트·결과 화면이 같은 이름을 쓴다 (Steam 이름 연결 전까지)
+        private static readonly string[] PaletteNames = { "회색 쥐", "파랑 쥐", "초록 쥐", "노랑 쥐" };
+
         public override void OnNetworkSpawn() => ResetBodyColor();
 
-        public Color DefaultColor => Palette[(int)(OwnerClientId % (ulong)Palette.Length)];
+        public Color DefaultColor => ColorFor(OwnerClientId);
+
+        /// <summary>클라 Id의 팀 기본색 — 나간 플레이어도 Id만으로 표시할 수 있게 정적.</summary>
+        public static Color ColorFor(ulong clientId) => Palette[(int)(clientId % (ulong)Palette.Length)];
+        public static string ColorNameFor(ulong clientId) => PaletteNames[(int)(clientId % (ulong)PaletteNames.Length)];
 
         public void ResetBodyColor() => SetBodyColor(DefaultColor);
 

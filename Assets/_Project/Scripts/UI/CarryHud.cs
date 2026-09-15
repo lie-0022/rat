@@ -21,7 +21,7 @@ namespace RatGame.UI
             // 플레이어는 씬 전환에도 살아남으므로 HUD도 같이 유지
             _hud = Instantiate(_hudPrefab);
             DontDestroyOnLoad(_hud.gameObject);
-            _hud.Bind(GetComponent<PlayerCarryController>(), GetComponent<PlayerStamina>());
+            _hud.Bind(GetComponent<PlayerCarryController>(), GetComponent<PlayerStamina>(), GetComponent<PlayerInteractor>());
         }
 
         public override void OnNetworkDespawn()

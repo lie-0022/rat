@@ -34,7 +34,8 @@ namespace RatGame.Net
             }
 
             // 세션 나가기는 일시정지 창(Esc)이 맡는다 — 여기선 개발 정보·개발용 출발만
-            var area = new Rect(10, 10, 220, 110);
+            // 좌하단 — 좌상단은 팀 상태 HUD 자리
+            var area = new Rect(10, Screen.height - 120, 220, 110);
             RatGame.Core.InputFocus.NoRelockGuiRect = area; // 이 패널 위 클릭은 커서 재잠금으로 먹지 않게
             GUILayout.BeginArea(area, GUI.skin.box);
             {

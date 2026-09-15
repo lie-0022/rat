@@ -18,13 +18,15 @@ namespace RatGame.UI
         [SerializeField] private InventorySlotsWidget _slots;
         [SerializeField] private InteractPromptWidget _prompt;
         [SerializeField] private ThrowGaugeWidget _gauge;
+        [SerializeField] private HoldGaugeWidget _holdGauge; // [E] 홀드 (구출)
 
-        public void Bind(PlayerCarryController carry, PlayerStamina stamina)
+        public void Bind(PlayerCarryController carry, PlayerStamina stamina, PlayerInteractor interactor)
         {
             if (_staminaRing != null) _staminaRing.Bind(stamina);
             _slots.Bind(carry);
             _prompt.Bind(carry);
             _gauge.Bind(carry);
+            if (_holdGauge != null) _holdGauge.Bind(interactor);
         }
 
         private void Update()

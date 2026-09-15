@@ -27,6 +27,8 @@ namespace RatGame.Core
         // Meta
         public static event Action<int> CheeseCoinChanged;
         public static event Action<string /*achievementId*/> AchievementUnlocked;
+        /// <summary>내 도감에 새 아이템 등록 (소유 클라 로컬 — 토스트용).</summary>
+        public static event Action<string /*itemId*/> CodexUnlocked;
 
         public static void RaiseZoneStarted(int zoneIndex) => ZoneStarted?.Invoke(zoneIndex);
         public static void RaiseZoneEnded(int zoneIndex, bool quotaMet) => ZoneEnded?.Invoke(zoneIndex, quotaMet);
@@ -38,5 +40,6 @@ namespace RatGame.Core
         public static void RaiseLootBroken(LootItemSO item) => LootBroken?.Invoke(item);
         public static void RaiseCheeseCoinChanged(int total) => CheeseCoinChanged?.Invoke(total);
         public static void RaiseAchievementUnlocked(string achievementId) => AchievementUnlocked?.Invoke(achievementId);
+        public static void RaiseCodexUnlocked(string itemId) => CodexUnlocked?.Invoke(itemId);
     }
 }

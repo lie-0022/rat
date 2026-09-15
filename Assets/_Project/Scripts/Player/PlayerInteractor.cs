@@ -21,6 +21,16 @@ namespace RatGame.Player
         private NetworkBehaviour _holdTarget; // IInteractable이기도 한 대상
         private float _holdStartTime;
 
+        /// <summary>길게 눌러야 하는 상호작용(구출 등)을 누르는 중이면 그 안내 문구, 아니면 null — HUD 홀드 게이지용.</summary>
+        public string HoldPromptText =>
+            _holdTarget != null && _holdTarget is IInteractable ia && ia.HoldSeconds > 0f ? ia.PromptText : null;
+
+        /// <summary>홀드 진행 0~1.</summary>
+        public float HoldProgress =>
+            _holdTarget != null && _holdTarget is IInteractable ia && ia.HoldSeconds > 0f
+                ? Mathf.Clamp01((Time.time - _holdStartTime) / ia.HoldSeconds)
+                : 0f;
+
         public override void OnNetworkSpawn()
         {
             if (!IsOwner) return;
@@ -49,6 +59,12 @@ namespace RatGame.Player
             }
 
             var interactable = (IInteractable)_holdTarget;
+            // 누르는 사이 다른 쥐가 먼저 구출했거나 대상이 사라지면 게이지를 끝까지 채우지 않고 멈춘다
+            if (!_holdTarget || !interactable.CanInteract(OwnerClientId))
+            {
+                _holdTarget = null;
+                return;
+            }
             if (Time.time - _holdStartTime >= interactable.HoldSeconds)
             {
                 InteractRequestServerRpc(_holdTarget.NetworkObjectId);

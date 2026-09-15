@@ -40,8 +40,6 @@ namespace RatGame.UI
         [SerializeField] private TMP_Text _countdownText;
         [SerializeField] private RectTransform _countdownFill;
 
-        private static readonly Color UnknownColor = new(0.5f, 0.5f, 0.5f, 1f);
-
         private readonly List<ResultPlayerRow> _rows = new();
         private readonly List<GameObject> _chips = new();
         private int _chipSeed = -1;
@@ -114,17 +112,10 @@ namespace RatGame.UI
             {
                 var c = list[i];
                 bool me = nm != null && c.ClientId == nm.LocalClientId;
-                _rows[i].Show($"쥐 {i + 1}{(me ? " (나)" : "")}", PlayerColor(nm, c.ClientId),
+                // 이름·색은 팀 기본색 기준 (팀 상태·토스트와 같은 이름, 나간 쥐도 표시 가능)
+                _rows[i].Show($"{PlayerVisual.ColorNameFor(c.ClientId)}{(me ? " (나)" : "")}", PlayerVisual.ColorFor(c.ClientId),
                               c.DepositedValue, c.DepositCount, c.CarriedValue, i == best, c.Downed && returned, returned);
             }
-        }
-
-        // 팀 기본색 (스킨은 개인 치장이라 결과 표에선 구분용 기본색)
-        private static Color PlayerColor(NetworkManager nm, ulong clientId)
-        {
-            var obj = nm != null ? nm.SpawnManager.GetPlayerNetworkObject(clientId) : null;
-            var visual = obj != null ? obj.GetComponent<PlayerVisual>() : null;
-            return visual != null ? visual.DefaultColor : UnknownColor;
         }
 
         private void RefreshChips(RunManager run)

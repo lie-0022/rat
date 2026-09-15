@@ -46,6 +46,7 @@ namespace RatGame.Player
             SaveService.Save();
             if (_newThisRunSeed != runSeed) { _newThisRun.Clear(); _newThisRunSeed = runSeed; }
             _newThisRun.Add(itemId);
+            EventBus.RaiseCodexUnlocked(itemId); // 토스트 등 로컬 구독자용 (소유 클라에서만 발행)
             Log.Dev($"도감 해금: {itemId} ({ids.Count}종)");
         }
 
