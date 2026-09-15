@@ -23,6 +23,7 @@ namespace RatGame.UI
         [SerializeField] private TMP_Text _statusText;
         [SerializeField] private TMP_Text _versionText;
         [SerializeField] private TMP_Text _modeText;
+        [SerializeField] private SettingsPanel _settingsPanel;
 
         private bool _joining;
 
@@ -43,6 +44,8 @@ namespace RatGame.UI
             // 세션을 나와 메뉴로 돌아온 경우 커서가 잠겨 있을 수 있다
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            string exitReason = NetworkLauncher.Instance != null ? NetworkLauncher.Instance.ConsumeExitReason() : null;
+            if (!string.IsNullOrEmpty(exitReason)) SetStatus(exitReason, UiColorRole.DangerText);
         }
 
         private void OnDestroy()
@@ -106,7 +109,7 @@ namespace RatGame.UI
             SetStatus(message, UiColorRole.DangerText);
         }
 
-        private void OnSettings() => SetStatus("설정 화면은 다음 작업에서 연결돼요.", UiColorRole.TextMuted);
+        private void OnSettings() => _settingsPanel.Open();
 
         private void OnQuit()
         {

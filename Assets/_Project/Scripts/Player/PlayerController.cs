@@ -42,6 +42,7 @@ namespace RatGame.Player
         private float _staggerUntil = float.NegativeInfinity;
         private bool _isGrounded;
         private bool _isCrouching;
+        private bool _crouchToggled;
         private Vector3 _baseScale;
 
         private const float GroundCastRadius = 0.15f;
@@ -110,8 +111,19 @@ namespace RatGame.Player
 
         private void Update()
         {
-            // 웅크리기: 홀드 기본 (docs/04). 그레이박스 단계라 스케일로 콜라이더+비주얼 동시 축소.
-            bool wantCrouch = _crouchAction.IsPressed() && !RatGame.Core.InputFocus.IsUiOpen;
+            // 웅크리기: 홀드 기본 (docs/04), 설정에서 눌러서 전환 선택 (docs/12). 그레이박스 단계라 스케일로 콜라이더+비주얼 동시 축소.
+            bool uiOpen = InputFocus.IsUiOpen;
+            bool wantCrouch;
+            if (SettingsService.Current.CrouchToggle)
+            {
+                if (!uiOpen && _crouchAction.WasPressedThisFrame()) _crouchToggled = !_crouchToggled;
+                wantCrouch = _crouchToggled;
+            }
+            else
+            {
+                _crouchToggled = false;
+                wantCrouch = _crouchAction.IsPressed() && !uiOpen;
+            }
             if (wantCrouch != _isCrouching)
             {
                 _isCrouching = wantCrouch;

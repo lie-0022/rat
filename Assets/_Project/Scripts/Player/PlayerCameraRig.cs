@@ -88,8 +88,9 @@ namespace RatGame.Player
             bool rotating = !InputFocus.IsUiOpen && Cursor.lockState == CursorLockMode.Locked;
 
             Vector2 look = rotating ? _lookAction.ReadValue<Vector2>() : Vector2.zero;
-            _yaw += look.x * Sensitivity;
-            _pitch = Mathf.Clamp(_pitch - look.y * Sensitivity, -PitchLimit, PitchLimit);
+            float sensitivity = Sensitivity * SettingsService.Current.MouseSensitivity; // 설정 패널 배율 (docs/12)
+            _yaw += look.x * sensitivity;
+            _pitch = Mathf.Clamp(_pitch - look.y * sensitivity, -PitchLimit, PitchLimit);
 
             Quaternion rot = Quaternion.Euler(_pitch, _yaw, 0f);
             Vector3 eye = transform.position + Vector3.up * EyeHeight

@@ -33,13 +33,13 @@ namespace RatGame.Net
                 return;
             }
 
-            var area = new Rect(10, 10, 220, 200);
+            // 세션 나가기는 일시정지 창(Esc)이 맡는다 — 여기선 개발 정보·개발용 출발만
+            var area = new Rect(10, 10, 220, 110);
             RatGame.Core.InputFocus.NoRelockGuiRect = area; // 이 패널 위 클릭은 커서 재잠금으로 먹지 않게
             GUILayout.BeginArea(area, GUI.skin.box);
             {
-                string role = nm.IsHost ? "Host" : "Client";
-                GUILayout.Label($"[DEV] {role} — 접속 {nm.ConnectedClientsIds.Count}명");
-                if (GUILayout.Button("Shutdown")) NetworkLauncher.Instance.Shutdown();
+                string role = nm.IsHost ? $"Host — 접속 {nm.ConnectedClientsIds.Count}명" : "Client";
+                GUILayout.Label($"[DEV] {role}");
 
                 var run = Run.RunManager.Instance;
                 if (run != null)
@@ -50,14 +50,6 @@ namespace RatGame.Net
                 }
             }
             GUILayout.EndArea();
-        }
-
-        private async void StartHostToHub()
-        {
-            bool ok = await NetworkLauncher.Instance.StartHostAsync();
-            if (ok)
-                NetworkManager.Singleton.SceneManager.LoadScene("Hub",
-                    UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
     }
 }

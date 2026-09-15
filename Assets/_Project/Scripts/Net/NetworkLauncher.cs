@@ -97,15 +97,40 @@ namespace RatGame.Net
                 LaunchFailed?.Invoke("클라이언트 접속 실패");
                 return Task.FromResult(false);
             }
+            nm.OnClientDisconnectCallback -= OnClientDisconnected;
+            nm.OnClientDisconnectCallback += OnClientDisconnected;
             Log.Dev("클라이언트 접속 시도 (UnityTransport)");
             GameStateMachine.Instance.TransitionTo(GameState.Lobby);
             return Task.FromResult(true);
         }
 
-        /// <summary>정리 후 복귀. Hub 씬이 생기는 태스크 1-8 전까지는 MainMenu로 돌아간다.</summary>
+        /// <summary>메인 메뉴가 한 번 보여줄 세션 종료 사유 (호스트가 나감 등). 읽으면 비운다.</summary>
+        public string ConsumeExitReason()
+        {
+            string reason = _exitReason;
+            _exitReason = null;
+            return reason;
+        }
+
+        private string _exitReason;
+
+        // 세션 중(메뉴 밖) 호스트가 나가거나 연결이 끊기면 멈춘 기지에 남지 않고 메인 메뉴로 — 메뉴의 참가 실패는 MainMenuController가 처리
+        private void OnClientDisconnected(ulong clientId)
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null || nm.IsServer || clientId != nm.LocalClientId) return;
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == MainMenuSceneName) return;
+            _exitReason = "호스트와 연결이 끊겨 메인 메뉴로 돌아왔어요.";
+            Shutdown();
+        }
+
+        private const string MainMenuSceneName = "MainMenu";
+
+        /// <summary>세션 정리 후 메인 메뉴로 (일시정지 창 "세션 나가기", 호스트 이탈).</summary>
         public void Shutdown()
         {
             var nm = NetworkManager.Singleton;
+            if (nm != null) nm.OnClientDisconnectCallback -= OnClientDisconnected; // 스스로 나갈 때 끊김 처리로 다시 들어오지 않게
             if (nm != null && nm.IsListening) nm.Shutdown();
             Log.Dev("네트워크 종료 — MainMenu 복귀");
             if (GameStateMachine.Instance.Current != GameState.MainMenu)

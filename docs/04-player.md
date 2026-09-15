@@ -40,7 +40,7 @@ Rigidbody 기반 (CharacterController 아님 — 물리 상호작용 필수).
 
 - 콜라이더 높이 50% 축소, crouchSpeed 적용.
 - 효과: 이동 소음 0 (06 문서), 고양이 시야 감지 거리 50% (07 문서).
-- 토글/홀드는 설정에서 선택 (기본 홀드).
+- 토글/홀드는 설정에서 선택 (기본 홀드). 구현: 설정 패널 "웅크리기 — 누르고 있기/눌러서 전환" → `SettingsService.Current.CrouchToggle`을 `PlayerController`가 매 프레임 읽음. 전환 모드에서 메뉴가 열려 있는 동안 누른 키는 무시(웅크린 상태는 유지) (2026-09-15, docs/12).
 
 ## PlayerStamina
 

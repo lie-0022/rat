@@ -53,6 +53,9 @@ namespace RatGame.Core
             // 세션 종료·호스트 이탈 시 어디서든 메뉴/로비로 복귀 허용 (docs/03 접속 해제 처리)
             (GameState.Lobby, GameState.MainMenu) => true,
             (GameState.InRun, GameState.Lobby) => true,
+            // 일시정지 "세션 나가기"는 런 중·결과 화면에서도 가능 (docs/12)
+            (GameState.InRun, GameState.MainMenu) => true,
+            (GameState.RunResult, GameState.MainMenu) => true,
             _ => false
         };
     }
