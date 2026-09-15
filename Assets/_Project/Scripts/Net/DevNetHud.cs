@@ -26,18 +26,16 @@ namespace RatGame.Net
         private void OnGUI()
         {
             var nm = NetworkManager.Singleton;
-            if (nm == null) return;
+            // 접속 전 호스트/참가는 메인 메뉴(UI/MainMenuController)가 맡는다 — 여기선 세션 중 정보·종료만
+            if (nm == null || !nm.IsListening)
+            {
+                RatGame.Core.InputFocus.NoRelockGuiRect = default;
+                return;
+            }
 
             var area = new Rect(10, 10, 220, 200);
             RatGame.Core.InputFocus.NoRelockGuiRect = area; // 이 패널 위 클릭은 커서 재잠금으로 먹지 않게
             GUILayout.BeginArea(area, GUI.skin.box);
-            if (!nm.IsListening)
-            {
-                GUILayout.Label("[DEV] 넷 테스트");
-                if (GUILayout.Button("Host + 기지")) StartHostToHub();
-                if (GUILayout.Button("Join 127.0.0.1")) _ = NetworkLauncher.Instance.JoinAsync();
-            }
-            else
             {
                 string role = nm.IsHost ? "Host" : "Client";
                 GUILayout.Label($"[DEV] {role} — 접속 {nm.ConnectedClientsIds.Count}명");

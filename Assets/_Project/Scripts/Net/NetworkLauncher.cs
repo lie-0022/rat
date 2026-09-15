@@ -21,6 +21,9 @@ namespace RatGame.Net
         private const string LoopbackAddress = "127.0.0.1";
         private const ushort Port = 7777;
         private const int MaxPlayers = 4; // docs/00 — 새 수치 아님(구조 상수)
+        // 참가 실패를 빨리 알리려고 — 기본값(60회×1초)이면 메뉴가 1분 가까이 "접속 중"에 묶인다. 10회×0.5초 ≈ 5초
+        private const int JoinConnectAttempts = 10;
+        private const int JoinConnectTimeoutMs = 500;
 
         private void Awake()
         {
@@ -114,6 +117,8 @@ namespace RatGame.Net
         {
             var utp = nm.GetComponent<UnityTransport>();
             utp.SetConnectionData(LoopbackAddress, Port);
+            utp.MaxConnectAttempts = JoinConnectAttempts;
+            utp.ConnectTimeoutMS = JoinConnectTimeoutMs;
         }
 
         // ConnectionApproval (docs/03): 최대 4명, 게임 진행 중(midgame) 참가 거부. 스폰은 NetPlayerSpawner 수동.
