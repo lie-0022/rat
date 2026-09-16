@@ -352,6 +352,17 @@
                 },
                 {
                     "name": "",
+                    "id": "89bd3591-5503-42e5-883d-18ed8312a5e7",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Ping",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "32184064-b9e3-4ab6-bc42-e0841d0e4b48",
                     "path": "<Gamepad>/rightStickPress",
                     "interactions": "",

@@ -63,7 +63,7 @@ Assets/
 | Throw | 마우스 우클릭(홀드 차지) | LT | Button |
 | Interact | E | X | Button |
 | Squeak | Q | D-Pad Up | Button |
-| Ping | 마우스 휠클릭 | R3 | Button |
+| Ping | F / 마우스 휠클릭 (F는 2026-09-16 추가 — 매직 마우스 등 휠클릭이 어려운 경우) | R3 | Button |
 
 ## 물리 설정 (Project Settings)
 
