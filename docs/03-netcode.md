@@ -84,6 +84,7 @@ public class SteamLobbyService
 | PlayerCarryController | CarriedItemNetId (0=빈손) | ulong |
 | CarryableItem | CarrierIds (최대4), Durability | NetworkList<ulong>, float |
 | CatBrain | State, TargetClientId | enum, ulong |
+| CatSenses | SuspicionGauge (0~catChaseThreshold — HUD 의심 표시 게이지, docs/07·12) | float |
 | DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue | int, int, bool, double, int |
 
 - RPC만 쓰는 것 (NetworkVariable 없음): `PlayerPing` 핑 — 소유 클라 `PingServerRpc(pos)` → 서버 쿨다운 확인 → `PingClientRpc(pos)` 전원 (표시용, 위치 검증 없음, docs/04).

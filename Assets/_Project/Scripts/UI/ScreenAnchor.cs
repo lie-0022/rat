@@ -20,15 +20,23 @@ namespace RatGame.UI
         {
             Vector3 sp = cam.WorldToScreenPoint(world);
             bool behind = sp.z < 0f;
-            // 카메라 뒤 지점은 화면 좌표가 뒤집혀 나온다 — 되돌려서 방향을 맞춘다
-            if (behind) { sp.x = Screen.width - sp.x; sp.y = Screen.height - sp.y; }
             onScreen = !behind && sp.x >= 0f && sp.x <= Screen.width && sp.y >= 0f && sp.y <= Screen.height;
 
             Vector2 size = canvasRect.rect.size;
-            var p = new Vector2(sp.x / Screen.width * size.x, sp.y / Screen.height * size.y) - size * 0.5f;
-            if (onScreen) return p;
-
-            if (p.sqrMagnitude < 1f) p = Vector2.down; // 바로 뒤 — 아래 가장자리로
+            Vector2 p;
+            if (behind)
+            {
+                // 뒤집힌 화면 좌표는 바로 뒤에서 방향이 흔들린다 — 나침반처럼 카메라 기준 좌우(x)·앞뒤(z)로. 뒤는 아래쪽
+                Vector3 local = cam.transform.InverseTransformPoint(world);
+                p = new Vector2(local.x, local.z);
+                if (p.sqrMagnitude < 0.0001f) p = Vector2.down;
+            }
+            else
+            {
+                p = new Vector2(sp.x / Screen.width * size.x, sp.y / Screen.height * size.y) - size * 0.5f;
+                if (onScreen) return p;
+                if (p.sqrMagnitude < 1f) p = Vector2.down;
+            }
             Vector2 half = size * 0.5f;
             float maxX = p.x >= 0f ? half.x - margins.Right : half.x - margins.Left;
             float maxY = p.y >= 0f ? half.y - margins.Top : half.y - margins.Bottom;
