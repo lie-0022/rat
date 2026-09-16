@@ -8,6 +8,7 @@ namespace RatGame.Net
     /// <summary>
     /// 무인 멀티 테스트용 — 호스트가 특정 클라의 플레이어에게 명령을 보낸다 (소유 클라에서만 실행).
     ///   grab            : 가장 가까운 물건 집기
+    ///   ping            : 카메라 정면으로 핑
     ///   walk:x,z        : 월드 방향으로 계속 걷기 (DevForcedInput)
     ///   stop            : 걷기 중지
     ///   tp:x,y,z        : 소유 클라에서 순간이동 (InvariantCulture 소수점)
@@ -33,6 +34,10 @@ namespace RatGame.Net
             if (command == "grab")
             {
                 GetComponent<PlayerCarryController>()?.DevGrabNearest();
+            }
+            else if (command == "ping")
+            {
+                GetComponent<PlayerPing>()?.TryPing(); // 카메라 정면 핑 (실제 입력과 같은 경로)
             }
             else if (command.StartsWith("walk:"))
             {

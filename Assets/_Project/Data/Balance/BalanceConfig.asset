@@ -68,6 +68,9 @@ MonoBehaviour:
   _stunSeconds: 2
   _highFallStunHeight: 6
   _rescueHoldSeconds: 1.5
+  _pingCooldownSeconds: 1
+  _pingMarkerSeconds: 3
+  _pingMaxDistance: 30
   _catPatrolSpeed: 2
   _catSuspiciousSpeed: 3
   _catChaseSpeed: 5.5

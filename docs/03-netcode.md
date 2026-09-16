@@ -86,6 +86,8 @@ public class SteamLobbyService
 | CatBrain | State, TargetClientId | enum, ulong |
 | DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue | int, int, bool, double, int |
 
+- RPC만 쓰는 것 (NetworkVariable 없음): `PlayerPing` 핑 — 소유 클라 `PingServerRpc(pos)` → 서버 쿨다운 확인 → `PingClientRpc(pos)` 전원 (표시용, 위치 검증 없음, docs/04).
+
 ## 씬 동기화
 
 - 호스트: `NetworkManager.SceneManager.LoadScene("Stage_Warehouse01", Single)` → 클라 자동 로드.

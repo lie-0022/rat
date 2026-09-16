@@ -89,6 +89,13 @@ public interface IInteractable
 
 - Squeak: 애니+사운드 전 클라 재생(ClientRpc) + **소음 이벤트 발생** (loudness 30, 06 문서) — 소통에 리스크.
 - Ping: 카메라 레이캐스트 지점에 3초 마커(전 클라 표시). 소음 없음. 쿨다운 1s.
+- 구현 (2026-09-16, `Player/PlayerPing`): 휠클릭(패드 R3) → 카메라 정면 레이(트리거·내 몸·든 물건 제외, 안 맞으면 최대 거리 지점) → `PingServerRpc`(서버가 쿨다운만 확인, 여유 0.1s) → `PingClientRpc`(SendTo.Everyone) → 각 클라 로컬 `EventBus.PingReceived` → `UI/PingMarkerWidget`. 메뉴 패널이 열려 있으면 입력 무시.
+
+| 수치 (BalanceConfigSO) | 값 |
+|---|---|
+| pingCooldownSeconds | 1 s (클라·서버 둘 다) |
+| pingMarkerSeconds | 3 s |
+| pingMaxDistance | 30 m |
 
 ## 애니메이션 파라미터 (PlayerAnimatorLink → Animator)
 

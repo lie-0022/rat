@@ -82,6 +82,11 @@ namespace RatGame.Data
         [SerializeField] private float _highFallStunHeight = 6f;   // 이 높이(m) 초과 낙하 → Stunned
         [SerializeField] private float _rescueHoldSeconds = 1.5f;  // Trapped 동료 구출 홀드
 
+        [Header("핑 (docs/04)")]
+        [SerializeField] private float _pingCooldownSeconds = 1f; // 같은 쥐의 다음 핑까지 (서버도 검사)
+        [SerializeField] private float _pingMarkerSeconds = 3f;   // 마커 표시 시간
+        [SerializeField] private float _pingMaxDistance = 30f;    // 조준 레이 최대 거리 (m) — 아무것도 안 맞으면 이 거리 지점
+
         [Header("고양이 (docs/07)")]
         [SerializeField] private float _catPatrolSpeed = 2f;
         [SerializeField] private float _catSuspiciousSpeed = 3f;
@@ -189,6 +194,10 @@ namespace RatGame.Data
         public float CrackedValueMultiplier => _crackedValueMultiplier;
         public float SlipperyInterval => _slipperyInterval;
         public float SlipperyChance => _slipperyChance;
+
+        public float PingCooldownSeconds => _pingCooldownSeconds;
+        public float PingMarkerSeconds => _pingMarkerSeconds;
+        public float PingMaxDistance => _pingMaxDistance;
 
         /// <summary>파손 데미지: 문턱 초과분 × 0.15 (docs/05).</summary>
         public float GetFragileDamage(float impactSpeed) =>
