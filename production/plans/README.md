@@ -5,7 +5,7 @@ docs/12 와이어프레임 이후 남은 UI 5건. 계획만 여기에 두고 구
 
 | # | 계획 | 다른 시스템 의존 | 권장 순서 |
 |---|---|---|---|
-| 1 | [로딩 화면](ui-01-loading-screen.md) | 없음 | 1 |
+| 1 | [로딩 화면](ui-01-loading-screen.md) | 없음 | **완료 (2026-09-16)** |
 | 2 | [CarryInfo](ui-02-carry-info.md) | 없음 (아이콘 스프라이트는 아트 단계) | 2 |
 | 3 | [핑 마커](ui-03-ping-marker.md) | 핑 입력·RPC 신규 (계획에 포함) | 3 |
 | 4 | [의심 표시](ui-04-suspicion-indicator.md) | 고양이 AI (CatBrain·CatSenses 이미 있음) | 4 |

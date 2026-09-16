@@ -54,7 +54,8 @@ namespace RatGame.World
 
         private void Update()
         {
-            if (_departing) return;
+            // 기지 씬을 바로 플레이하면 호스트가 뜨기 전 프레임에도 돈다 — 스폰 전엔 NetworkVariable을 쓰지 않는다
+            if (_departing || !IsSpawned) return;
             // 상점 구매로 누계가 줄면 바로 비춘다 (같으면 안 보냄)
             if (TotalValue.Value != RunSession.TotalValue) TotalValue.Value = RunSession.TotalValue;
             GatherCheck.Count(_box, out int ready, out int needed);
