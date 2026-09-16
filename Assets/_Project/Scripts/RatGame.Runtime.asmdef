@@ -10,7 +10,8 @@
         "Unity.RenderPipelines.Universal.Runtime",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
-        "Unity.Collections"
+        "Unity.Collections",
+        "Netcode.Transports.Facepunch"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

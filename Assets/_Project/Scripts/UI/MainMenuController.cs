@@ -9,8 +9,9 @@ using UnityEngine.SceneManagement;
 namespace RatGame.UI
 {
     /// <summary>
-    /// 메인 메뉴 (docs/12 와이어프레임, uGUI). 호스트 시작 → 기지 로드 / 친구 방 참가(Steam 로비 전까지 로컬 127.0.0.1) /
-    /// 설정(다음 단계에서 공용 패널 연결) / 종료. 네트워크 시작은 NetworkLauncher에 요청만 한다.
+    /// 메인 메뉴 (docs/12 와이어프레임, uGUI). 호스트 시작 → 기지 로드 / 친구 방 참가 / 설정(공용 패널) / 종료.
+    /// 친구 방 참가: Steam 모드는 친구 목록을 열고 초대 수락을 기다린다(수락하면 NetworkLauncher.JoinStarted), 로컬 모드는 127.0.0.1.
+    /// 네트워크 시작은 NetworkLauncher에 요청만 하고, 실패 사유는 LaunchFailed 이벤트로 받는다.
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
@@ -26,6 +27,7 @@ namespace RatGame.UI
         [SerializeField] private SettingsPanel _settingsPanel;
 
         private bool _joining;
+        private string _lastFailure;
 
         private void Awake()
         {
@@ -35,8 +37,16 @@ namespace RatGame.UI
             _settingsButton.onClick.AddListener(OnSettings);
             _quitButton.onClick.AddListener(OnQuit);
             _versionText.text = $"v{Application.version}{(Debug.isDebugBuild ? " · 개발 빌드" : "")}";
-            _modeText.text = "로컬 모드 (Steam 연결 전)";
+            var launcher = NetworkLauncher.Instance;
+            _modeText.text = launcher != null && launcher.UsingSteam
+                ? $"Steam · {launcher.Steam.PersonaName}"
+                : "로컬 모드 (같은 PC에서만 참가)";
             SetStatus("", UiColorRole.TextMuted);
+            if (launcher != null)
+            {
+                launcher.JoinStarted += OnInviteJoinStarted;
+                launcher.LaunchFailed += OnLaunchFailed;
+            }
         }
 
         private void Start()
@@ -52,17 +62,30 @@ namespace RatGame.UI
         {
             var nm = NetworkManager.Singleton;
             if (nm != null) nm.OnClientDisconnectCallback -= OnClientDisconnected;
+            var launcher = NetworkLauncher.Instance;
+            if (launcher != null)
+            {
+                launcher.JoinStarted -= OnInviteJoinStarted;
+                launcher.LaunchFailed -= OnLaunchFailed;
+            }
+        }
+
+        private void OnLaunchFailed(string message)
+        {
+            _lastFailure = message;
+            if (_joining) FailJoin(message);
         }
 
         private async void OnHost()
         {
             SetBusy(true);
             SetStatus("기지를 여는 중…", UiColorRole.TextMuted);
+            _lastFailure = null;
             bool ok = await NetworkLauncher.Instance.StartHostAsync();
             if (!ok)
             {
                 SetBusy(false);
-                SetStatus("호스트를 시작하지 못했어요. 이미 켜진 게임이 있는지 확인하세요.", UiColorRole.DangerText);
+                SetStatus(_lastFailure ?? "호스트를 시작하지 못했어요. 이미 켜진 게임이 있는지 확인하세요.", UiColorRole.DangerText);
                 return;
             }
             NetworkManager.Singleton.SceneManager.LoadScene(_hubSceneName, LoadSceneMode.Single);
@@ -70,16 +93,31 @@ namespace RatGame.UI
 
         private async void OnJoin()
         {
+            var launcher = NetworkLauncher.Instance;
+            if (launcher != null && launcher.UsingSteam)
+            {
+                // Steam은 초대로만 들어간다 — 친구 목록을 열어 두고 초대 수락(또는 친구의 "게임 참가")을 기다린다
+                launcher.Steam.OpenFriendsOverlay();
+                SetStatus("친구가 보낸 초대를 수락하면 바로 들어가요.\n(Steam 친구 목록에서 \"게임 참가\"도 돼요)", UiColorRole.TextMuted);
+                return;
+            }
+            BeginJoinUi("기지에 접속하는 중…");
+            bool ok = await launcher.JoinAsync();
+            if (!ok && _joining) FailJoin("접속을 시작하지 못했어요.");
+            // 성공하면 호스트가 기지 씬을 동기화해 이 씬이 내려간다
+        }
+
+        private void OnInviteJoinStarted(string friendName) => BeginJoinUi($"{friendName}의 방에 접속하는 중…");
+
+        private void BeginJoinUi(string status)
+        {
             var nm = NetworkManager.Singleton;
             if (nm == null) return;
             SetBusy(true);
-            SetStatus("기지에 접속하는 중…", UiColorRole.TextMuted);
+            SetStatus(status, UiColorRole.TextMuted);
             _joining = true;
             nm.OnClientDisconnectCallback -= OnClientDisconnected;
             nm.OnClientDisconnectCallback += OnClientDisconnected;
-            bool ok = await NetworkLauncher.Instance.JoinAsync();
-            if (!ok) FailJoin("접속을 시작하지 못했어요.");
-            // 성공하면 호스트가 기지 씬을 동기화해 이 씬이 내려간다
         }
 
         private void OnClientDisconnected(ulong clientId)

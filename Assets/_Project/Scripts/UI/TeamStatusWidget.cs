@@ -45,7 +45,10 @@ namespace RatGame.UI
 
             bool inStage = RunManager.Instance != null;
             SetText(_headerText, inStage ? $"팀 {_players.Count}/{MaxPlayers}" : $"기지 · {_players.Count}/{MaxPlayers}명");
-            string hint = inStage ? "" : "친구 초대는 Steam 연결 후";
+            var launcher = Net.NetworkLauncher.Instance;
+            string hint = inStage ? ""
+                : launcher != null && launcher.UsingSteam ? "친구 초대: Steam 친구 목록에서"
+                : "로컬 모드 — 같은 PC에서만 참가";
             SetText(_hintText, hint);
             if (_hintText.gameObject.activeSelf != (hint.Length > 0)) _hintText.gameObject.SetActive(hint.Length > 0);
 

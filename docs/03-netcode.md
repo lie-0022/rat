@@ -44,6 +44,23 @@ public class SteamLobbyService
 - 스팀 초대 수락 → 로비 진입 → 로비 데이터의 호스트 SteamId로 NGO 접속. 이 플로우가 "친구 초대 2클릭"의 실체.
 - SteamClient.Init(480)은 GameBootstrap에서. 실패해도 게임은 UnityTransport 모드로 뜨게 (개발 편의).
 
+### 구현 (2026-09-16, 태스크 0-6 — 무료 개발 AppID 480)
+
+- **라이브러리**: `Assets/Plugins/Facepunch.Steamworks` = Facepunch.Steamworks **2.5.2** 공식 릴리스(macOS universal dylib·Win64). `Assets/Plugins/FacepunchTransport` = Unity 커뮤니티 Facepunch 트랜스포트 소스(@0fab638) 복사본. 커뮤니티 패키지를 그대로 설치하지 않은 이유: 동봉된 Steamworks 2.3.2의 macOS 라이브러리가 x86_64 전용이라 Apple Silicon 에디터에서 로드 안 됨. 트랜스포트 수정: `Shutdown()`에서 `SteamClient.Shutdown()` 제거(세션마다 Steam이 꺼져 다음 로비를 못 만듦), asmdef 이름 `Netcode.Transports.Facepunch` (README.md).
+- **`Net/SteamLobbyService`** (NetworkLauncher 소유, 싱글톤 아님): `SteamClient.Init(480, asyncCallbacks:false)` + 매 프레임 `RunCallbacks`, 로그인 안 돼 있거나 실패하면 `IsAvailable=false` → UnityTransport 로컬 모드. 호스트 = `CreateLobbyAsync(4)` 친구 전용·참가 가능·데이터 `rat_game=1`. 참가 = `JoinLobbyAsync(id)` → 방장 SteamId를 `FacepunchTransport.targetSteamId`에. 초대 수락·친구 목록 "게임 참가" = `SteamFriends.OnGameLobbyJoinRequested` → `NetworkLauncher.JoinStarted`(메인 메뉴 "OO의 방에 접속 중…") → 참가. 게임이 꺼진 채 수락하면 `+connect_lobby <id>` 인자 → 메인 메뉴가 뜬 뒤 참가. 세션 중 초대 수락은 무시(나간 뒤 다시).
+- **트랜스포트 선택** (`NetworkLauncher`): 빌드 = Steam, 에디터 = UnityTransport(메뉴 **Tools/RatGame/Net/Use Steam In Editor**로 켬), `-unitytransport` 인자는 항상 로컬. NetworkManager 프리팹에 UnityTransport + FacepunchTransport 둘 다 두고 시작 시 `NetworkConfig.NetworkTransport`를 고른다. 세션을 나가면(`Shutdown`) 로비에서도 나감.
+- **오버레이 없이 초대**: Steam으로 실행하지 않은 빌드·에디터는 Steam 오버레이가 꺼져 있다(`SteamUtils.IsOverlayEnabled=false`, macOS에서 확인). 그래서 `InviteFriend(친구Id)`(로비 초대 메시지)와 `GetOnlineFriends()` 제공 — 지금은 DEV 패널 "친구 초대 (목록)"에서 쓴다(정식 UI는 production/plans/ui-05). 오버레이가 켜져 있으면 `OpenInviteOverlay`.
+- **메인 메뉴**: Steam 모드 하단 "Steam · 닉네임", "친구 방 참가" = 친구 목록 오버레이 열기 + "초대를 수락하면 바로 들어가요" 안내(오버레이가 없어도 Steam 앱의 채팅 초대·친구 목록으로 수락 가능).
+- **확인한 것 (2026-09-16, 한 대)**: 에디터·macOS 빌드 둘 다 Steam 로그인 인식 → 로비 생성 → Steam 트랜스포트로 호스트 → 기지 입장, 세션 나가기 → 로비 나감·Steam 유지. **2계정·2대 원격 접속은 아직 미검증** (아래 절차).
+
+### 2대 원격 테스트 절차 (0-6 수용 기준)
+
+1. 두 PC 모두 Steam 로그인(서로 친구인 계정 2개 — 한 PC에서 두 계정 동시 로그인은 불가), 같은 개발 빌드 준비. Windows PC면 Unity에 Windows Build Support 모듈 설치 후 Windows 빌드.
+2. A: 게임 실행 → 호스트 시작 → 기지. B: 게임 실행해서 메인 메뉴에 둔다 (480은 Spacewar라 게임이 꺼진 상태로 초대를 수락하면 Steam이 Spacewar를 실행하려 함 — **B는 먼저 게임을 켜 둔다**).
+3. A: Esc로 커서를 풀고 DEV 패널 "친구 초대 (목록)" → B 이름 클릭 (오버레이가 켜진 환경이면 "친구 초대 (Steam 오버레이)").
+4. B: Steam 채팅의 초대 수락 → 메인 메뉴 "A의 방에 접속 중…" → 기지 입장, 팀 2/4 · 토스트 "…가 들어왔어요".
+5. 막히면: A의 DEV 패널 로비 번호로 B를 `Rat.app/Contents/MacOS/Rat +connect_lobby <번호>`(Windows는 `Rat.exe +connect_lobby <번호>`)로 실행.
+
 ## 플레이어 동기화 (결정 사항 — 02 문서와 일치)
 
 - 플레이어: **소유 클라 권한 이동**. `ClientNetworkTransform` (NGO 샘플 클래스 복사) + 소유 클라에서 Rigidbody 시뮬.

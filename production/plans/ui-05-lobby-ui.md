@@ -4,6 +4,8 @@
 docs/12 LobbyUI: 좌상단 인원/4(**완료 — TeamStatusWidget**), **스팀 초대 버튼(OpenInviteOverlay)**, **방 공개 설정(친구만/초대만)**. 메인 메뉴 "친구 방 참가"도 로컬 127.0.0.1에서 **스팀 로비 참가**로 바뀐다.
 
 ## 선행 조건 — 태스크 0-6 (Facepunch)
+
+> **2026-09-16 0-6 코드 완료** (docs/03 구현 절). 이미 된 것: `SteamLobbyService`(`IsAvailable`·`CreateLobbyAsync`·`JoinLobbyAsync`·`OpenInviteOverlay`·**`InviteFriend`·`GetOnlineFriends`·`IsOverlayEnabled`**), 메인 메뉴 Steam 문구·친구 목록 열기·초대 수락 접속 표시, 팀 상태 안내 문구, DEV 패널 초대 목록. 남은 것: 아래 설계의 일시정지 창 초대 버튼(**오버레이가 꺼진 환경이 기본이므로 게임 안 친구 목록 UI로**), Tab 초대, 방 공개 설정(`SetVisibility` 래퍼 + `SessionInfo` NV). 아래 "0-6이 제공해야 할 API" 중 `SetVisibility`만 아직 없음.
 - `Packages/manifest.json`에 Facepunch.Steamworks 없음, `Net/SteamLobbyService` 없음. **이 계획은 0-6이 끝나야 시작**한다. 0-6 자체(트랜스포트·로비 생성·초대 수락 플로우)는 docs/03 `SteamLobbyService` 절이 사양이며 이 계획 범위가 아니다.
 - 0-6이 제공해야 UI가 붙는 API (docs/03 기준):
   - `SteamLobbyService.CreateLobbyAsync(maxPlayers)` — 호스트 시작 시 호출(NetworkLauncher 안).

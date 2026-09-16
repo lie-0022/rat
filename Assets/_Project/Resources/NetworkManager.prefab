@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 443254749319430877}
   - component: {fileID: 7443264682999748402}
   - component: {fileID: 4031071339745207375}
+  - component: {fileID: 2000091500686884330}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -146,3 +147,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2db7bf274ffe1486993413412569a9b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Net.DevAutoConnect
+--- !u!114 &2000091500686884330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5358370640178867563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e40e1aecfe154811aa306a98192cd3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Netcode.Transports.Facepunch::Netcode.Transports.Facepunch.FacepunchTransport
+  steamAppId: 480
+  targetSteamId: 0
+  userSteamId: 0

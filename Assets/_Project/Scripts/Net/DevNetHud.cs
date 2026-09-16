@@ -35,12 +35,30 @@ namespace RatGame.Net
 
             // 세션 나가기는 일시정지 창(Esc)이 맡는다 — 여기선 개발 정보·개발용 출발만
             // 좌하단 — 좌상단은 팀 상태 HUD 자리
-            var area = new Rect(10, Screen.height - 120, 220, 110);
+            var launcher = NetworkLauncher.Instance;
+            bool steam = launcher != null && launcher.UsingSteam;
+            float height = steam ? 150 : 110;
+            var area = new Rect(10, Screen.height - height - 10, 240, height);
             RatGame.Core.InputFocus.NoRelockGuiRect = area; // 이 패널 위 클릭은 커서 재잠금으로 먹지 않게
             GUILayout.BeginArea(area, GUI.skin.box);
             {
                 string role = nm.IsHost ? $"Host — 접속 {nm.ConnectedClientsIds.Count}명" : "Client";
                 GUILayout.Label($"[DEV] {role}");
+                if (steam)
+                {
+                    var svc = launcher.Steam;
+                    GUILayout.Label($"Steam 로비 {svc.CurrentLobbyId}");
+                    // Steam으로 실행하지 않으면 오버레이가 꺼져 있다 — 그땐 온라인 친구에게 직접 초대
+                    if (svc.IsOverlayEnabled)
+                    {
+                        if (GUILayout.Button("친구 초대 (Steam 오버레이)")) svc.OpenInviteOverlay();
+                    }
+                    else if (GUILayout.Button(_showFriends ? "친구 목록 닫기" : "친구 초대 (목록)"))
+                    {
+                        _showFriends = !_showFriends;
+                        if (_showFriends) _friends = svc.GetOnlineFriends();
+                    }
+                }
 
                 var run = Run.RunManager.Instance;
                 if (run != null)
@@ -50,6 +68,25 @@ namespace RatGame.Net
                         run.ServerStartStage(Random.Range(0, int.MaxValue));
                 }
             }
+            GUILayout.EndArea();
+
+            if (steam && _showFriends) DrawFriendList(launcher.Steam, area);
+        }
+
+        private bool _showFriends;
+        private System.Collections.Generic.List<(ulong id, string name)> _friends = new();
+
+        // 패널 오른쪽에 온라인 친구 — 누르면 로비 초대 (상대는 Steam 채팅에서 수락)
+        private void DrawFriendList(SteamLobbyService svc, Rect anchor)
+        {
+            float height = 30 + 24 * Mathf.Max(1, _friends.Count);
+            var box = new Rect(anchor.xMax + 6, anchor.yMax - height, 220, height);
+            RatGame.Core.InputFocus.NoRelockGuiRect = new Rect(anchor.x, box.y, box.xMax - anchor.x, anchor.yMax - box.y);
+            GUILayout.BeginArea(box, GUI.skin.box);
+            GUILayout.Label("온라인 친구 — 눌러서 초대");
+            if (_friends.Count == 0) GUILayout.Label("(온라인 친구 없음)");
+            foreach (var f in _friends)
+                if (GUILayout.Button(f.name)) svc.InviteFriend(f.id);
             GUILayout.EndArea();
         }
     }
