@@ -37,14 +37,16 @@ namespace RatGame.World
         public int CarrySlotCount => IsHeavy ? HeavySlotCount : (_gripPoints != null ? _gripPoints.Length : 0);
         public bool IsCarrySlotsFull => CarrierIds.Count >= CarrySlotCount;
 
+        /// <summary>금 간 Fragile (Durability&lt;0.5) — 정산 가치 감소, HUD "금 감" 표시가 같은 기준을 쓴다.</summary>
+        public bool IsCracked => _data != null && _data.Has(ItemTrait.Fragile) && Durability.Value < 0.5f;
+
         /// <summary>정산 가치: 금 갔으면(Durability<0.5) 50% (docs/05).</summary>
         public int EffectiveValue
         {
             get
             {
                 if (_data == null) return 0;
-                if (!_data.Has(ItemTrait.Fragile)) return _data.BaseValue;
-                return Durability.Value < 0.5f
+                return IsCracked
                     ? Mathf.RoundToInt(_data.BaseValue * _balance.CrackedValueMultiplier)
                     : _data.BaseValue;
             }

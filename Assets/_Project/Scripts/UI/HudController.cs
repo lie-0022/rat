@@ -19,6 +19,7 @@ namespace RatGame.UI
         [SerializeField] private InteractPromptWidget _prompt;
         [SerializeField] private ThrowGaugeWidget _gauge;
         [SerializeField] private HoldGaugeWidget _holdGauge; // [E] 홀드 (구출)
+        [SerializeField] private CarryInfoWidget _carryInfo; // 손에 든 물건 카드 (슬롯 그룹 안)
 
         public void Bind(PlayerCarryController carry, PlayerStamina stamina, PlayerInteractor interactor)
         {
@@ -27,6 +28,7 @@ namespace RatGame.UI
             _prompt.Bind(carry);
             _gauge.Bind(carry);
             if (_holdGauge != null) _holdGauge.Bind(interactor);
+            if (_carryInfo != null) _carryInfo.Bind(carry);
         }
 
         private void Update()
