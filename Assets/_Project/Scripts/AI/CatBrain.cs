@@ -57,6 +57,9 @@ namespace RatGame.AI
         private float _suspiciousUntil;
         private PlayerCondition _chaseTarget;
         private Vector3 _lastKnownTargetPos; // 시야 있을 때만 갱신 — 월핵 추적 금지 (docs/07)
+        private Vector3 _targetVelocity;     // 위치 차분 (원격 플레이어는 kinematic이라 Rigidbody 속도가 0)
+        private Vector3 _targetPrevPos;
+        private bool _overshooting;          // 시야 상실 직후 진행 방향으로 더 가 보는 중
         private float _lostSightSince = -1f;
         private float _captureSwingEnd;
         private float _groomUntil;
@@ -181,6 +184,9 @@ namespace RatGame.AI
                     break;
                 case CatState.Chase:
                     _chaseStartedAt = Time.time;
+                    _targetPrevPos = Vector3.zero;
+                    _targetVelocity = Vector3.zero;
+                    _overshooting = false;
                     TargetClientId.Value = _chaseTarget != null ? _chaseTarget.OwnerClientId : 0;
                     if (_chaseTarget != null) _lastKnownTargetPos = _chaseTarget.transform.position;
                     _lostSightSince = -1f;
@@ -394,19 +400,43 @@ namespace RatGame.AI
                 return;
             }
 
+            // 코너 감속: 몸이 경로 방향과 어긋날수록 느리게 — 직선은 최고 속도, 지그재그는 실제로 도움된다 (design/cat-design/01-6)
+            float align = Mathf.InverseLerp(-0.2f, 0.9f, _movement.SteeringAlignment);
+            float chaseSpeed = _balance.CatChaseSpeed * ChaseSpeedMul * Mathf.Lerp(_balance.CatChaseCornerSpeedMul, 1f, align);
+
             bool seeing = _senses.VisibleTarget == _chaseTarget;
             if (seeing)
             {
+                Vector3 pos = _chaseTarget.transform.position;
+                // 타깃 속도(위치 차분) — 첫 프레임은 0
+                _targetVelocity = _lostSightSince < 0f && _targetPrevPos != Vector3.zero ? (pos - _targetPrevPos) / Mathf.Max(Time.deltaTime, 0.001f) : Vector3.zero;
+                _targetPrevPos = pos;
                 _lostSightSince = -1f;
-                _lastKnownTargetPos = _chaseTarget.transform.position;
-                _movement.MoveTo(_lastKnownTargetPos, _balance.CatChaseSpeed * ChaseSpeedMul);
-                if (Vector3.Distance(transform.position, _lastKnownTargetPos) <= _balance.CatCaptureRange)
+                _overshooting = false;
+                _lastKnownTargetPos = pos;
+                // 예측 추격: 타깃이 가는 방향 1s 앞을 노린다. NavMesh 밖이면 타깃 위치로
+                Vector3 lead = pos + Vector3.ClampMagnitude(_targetVelocity, _balance.CatChaseSpeed) * _balance.CatChaseLeadSeconds;
+                _movement.MoveTo(CatMovement.Sample(lead, 1.5f, pos), chaseSpeed);
+                if (Vector3.Distance(transform.position, pos) <= _balance.CatCaptureRange)
                     SetState(CatState.Capture);
             }
             else
             {
-                if (_lostSightSince < 0f) _lostSightSince = Time.time;
-                _movement.MoveTo(_lastKnownTargetPos, _balance.CatChaseSpeed * ChaseSpeedMul); // 마지막 "목격" 지점만 (월핵 금지)
+                if (_lostSightSince < 0f)
+                {
+                    _lostSightSince = Time.time;
+                    _targetPrevPos = Vector3.zero;
+                    // 오버슛: 마지막 진행 방향으로 3m 더 — 코너를 돌아 "따라 도는" 느낌. NavMesh 밖이면 마지막 목격점
+                    Vector3 dir = _targetVelocity; dir.y = 0f;
+                    _overshooting = dir.sqrMagnitude > 0.25f;
+                    Vector3 goal = _overshooting ? _lastKnownTargetPos + dir.normalized * _balance.CatChaseOvershootMeters : _lastKnownTargetPos;
+                    _movement.MoveTo(CatMovement.Sample(goal, 1.5f, _lastKnownTargetPos), chaseSpeed);
+                }
+                else if (_overshooting && _movement.Arrived)
+                {
+                    _overshooting = false;
+                    _movement.MoveTo(_lastKnownTargetPos, chaseSpeed); // 오버슛 끝 — 마지막 "목격" 지점만 (월핵 금지)
+                }
                 if (Time.time - _lostSightSince >= _balance.CatLoseSightSeconds)
                 {
                     _investigatePos = _lastKnownTargetPos;

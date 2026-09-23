@@ -133,6 +133,11 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 1f)] private float _catHalfAwakeSense = 0.5f;
         [SerializeField] private float _catDeepWakeGaugeMul = 2f;              // 깊은 잠은 의심 임계 ×2여야 반응
 
+        [Header("고양이 추격 (design/cat-design/01-3) — 예측·오버슛·코너 감속")]
+        [SerializeField] private float _catChaseLeadSeconds = 1f;          // 타깃 속도로 이만큼 앞을 노린다
+        [SerializeField] private float _catChaseOvershootMeters = 3f;      // 시야를 잃으면 마지막 진행 방향으로 이만큼 더 가 본다
+        [SerializeField, Range(0.2f, 1f)] private float _catChaseCornerSpeedMul = 0.55f; // 방향을 크게 틀 때 속도 배율 (지그재그가 통하게)
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -263,6 +268,9 @@ namespace RatGame.Data
         public float CatHalfAwakeSeconds => _catHalfAwakeSeconds;
         public float CatHalfAwakeSense => _catHalfAwakeSense;
         public float CatDeepWakeGaugeMul => _catDeepWakeGaugeMul;
+        public float CatChaseLeadSeconds => _catChaseLeadSeconds;
+        public float CatChaseOvershootMeters => _catChaseOvershootMeters;
+        public float CatChaseCornerSpeedMul => _catChaseCornerSpeedMul;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

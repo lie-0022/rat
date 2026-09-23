@@ -111,6 +111,9 @@ MonoBehaviour:
   _catHalfAwakeSeconds: 3
   _catHalfAwakeSense: 0.5
   _catDeepWakeGaugeMul: 2
+  _catChaseLeadSeconds: 1
+  _catChaseOvershootMeters: 3
+  _catChaseCornerSpeedMul: 0.55
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15
