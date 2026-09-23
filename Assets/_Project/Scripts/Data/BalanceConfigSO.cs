@@ -113,6 +113,16 @@ namespace RatGame.Data
         [SerializeField] private Vector2 _catPatrolWaitRange = new(2f, 5f);
         [SerializeField] private float _catDistractedSpeed = 4f;
 
+        [Header("고양이 스팟 (design/cat-design/02) — 머무는 시간 s / 그동안 감각 배율")]
+        [SerializeField] private float _catBedSleepSeconds = 45f;         // 잠자리에서 잠드는 시간 (깨면 순찰)
+        [SerializeField] private float _catSpotFoodSeconds = 25f;
+        [SerializeField, Range(0f, 1f)] private float _catSpotFoodSense = 0.5f;   // 챱챱 소리에 묻힘
+        [SerializeField] private float _catSpotSunSeconds = 40f;
+        [SerializeField, Range(0f, 1f)] private float _catSpotSunSense = 0.5f;    // 반쯤 잠
+        [SerializeField] private float _catSpotGroomSeconds = 20f;
+        [SerializeField, Range(0f, 1f)] private float _catSpotGroomSense = 0.6f;
+        [SerializeField] private int _catSpotAvoidRecent = 2;              // 최근 n개 스팟은 다시 안 뽑음
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -227,6 +237,14 @@ namespace RatGame.Data
         public float CatSleepSenseMultiplier => _catSleepSenseMultiplier;
         public Vector2 CatPatrolWaitRange => _catPatrolWaitRange;
         public float CatDistractedSpeed => _catDistractedSpeed;
+        public float CatBedSleepSeconds => _catBedSleepSeconds;
+        public float CatSpotFoodSeconds => _catSpotFoodSeconds;
+        public float CatSpotFoodSense => _catSpotFoodSense;
+        public float CatSpotSunSeconds => _catSpotSunSeconds;
+        public float CatSpotSunSense => _catSpotSunSense;
+        public float CatSpotGroomSeconds => _catSpotGroomSeconds;
+        public float CatSpotGroomSense => _catSpotGroomSense;
+        public int CatSpotAvoidRecent => _catSpotAvoidRecent;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

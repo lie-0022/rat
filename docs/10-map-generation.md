@@ -14,7 +14,7 @@ public class RoomModule : MonoBehaviour
     public DoorSocket Entry;            // 이전 방과 접합
     public DoorSocket[] Exits;          // 1~2개 (2개면 분기 — 하나는 보너스방용)
     public Transform[] LootSpawns;      // 6~12개, LootTier 힌트 태그 포함
-    public Transform[] CatWaypoints;    // 2~4개
+    public CatSpot[] CatSpots;          // 2~4개 — 종류(Look/Bed/Food/Sun/Groom…)·가중치. 방마다 Look ≥1, 존마다 Bed 1 (2026-09-24, docs/07)
     public Transform CatSpawn;          // 없으면 이 방엔 고양이 배정 안 함
     public Transform[] TrapSpawns;      // 2~4개
     public LightZone[] DarkZones;       // 어두운 영역 (07 시야 감쇠)

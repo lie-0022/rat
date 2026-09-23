@@ -30,7 +30,7 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 | 상태 | 행동 | 이동속도 |
 |---|---|---|
 | Sleep | 지정 스팟에서 수면. 감각 민감도 30% | 0 |
-| Patrol | 웨이포인트 순회 (방마다 2~4개, 랜덤 대기 2~5s) | 2.0 |
+| Patrol | **스팟 그래프** 순회 (2026-09-24, `AI/CatSpot`): 가중치 랜덤·최근 2개 제외 → 도착 후 종류별 머무름 — Look 2~5s / Food 25s(감각 0.5) / Sun 40s(0.5) / Groom 20s(0.6) / Bed → Sleep 45s 뒤 깸(다음 스팟으로). CatSpot이 없으면 `CatWaypoint*`를 Look으로. design/cat-design/02 카탈로그 | 2.0 |
 | Suspicious | 마지막 자극 지점으로 이동, 주변 3m 배회 6s | 3.0 |
 | Chase | 타깃 추적. 시야 상실 3s 후 마지막 목격점 조사 → Suspicious | 5.5 |
 | Capture | 앞발 스윙 애니 0.4s → 범위 내 플레이어 Downed 처리 | — |
@@ -60,6 +60,10 @@ foreach player(Active만):
 
 - NoiseSystem.OnNoise 구독 (06 계약): `게이지 += loudness × 거리감쇠 × 0.8`
 - Break/Trap/Squeak 타입은 즉시 Suspicious(해당 지점).
+
+## 데모 레이아웃 (2026-09-24)
+
+`Tools/RatGame/Cat/Build Demo Layout (Stage_Warehouse01)`: 스팟 6(Bed·Food·Sun·Groom·Look×2, 쥐구멍 반대편에 잠자리·밥)·시야 가림 상자 4·고양이 1(잠자리에서 시작)·NavMesh 베이크. 방 모듈 전 검증용 — 선반 층·틈은 다음 단계(design/cat-design/02-6). 검증: 4배속 6분 관찰에서 스팟 14회 방문(같은 스팟 연속 없음), Bed 수면 45.0s 뒤 깸, Food 머무는 동안 감각 0.5. 참고: 쥐가 쥐구멍 위에 서 있으면 포획→쥐구멍 부활→재포획이 반복된다(쥐구멍 부활 사양의 자연스러운 결과).
 
 ## Capture 판정
 

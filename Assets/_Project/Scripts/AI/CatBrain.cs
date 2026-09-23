@@ -23,9 +23,16 @@ namespace RatGame.AI
         private CatSenses _senses;
         private CatMovement _movement;
 
-        private Transform[] _waypoints;
-        private int _waypointIndex;
-        private float _waitUntil;               // Patrol 대기
+        // 스팟 그래프 (design/cat-design/02): CatSpot 컴포넌트가 없으면 씬의 CatWaypoint* 를 Look 스팟으로 쓴다
+        private struct Spot { public Vector3 Pos; public CatSpotType Type; public float Weight; public string Name; }
+        private Spot[] _spots;
+        private int _spotIndex = -1;
+        private readonly System.Collections.Generic.List<int> _recentSpots = new();
+        private bool _dwelling;                 // 스팟에 도착해 머무는 중
+        private float _waitUntil;               // Patrol 대기(스팟 머무름 끝)
+        private float _sleepUntil;              // Bed 잠 끝
+        public CatSpotType CurrentSpotType => _spotIndex >= 0 && _spots != null ? _spots[_spotIndex].Type : CatSpotType.Look;
+        public string CurrentSpotName => _spotIndex >= 0 && _spots != null ? _spots[_spotIndex].Name : "";
         private Vector3 _investigatePos;
         private float _suspiciousUntil;
         private PlayerCondition _chaseTarget;
@@ -51,12 +58,22 @@ namespace RatGame.AI
                 _movement.SetEnabled(false);
                 return;
             }
-            // 순찰 웨이포인트: 씬의 CatWaypoint* (방 모듈 단계에서 RoomModule 소유로 이관 예정)
-            var found = GameObject.FindObjectsByType<Transform>(FindObjectsSortMode.None);
-            var list = new System.Collections.Generic.List<Transform>();
-            foreach (var t in found) if (t.name.StartsWith("CatWaypoint")) list.Add(t);
-            _waypoints = list.ToArray();
+            CollectSpots();
             SetState(CatState.Patrol);
+        }
+
+        // 씬의 CatSpot 전부 (방 모듈 단계에서는 존 그래프로 — 지금은 씬 = 방 1개). 없으면 CatWaypoint* 이름을 Look으로
+        private void CollectSpots()
+        {
+            var list = new System.Collections.Generic.List<Spot>();
+            foreach (var spot in GameObject.FindObjectsByType<CatSpot>(FindObjectsSortMode.None))
+                list.Add(new Spot { Pos = spot.transform.position, Type = spot.Type, Weight = spot.Weight, Name = spot.name });
+            if (list.Count == 0)
+                foreach (var t in GameObject.FindObjectsByType<Transform>(FindObjectsSortMode.None))
+                    if (t.name.StartsWith("CatWaypoint"))
+                        list.Add(new Spot { Pos = t.position, Type = CatSpotType.Look, Weight = 1f, Name = t.name });
+            _spots = list.ToArray();
+            Log.Dev($"고양이 [{name}]: 스팟 {_spots.Length}개");
         }
 
         private Vector3? _tempWaypoint; // 쿠키 부스러기 — 1회 경유 (docs/07)
@@ -81,7 +98,7 @@ namespace RatGame.AI
 
         private void Update()
         {
-            if (!IsSpawned || _waypoints == null) return; // 자동 부트 등 스폰 전 프레임 가드
+            if (!IsSpawned || _spots == null) return; // 자동 부트 등 스폰 전 프레임 가드
             switch (State.Value)
             {
                 case CatState.Sleep: TickSleep(); break;
@@ -100,11 +117,12 @@ namespace RatGame.AI
             Log.Dev($"고양이 [{name}]: {State.Value} → {next}");
             State.Value = next;
             _senses.SensitivityMultiplier = next == CatState.Sleep ? _balance.CatSleepSenseMultiplier : 1f;
+            if (next != CatState.Patrol) _dwelling = false;
 
             switch (next)
             {
-                case CatState.Sleep: _movement.Stop(); break;
-                case CatState.Patrol: _waitUntil = 0f; break;
+                case CatState.Sleep: _movement.Stop(); _sleepUntil = Time.time + _balance.CatBedSleepSeconds; break;
+                case CatState.Patrol: _waitUntil = 0f; _dwelling = false; break;
                 case CatState.Suspicious:
                     _suspiciousUntil = Time.time + _balance.CatSuspiciousWanderSeconds;
                     _movement.MoveTo(_investigatePos, _balance.CatSuspiciousSpeed);
@@ -121,8 +139,8 @@ namespace RatGame.AI
                     break;
                 case CatState.Return:
                     TargetClientId.Value = 0;
-                    if (_waypoints.Length > 0)
-                        _movement.MoveTo(NearestWaypoint(), _balance.CatReturnSpeed);
+                    if (_spots.Length > 0)
+                        _movement.MoveTo(NearestSpot(), _balance.CatReturnSpeed);
                     break;
                 case CatState.Distracted:
                     _movement.MoveTo(_distractPos, _balance.CatDistractedSpeed);
@@ -136,7 +154,16 @@ namespace RatGame.AI
         {
             // 소음 ≥40 근접(자극 지점이 가까움) → Suspicious (docs/07 FSM)
             if (_senses.HasNewStimulus && _senses.SuspicionGauge.Value >= _balance.CatSuspicionThreshold)
+            {
                 EnterSuspicious();
+                return;
+            }
+            if (Time.time >= _sleepUntil)
+            {
+                // 다 잤다 — 아직 잠자리 위라 Arrived가 참이므로, 같은 스팟에 다시 "도착"하지 않게 다음 스팟을 바로 고른다
+                SetState(CatState.Patrol);
+                GoToNextSpot();
+            }
         }
 
         private void TickPatrol()
@@ -155,18 +182,68 @@ namespace RatGame.AI
                 return;
             }
 
-            if (_waypoints.Length == 0) { _movement.Stop(); return; }
-            if (Time.time < _waitUntil) return;
-            if (_movement.Arrived)
+            if (_spots.Length == 0) { _movement.Stop(); return; }
+            if (_dwelling)
             {
-                _waitUntil = Time.time + Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y);
-                _waypointIndex = (_waypointIndex + 1) % _waypoints.Length;
-                _movement.MoveTo(_waypoints[_waypointIndex].position, _balance.CatPatrolSpeed);
+                if (Time.time < _waitUntil) return;
+                _dwelling = false;
+                _senses.SensitivityMultiplier = 1f;
+                GoToNextSpot();
+                return;
             }
-            else if (_movement.Velocity.sqrMagnitude < 0.01f)
+            if (_spotIndex < 0) { GoToNextSpot(); return; }
+            if (_movement.Arrived) ArriveAtSpot();
+            else if (_movement.Velocity.sqrMagnitude < 0.01f) _movement.MoveTo(_spots[_spotIndex].Pos, _balance.CatPatrolSpeed);
+        }
+
+        // 다음 스팟: 가중치 랜덤, 최근 n개 제외 (스팟이 적으면 제외 목록을 줄인다)
+        private void GoToNextSpot()
+        {
+            int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, _spots.Length - 1);
+            while (_recentSpots.Count > avoid) _recentSpots.RemoveAt(0);
+            float total = 0f;
+            for (int i = 0; i < _spots.Length; i++) if (!_recentSpots.Contains(i)) total += _spots[i].Weight;
+            float r = Random.value * total;
+            int pick = -1;
+            for (int i = 0; i < _spots.Length; i++)
             {
-                _movement.MoveTo(_waypoints[_waypointIndex].position, _balance.CatPatrolSpeed);
+                if (_recentSpots.Contains(i)) continue;
+                r -= _spots[i].Weight;
+                if (r <= 0f) { pick = i; break; }
             }
+            if (pick < 0) pick = 0;
+            _spotIndex = pick;
+            _recentSpots.Add(pick);
+            _movement.MoveTo(_spots[pick].Pos, _balance.CatPatrolSpeed);
+        }
+
+        // 스팟 종류별 머무름: 잠자리는 Sleep 상태로, 나머지는 시간+감각 배율 (design/cat-design/02 카탈로그)
+        private void ArriveAtSpot()
+        {
+            var spot = _spots[_spotIndex];
+            Log.Dev($"고양이 [{name}]: 스팟 도착 {spot.Name} ({spot.Type})");
+            switch (spot.Type)
+            {
+                case CatSpotType.Bed:
+                    SetState(CatState.Sleep);
+                    return;
+                case CatSpotType.Food:
+                    Dwell(_balance.CatSpotFoodSeconds, _balance.CatSpotFoodSense); return;
+                case CatSpotType.Sun:
+                    Dwell(_balance.CatSpotSunSeconds, _balance.CatSpotSunSense); return;
+                case CatSpotType.Groom:
+                    Dwell(_balance.CatSpotGroomSeconds, _balance.CatSpotGroomSense); return;
+                default:
+                    Dwell(Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y), 1f); return;
+            }
+        }
+
+        private void Dwell(float seconds, float sense)
+        {
+            _dwelling = true;
+            _waitUntil = Time.time + seconds;
+            _senses.SensitivityMultiplier = sense;
+            _movement.Stop();
         }
 
         private void TickSuspicious()
@@ -262,7 +339,7 @@ namespace RatGame.AI
         private void TickReturn()
         {
             if (CheckEscalation()) return;
-            if (_waypoints.Length == 0 || _movement.Arrived) SetState(CatState.Patrol);
+            if (_spots.Length == 0 || _movement.Arrived) SetState(CatState.Patrol);
         }
 
         // ---- 공통 전이 ----
@@ -295,15 +372,17 @@ namespace RatGame.AI
             SetState(CatState.Suspicious);
         }
 
-        private Vector3 NearestWaypoint()
+        // 복귀는 가장 가까운 스팟으로 — 도착하면 Patrol이 그 스팟 행동부터 이어 간다
+        private Vector3 NearestSpot()
         {
             Vector3 best = transform.position;
             float bestDist = float.MaxValue;
-            foreach (var w in _waypoints)
+            for (int i = 0; i < _spots.Length; i++)
             {
-                float d = Vector3.Distance(transform.position, w.position);
-                if (d < bestDist) { bestDist = d; best = w.position; _waypointIndex = System.Array.IndexOf(_waypoints, w); }
+                float d = Vector3.Distance(transform.position, _spots[i].Pos);
+                if (d < bestDist) { bestDist = d; best = _spots[i].Pos; _spotIndex = i; }
             }
+            _dwelling = false;
             return best;
         }
     }

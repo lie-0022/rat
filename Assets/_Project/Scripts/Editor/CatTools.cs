@@ -91,5 +91,71 @@ namespace RatGame.Editor
             }
             Debug.Log("[RatGame] 고양이 + 웨이포인트 + NavMesh 완료");
         }
+
+        /// <summary>
+        /// Tools/RatGame/Cat/Build Demo Layout — Stage_Warehouse01에 스팟 6개·시야 가림 상자·고양이 1마리 배치 + NavMesh 베이크
+        /// (design/cat-design/02-6 데모 배치안 1단계: 바닥 한 층, 선반·틈은 다음 단계). 이미 있는 오브젝트는 건너뛴다.
+        /// </summary>
+        [MenuItem("Tools/RatGame/Cat/Build Demo Layout (Stage_Warehouse01)")]
+        public static void BuildDemoLayout()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (scene.name != "Stage_Warehouse01") { Debug.LogWarning("[RatGame] Stage_Warehouse01을 연 뒤 실행"); return; }
+
+            var root = GameObject.Find("CatLayout") ?? new GameObject("CatLayout");
+            // (이름, 종류, 위치, 바라보는 방향, 가중치) — 쥐구멍(5,6)에서 먼 쪽에 잠자리·밥, 가까운 쪽은 관찰점
+            var spots = new (string name, CatSpotType type, Vector3 pos, Vector3 look, float weight)[]
+            {
+                ("Spot_Bed",   CatSpotType.Bed,   new(-12f, 0f, 14f),  new(1f, 0f, -1f), 1f),
+                ("Spot_Food",  CatSpotType.Food,  new(14f, 0f, 14f),   new(0f, 0f, 1f),  1.2f),
+                ("Spot_Sun",   CatSpotType.Sun,   new(16f, 0f, -10f),  new(1f, 0f, 0f),  0.8f),
+                ("Spot_Groom", CatSpotType.Groom, new(10f, 0f, -14f),  new(-1f, 0f, 1f), 0.8f),
+                ("Spot_LookA", CatSpotType.Look,  new(0f, 0f, -6f),    new(0f, 0f, 1f),  1.5f),
+                ("Spot_LookB", CatSpotType.Look,  new(-8f, 0f, 2f),    new(1f, 0f, 0f),  1.5f),
+            };
+            foreach (var (name, type, pos, look, weight) in spots)
+            {
+                var go = GameObject.Find(name);
+                if (go == null) { go = new GameObject(name); go.transform.SetParent(root.transform); }
+                go.transform.position = pos;
+                go.transform.rotation = Quaternion.LookRotation(look.normalized);
+                var spot = go.GetComponent<CatSpot>() ?? go.AddComponent<CatSpot>();
+                spot.EditorSetup(type, weight);
+            }
+
+            // 시야를 가리는 상자 몇 개 (그레이박스) — 빈 40×40에서는 항상 보이기 때문
+            var crates = new (string name, Vector3 pos, Vector3 size)[]
+            {
+                ("Crate_A", new(0f, 0.75f, 4f),   new(4f, 1.5f, 1.5f)),
+                ("Crate_B", new(-6f, 0.75f, 9f),  new(1.5f, 1.5f, 5f)),
+                ("Crate_C", new(8f, 0.75f, -2f),  new(1.5f, 1.5f, 6f)),
+                ("Crate_D", new(4f, 0.75f, 12f),  new(5f, 1.5f, 1.5f)),
+            };
+            foreach (var (name, pos, size) in crates)
+            {
+                if (GameObject.Find(name) != null) continue;
+                var c = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                c.name = name; c.transform.SetParent(root.transform);
+                c.transform.position = pos; c.transform.localScale = size;
+                c.isStatic = true;
+            }
+
+            if (GameObject.Find("Cat") == null)
+            {
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Cat/Cat.prefab");
+                var inst = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                inst.name = "Cat";
+                inst.transform.position = new Vector3(-12f, 0f, 14f); // 잠자리에서 시작
+            }
+
+            var ground = GameObject.Find("Ground");
+            var surface = ground.GetComponent<NavMeshSurface>() ?? ground.AddComponent<NavMeshSurface>();
+            surface.collectObjects = CollectObjects.All;
+            surface.BuildNavMesh();
+
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
+            UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
+            Debug.Log("[RatGame] 고양이 데모 레이아웃: 스팟 6 · 상자 4 · 고양이 1 · NavMesh 베이크");
+        }
     }
 }
