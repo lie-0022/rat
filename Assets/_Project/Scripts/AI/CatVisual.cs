@@ -40,14 +40,15 @@ namespace RatGame.AI
             var state = _brain.State.Value;
             var phase = _brain.SleepPhase.Value;
 
+            Color baseColor = _brain.Personality != null ? _brain.Personality.BodyColor : Base;
             Color c = state switch
             {
-                CatState.Sleep => Asleep,
+                CatState.Sleep => Color.Lerp(baseColor, Asleep, 0.5f),
                 CatState.Suspicious => Suspicious,
                 CatState.Chase => Chase,
                 CatState.Capture => Capture,
                 CatState.Distracted => Distracted,
-                _ => Base
+                _ => baseColor
             };
             if (_bodyRenderer != null)
             {

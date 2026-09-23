@@ -61,6 +61,19 @@ foreach player(Active만):
 - NoiseSystem.OnNoise 구독 (06 계약): `게이지 += loudness × 거리감쇠 × 0.8`
 - Break/Trap/Squeak 타입은 즉시 Suspicious(해당 지점).
 
+## 성격 프로필 (2026-09-24, `Data/CatPersonalitySO`, design/cat-ideas/01)
+
+FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에서 랜덤(`PersonalityIndex` NV, `ServerSetPersonality`로 지정 가능). 몸 색이 그레이박스 표현.
+
+| 프로필 | 시야 | 청각 | 추격 속도 | 수면 | 잠자리 선호 | 관찰점 선호/머무름 | 특이 | 색 |
+|---|---|---|---|---|---|---|---|---|
+| 게으름뱅이 | 0.8 | 0.7 | 1.1 | 1.5× | ×2 | — | 추격 8s 뒤 포기(Return) | 회갈색 |
+| 사냥꾼 | 1.3 | 0.9 | 1.0 | 0.5× | — | ×1.5 / ×3 | — (선반 Perch는 층이 생기면) | 진회색 |
+
+- 배율은 `CatSenses.ViewMultiplier/HearingMultiplier`, `CatBrain`의 추격 속도·수면·스팟 가중치·관찰점 머무름에 곱. 새 프로필은 에셋만 추가.
+- `CatBrain.ServerWake()` — 자는 고양이를 깨워 순찰로(집주인 부르기·테스트용).
+- 검증: 9m 정면에서 게으름뱅이 못 봄(시야 6.4) / 사냥꾼 목격→추격(10.4). 게으름뱅이 추격 8s 뒤 포기(시야 상실 3s가 먼저 오면 그쪽이 우선). 사냥꾼 수면 40s(30 + 얕은 잠 마무리), 게으름뱅이 107s.
+
 ## 데모 레이아웃 (2026-09-24)
 
 `Tools/RatGame/Cat/Build Demo Layout (Stage_Warehouse01)`: 스팟 6(Bed·Food·Sun·Groom·Look×2, 쥐구멍 반대편에 잠자리·밥)·시야 가림 상자 4·고양이 1(잠자리에서 시작)·NavMesh 베이크. 방 모듈 전 검증용 — 선반 층·틈은 다음 단계(design/cat-design/02-6). 검증: 4배속 6분 관찰에서 스팟 14회 방문(같은 스팟 연속 없음), Bed 수면 45.0s 뒤 깸, Food 머무는 동안 감각 0.5. 참고: 쥐가 쥐구멍 위에 서 있으면 포획→쥐구멍 부활→재포획이 반복된다(쥐구멍 부활 사양의 자연스러운 결과).

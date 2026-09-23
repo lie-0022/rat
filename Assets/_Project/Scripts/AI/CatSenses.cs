@@ -19,6 +19,9 @@ namespace RatGame.AI
 
         /// <summary>Sleep 상태 등에서 CatBrain이 조정 (docs/07 — 수면 민감도 30%).</summary>
         public float SensitivityMultiplier { get; set; } = 1f;
+        /// <summary>성격 배율 (CatBrain이 스폰 시 설정 — design/cat-ideas/01).</summary>
+        public float ViewMultiplier { get; set; } = 1f;
+        public float HearingMultiplier { get; set; } = 1f;
 
         // 시야 결과 (CatBrain이 읽음)
         public PlayerCondition VisibleTarget { get; private set; }
@@ -75,7 +78,7 @@ namespace RatGame.AI
                 // 웅크림(동기화 스케일)이면 시야 거리 절반 (docs/07)
                 bool crouching = playerObj.transform.localScale.y < Player.PlayerController.BaseScaleY * 0.75f;
                 float viewDist = _balance.CatViewDistance * (crouching ? _balance.CatCrouchViewMultiplier : 1f)
-                                 * SensitivityMultiplier;
+                                 * SensitivityMultiplier * ViewMultiplier;
                 if (dist > viewDist) continue;
                 if (Vector3.Angle(transform.forward, toPlayer) > _balance.CatViewHalfAngle) continue;
 
@@ -107,7 +110,7 @@ namespace RatGame.AI
         private void OnNoise(NoiseEvent e)
         {
             if (!IsServer) return;
-            float heard = NoiseSystem.GetLoudnessAt(e, transform.position) * SensitivityMultiplier;
+            float heard = NoiseSystem.GetLoudnessAt(e, transform.position) * SensitivityMultiplier * HearingMultiplier;
             if (heard < _balance.CatHearThreshold) return;
 
             // 거리감쇠 (docs/07): 반경 대비 멀수록 약하게

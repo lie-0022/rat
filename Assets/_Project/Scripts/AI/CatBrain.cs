@@ -19,10 +19,24 @@ namespace RatGame.AI
     public class CatBrain : NetworkBehaviour
     {
         [SerializeField] private BalanceConfigSO _balance;
+        [SerializeField] private CatPersonalitySO[] _personalities;   // 스폰 시 하나 뽑음 (비어 있으면 기본 배율 1)
 
         public NetworkVariable<CatState> State = new NetworkVariable<CatState>(CatState.Patrol);
         public NetworkVariable<ulong> TargetClientId = new NetworkVariable<ulong>(0);
         public NetworkVariable<CatSleepPhase> SleepPhase = new NetworkVariable<CatSleepPhase>(CatSleepPhase.None);
+        /// <summary>뽑힌 성격 인덱스(-1 없음). 클라 연출용.</summary>
+        public NetworkVariable<sbyte> PersonalityIndex = new NetworkVariable<sbyte>(-1);
+
+        public CatPersonalitySO Personality =>
+            _personalities != null && PersonalityIndex.Value >= 0 && PersonalityIndex.Value < _personalities.Length
+                ? _personalities[PersonalityIndex.Value] : null;
+        private float ViewMul => Personality != null ? Personality.ViewMultiplier : 1f;
+        private float HearingMul => Personality != null ? Personality.HearingMultiplier : 1f;
+        private float ChaseSpeedMul => Personality != null ? Personality.ChaseSpeedMultiplier : 1f;
+        private float SleepDurMul => Personality != null ? Personality.SleepDurationMultiplier : 1f;
+        private float LookDwellMul => Personality != null ? Personality.LookDwellMultiplier : 1f;
+        private float ChaseGiveUp => Personality != null ? Personality.ChaseGiveUpSeconds : 0f;
+        private float _chaseStartedAt;
 
         private CatSenses _senses;
         private CatMovement _movement;
@@ -65,7 +79,34 @@ namespace RatGame.AI
                 return;
             }
             CollectSpots();
+            if (PersonalityIndex.Value < 0 && _personalities != null && _personalities.Length > 0)
+                ServerSetPersonality(Random.Range(0, _personalities.Length));
+            else ApplyPersonality();
             SetState(CatState.Patrol);
+        }
+
+        /// <summary>깨워서 순찰로 (집주인 부르기·존 시작·테스트용). 자는 중이면 다음 스팟을 바로 고른다. 호스트 전용.</summary>
+        public void ServerWake()
+        {
+            if (!IsServer || State.Value == CatState.Chase || State.Value == CatState.Capture) return;
+            SetState(CatState.Patrol);
+            _senses.ConsumeStimulus();
+            GoToNextSpot();
+        }
+
+        /// <summary>성격 지정 (스폰 시 랜덤, 테스트·존 생성기가 명시 지정 가능). 호스트 전용.</summary>
+        public void ServerSetPersonality(int index)
+        {
+            if (!IsServer) return;
+            PersonalityIndex.Value = (sbyte)Mathf.Clamp(index, -1, (_personalities?.Length ?? 0) - 1);
+            ApplyPersonality();
+            Log.Dev($"고양이 [{name}]: 성격 {(Personality != null ? Personality.DisplayName : "기본")}");
+        }
+
+        private void ApplyPersonality()
+        {
+            _senses.ViewMultiplier = ViewMul;
+            _senses.HearingMultiplier = HearingMul;
         }
 
         // 씬의 CatSpot 전부 (방 모듈 단계에서는 존 그래프로 — 지금은 씬 = 방 1개). 없으면 CatWaypoint* 이름을 Look으로
@@ -130,7 +171,7 @@ namespace RatGame.AI
             {
                 case CatState.Sleep:
                     _movement.Stop();
-                    _sleepUntil = Time.time + _balance.CatBedSleepSeconds;
+                    _sleepUntil = Time.time + _balance.CatBedSleepSeconds * SleepDurMul;
                     EnterSleepPhase(CatSleepPhase.Light);
                     break;
                 case CatState.Patrol: _waitUntil = 0f; _dwelling = false; break;
@@ -139,6 +180,7 @@ namespace RatGame.AI
                     _movement.MoveTo(_investigatePos, _balance.CatSuspiciousSpeed);
                     break;
                 case CatState.Chase:
+                    _chaseStartedAt = Time.time;
                     TargetClientId.Value = _chaseTarget != null ? _chaseTarget.OwnerClientId : 0;
                     if (_chaseTarget != null) _lastKnownTargetPos = _chaseTarget.transform.position;
                     _lostSightSince = -1f;
@@ -257,19 +299,33 @@ namespace RatGame.AI
             int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, _spots.Length - 1);
             while (_recentSpots.Count > avoid) _recentSpots.RemoveAt(0);
             float total = 0f;
-            for (int i = 0; i < _spots.Length; i++) if (!_recentSpots.Contains(i)) total += _spots[i].Weight;
+            for (int i = 0; i < _spots.Length; i++) if (!_recentSpots.Contains(i)) total += SpotWeight(i);
             float r = Random.value * total;
             int pick = -1;
             for (int i = 0; i < _spots.Length; i++)
             {
                 if (_recentSpots.Contains(i)) continue;
-                r -= _spots[i].Weight;
+                r -= SpotWeight(i);
                 if (r <= 0f) { pick = i; break; }
             }
             if (pick < 0) pick = 0;
             _spotIndex = pick;
             _recentSpots.Add(pick);
             _movement.MoveTo(_spots[pick].Pos, _balance.CatPatrolSpeed);
+        }
+
+        // 성격이 잠자리·관찰점 선호를 바꾼다 (design/cat-ideas/01)
+        private float SpotWeight(int i)
+        {
+            float w = _spots[i].Weight;
+            var p = Personality;
+            if (p == null) return w;
+            return _spots[i].Type switch
+            {
+                CatSpotType.Bed => w * p.BedWeightMultiplier,
+                CatSpotType.Look => w * p.LookWeightMultiplier,
+                _ => w
+            };
         }
 
         // 스팟 종류별 머무름: 잠자리는 Sleep 상태로, 나머지는 시간+감각 배율 (design/cat-design/02 카탈로그)
@@ -289,7 +345,7 @@ namespace RatGame.AI
                 case CatSpotType.Groom:
                     Dwell(_balance.CatSpotGroomSeconds, _balance.CatSpotGroomSense); return;
                 default:
-                    Dwell(Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y), 1f); return;
+                    Dwell(Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y) * LookDwellMul, 1f); return;
             }
         }
 
@@ -328,19 +384,29 @@ namespace RatGame.AI
                 return;
             }
 
+            // 게으름뱅이: 오래 쫓으면 하품하고 포기 (design/cat-ideas/01)
+            if (ChaseGiveUp > 0f && Time.time - _chaseStartedAt >= ChaseGiveUp)
+            {
+                Log.Dev($"고양이 [{name}]: 추격 포기 (성격 {Personality.DisplayName}, {ChaseGiveUp}s)");
+                _chaseTarget = null;
+                _senses.ConsumeStimulus();
+                SetState(CatState.Return);
+                return;
+            }
+
             bool seeing = _senses.VisibleTarget == _chaseTarget;
             if (seeing)
             {
                 _lostSightSince = -1f;
                 _lastKnownTargetPos = _chaseTarget.transform.position;
-                _movement.MoveTo(_lastKnownTargetPos, _balance.CatChaseSpeed);
+                _movement.MoveTo(_lastKnownTargetPos, _balance.CatChaseSpeed * ChaseSpeedMul);
                 if (Vector3.Distance(transform.position, _lastKnownTargetPos) <= _balance.CatCaptureRange)
                     SetState(CatState.Capture);
             }
             else
             {
                 if (_lostSightSince < 0f) _lostSightSince = Time.time;
-                _movement.MoveTo(_lastKnownTargetPos, _balance.CatChaseSpeed); // 마지막 "목격" 지점만 (월핵 금지)
+                _movement.MoveTo(_lastKnownTargetPos, _balance.CatChaseSpeed * ChaseSpeedMul); // 마지막 "목격" 지점만 (월핵 금지)
                 if (Time.time - _lostSightSince >= _balance.CatLoseSightSeconds)
                 {
                     _investigatePos = _lastKnownTargetPos;
