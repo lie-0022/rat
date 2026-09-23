@@ -29,7 +29,7 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 
 | 상태 | 행동 | 이동속도 |
 |---|---|---|
-| Sleep | 지정 스팟에서 수면. 감각 민감도 30% | 0 |
+| Sleep | 잠자리(Bed 스팟)에서 60s. **얕은 잠 12~20s(감각 0.5) → 예고 3s → 깊은 잠 10~18s(0.15) → 예고 3s(꼬리 씰룩 = "나가" 신호) → 얕은 잠…** 파동 (2026-09-24, design/cat-ideas/08). 얕은 잠 중 게이지 ≥30 또는 깨짐·함정·찍찍 소음 → HalfAwake 3s(감각 0.5): 그 사이 목격·새 자극이면 Suspicious, 없으면 다시 잔다. 깊은 잠은 게이지 ≥60 또는 깨짐류만. 작은 자극은 자는 동안 잊는다(깬 뒤 엉뚱한 조사 방지). 잠은 얕은 잠에서만 끝난다 | 0 |
 | Patrol | **스팟 그래프** 순회 (2026-09-24, `AI/CatSpot`): 가중치 랜덤·최근 2개 제외 → 도착 후 종류별 머무름 — Look 2~5s / Food 25s(감각 0.5) / Sun 40s(0.5) / Groom 20s(0.6) / Bed → Sleep 45s 뒤 깸(다음 스팟으로). CatSpot이 없으면 `CatWaypoint*`를 Look으로. design/cat-design/02 카탈로그 | 2.0 |
 | Suspicious | 마지막 자극 지점으로 이동, 주변 3m 배회 6s | 3.0 |
 | Chase | 타깃 추적. 시야 상실 3s 후 마지막 목격점 조사 → Suspicious | 5.5 |
@@ -88,6 +88,7 @@ foreach player(Active만):
 
 ## 연출 계약 (클라)
 
+- 그레이박스 텔레그래프 (2026-09-24, `AI/CatVisual`, 전 클라 읽기): 몸 색(잠 갈색·의심 노랑·추격 빨강·포획 진빨강·유인 하늘) + 꼬리 피벗(얕은 잠 천천히 / 깊은 잠→얕은 잠 예고 급씰룩 / 의심·추격 빠름) + 깊은 잠 배 펄스·몸 가라앉음 + HalfAwake 머리 들림. `SleepPhase` NetworkVariable로 단계 복제. 소리는 오디오 단계에서 같은 계약으로.
 - CatState NetworkVariable OnValueChanged → CatAnimatorLink가 애니·사운드 재생:
   Suspicious: 귀 쫑긋+"냐?" / Chase: 낮은 그르렁+BGM 전환(EventBus) / Capture: 앞발 스윙
 - 상태가 항상 소리로 먼저 들려야 한다 — 시야 밖 고양이의 상태를 소리로 읽는 것이 은신 플레이의 정보 구조.

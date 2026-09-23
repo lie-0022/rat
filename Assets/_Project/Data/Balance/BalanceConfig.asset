@@ -95,6 +95,22 @@ MonoBehaviour:
   _catSleepSenseMultiplier: 0.3
   _catPatrolWaitRange: {x: 2, y: 5}
   _catDistractedSpeed: 4
+  _catBedSleepSeconds: 60
+  _catSpotFoodSeconds: 25
+  _catSpotFoodSense: 0.5
+  _catSpotSunSeconds: 40
+  _catSpotSunSense: 0.5
+  _catSpotGroomSeconds: 20
+  _catSpotGroomSense: 0.6
+  _catSpotAvoidRecent: 2
+  _catSleepLightRange: {x: 12, y: 20}
+  _catSleepDeepRange: {x: 10, y: 18}
+  _catSleepForecastSeconds: 3
+  _catSleepLightSense: 0.5
+  _catSleepDeepSense: 0.15
+  _catHalfAwakeSeconds: 3
+  _catHalfAwakeSense: 0.5
+  _catDeepWakeGaugeMul: 2
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

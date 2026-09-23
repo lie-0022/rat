@@ -114,7 +114,7 @@ namespace RatGame.Data
         [SerializeField] private float _catDistractedSpeed = 4f;
 
         [Header("고양이 스팟 (design/cat-design/02) — 머무는 시간 s / 그동안 감각 배율")]
-        [SerializeField] private float _catBedSleepSeconds = 45f;         // 잠자리에서 잠드는 시간 (깨면 순찰)
+        [SerializeField] private float _catBedSleepSeconds = 60f;         // 잠자리에서 잠드는 시간 (깨면 순찰)
         [SerializeField] private float _catSpotFoodSeconds = 25f;
         [SerializeField, Range(0f, 1f)] private float _catSpotFoodSense = 0.5f;   // 챱챱 소리에 묻힘
         [SerializeField] private float _catSpotSunSeconds = 40f;
@@ -122,6 +122,16 @@ namespace RatGame.Data
         [SerializeField] private float _catSpotGroomSeconds = 20f;
         [SerializeField, Range(0f, 1f)] private float _catSpotGroomSense = 0.6f;
         [SerializeField] private int _catSpotAvoidRecent = 2;              // 최근 n개 스팟은 다시 안 뽑음
+
+        [Header("고양이 잠의 단계 (design/cat-ideas/08) — 얕은 잠 ↔ 깊은 잠 파동")]
+        [SerializeField] private Vector2 _catSleepLightRange = new(12f, 20f);   // 얕은 잠 지속 (s)
+        [SerializeField] private Vector2 _catSleepDeepRange = new(10f, 18f);    // 깊은 잠 지속 (s)
+        [SerializeField] private float _catSleepForecastSeconds = 3f;          // 단계 전환 예고 (꼬리 씰룩)
+        [SerializeField, Range(0f, 1f)] private float _catSleepLightSense = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float _catSleepDeepSense = 0.15f;
+        [SerializeField] private float _catHalfAwakeSeconds = 3f;              // 한쪽 눈 뜸 — 더 자극 없으면 다시 잔다
+        [SerializeField, Range(0f, 1f)] private float _catHalfAwakeSense = 0.5f;
+        [SerializeField] private float _catDeepWakeGaugeMul = 2f;              // 깊은 잠은 의심 임계 ×2여야 반응
 
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
@@ -245,6 +255,14 @@ namespace RatGame.Data
         public float CatSpotGroomSeconds => _catSpotGroomSeconds;
         public float CatSpotGroomSense => _catSpotGroomSense;
         public int CatSpotAvoidRecent => _catSpotAvoidRecent;
+        public Vector2 CatSleepLightRange => _catSleepLightRange;
+        public Vector2 CatSleepDeepRange => _catSleepDeepRange;
+        public float CatSleepForecastSeconds => _catSleepForecastSeconds;
+        public float CatSleepLightSense => _catSleepLightSense;
+        public float CatSleepDeepSense => _catSleepDeepSense;
+        public float CatHalfAwakeSeconds => _catHalfAwakeSeconds;
+        public float CatHalfAwakeSense => _catHalfAwakeSense;
+        public float CatDeepWakeGaugeMul => _catDeepWakeGaugeMul;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

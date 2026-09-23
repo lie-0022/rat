@@ -8,6 +8,9 @@ namespace RatGame.AI
 {
     public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return }
 
+    /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
+    public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
+
     /// <summary>
     /// 고양이 FSM (docs/07, 호스트에서만 Update). 클라는 NetworkTransform 보간 + 상태 연출만.
     /// Distracted(유인 아이템)는 태스크 1-6에서 트리거가 생긴다 — 진입 API만 준비.
@@ -19,6 +22,7 @@ namespace RatGame.AI
 
         public NetworkVariable<CatState> State = new NetworkVariable<CatState>(CatState.Patrol);
         public NetworkVariable<ulong> TargetClientId = new NetworkVariable<ulong>(0);
+        public NetworkVariable<CatSleepPhase> SleepPhase = new NetworkVariable<CatSleepPhase>(CatSleepPhase.None);
 
         private CatSenses _senses;
         private CatMovement _movement;
@@ -31,6 +35,8 @@ namespace RatGame.AI
         private bool _dwelling;                 // 스팟에 도착해 머무는 중
         private float _waitUntil;               // Patrol 대기(스팟 머무름 끝)
         private float _sleepUntil;              // Bed 잠 끝
+        private float _phaseUntil;              // 잠 단계 끝
+        private CatSleepPhase _phaseAfterHalfAwake;
         public CatSpotType CurrentSpotType => _spotIndex >= 0 && _spots != null ? _spots[_spotIndex].Type : CatSpotType.Look;
         public string CurrentSpotName => _spotIndex >= 0 && _spots != null ? _spots[_spotIndex].Name : "";
         private Vector3 _investigatePos;
@@ -118,10 +124,15 @@ namespace RatGame.AI
             State.Value = next;
             _senses.SensitivityMultiplier = next == CatState.Sleep ? _balance.CatSleepSenseMultiplier : 1f;
             if (next != CatState.Patrol) _dwelling = false;
+            if (next != CatState.Sleep) SleepPhase.Value = CatSleepPhase.None;
 
             switch (next)
             {
-                case CatState.Sleep: _movement.Stop(); _sleepUntil = Time.time + _balance.CatBedSleepSeconds; break;
+                case CatState.Sleep:
+                    _movement.Stop();
+                    _sleepUntil = Time.time + _balance.CatBedSleepSeconds;
+                    EnterSleepPhase(CatSleepPhase.Light);
+                    break;
                 case CatState.Patrol: _waitUntil = 0f; _dwelling = false; break;
                 case CatState.Suspicious:
                     _suspiciousUntil = Time.time + _balance.CatSuspiciousWanderSeconds;
@@ -150,20 +161,64 @@ namespace RatGame.AI
 
         // ---- 상태별 틱 ----
 
+        // 얕은 잠 ↔ 깊은 잠 파동. 얕은 잠에서 자극 → 한쪽 눈 뜸(HalfAwake) → 더 자극 있으면 깸, 없으면 다시 잔다.
+        // 깊은 잠은 임계 ×2(접시 깨짐 수준)만 HalfAwake로. 전환 3s 전 예고 단계(꼬리 씰룩)가 있어 쥐가 읽을 수 있다.
         private void TickSleep()
         {
-            // 소음 ≥40 근접(자극 지점이 가까움) → Suspicious (docs/07 FSM)
-            if (_senses.HasNewStimulus && _senses.SuspicionGauge.Value >= _balance.CatSuspicionThreshold)
+            var phase = SleepPhase.Value;
+            bool deep = phase == CatSleepPhase.Deep || phase == CatSleepPhase.ToLight;
+            float threshold = _balance.CatSuspicionThreshold * (deep ? _balance.CatDeepWakeGaugeMul : 1f);
+            // 게이지가 임계를 넘거나, 접시 깨짐·함정·찍찍(즉시 조사 소음)이면 깬다. 그 밖의 작은 자극은 자는 동안 잊는다 — 남겨 두면 깬 뒤 엉뚱한 곳을 조사하러 간다
+            bool stimulated = _senses.HasNewStimulus && (_senses.SuspicionGauge.Value >= threshold || _senses.ImmediateInvestigate);
+            if (_senses.HasNewStimulus && !stimulated) _senses.ConsumeStimulus();
+
+            if (phase == CatSleepPhase.HalfAwake)
             {
-                EnterSuspicious();
+                // 눈을 뜬 사이 보거나 새 자극 → 깸
+                if (_senses.VisibleTarget != null || stimulated) { EnterSuspicious(); return; }
+                if (Time.time >= _phaseUntil) EnterSleepPhase(_phaseAfterHalfAwake);
                 return;
             }
-            if (Time.time >= _sleepUntil)
+            if (stimulated)
             {
-                // 다 잤다 — 아직 잠자리 위라 Arrived가 참이므로, 같은 스팟에 다시 "도착"하지 않게 다음 스팟을 바로 고른다
+                _senses.ConsumeStimulus();
+                _phaseAfterHalfAwake = phase == CatSleepPhase.Deep || phase == CatSleepPhase.ToLight ? CatSleepPhase.Light : phase;
+                EnterSleepPhase(CatSleepPhase.HalfAwake);
+                return;
+            }
+            if (Time.time >= _sleepUntil && phase == CatSleepPhase.Light)
+            {
+                // 다 잤다 (깊은 잠 중엔 안 깬다 — 얕은 잠으로 돌아온 뒤). 아직 잠자리 위라 Arrived가 참이므로 다음 스팟을 바로 고른다
                 SetState(CatState.Patrol);
                 GoToNextSpot();
+                return;
             }
+            if (Time.time < _phaseUntil) return;
+            switch (phase)
+            {
+                case CatSleepPhase.Light: EnterSleepPhase(CatSleepPhase.ToDeep); break;
+                case CatSleepPhase.ToDeep: EnterSleepPhase(CatSleepPhase.Deep); break;
+                case CatSleepPhase.Deep: EnterSleepPhase(CatSleepPhase.ToLight); break;
+                case CatSleepPhase.ToLight: EnterSleepPhase(CatSleepPhase.Light); break;
+            }
+        }
+
+        private void EnterSleepPhase(CatSleepPhase phase)
+        {
+            SleepPhase.Value = phase;
+            float sense;
+            float duration;
+            switch (phase)
+            {
+                case CatSleepPhase.Light: sense = _balance.CatSleepLightSense; duration = Random.Range(_balance.CatSleepLightRange.x, _balance.CatSleepLightRange.y); break;
+                case CatSleepPhase.ToDeep: sense = _balance.CatSleepLightSense; duration = _balance.CatSleepForecastSeconds; break;
+                case CatSleepPhase.Deep: sense = _balance.CatSleepDeepSense; duration = Random.Range(_balance.CatSleepDeepRange.x, _balance.CatSleepDeepRange.y); break;
+                case CatSleepPhase.ToLight: sense = _balance.CatSleepDeepSense; duration = _balance.CatSleepForecastSeconds; break;
+                default: sense = _balance.CatHalfAwakeSense; duration = _balance.CatHalfAwakeSeconds; break;
+            }
+            _senses.SensitivityMultiplier = sense;
+            _phaseUntil = Time.time + duration;
+            Log.Dev($"고양이 [{name}]: 잠 {phase} ({duration:0.0}s, 감각 {sense})");
         }
 
         private void TickPatrol()
@@ -372,13 +427,14 @@ namespace RatGame.AI
             SetState(CatState.Suspicious);
         }
 
-        // 복귀는 가장 가까운 스팟으로 — 도착하면 Patrol이 그 스팟 행동부터 이어 간다
+        // 복귀는 가장 가까운 스팟으로 — 도착하면 Patrol이 그 스팟 행동부터 이어 간다. 방금 자고 일어난 잠자리는 제외(다시 눕지 않게)
         private Vector3 NearestSpot()
         {
             Vector3 best = transform.position;
             float bestDist = float.MaxValue;
             for (int i = 0; i < _spots.Length; i++)
             {
+                if (_spots[i].Type == CatSpotType.Bed && _recentSpots.Contains(i) && _spots.Length > 1) continue;
                 float d = Vector3.Distance(transform.position, _spots[i].Pos);
                 if (d < bestDist) { bestDist = d; best = _spots[i].Pos; _spotIndex = i; }
             }
