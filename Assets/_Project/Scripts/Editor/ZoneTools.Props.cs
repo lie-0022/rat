@@ -17,7 +17,7 @@ namespace RatGame.Editor
         private const string MatDir = "Assets/_Project/Art/Materials/Greybox";
 
         // 프리팹은 메모리 머티리얼을 저장하지 못한다(씬은 된다) — 색마다 머티리얼 에셋으로 (고양이 58에서 방이 마젠타로 나와서)
-        private static Material GreyboxMat(Color c, Shader shader)
+        internal static Material GreyboxMat(Color c, Shader shader)
         {
             if (!AssetDatabase.IsValidFolder("Assets/_Project/Art/Materials")) AssetDatabase.CreateFolder("Assets/_Project/Art", "Materials");
             if (!AssetDatabase.IsValidFolder(MatDir)) AssetDatabase.CreateFolder("Assets/_Project/Art/Materials", "Greybox");
@@ -30,7 +30,7 @@ namespace RatGame.Editor
             return mat;
         }
 
-        private static void Tint(GameObject go, Color c)
+        internal static void Tint(GameObject go, Color c)
         {
             var r = go.GetComponent<Renderer>();
             r.sharedMaterial = GreyboxMat(c, r.sharedMaterial.shader);

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RatGame.Editor
 {
     /// <summary>생성기 v2 (격자 그래프 "벽 속", docs/10) 에디터 도구 — 고양이 62.</summary>
-    public static class GridZoneTools
+    public static partial class GridZoneTools
     {
         public static readonly GridLayoutPlanner.Settings DefaultSettings = new()
         { MainMin = 5, MainMax = 7, BranchChance = 0.6f, BranchMaxDepth = 2, LoopMinGap = 3 };
