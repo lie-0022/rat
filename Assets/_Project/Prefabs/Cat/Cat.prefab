@@ -609,6 +609,8 @@ MonoBehaviour:
   _personalities:
   - {fileID: 11400000, guid: 86ec0c39c56194ba6a2013307d850ef4, type: 2}
   - {fileID: 11400000, guid: 444204ea0010046b4b0dce0859c09fb1, type: 2}
+  - {fileID: 11400000, guid: 9b21d086b525c43d5a860affd134d73a, type: 2}
+  - {fileID: 11400000, guid: d2258e6532e7b41eea0e8a59cd4ab3c6, type: 2}
   State:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -640,6 +642,11 @@ MonoBehaviour:
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   AwayHidden:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  AmbushHidden:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0

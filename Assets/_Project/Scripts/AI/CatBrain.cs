@@ -85,6 +85,7 @@ namespace RatGame.AI
             CollectHideSpots();
             _senses.CuriosityFilter = IsCuriosityAllowed;
             InitMemory();
+            _senses.Heard += OnHeardForPersonality;
             Noise.ScentSystem.Configure(_balance);
             Noise.ScentSystem.Clear(); // 정적 버퍼 — 이전 판·이전 플레이 모드 자국 제거
             if (PersonalityIndex.Value < 0 && _personalities != null && _personalities.Length > 0)
@@ -115,6 +116,7 @@ namespace RatGame.AI
         {
             _senses.ViewMultiplier = ViewMul;
             _senses.HearingMultiplier = HearingMul;
+            _senses.CuriositySpeedMultiplier = Personality != null ? Personality.CuriositySpeedMultiplier : 1f;
         }
 
         // 씬의 CatSpot 전부 (방 모듈 단계에서는 존 그래프로 — 지금은 씬 = 방 1개). 없으면 CatWaypoint* 이름을 Look으로
@@ -449,6 +451,7 @@ namespace RatGame.AI
         {
             if (CheckEscalation()) return;
             if (TryEatBribe()) return;
+            if (Personality != null && Personality.CuriousWhileSuspicious && CheckCuriosity()) return; // 호기심쟁이는 의심 중에도 속는다
 
             // 새 자극이 오면 조사 지점 갱신 + 시간 연장
             if (_senses.HasNewStimulus)

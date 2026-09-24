@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9467817a335cc4c1490ef6d107623188, type: 3}
+  m_Name: Personality_Curious
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.CatPersonalitySO
+  _displayName: "\uD638\uAE30\uC2EC\uC7C1\uC774"
+  _bodyColor: {r: 1, g: 0.7, b: 0.35, a: 1}
+  _viewMultiplier: 1
+  _hearingMultiplier: 1.2
+  _chaseSpeedMultiplier: 1
+  _sleepDurationMultiplier: 0.4
+  _bedWeightMultiplier: 0.5
+  _lookWeightMultiplier: 1
+  _lookDwellMultiplier: 1
+  _chaseGiveUpSeconds: 0
+  _curiositySpeedMultiplier: 0.5
+  _curiousWhileSuspicious: 1
+  _fleeLoudness: 0
+  _fleeSeconds: 3

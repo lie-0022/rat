@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble, Hairball /* 그루밍 뒤 웩웩 (2026-09-24) */ }
+    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble, Hairball /* 그루밍 뒤 웩웩 (2026-09-24) */, Flee /* 겁쟁이 — 큰 소리에 도망 */ }
 
     /// <summary>
     /// 댕청한 실패 (design/cat-ideas/11, 2026-09-24). 쥐가 만든 상황에서만 확실히 — 무작위 실패는 억울하지도 웃기지도 않다.
@@ -118,7 +118,7 @@ namespace RatGame.AI
             _nextWobbleStep = 0f;
             if (State.Value != CatState.Blunder) SetState(CatState.Blunder);
             if (kind == CatBlunderKind.Wobble) _senses.SensitivityMultiplier = 0.3f; // 취함
-            else _movement.Stop();
+            else if (kind != CatBlunderKind.Flee) _movement.Stop(); // 도망은 달린다
         }
 
         // SetState가 Blunder 밖으로 나갈 때
@@ -171,6 +171,13 @@ namespace RatGame.AI
                     SetState(CatState.Suspicious); // 뭐였지? 소리 난 곳 조사
                     return;
                 }
+                case CatBlunderKind.Flee:
+                    if (Time.time < _blunderUntil) return;
+                    Log.Dev($"고양이 [{name}]: 뭐였지… 조사");
+                    _senses.RaiseGaugeTo(_balance.CatSuspicionThreshold, _investigatePos); // 도망 동안 식은 게이지 — 조사는 한다
+                    SetState(CatState.Suspicious); // 소리 난 곳 조사 (_investigatePos)
+                    return;
+
                 case CatBlunderKind.Hairball:
                     if (Time.time < _blunderUntil) return;
                     SpawnHairball();

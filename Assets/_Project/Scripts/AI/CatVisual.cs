@@ -108,6 +108,7 @@ namespace RatGame.AI
                             case CatBlunderKind.Stun: roll = Mathf.Sin(t * 9f) * 15f; tailSwing = Mathf.Sin(t * 4f) * 60f; break; // 빙글
                             case CatBlunderKind.Startle: sink = -0.25f; break;                           // 펄쩍
                             case CatBlunderKind.Wobble: roll = Mathf.Sin(t * 2.5f) * 20f; break;          // 휘청
+                            case CatBlunderKind.Flee: sink = -0.15f; tailSwing = Mathf.Sin(t * 30f) * 20f; break; // 털 곤두서 도망
                             case CatBlunderKind.Hairball: sink = 0.1f * Mathf.Abs(Mathf.Sin(t * 9f)); break; // 웩웩 — 몸 들썩
                         }
                     }

@@ -25,6 +25,10 @@ namespace RatGame.Data
 
         [Header("특이 행동")]
         [SerializeField] private float _chaseGiveUpSeconds = 0f;        // >0이면 이 시간 넘게 쫓으면 하품하고 포기 (게으름뱅이)
+        [SerializeField] private float _curiositySpeedMultiplier = 1f;  // 굴러가는 물건 반응 속도 기준 × (호기심쟁이 0.5 — 천천히 굴러도)
+        [SerializeField] private bool _curiousWhileSuspicious;          // 의심 중에도 굴러가는 물건에 속는다 (호기심쟁이)
+        [SerializeField] private float _fleeLoudness = 0f;              // >0이면 이 이상 소리에 도망 (겁쟁이 60)
+        [SerializeField] private float _fleeSeconds = 3f;
 
         public string DisplayName => _displayName;
         public Color BodyColor => _bodyColor;
@@ -36,6 +40,10 @@ namespace RatGame.Data
         public float LookWeightMultiplier => _lookWeightMultiplier;
         public float LookDwellMultiplier => _lookDwellMultiplier;
         public float ChaseGiveUpSeconds => _chaseGiveUpSeconds;
+        public float CuriositySpeedMultiplier => _curiositySpeedMultiplier;
+        public bool CuriousWhileSuspicious => _curiousWhileSuspicious;
+        public float FleeLoudness => _fleeLoudness;
+        public float FleeSeconds => _fleeSeconds;
 
 #if UNITY_EDITOR
         public void EditorSetup(string name, Color color, float view, float hearing, float chaseSpeed,
@@ -44,6 +52,12 @@ namespace RatGame.Data
             _displayName = name; _bodyColor = color; _viewMultiplier = view; _hearingMultiplier = hearing;
             _chaseSpeedMultiplier = chaseSpeed; _sleepDurationMultiplier = sleepDur; _bedWeightMultiplier = bedWeight;
             _lookWeightMultiplier = lookWeight; _lookDwellMultiplier = lookDwell; _chaseGiveUpSeconds = giveUp;
+        }
+
+        public void EditorSetupTraits(float curiositySpeedMul, bool curiousWhileSuspicious, float fleeLoudness, float fleeSeconds)
+        {
+            _curiositySpeedMultiplier = curiositySpeedMul; _curiousWhileSuspicious = curiousWhileSuspicious;
+            _fleeLoudness = fleeLoudness; _fleeSeconds = fleeSeconds;
         }
 #endif
     }

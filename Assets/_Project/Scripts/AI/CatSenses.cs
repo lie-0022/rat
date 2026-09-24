@@ -24,6 +24,8 @@ namespace RatGame.AI
         /// <summary>성격 배율 (CatBrain이 스폰 시 설정 — design/cat-ideas/01).</summary>
         public float ViewMultiplier { get; set; } = 1f;
         public float HearingMultiplier { get; set; } = 1f;
+        /// <summary>굴러가는 물건 반응 속도 기준 배율 (성격 — 호기심쟁이 0.5).</summary>
+        public float CuriositySpeedMultiplier { get; set; } = 1f;
 
         // 시야 결과 (CatBrain이 읽음)
         public PlayerCondition VisibleTarget { get; private set; }
@@ -71,6 +73,14 @@ namespace RatGame.AI
         }
 
         public void ConsumeStimulus() { HasNewStimulus = false; ImmediateInvestigate = false; }
+
+        /// <summary>호스트: 게이지를 최소 v로 (겁쟁이가 도망쳤다 돌아와 조사할 때 — 도망 3s 동안 게이지가 식어 바로 복귀하던 문제).</summary>
+        public void RaiseGaugeTo(float v, Vector3 pos)
+        {
+            if (SuspicionGauge.Value < v) SuspicionGauge.Value = v;
+            LastStimulusPos = pos;
+            _lastStimulusTime = Time.time;
+        }
 
         private void Update()
         {
@@ -149,7 +159,7 @@ namespace RatGame.AI
             CuriosityTarget = null;
             if (_items == null) return;
             float viewDist = _balance.CatViewDistance * SensitivityMultiplier * ViewMultiplier;
-            float minSpeed = _balance.CatCuriosityMinSpeed;
+            float minSpeed = _balance.CatCuriosityMinSpeed * CuriositySpeedMultiplier;
             float best = float.MaxValue;
             Vector3 eye = transform.position + Vector3.up * 0.5f;
             int blockMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker", "Default");
