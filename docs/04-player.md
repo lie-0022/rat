@@ -112,6 +112,19 @@ public interface IInteractable
 | pingMarkerSeconds | 3 s |
 | pingMaxDistance | 30 m |
 
+
+### Sniff(킁킁) — 목적지 냄새 (2026-09-25 고양이 76, 잠정)
+
+- R(패드 십자 아래) → 내 화면에만 3초 동안 **냄새 줄기**: 발밑에서 목적지(식량 창고)로 가는 길의 **다음 문**까지 작은 알갱이가 흘러간다. 목적지방이면 창고까지. 소음 없음·동기화 없음(소유 클라 로컬).
+- 길 찾기(`Run/GridRoute`): 클라에도 있는 격자 방(`GridRoom` 위치·`OpenSides` NV)으로 방 그래프를 만들어 BFS — NavMesh는 호스트에만 있어서 안 쓴다. 통로 안이면 양 끝 방 중 목적지에 가까운 쪽 문. 격자 방이 없는 맵(창고)은 창고로 곧장.
+- 흐름: `Player/PlayerSniff` → `EventBus.SniffHint(from, to, seconds)` → `UI/SniffTrailView`(규칙 3). 메뉴 패널이 열려 있으면 입력 무시.
+- 왜: 벽 속은 방 16~18개 미로라 목적지 불빛이 안 보이는 곳에서 헤매기 쉽다. 다음 문만 알려줘서 길 전체를 주지는 않는다.
+
+| 수치 (BalanceConfigSO) | 값 |
+|---|---|
+| sniffCooldownSeconds | 10 s |
+| sniffTrailSeconds | 3 s |
+
 ## 애니메이션 파라미터 (PlayerAnimatorLink → Animator)
 
 `Speed(float), IsGrounded(bool), IsCrouching(bool), CarryMode(int: 0없음/1한손/2양손/3팀)`,

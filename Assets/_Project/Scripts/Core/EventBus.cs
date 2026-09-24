@@ -29,6 +29,8 @@ namespace RatGame.Core
         public static event Action<ulong /*clientId*/> PlayerRevived;
         /// <summary>핑 수신 (전 클라 — PlayerPing이 서버 중계를 받은 뒤 로컬 발행, 마커 UI용).</summary>
         public static event Action<ulong /*clientId*/, UnityEngine.Vector3 /*worldPos*/> PingReceived;
+        /// <summary>킁킁 (소유 클라 로컬 — 목적지 쪽 다음 문까지 냄새 줄기, 고양이 76).</summary>
+        public static event Action<UnityEngine.Vector3 /*from*/, UnityEngine.Vector3 /*to*/, float /*seconds*/> SniffHint;
 
         // Loot
         public static event Action<LootItemSO, int /*value*/> LootDeposited;
@@ -61,6 +63,7 @@ namespace RatGame.Core
         public static void RaisePlayerDowned(ulong clientId) => PlayerDowned?.Invoke(clientId);
         public static void RaisePlayerRevived(ulong clientId) => PlayerRevived?.Invoke(clientId);
         public static void RaisePingReceived(ulong clientId, UnityEngine.Vector3 worldPos) => PingReceived?.Invoke(clientId, worldPos);
+        public static void RaiseSniffHint(UnityEngine.Vector3 from, UnityEngine.Vector3 to, float seconds) => SniffHint?.Invoke(from, to, seconds);
         public static void RaiseLootDeposited(LootItemSO item, int value) => LootDeposited?.Invoke(item, value);
         public static void RaiseLootBroken(LootItemSO item) => LootBroken?.Invoke(item);
         public static void RaiseCheeseCoinChanged(int total) => CheeseCoinChanged?.Invoke(total);

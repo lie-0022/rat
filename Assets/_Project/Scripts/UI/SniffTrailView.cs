@@ -1,0 +1,84 @@
+using System.Collections.Generic;
+using RatGame.Core;
+using UnityEngine;
+
+namespace RatGame.UI
+{
+    /// <summary>
+    /// 킁킁 냄새 줄기 (docs/04 Sniff, 고양이 76). EventBus.SniffHint를 받아 발밑에서 다음 문까지 작은 알갱이를 깔고,
+    /// 알갱이가 문 쪽으로 흘러가며 흐려진다 — 방향이 한눈에 보이게. 내 화면에만(로컬 이벤트).
+    /// </summary>
+    public class SniffTrailView : MonoBehaviour
+    {
+        private const float Spacing = 0.6f;   // 알갱이 간격 (m)
+        private const float Height = 0.25f;   // 바닥 위
+        private const float Drift = 0.5f;     // 사는 동안 문 쪽으로 흘러가는 거리
+        private const float Size = 0.12f;
+        private const int MaxPuffs = 60;
+
+        [SerializeField] private Material _puffMaterial;
+
+        private sealed class Puff { public Transform T; public Vector3 Start; public Vector3 Dir; public float Born; public float Life; }
+
+        private readonly List<Puff> _pool = new();
+        private readonly List<Puff> _live = new();
+        private Transform _root; // 캔버스 밑에 두면 캔버스 스케일이 알갱이에 곱해져서 씬 루트에 따로
+
+        private void Awake() => _root = new GameObject("SniffPuffs").transform;
+        private void OnDestroy() { if (_root != null) Destroy(_root.gameObject); }
+
+        private void OnEnable() => EventBus.SniffHint += OnSniff;
+        private void OnDisable() => EventBus.SniffHint -= OnSniff;
+
+        private void OnSniff(Vector3 from, Vector3 to, float seconds)
+        {
+            Vector3 flat = to - from; flat.y = 0f;
+            float length = flat.magnitude;
+            if (length < 0.05f) return;
+            if (_root == null) { _root = new GameObject("SniffPuffs").transform; _pool.Clear(); _live.Clear(); } // 씬이 바뀌어 알갱이가 같이 사라졌으면 새로
+            Vector3 dir = flat / length;
+            int count = Mathf.Min(MaxPuffs, Mathf.CeilToInt(length / Spacing) + 1);
+            for (int i = 0; i < count; i++)
+            {
+                var p = Take();
+                p.Start = new Vector3(from.x, 0f, from.z) + dir * Mathf.Min(length, i * Spacing) + Vector3.up * Height;
+                p.Dir = dir;
+                p.Born = Time.time + i * 0.04f; // 발밑부터 차례로 — 줄기가 뻗어 나가는 느낌
+                p.Life = seconds;
+                p.T.position = p.Start;
+                p.T.localScale = Vector3.zero;
+                p.T.gameObject.SetActive(true);
+                _live.Add(p);
+            }
+        }
+
+        private Puff Take()
+        {
+            if (_pool.Count > 0) { var last = _pool[_pool.Count - 1]; _pool.RemoveAt(_pool.Count - 1); return last; }
+            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            Destroy(go.GetComponent<Collider>()); // 표시일 뿐 — 물리·소음 판정에 걸리면 안 된다
+            go.name = "SniffPuff";
+            go.transform.SetParent(_root, false);
+            var r = go.GetComponent<MeshRenderer>();
+            if (_puffMaterial != null) r.sharedMaterial = _puffMaterial;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            return new Puff { T = go.transform };
+        }
+
+        private void Update()
+        {
+            if (_root == null) return;
+            float now = Time.time;
+            for (int i = _live.Count - 1; i >= 0; i--)
+            {
+                var p = _live[i];
+                float t = (now - p.Born) / p.Life;
+                if (t < 0f) continue;
+                if (t >= 1f) { p.T.gameObject.SetActive(false); _live.RemoveAt(i); _pool.Add(p); continue; }
+                float bob = Mathf.Sin((now + p.Start.x) * 6f) * 0.03f;
+                p.T.position = p.Start + p.Dir * (Drift * t) + Vector3.up * bob;
+                p.T.localScale = Vector3.one * (Size * Mathf.Sin(t * Mathf.PI)); // 나타났다 사라짐
+            }
+        }
+    }
+}
