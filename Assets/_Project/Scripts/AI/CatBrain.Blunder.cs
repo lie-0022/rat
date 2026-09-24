@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble, Hairball /* 그루밍 뒤 웩웩 (2026-09-24) */, Flee /* 겁쟁이 — 큰 소리에 도망 */, Stretch /* 게으름뱅이 기지개 */ }
+    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble, Hairball /* 그루밍 뒤 웩웩 (2026-09-24) */, Flee /* 겁쟁이 — 큰 소리에 도망 */, Stretch /* 게으름뱅이 기지개 */, Sneeze /* 후추 재채기 */ }
 
     /// <summary>
     /// 댕청한 실패 (design/cat-ideas/11, 2026-09-24). 쥐가 만든 상황에서만 확실히 — 무작위 실패는 억울하지도 웃기지도 않다.
@@ -105,6 +105,24 @@ namespace RatGame.AI
             EnterBlunder(CatBlunderKind.Slip, _balance.CatSlipSeconds);
         }
 
+        private float _sneezeCooldownUntil;
+
+        // Update에서 매 프레임 (호스트): 후추 패치에 들어오면 재채기 — 추적·추격이 끊긴다 (고양이 33)
+        private void CheckPepper()
+        {
+            if (PepperShaker.ActivePatches.Count == 0 || Time.time < _sneezeCooldownUntil) return;
+            var st = State.Value;
+            if (st is CatState.Blunder or CatState.Sleep or CatState.Toy or CatState.Capture or CatState.Away) return;
+            foreach (var p in PepperShaker.ActivePatches)
+            {
+                if (p == null || !p.PatchActive.Value || !p.Contains(transform.position)) continue;
+                _sneezeCooldownUntil = Time.time + _balance.PepperSneezeCooldown;
+                Log.Dev($"고양이 [{name}]: 에취! (후추, {st}에서)");
+                EnterBlunder(CatBlunderKind.Sneeze, _balance.PepperSneezeSeconds);
+                return;
+            }
+        }
+
         // TickCurious 맨 앞: 놀다가 바로 옆에서 큰 소리 → 펄쩍
         private bool CheckStartle()
         {
@@ -189,6 +207,15 @@ namespace RatGame.AI
                     Log.Dev($"고양이 [{name}]: 뭐였지… 조사");
                     _senses.RaiseGaugeTo(_balance.CatSuspicionThreshold, _investigatePos); // 도망 동안 식은 게이지 — 조사는 한다
                     SetState(CatState.Suspicious); // 소리 난 곳 조사 (_investigatePos)
+                    return;
+
+                case CatBlunderKind.Sneeze:
+                    if (Time.time < _blunderUntil) return;
+                    // 코가 마비됐다 — 쫓던 것·맡던 것 다 잊는다
+                    TargetClientId.Value = 0;
+                    _chaseTarget = null;
+                    _senses.ConsumeStimulus();
+                    SetState(CatState.Return);
                     return;
 
                 case CatBlunderKind.Hairball:

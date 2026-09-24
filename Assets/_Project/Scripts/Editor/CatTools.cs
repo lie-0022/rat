@@ -234,6 +234,34 @@ namespace RatGame.Editor
                 bowl.AddComponent<WaterBowl>().EditorSetup(hideBalance);
             }
 
+            // 후추통 (design/cat-ideas/06, 고양이 33) — 쥐구멍 쪽. 던지거나 세게 떨어뜨리면 쏟아진다
+            if (GameObject.Find("PepperShaker") == null)
+            {
+                var pep = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                pep.name = "PepperShaker"; pep.transform.SetParent(root.transform);
+                pep.layer = LayerMask.NameToLayer("Carryable");
+                pep.transform.position = new Vector3(-6f, 0.3f, -14f);
+                pep.transform.localScale = new Vector3(0.18f, 0.2f, 0.18f);
+                var pr = pep.GetComponent<Renderer>();
+                pr.sharedMaterial = new Material(pr.sharedMaterial) { color = new Color(0.15f, 0.15f, 0.15f) };
+                var prb = pep.AddComponent<Rigidbody>();
+                prb.mass = 0.3f; prb.interpolation = RigidbodyInterpolation.Interpolate;
+                pep.AddComponent<NetworkObject>();
+                pep.AddComponent<NetworkTransform>();
+                pep.AddComponent<NetworkRigidbody>();
+                var grip = new GameObject("Grip_0").transform;
+                grip.SetParent(pep.transform, false);
+                grip.localPosition = Vector3.up * 0.5f;
+                var item = pep.AddComponent<CarryableItem>();
+                var iso = new SerializedObject(item);
+                iso.FindProperty("_balance").objectReferenceValue = hideBalance;
+                var gp = iso.FindProperty("_gripPoints");
+                gp.arraySize = 1;
+                gp.GetArrayElementAtIndex(0).objectReferenceValue = grip;
+                iso.ApplyModifiedPropertiesWithoutUndo();
+                pep.AddComponent<PepperShaker>().EditorSetup(hideBalance);
+            }
+
             // 초인종 (design/cat-ideas/13) — 서쪽 문 옆, 런당 1회
             if (GameObject.Find("Doorbell") == null)
             {

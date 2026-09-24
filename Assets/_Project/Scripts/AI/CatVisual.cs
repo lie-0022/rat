@@ -117,6 +117,7 @@ namespace RatGame.AI
                             case CatBlunderKind.Stretch: sink = 0.12f; pulse = 0.12f; tailSwing = 0f; break; // 쭉 — 몸이 늘어짐
                             case CatBlunderKind.Flee: sink = -0.15f; tailSwing = Mathf.Sin(t * 30f) * 20f; break; // 털 곤두서 도망
                             case CatBlunderKind.Hairball: sink = 0.1f * Mathf.Abs(Mathf.Sin(t * 9f)); break; // 웩웩 — 몸 들썩
+                            case CatBlunderKind.Sneeze: sink = 0.14f * Mathf.Max(0f, Mathf.Sin(t * 5f)); pulse = 0.08f; break; // 에취 — 움찔움찔
                         }
                     }
                     else if (state == CatState.Toy) tailSwing = Mathf.Sin(t * 2f) * 45f; // 놀이 — 꼬리 느리고 크게

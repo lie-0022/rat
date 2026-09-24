@@ -164,6 +164,7 @@ namespace RatGame.AI
             if (!IsSpawned || _spots == null) return; // 자동 부트 등 스폰 전 프레임 가드
             TickMemory();
             CheckSlip(); // 달리다 비누를 밟으면 어떤 상태든 미끄러진다 (design/cat-ideas/11)
+            CheckPepper(); // 후추 패치 — 재채기 (고양이 33)
             TickDirectorHints();
             TickHousePending();
             TickBedCover();

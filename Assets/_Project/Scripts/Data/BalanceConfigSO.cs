@@ -199,6 +199,12 @@ namespace RatGame.Data
         [SerializeField] private float _catTrackSniffSeconds = 0.5f;     // 자국마다 킁킁
         [SerializeField] private float _puddleRadius = 2.5f;             // 엎은 물그릇 웅덩이 (design/cat-ideas/06 2단계)
         [SerializeField] private float _puddleSeconds = 60f;
+        [Header("후추 (design/cat-ideas/06, 고양이 33)")]
+        [SerializeField] private float _pepperSpillImpactSpeed = 4f;     // 던지지 않고 떨어뜨려도 이 속도 이상이면 쏟아짐
+        [SerializeField] private float _pepperRadius = 2f;
+        [SerializeField] private float _pepperSeconds = 45f;
+        [SerializeField] private float _pepperSneezeSeconds = 2f;        // 고양이 재채기 정지
+        [SerializeField] private float _pepperSneezeCooldown = 8f;       // 같은 고양이 재채기 간격
         [SerializeField] private float _wetSeconds = 20f;                // 웅덩이를 지난 쥐가 젖어 있는 시간
         [SerializeField] private float _scentWet = 40f;                  // 젖은 발자국 강도
         [SerializeField] private float _waterBowlSpillNoise = 30f;
@@ -499,6 +505,11 @@ namespace RatGame.Data
         public float CatTrackSniffSeconds => _catTrackSniffSeconds;
         public float PuddleRadius => _puddleRadius;
         public float PuddleSeconds => _puddleSeconds;
+        public float PepperSpillImpactSpeed => _pepperSpillImpactSpeed;
+        public float PepperRadius => _pepperRadius;
+        public float PepperSeconds => _pepperSeconds;
+        public float PepperSneezeSeconds => _pepperSneezeSeconds;
+        public float PepperSneezeCooldown => _pepperSneezeCooldown;
         public float WetSeconds => _wetSeconds;
         public float ScentWet => _scentWet;
         public float WaterBowlSpillNoise => _waterBowlSpillNoise;
