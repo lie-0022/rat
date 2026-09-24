@@ -26,5 +26,12 @@ namespace RatGame.Data
         public ZoneDefinitionSO Population;
         public StageShopSO Shop;              // 목적지방 상점 (새 루프, 고양이 65)
         public GameObject ShopCounterPrefab;  // 목적지방 판매대
+
+        [Header("스테이지 깊이별 난이도 (고양이 66, 잠정) — 배열 끝을 넘으면 마지막 값")]
+        public int[] CatCountByStage = { 1, 1, 2, 2, 3 };
+        public float[] TrapRatioByStage = { 0.4f, 0.5f, 0.6f, 0.7f, 0.8f };
+
+        public int CatCountFor(int stage) => CatCountByStage == null || CatCountByStage.Length == 0 ? -1 : CatCountByStage[Mathf.Clamp(stage - 1, 0, CatCountByStage.Length - 1)];
+        public float TrapRatioFor(int stage) => TrapRatioByStage == null || TrapRatioByStage.Length == 0 ? -1f : TrapRatioByStage[Mathf.Clamp(stage - 1, 0, TrapRatioByStage.Length - 1)];
     }
 }

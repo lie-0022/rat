@@ -27,6 +27,10 @@ namespace RatGame.Run
         public int HidesSpawned { get; private set; }
         public int DarkSpawned { get; private set; }
 
+        /// <summary>새 루프 깊이별 덮어쓰기 (고양이 66). 음수면 테이블 값.</summary>
+        public int CatCountOverride = -1;
+        public float TrapRatioOverride = -1f;
+
         public ZonePopulator(ZoneDefinitionSO pop, List<RoomModule> rooms, RoomModule safeRoom, RoomModule bonusRoom)
         {
             Pop = pop; Rooms = rooms; SafeRoom = safeRoom; BonusRoom = bonusRoom;
@@ -133,7 +137,7 @@ namespace RatGame.Run
                 if (room == SafeRoom) continue; // 쥐구멍방엔 함정 없음 — 시작하자마자 걸리지 않게
                 foreach (var p in room.TrapSpawns)
                 {
-                    if (rng.NextDouble() >= table.UseRatio || total <= 0) continue;
+                    if (rng.NextDouble() >= (TrapRatioOverride >= 0f ? TrapRatioOverride : table.UseRatio) || total <= 0) continue;
                     int roll = rng.Next(total); GameObject prefab = null;
                     foreach (var e in table.Entries) { roll -= e.Weight; if (roll < 0) { prefab = e.Prefab; break; } }
                     if (prefab == null) continue;
@@ -171,7 +175,7 @@ namespace RatGame.Run
             var candidates = new List<RoomModule>();
             foreach (var r in Rooms) if (r.CatSpawn != null) candidates.Add(r);
             Shuffle(candidates, rng);
-            int n = Mathf.Min(Pop.CatCount, candidates.Count);
+            int n = Mathf.Min(CatCountOverride >= 0 ? CatCountOverride : Pop.CatCount, candidates.Count);
             for (int i = 0; i < n; i++)
             {
                 Vector3 at = candidates[i].CatSpawn.position;

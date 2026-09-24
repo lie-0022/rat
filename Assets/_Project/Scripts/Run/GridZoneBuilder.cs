@@ -80,13 +80,18 @@ namespace RatGame.Run
             foreach (var r in Layout.Rooms) rooms.Add(r.GetComponent<RoomModule>());
             if (pop != null)
             {
-                Populator = new ZonePopulator(pop, rooms, rooms[0], null);
-                Populator.PopulateAll(rng, 0);
+                int stage = RunSession.StageNumber; // 새 루프 깊이 — 고양이 수·함정 비율·고가치 가중 (고양이 66)
+                Populator = new ZonePopulator(pop, rooms, rooms[0], null)
+                {
+                    CatCountOverride = _zone.CatCountFor(stage),
+                    TrapRatioOverride = _zone.TrapRatioFor(stage),
+                };
+                Populator.PopulateAll(rng, stage - 1);
             }
             FaceSpawnsToDoor(Layout.Start, Layout.Sides[0]);
             DeliverPurchases(Layout.Start, rng);
             PlayerPlacement.TeleportAllToSpawns();
-            Log.Dev($"벽 속 스폰: 시드 {seed} — 방 {rooms.Count}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
+            Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed} — 방 {rooms.Count}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
                     $"전리품 {Populator?.LootSpawned}개(가치 {Populator?.LootValue}), 함정 {Populator?.TrapsSpawned}, 숨을 곳 {Populator?.HidesSpawned}, 어둠 {Populator?.DarkSpawned}, 고양이 {Populator?.CatsSpawned}");
         }
 
