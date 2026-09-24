@@ -59,7 +59,7 @@ namespace RatGame.Run
             if (DevForceModifier.HasValue) { var forced = DevForceModifier.Value; DevForceModifier = null; return forced; } // 한 번만 — 다음 맵부터는 원래대로
             var rng = new System.Random(seed * 31 + stage);
             if (rng.NextDouble() >= _zone.ModifierChanceFor(stage)) return StageModifier.None;
-            return (StageModifier)(1 + rng.Next(5)); // None 뺀 다섯 가지 같은 비중
+            return (StageModifier)(1 + rng.Next(6)); // None 뺀 여섯 가지 같은 비중
         }
 
         // 출발방에서 칸 그래프 거리가 가장 먼 막다른 방 — 돌아가는 수고가 보상이 되게

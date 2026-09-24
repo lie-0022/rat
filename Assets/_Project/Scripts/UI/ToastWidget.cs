@@ -70,6 +70,7 @@ namespace RatGame.UI
             Run.StageModifier.CatTreats => "고양이 간식 날 (고양이가 느릿느릿)",
             Run.StageModifier.OwnerOut => "집주인 외출 (집주인 사건 없음)",
             Run.StageModifier.Busy => "분주한 집 (집주인 사건이 잦아요)",
+            Run.StageModifier.Guest => "고양이 손님 (한 마리 더 왔어요)",
             _ => null,
         };
 

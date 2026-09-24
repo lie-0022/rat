@@ -92,7 +92,7 @@ namespace RatGame.Run
                 Treasure = _zone.TreasureRoom ? PickTreasure() : -1;
                 Populator = new ZonePopulator(pop, rooms, rooms[0], Treasure >= 0 ? rooms[Treasure] : null)
                 {
-                    CatCountOverride = _zone.CatCountFor(stage),
+                    CatCountOverride = _zone.CatCountFor(stage) + (Modifier == StageModifier.Guest ? 1 : 0), // 고양이 손님 (고양이 117)
                     TrapRatioOverride = Mathf.Min(1f, _zone.TrapRatioFor(stage) + (Modifier == StageModifier.TrapSale ? _zone.TrapSaleBonus : 0f)),
                     DarkChanceOverride = Modifier == StageModifier.Blackout ? _zone.BlackoutDarkChance : -1f,
                     BonusTrapRatio = _zone.TreasureTrapRatio,

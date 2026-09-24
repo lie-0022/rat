@@ -108,7 +108,7 @@ namespace RatGame.UI
         private static string ModifierName(StageModifier m) => m switch
         {
             StageModifier.None => "없음", StageModifier.Blackout => "정전", StageModifier.TrapSale => "덫",
-            StageModifier.CatTreats => "간식", StageModifier.OwnerOut => "외출", StageModifier.Busy => "분주", _ => m.ToString(),
+            StageModifier.CatTreats => "간식", StageModifier.OwnerOut => "외출", StageModifier.Busy => "분주", StageModifier.Guest => "손님", _ => m.ToString(),
         };
 
         // 같은 스테이지 번호로 벽 속 씬을 다시 — 기지 발판 출발과 같은 길(로드 뒤 자동 출발·맵 생성)
