@@ -286,6 +286,12 @@ namespace RatGame.Data
         [SerializeField] private float _catFightCooldown = 30f;          // 싸운 뒤 재발 금지
         [SerializeField] private float _catFightDeclineCooldown = 10f;   // 서로 무시하고 지나간 뒤 재판정 금지
         [SerializeField] private float _catFightViewMul = 0.2f;          // 싸우는 동안 시야 배율 (서로에게 꽂힘)
+        [SerializeField, Range(0f, 1f)] private float _catBuddyChance = 0.5f; // 2마리일 때 짝꿍일 확률 (아니면 앙숙)
+        [SerializeField] private float _catFlankRange = 20f;             // 짝꿍이 추격하면 이 안의 고양이가 협공
+        [SerializeField] private float _catFlankLeadSeconds = 2f;        // 쥐의 이만큼 뒤 예상 위치로
+        [SerializeField] private float _catFlankSeconds = 8f;
+        [SerializeField] private float _catFlankSpeed = 4f;
+        [SerializeField] private float _catBuddySleepMul = 1.5f;         // 짝꿍과 같이 자면 수면 ×
 
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
@@ -547,6 +553,12 @@ namespace RatGame.Data
         public float CatFightCooldown => _catFightCooldown;
         public float CatFightDeclineCooldown => _catFightDeclineCooldown;
         public float CatFightViewMul => _catFightViewMul;
+        public float CatBuddyChance => _catBuddyChance;
+        public float CatFlankRange => _catFlankRange;
+        public float CatFlankLeadSeconds => _catFlankLeadSeconds;
+        public float CatFlankSeconds => _catFlankSeconds;
+        public float CatFlankSpeed => _catFlankSpeed;
+        public float CatBuddySleepMul => _catBuddySleepMul;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

@@ -35,6 +35,7 @@ namespace RatGame.AI
         private CatBlunderKind _lastBlunder;
         private bool _lastAlert;
         private bool _lastFighting;
+        private bool _lastFlanking;
         private Renderer[] _renderers;
         private int _lastRenderMode = 2;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
@@ -74,6 +75,7 @@ namespace RatGame.AI
                 CatState.Chase => Chase,
                 CatState.Capture => Capture,
                 CatState.Toy => Capture,
+                CatState.Flank => Color.Lerp(Chase, Suspicious, 0.5f), // 협공 — 주황빨강
                 CatState.Fight => Mathf.Repeat(Time.time * 6f, 1f) < 0.5f ? Chase : Suspicious, // 하악! 번쩍
                 CatState.Blunder => _brain.BlunderKind.Value == CatBlunderKind.Stun ? Stunned : baseColor,
                 CatState.Distracted => Distracted,
@@ -97,6 +99,7 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
+                    else if (state == CatState.Flank) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Zoomies) { tailSwing = Mathf.Sin(t * 16f) * 35f; roll = Mathf.Sin(t * 12f) * 8f; } // 우다다
                     else if (state == CatState.Fight) { roll = Mathf.Sin(t * 25f) * 12f; tailSwing = Mathf.Sin(t * 20f) * 50f; } // 몸싸움 — 부르르
                     else if (state == CatState.Patrol && _brain.Alert.Value) tailSwing = Mathf.Sin(t * 7f) * 22f; // 예민 — 꼬리가 빠르다
@@ -121,6 +124,8 @@ namespace RatGame.AI
             if (_tail != null) _tail.localRotation = Quaternion.Euler(0f, tailSwing, 20f);
             bool fighting = _brain.State.Value == CatState.Fight;
             if (fighting != _lastFighting) { _lastFighting = fighting; if (fighting) RatGame.Core.Log.Dev($"고양이 싸움 연출: {name}"); } // 2인 검증용
+            bool flanking = _brain.State.Value == CatState.Flank;
+            if (flanking != _lastFlanking) { _lastFlanking = flanking; if (flanking) RatGame.Core.Log.Dev($"고양이 협공 연출: {name}"); } // 2인 검증용
             if (_brain.Alert.Value != _lastAlert)
             {
                 _lastAlert = _brain.Alert.Value;

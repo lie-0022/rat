@@ -5,14 +5,42 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
+    /// <summary>두 마리 관계 (design/cat-ideas/07). 2마리가 처음 보일 때 뽑는다.</summary>
+    public enum CatRelationKind { Rivals, Buddies }
+
     /// <summary>
     /// 고양이 관계 중재자 (design/cat-ideas/07, 2026-09-24). 호스트 전용 MonoBehaviour — RunManager가 런타임에 붙인다.
-    /// 고양이가 2마리 이상일 때만 일한다. 지금 관계는 **앙숙** 하나: 싸울 수 있는 두 고양이가 4m 안에서 서로 보이면
-    /// 70% 싸움(15s, 뒤 30s 재발 금지) / 30% 서로 무시(10s 재판정 금지). 각 CatBrain은 상대를 몰라도 된다 — 중재자가 지시한다.
-    /// 엄마·아기·짝꿍(부르기·협공·공동 수면)은 다음 단계.
+    /// 고양이가 2마리 이상일 때만 일한다. 관계는 앙숙 또는 짝꿍(catBuddyChance로 뽑음).
+    ///  앙숙: 싸울 수 있는 두 고양이가 4m 안에서 서로 보이면 70% 싸움(15s, 뒤 30s 재발 금지) / 30% 서로 무시(10s 재판정 금지).
+    ///  짝꿍: 한 마리가 쫓으면 다른 마리가 협공, 한 마리가 자면 다른 마리도 와서 같이 잔다.
+    /// 각 CatBrain은 상대를 몰라도 된다 — 중재자가 지시한다. 엄마·아기는 다음 단계.
     /// </summary>
     public class CatRelation : MonoBehaviour
     {
+        /// <summary>2마리가 처음 보일 때 뽑는다 (앙숙/짝꿍). ServerSetKind로 지정 가능.</summary>
+        public CatRelationKind Kind { get; private set; }
+        private bool _kindChosen;
+
+        public void ServerSetKind(CatRelationKind kind) { Kind = kind; _kindChosen = true; Log.Dev($"고양이 관계: {kind}"); }
+
+        private void OnEnable() => CatBrain.ServerStateChanged += OnCatState;
+        private void OnDisable() => CatBrain.ServerStateChanged -= OnCatState;
+
+        // 짝꿍: 한 마리가 쫓으면 다른 마리가 협공, 한 마리가 자면 다른 마리도 와서 같이 잔다
+        private void OnCatState(CatBrain cat, CatState prev, CatState next)
+        {
+            if (!_kindChosen || Kind != CatRelationKind.Buddies || _balance == null) return;
+            foreach (var other in _cats)
+            {
+                if (other == null || other == cat || !other.IsSpawned) continue;
+                if (next == CatState.Chase && cat.ChaseTarget != null && other.CanAssistBuddy
+                    && Vector3.Distance(other.transform.position, cat.transform.position) <= _balance.CatFlankRange)
+                    other.ServerFlank(cat.ChaseTarget);
+                else if (next == CatState.Sleep && prev != CatState.Sleep)
+                    other.ServerJoinSleep();
+            }
+        }
+
         private BalanceConfigSO _balance;
         private float _nextCheck;
         private float _nextScan;
@@ -29,6 +57,8 @@ namespace RatGame.AI
             _nextCheck = Time.time + 0.25f;
             if (Time.time >= _nextScan) { _nextScan = Time.time + 2f; _cats = FindObjectsByType<CatBrain>(FindObjectsSortMode.None); }
             if (_cats.Length < 2) return;
+            if (!_kindChosen) ServerSetKind(Random.value < _balance.CatBuddyChance ? CatRelationKind.Buddies : CatRelationKind.Rivals);
+            if (Kind != CatRelationKind.Rivals) return; // 싸움은 앙숙만
 
             for (int i = 0; i < _cats.Length; i++)
                 for (int j = i + 1; j < _cats.Length; j++)

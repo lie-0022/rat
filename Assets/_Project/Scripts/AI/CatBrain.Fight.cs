@@ -15,6 +15,8 @@ namespace RatGame.AI
         private float _nextFightStep;
 
         public CatBrain FightOpponent => State.Value == CatState.Fight ? _fightWith : null;
+        /// <summary>지금 쫓는 쥐 (짝꿍 협공 — CatRelation이 읽는다).</summary>
+        public RatGame.Player.PlayerCondition ChaseTarget => State.Value == CatState.Chase ? _chaseTarget : null;
 
         /// <summary>싸울 수 있는 상태인가 (CatRelation이 묻는다).</summary>
         public bool CanFight => State.Value is CatState.Patrol or CatState.Return or CatState.Suspicious

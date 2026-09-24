@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */, Zoomies /* 화장실 뒤 우다다 (2026-09-24, CatBrain.Routine.cs) */, Ambush /* 매복 (2026-09-24, CatBrain.Lurk.cs) */, BoxSit /* 상자 입구에 앉음 */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */, Zoomies /* 화장실 뒤 우다다 (2026-09-24, CatBrain.Routine.cs) */, Ambush /* 매복 (2026-09-24, CatBrain.Lurk.cs) */, BoxSit /* 상자 입구에 앉음 */, Flank /* 짝꿍 협공 (2026-09-24, CatBrain.Buddy.cs) */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -183,6 +183,7 @@ namespace RatGame.AI
                 case CatState.Zoomies: TickZoomies(); break;
                 case CatState.Ambush:
                 case CatState.BoxSit: TickLurk(); break;
+                case CatState.Flank: TickFlank(); break;
             }
         }
 
@@ -208,7 +209,7 @@ namespace RatGame.AI
             {
                 case CatState.Sleep:
                     _movement.Stop();
-                    _sleepUntil = Time.time + _balance.CatBedSleepSeconds * SleepDurMul * DirSleepMul; // 디렉터 Build-up이면 짧게
+                    _sleepUntil = Time.time + _balance.CatBedSleepSeconds * SleepDurMul * DirSleepMul * BuddySleepMul(); // 디렉터 Build-up이면 짧게, 짝꿍과 같이면 길게
                     EnterSleepPhase(CatSleepPhase.Light);
                     break;
                 case CatState.Patrol: _waitUntil = 0f; _dwelling = false; break;
