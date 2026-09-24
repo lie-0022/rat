@@ -116,6 +116,8 @@ namespace RatGame.UI
         {
             GridZoneBuilder.DevForceModifier = m;
             RunSession.DepartPending = true;
+            // 스테이지 연속(RunManager 결과 뒤)과 같게 Lobby를 거친다 — 안 거치면 InRun → InRun 전이 오류 (고양이 114)
+            if (GameStateMachine.Instance.Current == GameState.InRun) GameStateMachine.Instance.TransitionTo(GameState.Lobby);
             SetOpen(false);
             NetworkManager.Singleton.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
