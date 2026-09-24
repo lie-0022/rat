@@ -51,6 +51,12 @@ namespace RatGame.Noise
         public static void Configure(BalanceConfigSO balance) => _balance = balance;
 
         /// <summary>호스트에서만 호출할 것 (정적이라 강제 불가 — 호출부 책임).</summary>
+        /// <summary>호스트: 파문 이펙트 대상 소음(loudness ≥ rippleThreshold) — RunManager가 모든 클라로 보낸다 (docs/06 "클라 시각화").</summary>
+        public static event System.Action<Vector3, float> Rippled;
+
+        /// <summary>이 크기 소음의 전파 반경 (파문 크기용 — 모든 클라).</summary>
+        public static float RadiusFor(float loudness) => _balance == null ? 0f : loudness / 100f * _balance.MaxNoiseRadius;
+
         public static void Emit(Vector3 pos, float loudness, NoiseType type, ulong? sourceClientId = null)
         {
             if (loudness <= 0f) return;
@@ -66,6 +72,7 @@ namespace RatGame.Noise
             Recent[_recentIndex] = e;
             _recentIndex = (_recentIndex + 1) % Recent.Length;
             OnNoise?.Invoke(e);
+            if (_balance != null && e.Loudness >= _balance.RippleThreshold) Rippled?.Invoke(pos, e.Loudness);
         }
 
         /// <summary>리스너 위치에서의 유효 loudness. 반경 밖 0, 벽 1장 −40% (Linecast 1회 — docs/06 단순 규칙).</summary>

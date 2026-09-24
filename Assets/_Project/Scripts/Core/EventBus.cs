@@ -41,6 +41,8 @@ namespace RatGame.Core
         public static event Action<HouseEventKind, HouseEventPhase> HouseEvent;
         /// <summary>고양이가 루틴 스팟으로 출발 (각 클라 로컬 — CatBrain.CatCueClientRpc가 발행).</summary>
         public static event Action<CatCueKind, UnityEngine.Vector3> CatCue;
+        /// <summary>큰 소음 파문 (docs/06 클라 시각화) — 모든 클라.</summary>
+        public static event Action<UnityEngine.Vector3, float /*loudness*/> NoiseRipple;
 
         public static void RaiseZoneStarted(int zoneIndex) => ZoneStarted?.Invoke(zoneIndex);
         public static void RaiseZoneEnded(int zoneIndex, bool quotaMet) => ZoneEnded?.Invoke(zoneIndex, quotaMet);
@@ -55,6 +57,7 @@ namespace RatGame.Core
         public static void RaiseAchievementUnlocked(string achievementId) => AchievementUnlocked?.Invoke(achievementId);
         public static void RaiseCodexUnlocked(string itemId) => CodexUnlocked?.Invoke(itemId);
         public static void RaiseHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEvent?.Invoke(kind, phase);
+        public static void RaiseNoiseRipple(UnityEngine.Vector3 pos, float loudness) => NoiseRipple?.Invoke(pos, loudness);
         public static void RaiseCatCue(CatCueKind kind, UnityEngine.Vector3 catPos) => CatCue?.Invoke(kind, catPos);
     }
 }

@@ -21,8 +21,9 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 ```
 
 - 전파 반경 = `loudness / 100 * maxNoiseRadius(14m)`. 반경 내 리스너에게 전달.
-- 벽 감쇠: 리스너까지 Linecast(NoiseBlocker 레이어) — 벽 1장당 loudness 40% 감소 (레이 1회, 단순하게).
+- 벽 감쇠: 리스너까지 Linecast(NoiseBlocker 레이어) — 벽 1장당 loudness 40% 감소 (레이 1회, 단순하게). 방 벽·문판은 NoiseBlocker 레이어에 둔다(시야도 막는다) — 데모 창고방 벽·문(고양이 45).
 - 클라 시각화: loudness 40 이상이면 발생 지점에 파문 이펙트 ClientRpc (플레이어가 "들렸다"를 인지해야 긴장이 성립).
+  - 구현 (2026-09-24, 고양이 45): 호스트 `NoiseSystem.Rippled` → `RunManager.NoiseRippleClientRpc` → `EventBus.NoiseRipple` → `Noise/NoiseRippleView`(씬마다 자동 생성)가 바닥에 전파 반경까지 0.7s 퍼지는 노란 고리(LineRenderer, 최대 8개 재사용).
 
 ## 소음원 기준표 (BalanceConfigSO)
 
@@ -55,10 +56,10 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 
 ## 수용 기준 (W4)
 
-- [ ] 회색 박스 씬에서 소음 반경 기즈모 시각화 (에디터 전용)
-- [ ] 달리기 vs 웅크림으로 고양이(임시 큐브 리스너) 반응 차이 재현
-- [ ] 유리병 낙하 → 파문 이펙트 → 리스너 로그까지 전 체인 동작
-- [ ] 벽 뒤 소음 감쇠 확인
+- [ ] 회색 박스 씬에서 소음 반경 기즈모 시각화 (에디터 전용) — 코드 있음(`PlayerNoiseEmitter.OnDrawGizmos`, 최근 1.2s 소음 반경 와이어 구). Scene 뷰 눈 확인은 사람이.
+- [x] 달리기 vs 웅크림으로 고양이 반응 차이 재현 (2026-09-24 고양이 44: 웅크림 게이지 0 / 달리기 1.4s에 의심)
+- [x] 유리병 낙하 → 파문 이펙트 → 리스너 로그까지 전 체인 동작 (고양이 45: 유리병 대신 접시(깨짐 60) → 파문 1회·고리 표시·고양이 Suspicious, 발소리 22는 파문 0. 2인 클라 파문 로그)
+- [x] 벽 뒤 소음 감쇠 확인 (고양이 45: 40 → 창고방 벽 너머 24, 열린 문 40, 닫힌 문 24)
 
 ## 냄새 자국 (2026-09-24, design/cat-ideas/06)
 

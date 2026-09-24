@@ -57,6 +57,7 @@ namespace RatGame.Run
             _returnZone = FindFirstObjectByType<DepositZone>();
             if (_returnZone == null) Log.Dev("RunManager: 쥐구멍(DepositZone)이 없어 귀환할 수 없음");
             EventBus.PlayerDowned += OnPlayerDowned;
+            Noise.NoiseSystem.Rippled += OnNoiseRipple; // 큰 소음 → 모든 클라 파문 (docs/06)
             // 경계도 디렉터 — 호스트 전용 계산기라 네트워크 컴포넌트가 아니다 (design/cat-ideas/12)
             var director = GetComponent<RunDirector>();
             if (director == null) director = gameObject.AddComponent<RunDirector>();
@@ -76,11 +77,17 @@ namespace RatGame.Run
         /// <summary>호스트: 집주인 이벤트 예고·시작·끝을 모든 클라에 (토스트). 목소리는 소음이 아니다 — 고양이가 반응하면 안 되는 소리.</summary>
         public void ServerHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEventClientRpc((byte)kind, (byte)phase);
 
+        private void OnNoiseRipple(Vector3 pos, float loudness) { if (IsSpawned) NoiseRippleClientRpc(pos, loudness); }
+
+        [ClientRpc]
+        private void NoiseRippleClientRpc(Vector3 pos, float loudness) => EventBus.RaiseNoiseRipple(pos, loudness);
+
         [ClientRpc]
         private void HouseEventClientRpc(byte kind, byte phase) => EventBus.RaiseHouseEvent((HouseEventKind)kind, (HouseEventPhase)phase);
 
         public override void OnNetworkDespawn()
         {
+            if (IsServer) Noise.NoiseSystem.Rippled -= OnNoiseRipple;
             if (Instance == this) Instance = null;
             if (!IsServer) return;
             EventBus.PlayerDowned -= OnPlayerDowned;

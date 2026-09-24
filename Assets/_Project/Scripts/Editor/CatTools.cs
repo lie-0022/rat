@@ -292,7 +292,7 @@ namespace RatGame.Editor
             {
                 var room = new GameObject("Storeroom");
                 room.transform.SetParent(root.transform);
-                int roomLayer = LayerMask.NameToLayer("RoomStatic");
+                int roomLayer = LayerMask.NameToLayer("NoiseBlocker"); // 벽 소음 감쇠(docs/06) — NoiseBlocker는 시야도 막는다
                 System.Action<string, Vector3, Vector3> wall = (n, center, size) =>
                 {
                     var w = GameObject.CreatePrimitive(PrimitiveType.Cube);
