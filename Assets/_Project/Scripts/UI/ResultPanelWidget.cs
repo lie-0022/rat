@@ -130,13 +130,14 @@ namespace RatGame.UI
             }
 
             var nm = NetworkManager.Singleton;
+            string depositLabel = run.GetComponent<StageQuota>() != null ? "창고" : "쥐구멍"; // 벽 속은 목적지 창고 (고양이 96)
             for (int i = 0; i < list.Count; i++)
             {
                 var c = list[i];
                 bool me = nm != null && c.ClientId == nm.LocalClientId;
                 // 이름·색은 팀 기본색 기준 (팀 상태·토스트와 같은 이름, 나간 쥐도 표시 가능)
                 _rows[i].Show($"{PlayerVisual.ColorNameFor(c.ClientId)}{(me ? " (나)" : "")}", PlayerVisual.ColorFor(c.ClientId),
-                              c.DepositedValue, c.DepositCount, c.CarriedValue, i == best, c.Downed && returned, returned);
+                              c.DepositedValue, c.DepositCount, c.CarriedValue, i == best, c.Downed && returned, returned, depositLabel);
             }
         }
 

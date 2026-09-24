@@ -118,7 +118,7 @@ namespace RatGame.UI
         {
             foreach (var (label, t) in new (string, Type)[]
                      {
-                         ("쥐구멍", typeof(DepositZone)), ("TV", typeof(TvSet)), ("어둠 구역", typeof(LightZone)), ("창문", typeof(WindowWind)),
+                         ("쥐구멍·창고", typeof(DepositZone)), ("TV", typeof(TvSet)), ("어둠 구역", typeof(LightZone)), ("창문", typeof(WindowWind)),
                          ("흔들리는 끈", typeof(DanglingString)), ("후추통", typeof(PepperShaker)), ("레이저 포인터", typeof(LaserPointer)),
                          ("창고방 문", typeof(RoomDoor)), ("초인종", typeof(Doorbell)), ("물그릇", typeof(WaterBowl)), ("치즈(먹기)", typeof(EdibleItem)),
                          ("숨을 곳", typeof(HideSpot)), ("함정", typeof(TrapBase)), ("목적지 게시판", typeof(StageBoard)), ("거울", typeof(Mirror)),

@@ -174,6 +174,8 @@ namespace RatGame.UI
             _quotaWasMet = met;
         }
 
+        private static bool IsWalls => Run.RunManager.Instance != null && Run.RunManager.Instance.GetComponent<Run.StageQuota>() != null; // 벽 속은 목적지 창고 (고양이 96)
+
         private void PollPlayers()
         {
             var nm = NetworkManager.Singleton;
@@ -206,7 +208,7 @@ namespace RatGame.UI
                 else if (prev != state && !p.IsOwner)
                 {
                     if (state == ConditionState.Pinned) Show($"{name}가 고양이에게 잡혔어요! 눈에 띄어 고양이를 떼어 내요", UiColorRole.Danger);
-                    if (state == ConditionState.Downed) Show($"{name}가 다운됐어요! 쥐구멍으로 옮겨 주세요", UiColorRole.Danger);
+                    if (state == ConditionState.Downed) Show($"{name}가 다운됐어요! {(IsWalls ? "창고(주황 방)" : "쥐구멍")}으로 옮겨 주세요", UiColorRole.Danger);
                     else if (state == ConditionState.Trapped) Show($"{name}가 끈끈이에 붙었어요! [E] 길게 눌러 구출", UiColorRole.Warning);
                 }
                 _known[id] = state;

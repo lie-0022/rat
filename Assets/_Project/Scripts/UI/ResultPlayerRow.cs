@@ -14,11 +14,11 @@ namespace RatGame.UI
         [SerializeField] private GameObject _downedTag;
 
         public void Show(string displayName, Color color, int deposited, int depositCount, int carried,
-                         bool crown, bool downed, bool returned)
+                         bool crown, bool downed, bool returned, string depositLabel = "쥐구멍")
         {
             if (_swatch.color != color) _swatch.color = color;
             SetText(_nameText, displayName);
-            SetText(_depositText, depositCount > 0 ? $"쥐구멍 {deposited} ({depositCount}개)" : "쥐구멍 —");
+            SetText(_depositText, depositCount > 0 ? $"{depositLabel} {deposited} ({depositCount}개)" : $"{depositLabel} —");
             // 전멸이면 들고 온 것은 의미 없음 — 다운 표시만
             bool showCarried = returned && carried > 0;
             SetText(_carriedText, showCarried ? $"들고 옴 {carried}" : "");
