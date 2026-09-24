@@ -157,6 +157,9 @@ namespace RatGame.UI
                 var found = FindAnyObjectByType(t) as Component;
                 if (found != null) yield return (label, found.transform);
             }
+            // 미끼 얹힌 쥐덫 (고양이 129) — 판을 밟지 않게 GoTo가 1.6m 앞에 세운다
+            foreach (var trap in FindObjectsByType<MouseTrap>(FindObjectsSortMode.None))
+                if (trap.HasBait && trap.Armed.Value) { yield return ("쥐덫 미끼 (벽 속)", trap.transform); break; }
             // 벽 속 역할 고양이 자리 (고양이 80·92) — 이름으로 찾는다(GridZoneBuilder가 만든 관찰점)
             var post = GameObject.Find("GuardPost");
             if (post != null) yield return ("문지기 초소 (벽 속)", post.transform);
