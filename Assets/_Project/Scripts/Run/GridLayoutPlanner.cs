@@ -44,6 +44,18 @@ namespace RatGame.Run
             return bits;
         }
 
+        /// <summary>그 칸의 열린 면 중 쥐 전용 배관인 면 (고양이 79).</summary>
+        public byte PipeSides(int cell)
+        {
+            byte bits = 0;
+            foreach (var e in Edges)
+            {
+                if (!e.IsPipe || (e.A != cell && e.B != cell)) continue;
+                bits |= SideBit(Cells[e.A == cell ? e.B : e.A].Pos - Cells[cell].Pos);
+            }
+            return bits;
+        }
+
         public static byte SideBit(Vector2Int d) =>
             d == Vector2Int.up ? (byte)1 : d == Vector2Int.right ? (byte)2 : d == Vector2Int.down ? (byte)4 : (byte)8;
 

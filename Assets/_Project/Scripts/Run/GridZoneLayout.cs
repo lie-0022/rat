@@ -15,7 +15,7 @@ namespace RatGame.Run
         public class Result
         {
             public readonly List<GridRoom> Rooms = new();      // plan.Cells 순서
-            public readonly List<byte> Sides = new();
+            public readonly List<byte> Sides = new();          // 아래 4비트 열린 면, 위 4비트 그중 배관 (GridRoom.OpenSides 형식)
             public readonly List<GameObject> Corridors = new();
             public GridRoom Start => Rooms.Count > 0 ? Rooms[0] : null;
             public GridRoom Destination;
@@ -32,7 +32,7 @@ namespace RatGame.Run
                 go.transform.SetPositionAndRotation(origin + new Vector3(cell.Pos.x * zone.CellSize, 0f, cell.Pos.y * zone.CellSize), Quaternion.identity);
                 var room = go.GetComponent<GridRoom>();
                 result.Rooms.Add(room);
-                result.Sides.Add(plan.OpenSides(i));
+                result.Sides.Add((byte)(plan.OpenSides(i) | (plan.PipeSides(i) << 4)));
                 if (i == plan.DestinationIndex) result.Destination = room;
             }
             foreach (var e in plan.Edges)

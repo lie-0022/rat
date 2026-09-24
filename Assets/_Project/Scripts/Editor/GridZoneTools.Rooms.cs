@@ -59,7 +59,7 @@ namespace RatGame.Editor
             zone.BranchRoomPool = new[] { prefabs["Wall_Small"], prefabs["Wall_Medium"] };
             zone.DeadEndRoomPool = new[] { prefabs["Wall_Small"], prefabs["Wall_Medium"], prefabs["Wall_Wide"] };
             zone.Corridor = BuildCorridor("Wall_Corridor", WallColor);
-            zone.Pipe = BuildCorridor("Wall_Pipe", PipeColor);
+            zone.Pipe = BuildPipe("Wall_Pipe");
             zone.Population = AssetDatabase.LoadAssetAtPath<ZoneDefinitionSO>("Assets/_Project/Data/Zones/Zone_Kitchen_Greybox.asset");
             EditorUtility.SetDirty(zone);
             AssetDatabase.SaveAssets();
@@ -80,6 +80,7 @@ namespace RatGame.Editor
 
             // 네 면: 문틈을 비운 벽 두 조각 + 문틈 막음벽 (N, E, S, W 순서 = GridRoom 비트 순서)
             var plugs = new GameObject[4];
+            var mouths = new GameObject[4];
             for (int side = 0; side < 4; side++)
             {
                 bool alongX = side == 0 || side == 2;
@@ -96,6 +97,7 @@ namespace RatGame.Editor
                 Vector3 plugPos = alongX ? new Vector3(0f, WallH * 0.5f, fixedCoord) : new Vector3(fixedCoord, WallH * 0.5f, 0f);
                 Vector3 plugSize = alongX ? new Vector3(Door, WallH, WallT) : new Vector3(WallT, WallH, Door);
                 plugs[side] = Box(root.transform, $"Plug_{"NESW"[side]}", plugPos, plugSize, wallLayer, PlugColor);
+                mouths[side] = PipeMouth(root.transform, side, alongX, fixedCoord, wallLayer);
             }
 
             Transform depot = null;
@@ -155,7 +157,7 @@ namespace RatGame.Editor
                     sp.gameObject.AddComponent<CatSpot>().EditorSetup(s.Spots[i], 1f);
                 }
 
-            grid.EditorSetup(new Vector2(s.W, s.D), plugs, depot);
+            grid.EditorSetup(new Vector2(s.W, s.D), plugs, mouths, depot);
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, $"{RoomDir}/{s.Name}.prefab");
             Object.DestroyImmediate(root);
             return prefab;

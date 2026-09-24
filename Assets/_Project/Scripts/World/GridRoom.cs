@@ -15,8 +15,10 @@ namespace RatGame.World
 
         [SerializeField] private Vector2 _size = new(8f, 8f);   // 가로(X)·세로(Z) m
         [SerializeField] private GameObject[] _plugs = new GameObject[4]; // N, E, S, W 막음벽
+        [SerializeField] private GameObject[] _pipeMouths = new GameObject[4]; // 쥐 전용 배관 입구 판 (고양이 79) — 문틈을 배관 크기로 좁힘
         [SerializeField] private Transform _depot;              // 목적지방만 — 식량 창고·상점 자리 (docs/09 새 루프)
 
+        /// <summary>아래 4비트 = 이어진 면, 위 4비트 = 그중 배관 면 (docs/03).</summary>
         public NetworkVariable<byte> OpenSides = new(0);
 
         public Vector2 Size => _size;
@@ -32,6 +34,7 @@ namespace RatGame.World
         public override void OnNetworkSpawn()
         {
             Apply(OpenSides.Value);
+            if (!IsServer && (OpenSides.Value >> 4) != 0) RatGame.Core.Log.Dev($"배관 입구 연출: {name} {transform.position:F0} 면 {System.Convert.ToString(OpenSides.Value >> 4, 2)}"); // 2인 검증용
             OpenSides.OnValueChanged += OnSidesChanged;
         }
 
@@ -41,8 +44,12 @@ namespace RatGame.World
 
         private void Apply(byte sides)
         {
-            for (int i = 0; i < 4 && i < _plugs.Length; i++)
-                if (_plugs[i] != null) _plugs[i].SetActive((sides & (1 << i)) == 0);
+            for (int i = 0; i < 4; i++)
+            {
+                bool open = (sides & (1 << i)) != 0, pipe = open && (sides & (1 << (i + 4))) != 0;
+                if (i < _plugs.Length && _plugs[i] != null) _plugs[i].SetActive(!open);
+                if (_pipeMouths != null && i < _pipeMouths.Length && _pipeMouths[i] != null) _pipeMouths[i].SetActive(pipe);
+            }
         }
 
         /// <summary>면 i(0 N, 1 E, 2 S, 3 W)의 문 중심 (월드, 바닥 높이).</summary>
@@ -59,7 +66,7 @@ namespace RatGame.World
         }
 
 #if UNITY_EDITOR
-        public void EditorSetup(Vector2 size, GameObject[] plugs, Transform depot) { _size = size; _plugs = plugs; _depot = depot; }
+        public void EditorSetup(Vector2 size, GameObject[] plugs, GameObject[] pipeMouths, Transform depot) { _size = size; _plugs = plugs; _pipeMouths = pipeMouths; _depot = depot; }
         /// <summary>에디터 미리보기(네트워크 없이)용.</summary>
         public void EditorApply(byte sides) => Apply(sides);
 #endif
