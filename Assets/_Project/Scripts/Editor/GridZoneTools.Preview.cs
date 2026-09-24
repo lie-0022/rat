@@ -45,13 +45,17 @@ namespace RatGame.Editor
 
                 var surface = root.gameObject.AddComponent<NavMeshSurface>();
                 surface.collectObjects = CollectObjects.Children;
+                surface.layerMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker"); // 실제 스테이지(GridZoneBuilder)와 같게 — 장식(Default)은 빠진다
                 surface.BuildNavMesh();
                 int unreachable = 0; bool destOk = false;
                 NavMesh.SamplePosition(layout.Start.transform.position, out var hs, 2f, NavMesh.AllAreas);
                 foreach (var r in layout.Rooms)
                 {
                     var path = new NavMeshPath();
-                    NavMesh.SamplePosition(r.transform.position, out var ht, 3f, NavMesh.AllAreas);
+                    // 목적지방은 안전지대라 고양이 길이 없다(고양이 72) — 문 밖까지 오면 된다
+                    Vector3 target = r.transform.position;
+                    if (r == layout.Destination) target = DestDoorOutside(r, layout, plan);
+                    NavMesh.SamplePosition(target, out var ht, 3f, NavMesh.AllAreas);
                     NavMesh.CalculatePath(hs.position, ht.position, NavMesh.AllAreas, path);
                     bool ok = path.status == NavMeshPathStatus.PathComplete;
                     if (!ok) unreachable++;
@@ -66,6 +70,13 @@ namespace RatGame.Editor
                 UnityEngine.SceneManagement.SceneManager.SetActiveScene(prevActive);
                 EditorSceneManager.CloseScene(temp, true);
             }
+        }
+
+        private static Vector3 DestDoorOutside(GridRoom dest, GridZoneLayout.Result layout, GridPlan plan)
+        {
+            byte sides = layout.Sides[plan.DestinationIndex]; int side = 0; while (side < 4 && (sides & (1 << side)) == 0) side++;
+            Vector3 door = dest.DoorCenter(side), outward = door - dest.transform.position; outward.y = 0f;
+            return door + outward.normalized * 1.5f;
         }
 
         private static void RenderTop(Transform root, string pngPath)

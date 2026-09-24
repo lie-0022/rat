@@ -145,6 +145,7 @@ namespace RatGame.Editor
                 if (Mathf.Min(s.W, s.D) >= 8f)
                     Box(root.transform, "Crate", new Vector3(s.W * 0.15f, 0.6f, s.D * 0.15f), new Vector3(1.4f, 1.2f, 1.4f), floorLayer, CrateColor);
             }
+            Decorate(root.transform, s);
             if (s.Spots != null)
                 for (int i = 0; i < s.Spots.Length; i++)
                 {
@@ -158,6 +159,63 @@ namespace RatGame.Editor
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, $"{RoomDir}/{s.Name}.prefab");
             Object.DestroyImmediate(root);
             return prefab;
+        }
+
+        // 벽 속 장식 (고양이 73): 나무 샛기둥·천장 배관·분홍 단열재 — 콜라이더 없음(물리·고양이 길 그대로), 방마다 고정 모양
+        private static readonly Color StudColor = new(0.58f, 0.43f, 0.28f);
+        private static readonly Color PipeMetal = new(0.52f, 0.56f, 0.6f);
+        private static readonly Color Insulation = new(0.93f, 0.62f, 0.7f);
+
+        private static void Decorate(Transform root, Spec s)
+        {
+            var deco = new GameObject("Deco").transform; deco.SetParent(root, false);
+            var rng = new System.Random(s.Name.GetHashCode() ^ 0x5eed);
+            for (int side = 0; side < 4; side++)
+            {
+                bool alongX = side == 0 || side == 2;
+                float len = alongX ? s.W : s.D;
+                float inner = (alongX ? s.D : s.W) * 0.5f - WallT * 0.5f - 0.07f; // 벽 안쪽 면 바로 앞
+                float sign = side == 0 || side == 1 ? 1f : -1f;
+                // 샛기둥: 1.4m 간격, 문틈(가운데 ±1.1) 피함
+                for (float c = -len * 0.5f + 0.5f; c <= len * 0.5f - 0.5f; c += 1.4f)
+                {
+                    if (Mathf.Abs(c) < 1.1f) continue;
+                    Vector3 pos = alongX ? new Vector3(c, WallH * 0.5f, sign * inner) : new Vector3(sign * inner, WallH * 0.5f, c);
+                    Vector3 size = alongX ? new Vector3(0.12f, WallH, 0.1f) : new Vector3(0.1f, WallH, 0.12f);
+                    Deco(deco, "Stud", pos, size, StudColor, PrimitiveType.Cube, Quaternion.identity);
+                }
+                // 단열재: 면마다 반반 확률, 문틈 옆 한쪽 칸
+                if (rng.NextDouble() < 0.5 && len >= 6f)
+                {
+                    float c = (rng.NextDouble() < 0.5 ? -1f : 1f) * (1.1f + (len * 0.5f - 1.6f) * 0.5f);
+                    Vector3 pos = alongX ? new Vector3(c, 1.3f, sign * (inner - 0.03f)) : new Vector3(sign * (inner - 0.03f), 1.3f, c);
+                    float w = Mathf.Min(1.3f, len * 0.5f - 1.5f);
+                    Vector3 size = alongX ? new Vector3(w, 0.9f, 0.05f) : new Vector3(0.05f, 0.9f, w);
+                    Deco(deco, "Insulation", pos, size, Insulation, PrimitiveType.Cube, Quaternion.identity);
+                }
+            }
+            // 천장 배관: 방마다 한 줄, 무작위 벽을 따라 (문 위도 지나감 — 높이 2.15라 머리 위)
+            {
+                int side = rng.Next(4);
+                bool alongX = side == 0 || side == 2;
+                float len = (alongX ? s.W : s.D) - 0.4f;
+                float inner = (alongX ? s.D : s.W) * 0.5f - WallT * 0.5f - 0.2f;
+                float sign = side == 0 || side == 1 ? 1f : -1f;
+                Vector3 pos = alongX ? new Vector3(0f, 2.15f, sign * inner) : new Vector3(sign * inner, 2.15f, 0f);
+                var rot = alongX ? Quaternion.Euler(0f, 0f, 90f) : Quaternion.Euler(90f, 0f, 0f); // 실린더 Y축 → 벽을 따라
+                Deco(deco, "Pipe", pos, new Vector3(0.16f, len * 0.5f, 0.16f), PipeMetal, PrimitiveType.Cylinder, rot);
+            }
+        }
+
+        private static void Deco(Transform parent, string name, Vector3 localPos, Vector3 scale, Color color, PrimitiveType type, Quaternion rot)
+        {
+            var go = GameObject.CreatePrimitive(type);
+            go.name = name; go.isStatic = true;
+            Object.DestroyImmediate(go.GetComponent<Collider>()); // 보기만
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = localPos; go.transform.localRotation = rot; go.transform.localScale = scale;
+            ZoneTools.Tint(go, color);
+            var r = go.GetComponent<Renderer>(); r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         // 길이 1(+Z) 기준 통로 — 스폰 때 루트 Z 스케일 = 실제 길이. 바닥 + 양벽, 폭 = 문틈
