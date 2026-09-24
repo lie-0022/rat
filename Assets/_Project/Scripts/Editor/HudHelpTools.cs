@@ -50,7 +50,7 @@ namespace RatGame.Editor
                 list.enableAutoSizing = true; list.fontSizeMin = 16f; list.fontSizeMax = 26f; // 키가 늘어도 창 안에
 
                 var widget = area.gameObject.AddComponent<ControlsHelpWidget>();
-                widget.EditorSetup(AssetDatabase.LoadAssetAtPath<InputActionAsset>(InputPath), tag.gameObject, panel.gameObject, list, title);
+                widget.EditorSetup(AssetDatabase.LoadAssetAtPath<InputActionAsset>(InputPath), tag.gameObject, panel.gameObject, list, title, team != null ? team.Find("Box") as RectTransform : null);
                 PrefabUtility.SaveAsPrefabAsset(root, HudPath);
                 Debug.Log("[HudHelp] 조작 안내 — 꼬리표 + 목록 창 (Hud/HelpArea)");
             }

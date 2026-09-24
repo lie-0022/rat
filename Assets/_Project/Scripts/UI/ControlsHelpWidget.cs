@@ -25,6 +25,8 @@ namespace RatGame.UI
         [SerializeField] private GameObject _panel;
         [SerializeField] private TMP_Text _list;
         [SerializeField] private TMP_Text _title; // 키 글자색 = 제목 강조색 (테마를 따라가게)
+        [SerializeField] private RectTransform _below; // 팀 상자 — 인원 수만큼 길어져서 그 아래를 따라간다 (고양이 83)
+        private const float Gap = 10f;
 
         private bool _open;
 
@@ -37,6 +39,20 @@ namespace RatGame.UI
             bool hide = InputFocus.IsUiOpen; // 메뉴 패널 위로 겹치지 않게
             if (_tag.activeSelf == (hide || _open)) _tag.SetActive(!hide && !_open);
             if (_panel.activeSelf != (_open && !hide)) _panel.SetActive(_open && !hide);
+        }
+
+        // 팀 상자 바닥 아래로 (둘 다 좌상단 기준)
+        private void LateUpdate()
+        {
+            if (_below == null) return;
+            float y = _below.anchoredPosition.y - _below.rect.height - Gap;
+            Follow((RectTransform)_tag.transform, y);
+            Follow((RectTransform)_panel.transform, y);
+        }
+
+        private static void Follow(RectTransform rt, float y)
+        {
+            if (Mathf.Abs(rt.anchoredPosition.y - y) > 0.5f) rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, y);
         }
 
         private void Show(bool open)
@@ -89,7 +105,7 @@ namespace RatGame.UI
         };
 
 #if UNITY_EDITOR
-        public void EditorSetup(InputActionAsset input, GameObject tag, GameObject panel, TMP_Text list, TMP_Text title) { _inputAsset = input; _tag = tag; _panel = panel; _list = list; _title = title; }
+        public void EditorSetup(InputActionAsset input, GameObject tag, GameObject panel, TMP_Text list, TMP_Text title, RectTransform below) { _inputAsset = input; _tag = tag; _panel = panel; _list = list; _title = title; _below = below; }
 #endif
     }
 }
