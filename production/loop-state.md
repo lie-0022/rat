@@ -9,11 +9,18 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 6 — 기획 단계 (다음 후보 중 선택해 production/plans/cat-06-*.md 작성부터)
+## 현재 작업: 고양이 7 — 기획 단계 (다음 후보에서 골라 plan 작성부터)
 
 ## 완료 기록
+- 고양이 6 호기심 앞발 — 커밋됨 (plan cat-06). 미검증: 질림 60s, 못 닿음 포기, 치는 도중 집기.
 - 고양이 5 숨을 곳 + 수색 — 커밋됨 (검증·문서·계획 production/plans/cat-05-hide-search.md). 미검증: 대형 끌며 숨기 불가.
 
 ## 다음 후보 (세트 2)
-- 배고픔·호기심 앞발 (design/cat-ideas/03), 관심 경제, docs/07·10 정리
+- 관심 경제(13), 기억·원한(05), 냄새 흔적(06), 가지고 놀기(04), 실패 개그(11), docs/07·10 정리
 - 보류(사용자 결정 필요): 두 축 감각, 선반 층, 고양이 스태미나
+
+## 테스트 요령
+- 결과 로그는 한 줄(" | " 구분) — read_console이 여러 줄 메시지의 첫 줄만 줄 때가 있다.
+- 대기는 `until grep -q TAG ~/Library/Logs/Unity/Editor.log; do sleep 2; done` (단독 sleep 차단됨).
+- 게으름뱅이 시야 6.4m — 감각 테스트는 3m 안에서.
+- 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.

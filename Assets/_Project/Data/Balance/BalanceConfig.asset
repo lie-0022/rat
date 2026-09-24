@@ -123,6 +123,17 @@ MonoBehaviour:
   _catPounceWindowSeconds: 0.5
   _catMultiHideSniffMul: 1.5
   _hideEnterSeconds: 0.3
+  _catCuriosityMinSpeed: 1.5
+  _catCuriousSpeed: 4
+  _catPawCountRange: {x: 3, y: 5}
+  _catPawIntervalSeconds: 0.6
+  _catPawImpulse: 1.2
+  _catPawReach: 0.9
+  _catCuriousYawnSeconds: 5
+  _catCuriousCooldownSeconds: 10
+  _catBoredomSeconds: 30
+  _catBoredIgnoreSeconds: 60
+  _catCuriousReachTimeout: 8
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

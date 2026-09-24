@@ -1,6 +1,7 @@
 using RatGame.Data;
 using RatGame.Noise;
 using RatGame.Player;
+using RatGame.World;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace RatGame.AI
     /// 고양이 감각 (docs/07, 호스트 전용). 시야 0.2s 틱 + NoiseSystem 청각 구독 → 의심 게이지.
     /// 게이지는 NetworkVariable — 타깃 HUD "?"/"!" 표시는 UI 태스크(2-6).
     /// LightZone(어둠 50%)은 방 모듈 생기는 2-1에서.
+    /// 세 번째 감각 — 움직임(2026-09-24, design/cat-ideas/03): 시야 안에서 굴러가는 풀린 물건 → CuriosityTarget.
     /// </summary>
     public class CatSenses : NetworkBehaviour
     {
@@ -30,6 +32,14 @@ namespace RatGame.AI
         public Vector3 LastStimulusPos { get; private set; }
         public bool HasNewStimulus { get; private set; }    // Suspicious 전이용 (Brain이 소비)
         public bool ImmediateInvestigate { get; private set; } // Break/Trap/Squeak (Brain이 소비)
+
+        // 움직임 감지 (Brain이 읽음). 필터는 Brain이 준다 — 쿨다운·질림 목록
+        public CarryableItem CuriosityTarget { get; private set; }
+        public System.Func<CarryableItem, bool> CuriosityFilter { get; set; }
+        /// <summary>이 물건 근처(1.5m)의 충돌 소음은 못 들은 척 — 자기가 친 물건에 매번 놀라지 않게. 깨짐은 예외.</summary>
+        public Transform IgnoreImpactNear { get; set; }
+        private CarryableItem[] _items;
+        private float _nextItemScan;
 
         private float _nextVisionTick;
         private float _lastStimulusTime;
@@ -54,6 +64,7 @@ namespace RatGame.AI
             {
                 _nextVisionTick = Time.time + 0.2f;
                 VisionTick(0.2f);
+                MotionTick();
             }
             // 자극 없을 때 게이지 감쇠 (docs/07)
             if (VisibleTarget == null && Time.time - _lastStimulusTime > 0.5f && SuspicionGauge.Value > 0f)
@@ -107,9 +118,44 @@ namespace RatGame.AI
             }
         }
 
+        // 시야 안에서 빠르게 움직이는 풀린 물건 중 가장 가까운 것. 들린 것·주머니·대형은 제외 (쥐가 든 물건은 쥐 목격이 처리)
+        private void MotionTick()
+        {
+            if (Time.time >= _nextItemScan)
+            {
+                _nextItemScan = Time.time + 2f;
+                _items = FindObjectsByType<CarryableItem>(FindObjectsSortMode.None);
+            }
+            CuriosityTarget = null;
+            if (_items == null) return;
+            float viewDist = _balance.CatViewDistance * SensitivityMultiplier * ViewMultiplier;
+            float minSpeed = _balance.CatCuriosityMinSpeed;
+            float best = float.MaxValue;
+            Vector3 eye = transform.position + Vector3.up * 0.5f;
+            int blockMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker", "Default");
+            foreach (var item in _items)
+            {
+                if (item == null || !item.IsSpawned || item.IsHeavy || item.CarrierIds.Count > 0 || item.Pocketed.Value) continue;
+                var rb = item.GetComponent<Rigidbody>();
+                if (rb == null || rb.isKinematic || rb.linearVelocity.sqrMagnitude < minSpeed * minSpeed) continue;
+                Vector3 to = item.transform.position - transform.position;
+                float dist = to.magnitude;
+                if (dist > viewDist || dist >= best) continue;
+                if (Vector3.Angle(transform.forward, to) > _balance.CatViewHalfAngle) continue;
+                // 가려짐 검사 — 물건 자기 콜라이더에 맞는 건 보이는 것
+                if (Physics.Linecast(eye, item.transform.position, out var hit, blockMask, QueryTriggerInteraction.Ignore)
+                    && hit.rigidbody != rb) continue;
+                if (CuriosityFilter != null && !CuriosityFilter(item)) continue;
+                best = dist;
+                CuriosityTarget = item;
+            }
+        }
+
         private void OnNoise(NoiseEvent e)
         {
             if (!IsServer) return;
+            if (e.Type == NoiseType.Impact && IgnoreImpactNear != null
+                && Vector3.Distance(e.Pos, IgnoreImpactNear.position) < 1.5f) return;
             float heard = NoiseSystem.GetLoudnessAt(e, transform.position) * SensitivityMultiplier * HearingMultiplier;
             if (heard < _balance.CatHearThreshold) return;
 

@@ -7,7 +7,7 @@ namespace RatGame.AI
     /// 그레이박스 텔레그래프 (docs/07 연출 계약, design/cat-design/01-5). CatAnimatorLink가 생기기 전 대체 —
     /// 상태·잠 단계 NetworkVariable을 읽어 몸 색·꼬리 움직임·몸 펄스로 표현한다. 전 클라에서 돈다(읽기만).
     ///  Sleep 얕음: 꼬리 천천히 / ToDeep: 몸이 가라앉음 / Deep: 배 오르내림(펄스) / ToLight: 꼬리 씰룩 급회전(= "나가!" 신호) / HalfAwake: 머리 들림
-    ///  Suspicious 노랑 / Search 연노랑(킁킁 — 코 들썩임 대신 꼬리 낮게 흔듦) / Chase 빨강 / Capture 진빨강 / Distracted 하늘 / 그 외 기본 주황.
+    ///  Curious 연두(꼬리 파르르, 앞발 칠 때 몸이 앞으로 튐) / Suspicious 노랑 / Search 연노랑(킁킁 — 코 들썩임 대신 꼬리 낮게 흔듦) / Chase 빨강 / Capture 진빨강 / Distracted 하늘 / 그 외 기본 주황.
     /// </summary>
     public class CatVisual : MonoBehaviour
     {
@@ -19,6 +19,7 @@ namespace RatGame.AI
         private static readonly Color Base = new(0.95f, 0.55f, 0.2f);
         private static readonly Color Suspicious = new(1f, 0.85f, 0.2f);
         private static readonly Color Search = new(1f, 0.95f, 0.55f);
+        private static readonly Color Curious = new(0.6f, 0.9f, 0.4f);
         private static readonly Color Chase = new(0.9f, 0.15f, 0.1f);
         private static readonly Color Capture = new(0.6f, 0.05f, 0.05f);
         private static readonly Color Distracted = new(0.4f, 0.75f, 1f);
@@ -27,6 +28,8 @@ namespace RatGame.AI
         private MaterialPropertyBlock _block;
         private Vector3 _visualBaseScale;
         private Vector3 _visualBasePos;
+        private byte _lastPawTick;
+        private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
 
         private void Awake()
         {
@@ -47,6 +50,7 @@ namespace RatGame.AI
                 CatState.Sleep => Color.Lerp(baseColor, Asleep, 0.5f),
                 CatState.Suspicious => Suspicious,
                 CatState.Search => Search,
+                CatState.Curious => Curious,
                 CatState.Chase => Chase,
                 CatState.Capture => Capture,
                 CatState.Distracted => Distracted,
@@ -70,14 +74,22 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
+                    else if (state == CatState.Curious) tailSwing = Mathf.Sin(t * 18f) * 10f; // 꼬리 곧추 파르르
                     else if (state == CatState.Search) { tailSwing = Mathf.Sin(t * 3f) * 20f; sink = 0.06f + 0.03f * Mathf.Sin(t * 8f); } // 코를 바닥에 대고 킁킁
                     break;
             }
             if (_tail != null) _tail.localRotation = Quaternion.Euler(0f, tailSwing, 20f);
+            if (_brain.PawTick.Value != _lastPawTick)
+            {
+                _lastPawTick = _brain.PawTick.Value;
+                _pawKickUntil = Time.time + 0.15f;
+                RatGame.Core.Log.Dev($"고양이 앞발 연출 #{_lastPawTick}"); // 2인 검증용 — 클라에서도 찍힌다
+            }
+            float kick = Time.time < _pawKickUntil ? 0.18f : 0f;
             if (_visual != null)
             {
                 _visual.localScale = _visualBaseScale + new Vector3(pulse, 0f, pulse);
-                _visual.localPosition = _visualBasePos + Vector3.down * sink;
+                _visual.localPosition = _visualBasePos + Vector3.down * sink + Vector3.forward * kick;
             }
         }
     }
