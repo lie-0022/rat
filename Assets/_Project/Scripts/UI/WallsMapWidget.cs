@@ -110,6 +110,7 @@ namespace RatGame.UI
                 img.gameObject.SetActive(false);
                 _roomViews[r] = img.gameObject;
             }
+            Log.Dev($"지도 연출: 방 {_rooms.Length}, 목적지 {(_destination != null)}, 보물방 {(_treasure != null)}"); // 2인 검증용
         }
 
         private void TrackVisit()

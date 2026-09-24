@@ -58,7 +58,7 @@ namespace RatGame.UI
             if (cats.Count > 0) Show(string.Join(" · ", cats), UiColorRole.Warning, BriefingSeconds);
             // 토스트 칸은 두 줄 높이라 한 토스트에 한 문장 (스테이지 1엔 고양이 줄이 없어 3개 안에 든다)
             if ((flags & Run.GridZoneBuilder.BriefTreasure) != 0) Show("막다른 방 하나는 보물방 — 비싼 음식, 함정 가득", UiColorRole.Secondary, BriefingSeconds);
-            if (stage == 1 && (flags & Run.GridZoneBuilder.BriefPipe) != 0) Show("회색 배관은 쥐만 지나가요 · R 킁킁 = 목적지 냄새", UiColorRole.Secondary, BriefingSeconds);
+            if (stage == 1) Show(((flags & Run.GridZoneBuilder.BriefPipe) != 0 ? "회색 배관은 쥐만 · " : "") + "R 킁킁 = 목적지 냄새 · Tab 지도", UiColorRole.Secondary, BriefingSeconds); // 조작 팁은 배관 없는 맵에도
         }
 
         private void OnCheeseEaten(float amount) => Show($"냠냠 — 스태미나 +{amount:0}", UiColorRole.Positive);
