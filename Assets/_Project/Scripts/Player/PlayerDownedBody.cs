@@ -19,6 +19,8 @@ namespace RatGame.Player
         private Rigidbody _rb;
         private NetworkObject _body;
         private float _nextFollow;
+        private Vector3 _lastGoodBodyPos;
+        private float _nextGoodSample;
 
         /// <summary>호스트: 지금 대리 몸 (테스트용).</summary>
         public NetworkObject Body => _body;
@@ -61,11 +63,33 @@ namespace RatGame.Player
         private void SpawnBody()
         {
             if (_bodyPrefab == null || (_body != null && _body.IsSpawned)) return;
-            var go = Instantiate(_bodyPrefab, transform.position + Vector3.down * 0.3f, Quaternion.Euler(0f, transform.eulerAngles.y, 90f));
+            Vector3 pos; Quaternion rot;
+            FindBodyPlacement(out pos, out rot);
+            var go = Instantiate(_bodyPrefab, pos, rot);
             _body = go.GetComponent<NetworkObject>();
             _body.Spawn(true);
             go.GetComponent<DownedBody>().Owner.Value = OwnerClientId;
+            _lastGoodBodyPos = pos;
             Log.Dev($"다운 몸: client {OwnerClientId} 몸 생성 @ {go.transform.position:F1}");
+        }
+
+        // 벽·상자에 겹쳐 생기면 물리 밀어내기로 몸이 튕겨 나가 맵 밖으로 떨어진다(고양이 47에서 실제로 봄) —
+        // NavMesh 위(벽에서 에이전트 반경만큼 떨어진 곳)에 두고, 누운 캡슐이 안 겹치는 방향을 고른다. 다 막히면 세워 둔다.
+        private void FindBodyPlacement(out Vector3 pos, out Quaternion rot)
+        {
+            Vector3 basePos = transform.position;
+            if (UnityEngine.AI.NavMesh.SamplePosition(basePos, out var hit, 2f, UnityEngine.AI.NavMesh.AllAreas)) basePos = hit.position;
+            pos = new Vector3(basePos.x, basePos.y + 0.35f, basePos.z);
+            int mask = LayerMask.GetMask("RoomStatic", "NoiseBlocker", "Default");
+            float yaw = transform.eulerAngles.y;
+            for (int i = 0; i < 4; i++)
+            {
+                rot = Quaternion.Euler(0f, yaw + i * 45f, 90f);
+                Vector3 axis = rot * Vector3.up * 0.3f; // 누운 캡슐 축 반길이(0.6 - 반경 0.3)
+                if (!Physics.CheckCapsule(pos - axis, pos + axis, 0.28f, mask, QueryTriggerInteraction.Ignore)) return;
+            }
+            rot = Quaternion.identity;
+            pos = new Vector3(basePos.x, basePos.y + 0.65f, basePos.z);
         }
 
         private void ReleaseBody()
@@ -82,6 +106,19 @@ namespace RatGame.Player
         {
             if (!IsServer || _body == null || !_body.IsSpawned || Time.time < _nextFollow) return;
             _nextFollow = Time.time + 0.1f;
+            // 바닥 아래로 빠지면 마지막으로 멀쩡하던 자리로 (안전망)
+            var brb = _body.GetComponent<Rigidbody>();
+            if (_body.transform.position.y < -3f)
+            {
+                brb.linearVelocity = Vector3.zero; brb.angularVelocity = Vector3.zero;
+                brb.position = _lastGoodBodyPos; _body.transform.position = _lastGoodBodyPos;
+                Log.Dev($"다운 몸: client {OwnerClientId} 바닥 아래로 빠짐 — {_lastGoodBodyPos:F1}로 되돌림");
+            }
+            else if (Time.time >= _nextGoodSample && _body.transform.position.y > -0.5f && brb.linearVelocity.sqrMagnitude < 25f)
+            {
+                _nextGoodSample = Time.time + 0.5f;
+                _lastGoodBodyPos = _body.transform.position;
+            }
             Teleport(_body.transform.position + Vector3.up * 0.4f); // 시점이 끌려가는 몸을 따라간다
         }
 

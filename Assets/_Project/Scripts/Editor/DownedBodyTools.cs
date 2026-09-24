@@ -39,6 +39,7 @@ namespace RatGame.Editor
             go.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
             var rb = go.AddComponent<Rigidbody>();
             rb.mass = 3f; rb.interpolation = RigidbodyInterpolation.Interpolate;
+            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic; // 벽을 뚫고 나가지 않게
             go.AddComponent<NetworkObject>();
             go.AddComponent<NetworkTransform>();
             go.AddComponent<NetworkRigidbody>();
