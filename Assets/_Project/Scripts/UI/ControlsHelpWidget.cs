@@ -73,6 +73,7 @@ namespace RatGame.UI
                 Line(sb, key, Keys(a), label);
             }
             Line(sb, key, "1~4", "주머니 칸 고르기");
+            Line(sb, key, "Tab", "지도 (벽 속, 누르고 있기)");
             Line(sb, key, "Esc", "메뉴");
             if (Debug.isDebugBuild) sb.Append("<color=#9a9a9a>F3  고양이 정보 · F4  확인 메뉴 (개발용)</color>");
             return sb.ToString();
