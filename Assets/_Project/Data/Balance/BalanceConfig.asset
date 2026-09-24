@@ -247,6 +247,7 @@ MonoBehaviour:
   _catFlankSeconds: 8
   _catFlankSpeed: 4
   _catBuddySleepMul: 1.5
+  _catKittenCallCooldown: 10
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

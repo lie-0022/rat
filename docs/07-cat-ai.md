@@ -16,7 +16,7 @@ Cat (NetworkObject, NavMeshAgent, CapsuleCollider)
 ## FSM
 
 ```csharp
-public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder, Away, Fight, Zoomies, Ambush, BoxSit, Flank }
+public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder, Away, Fight, Zoomies, Ambush, BoxSit, Flank, Respond }
 ```
 
 ```
@@ -41,6 +41,7 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 | Ambush | **매복** (2026-09-24, `AI/CatBrain.Lurk.cs`, design/cat-ideas/09): Ambush 스팟 도착 → 60s 정지, `AmbushHidden` NV로 **꼬리만 보임**(텔레그래프 타협 불가) + 10s마다 "(츄릅… 어디선가)" 자막(18m). 2m 안 쥐 목격 → **덮치기**(추격 없이 Capture, 스윙 0.2s). 더 멀리서 보이면 평소 전이 | 0 |
 | BoxSit | **상자 입구에 앉기** (2026-09-24): Box 스팟(쥐의 숨을 곳 입구) 도착 → 15~40s, 시야 정면 3m·반각 45°만(`CatSenses.ViewDistanceOverride/HalfAngleOverride`). 2m 안 숨을 곳에 `CatBlocking` NV → 쥐가 들어가지도 나오지도 못함(갇힘). 도착 때 안에 쥐가 있으면 끄집어내 덮치기 | 0 |
 | Zoomies | **우다다** (2026-09-24, `AI/CatBrain.Routine.cs`, design/cat-ideas/02): Litter 스팟 볼일 12s(감각 0.3) 뒤 10s 동안 속도 6.5(추격보다 빠름)로 반경 8m 랜덤 지점을 1.2s마다 — 목적 없음, 복도는 도박. 코앞 목격은 추격, 비누 밟으면 미끄러짐 | 6.5 |
+| Respond | **엄마가 아기에게** (2026-09-24, `AI/CatBrain.Buddy.cs`): 아기가 Suspicious·Chase에 들어가면(10s 쿨다운) 엄마가 추격 속도로 아기 위치까지 → 게이지를 의심 임계로 올려 그 자리 Suspicious. 가는 길에 목격하면 추격. 놀이·추격·부재·싸움 중이면 무시 | 5.5 |
 | Flank | **짝꿍 협공** (2026-09-24, `AI/CatBrain.Buddy.cs`, design/cat-ideas/07): 짝꿍이 Chase에 들어가면 20m 안의 한가한(Patrol·Return·Suspicious·Curious·Track·Search) 다른 고양이가 쥐의 **2s 뒤 예상 위치**(위치 차분 속도, 최대 5.5로 자름, NavMesh 샘플)로 0.5s마다 갱신하며 4.0 속도로 8s. 보이면 평소 전이(추격) | 4.0 |
 | Fight | **앙숙 싸움** (2026-09-24, `AI/CatBrain.Fight.cs` + `AI/CatRelation`, design/cat-ideas/07): 고양이 2마리 이상일 때 호스트 중재자가 0.25s마다 판정 — 둘 다 Patrol·Return·Suspicious·Curious·Track·Search, 4m 안, 가림 없음 → 70% 싸움 15s / 30% 째려보고 지나감(10s 재판정 금지). 싸움 뒤 30s 재발 금지. 싸우는 동안 가운데 1.2m를 1s마다 빙글(3.0), 청각 차단(`CatSenses.Deaf`)·시야 ×0.2. 2m 안 쥐 목격이면 싸움 깨고 Chase, 상대가 빠지면 같이 끝. 관계는 지금 앙숙 고정(엄마·아기·짝꿍은 다음) | 3.0 |
 | Away | **집주인이 부름** (2026-09-24, `AI/CatBrain.House.cs`, design/cat-ideas/10): 하던 일을 멈추고(추격도 끊음 — 간식이 더 중요, 놀이·포획 중이면 끝난 뒤) 가까운 Door 스팟으로(3.0) → 도착하면 `AwayHidden` NV(렌더러 끔)·감각 0 → 20~40s 뒤 **랜덤 문**으로 Warp → Return. 문이 없으면 쥐들에게서 가장 먼 스팟. **밥 시간**은 Away가 아니라 Patrol에서 Food 스팟 강제·머무름 = 남은 밥 시간(25s, 감각 0.5) | 3.0 |
@@ -128,6 +129,11 @@ FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에�
 - `CatPersonalitySO` 필드: curiositySpeedMultiplier · curiousWhileSuspicious · fleeLoudness · fleeSeconds. Flee는 `CatBlunderKind.Flee`(`AI/CatBrain.Personality.cs`).
 - Cat 프리팹 성격 4종 — 스폰 시 랜덤.
 
+### 아기 고양이 (2026-09-24, 고양이 23)
+- 시야 0.5(≈4m)·청각 1·추격 0.6·**모든 이동 ×0.75**(`CatMovement.SpeedMultiplier`)·수면 ×1.5·몸 크기 0.6(CatVisual). 흰 회색.
+- **잡지 못한다**: Capture 명중 시 쥐를 Stunned(2s)만 → Return.
+- 무작위 성격 추첨에서 제외(`isKitten`) — 존 생성기·테스트가 `ServerSetPersonality`로 명시. 아기가 있으면 관계는 엄마·아기.
+
 ## 데모 레이아웃 (2026-09-24)
 
 `Tools/RatGame/Cat/Build Demo Layout (Stage_Warehouse01)`: 스팟 6(Bed·Food·Sun·Groom·Look×2, 쥐구멍 반대편에 잠자리·밥)·시야 가림 상자 4·고양이 1(잠자리에서 시작)·NavMesh 베이크. 방 모듈 전 검증용 — 선반 층·틈은 다음 단계(design/cat-design/02-6). 검증: 4배속 6분 관찰에서 스팟 14회 방문(같은 스팟 연속 없음), Bed 수면 45.0s 뒤 깸, Food 머무는 동안 감각 0.5. 참고: 쥐가 쥐구멍 위에 서 있으면 포획→쥐구멍 부활→재포획이 반복된다(쥐구멍 부활 사양의 자연스러운 결과).
@@ -150,7 +156,7 @@ FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에�
 
 ## 스폰·수량
 
-- 2마리 관계(2026-09-24): `AI/CatRelation`(RunManager 런타임 부착)이 2마리가 처음 보일 때 관계를 뽑는다(`catBuddyChance` 0.5 — **짝꿍**, 아니면 **앙숙**). 앙숙 = 싸움(Fight). 짝꿍 = 싸우지 않고 협공(Flank) + **공동 수면**(한 마리가 잠들면 다른 마리가 Patrol·Return 중이면 같은 잠자리로 가서 수면 ×1.5). 엄마·아기는 다음. 데모 스테이지는 1마리 유지(2마리는 Zone3+ — docs/00).
+- 2마리 관계(2026-09-24): `AI/CatRelation`(RunManager 런타임 부착)이 2마리가 처음 보일 때 관계를 뽑는다(`catBuddyChance` 0.5 — **짝꿍**, 아니면 **앙숙**). 앙숙 = 싸움(Fight). 짝꿍 = 싸우지 않고 협공(Flank) + **공동 수면**(한 마리가 잠들면 다른 마리가 Patrol·Return 중이면 같은 잠자리로 가서 수면 ×1.5). **엄마·아기** = 고양이 중 아기 성격이 있으면 추첨과 상관없이(매 스캔 확인): 아기가 놀라면 "(냐앙! — 아기 고양이가 엄마를 부른다)" 자막(18m) + 엄마 Respond, 공동 수면. 데모 스테이지는 1마리 유지(2마리는 Zone3+ — docs/00).
 
 - ZoneDefinitionSO에 catCount (Zone1:1 → Zone3+:2). CatSpawn 태그 지점에서 호스트 스폰.
 - NavMesh는 방 모듈 프리팹에 미리 굽지 못하므로 **런타임 베이크**: ZoneGenerator 완료 후 `NavMeshSurface.BuildNavMesh()` (com.unity.ai.navigation). 방 3~4개 규모면 1~2초, 로딩 화면에서 처리.

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9467817a335cc4c1490ef6d107623188, type: 3}
+  m_Name: Personality_Kitten
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.CatPersonalitySO
+  _displayName: "\uC544\uAE30 \uACE0\uC591\uC774"
+  _bodyColor: {r: 0.92, g: 0.92, b: 0.95, a: 1}
+  _viewMultiplier: 0.5
+  _hearingMultiplier: 1
+  _chaseSpeedMultiplier: 0.6
+  _sleepDurationMultiplier: 1.5
+  _bedWeightMultiplier: 1
+  _lookWeightMultiplier: 1
+  _lookDwellMultiplier: 1
+  _chaseGiveUpSeconds: 0
+  _curiositySpeedMultiplier: 1
+  _curiousWhileSuspicious: 0
+  _fleeLoudness: 0
+  _fleeSeconds: 3
+  _isKitten: 1
+  _moveSpeedMultiplier: 0.75
+  _bodyScale: 0.6

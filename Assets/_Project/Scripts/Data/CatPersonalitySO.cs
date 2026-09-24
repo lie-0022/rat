@@ -29,6 +29,9 @@ namespace RatGame.Data
         [SerializeField] private bool _curiousWhileSuspicious;          // 의심 중에도 굴러가는 물건에 속는다 (호기심쟁이)
         [SerializeField] private float _fleeLoudness = 0f;              // >0이면 이 이상 소리에 도망 (겁쟁이 60)
         [SerializeField] private float _fleeSeconds = 3f;
+        [SerializeField] private bool _isKitten;                        // 아기 — 잡지 못하고(넘어뜨리기만) 놀라면 엄마를 부른다. 무작위 추첨 제외
+        [SerializeField] private float _moveSpeedMultiplier = 1f;       // 모든 이동 속도 × (아기 0.75)
+        [SerializeField] private float _bodyScale = 1f;                 // 몸 크기 (연출)
 
         public string DisplayName => _displayName;
         public Color BodyColor => _bodyColor;
@@ -44,6 +47,9 @@ namespace RatGame.Data
         public bool CuriousWhileSuspicious => _curiousWhileSuspicious;
         public float FleeLoudness => _fleeLoudness;
         public float FleeSeconds => _fleeSeconds;
+        public bool IsKitten => _isKitten;
+        public float MoveSpeedMultiplier => _moveSpeedMultiplier;
+        public float BodyScale => _bodyScale;
 
 #if UNITY_EDITOR
         public void EditorSetup(string name, Color color, float view, float hearing, float chaseSpeed,
@@ -58,6 +64,11 @@ namespace RatGame.Data
         {
             _curiositySpeedMultiplier = curiositySpeedMul; _curiousWhileSuspicious = curiousWhileSuspicious;
             _fleeLoudness = fleeLoudness; _fleeSeconds = fleeSeconds;
+        }
+
+        public void EditorSetupKitten(bool isKitten, float moveSpeedMul, float bodyScale)
+        {
+            _isKitten = isKitten; _moveSpeedMultiplier = moveSpeedMul; _bodyScale = bodyScale;
         }
 #endif
     }

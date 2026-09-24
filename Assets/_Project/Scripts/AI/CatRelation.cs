@@ -6,7 +6,7 @@ using UnityEngine;
 namespace RatGame.AI
 {
     /// <summary>두 마리 관계 (design/cat-ideas/07). 2마리가 처음 보일 때 뽑는다.</summary>
-    public enum CatRelationKind { Rivals, Buddies }
+    public enum CatRelationKind { Rivals, Buddies, MotherKitten }
 
     /// <summary>
     /// 고양이 관계 중재자 (design/cat-ideas/07, 2026-09-24). 호스트 전용 MonoBehaviour — RunManager가 런타임에 붙인다.
@@ -20,6 +20,7 @@ namespace RatGame.AI
         /// <summary>2마리가 처음 보일 때 뽑는다 (앙숙/짝꿍). ServerSetKind로 지정 가능.</summary>
         public CatRelationKind Kind { get; private set; }
         private bool _kindChosen;
+        private float _nextKittenCall;
 
         public void ServerSetKind(CatRelationKind kind) { Kind = kind; _kindChosen = true; Log.Dev($"고양이 관계: {kind}"); }
 
@@ -29,7 +30,21 @@ namespace RatGame.AI
         // 짝꿍: 한 마리가 쫓으면 다른 마리가 협공, 한 마리가 자면 다른 마리도 와서 같이 잔다
         private void OnCatState(CatBrain cat, CatState prev, CatState next)
         {
-            if (!_kindChosen || Kind != CatRelationKind.Buddies || _balance == null) return;
+            if (!_kindChosen || _balance == null) return;
+            if (Kind == CatRelationKind.MotherKitten)
+            {
+                // 아기가 놀라면 냐앙 → 엄마가 달려온다. 자면 같이 잔다
+                if (cat.IsKitten && (next == CatState.Suspicious || next == CatState.Chase) && Time.time >= _nextKittenCall)
+                {
+                    _nextKittenCall = Time.time + _balance.CatKittenCallCooldown;
+                    cat.ServerKittenCallCue();
+                    foreach (var other in _cats) if (other != null && other != cat && other.IsSpawned && !other.IsKitten) other.ServerRespond(cat.transform.position);
+                }
+                else if (next == CatState.Sleep && prev != CatState.Sleep)
+                    foreach (var other in _cats) if (other != null && other != cat && other.IsSpawned) other.ServerJoinSleep();
+                return;
+            }
+            if (Kind != CatRelationKind.Buddies) return;
             foreach (var other in _cats)
             {
                 if (other == null || other == cat || !other.IsSpawned) continue;
@@ -57,7 +72,11 @@ namespace RatGame.AI
             _nextCheck = Time.time + 0.25f;
             if (Time.time >= _nextScan) { _nextScan = Time.time + 2f; _cats = FindObjectsByType<CatBrain>(FindObjectsSortMode.None); }
             if (_cats.Length < 2) return;
-            if (!_kindChosen) ServerSetKind(Random.value < _balance.CatBuddyChance ? CatRelationKind.Buddies : CatRelationKind.Rivals);
+            // 아기가 있으면 추첨과 상관없이 엄마·아기 — 아기 성격은 스폰 직후에 지정되므로 매 스캔 확인한다
+            bool kitten = false; foreach (var c in _cats) if (c != null && c.IsSpawned && c.IsKitten) kitten = true;
+            if (kitten && Kind != CatRelationKind.MotherKitten) ServerSetKind(CatRelationKind.MotherKitten);
+            else if (!_kindChosen)
+                ServerSetKind(Random.value < _balance.CatBuddyChance ? CatRelationKind.Buddies : CatRelationKind.Rivals);
             if (Kind != CatRelationKind.Rivals) return; // 싸움은 앙숙만
 
             for (int i = 0; i < _cats.Length; i++)

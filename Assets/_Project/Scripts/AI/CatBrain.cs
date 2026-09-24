@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */, Zoomies /* 화장실 뒤 우다다 (2026-09-24, CatBrain.Routine.cs) */, Ambush /* 매복 (2026-09-24, CatBrain.Lurk.cs) */, BoxSit /* 상자 입구에 앉음 */, Flank /* 짝꿍 협공 (2026-09-24, CatBrain.Buddy.cs) */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */, Zoomies /* 화장실 뒤 우다다 (2026-09-24, CatBrain.Routine.cs) */, Ambush /* 매복 (2026-09-24, CatBrain.Lurk.cs) */, BoxSit /* 상자 입구에 앉음 */, Flank /* 짝꿍 협공 (2026-09-24, CatBrain.Buddy.cs) */, Respond /* 엄마가 아기에게 달려감 */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -89,7 +89,7 @@ namespace RatGame.AI
             Noise.ScentSystem.Configure(_balance);
             Noise.ScentSystem.Clear(); // 정적 버퍼 — 이전 판·이전 플레이 모드 자국 제거
             if (PersonalityIndex.Value < 0 && _personalities != null && _personalities.Length > 0)
-                ServerSetPersonality(Random.Range(0, _personalities.Length));
+                ServerSetPersonality(PickRandomPersonality()); // 아기는 무작위에서 뺀다 (존 생성기가 명시)
             else ApplyPersonality();
             SetState(CatState.Patrol);
         }
@@ -117,6 +117,7 @@ namespace RatGame.AI
             _senses.ViewMultiplier = ViewMul;
             _senses.HearingMultiplier = HearingMul;
             _senses.CuriositySpeedMultiplier = Personality != null ? Personality.CuriositySpeedMultiplier : 1f;
+            _movement.SpeedMultiplier = Personality != null ? Personality.MoveSpeedMultiplier : 1f;
         }
 
         // 씬의 CatSpot 전부 (방 모듈 단계에서는 존 그래프로 — 지금은 씬 = 방 1개). 없으면 CatWaypoint* 이름을 Look으로
@@ -184,6 +185,7 @@ namespace RatGame.AI
                 case CatState.Ambush:
                 case CatState.BoxSit: TickLurk(); break;
                 case CatState.Flank: TickFlank(); break;
+                case CatState.Respond: TickRespond(); break;
             }
         }
 
@@ -561,6 +563,7 @@ namespace RatGame.AI
                     ? col.attachedRigidbody.GetComponent<PlayerCondition>() : null;
                 if (condition != null && condition.State.Value == ConditionState.Active)
                 {
+                    if (IsKitten) { KittenKnockdown(condition); return; } // 아기는 못 잡는다 — 넘어뜨리기만 (design/cat-ideas/07)
                     if (TryStartToy(condition)) return; // 동료가 있으면 바로 끝내지 않고 가지고 논다 (design/cat-ideas/04)
                     condition.ServerSetState(ConditionState.Downed);
                     Log.Dev($"고양이 [{name}] 포획: client {condition.OwnerClientId}");

@@ -34,10 +34,13 @@ namespace RatGame.AI
             _agent.enabled = value;
         }
 
+        /// <summary>모든 이동 속도 배율 (성격 — 아기 0.75). CatBrain이 성격 적용 때 설정.</summary>
+        public float SpeedMultiplier { get; set; } = 1f;
+
         public void MoveTo(Vector3 pos, float speed)
         {
             if (!_agent.enabled || !_agent.isOnNavMesh) return;
-            _agent.speed = speed;
+            _agent.speed = speed * SpeedMultiplier;
             _agent.isStopped = false;
             _agent.SetDestination(pos);
         }

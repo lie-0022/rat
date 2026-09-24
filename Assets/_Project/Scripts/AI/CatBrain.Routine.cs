@@ -30,6 +30,9 @@ namespace RatGame.AI
             if (cue.HasValue) CatCueClientRpc((byte)cue.Value, transform.position);
         }
 
+        /// <summary>호스트: 아기 고양이 냐앙 (가까운 쥐에게 자막).</summary>
+        public void ServerKittenCallCue() => CatCueClientRpc((byte)CatCueKind.KittenCall, transform.position);
+
         [ClientRpc]
         private void CatCueClientRpc(byte kind, Vector3 catPos) => EventBus.RaiseCatCue((CatCueKind)kind, catPos);
 

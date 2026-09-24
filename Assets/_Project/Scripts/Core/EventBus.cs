@@ -8,7 +8,7 @@ namespace RatGame.Core
     public enum HouseEventKind : byte { CallAway, Feeding, Doorbell /* 쥐가 누른 초인종 — 부르기와 같은 부재 */ }
     public enum HouseEventPhase : byte { Warn, Start, End }
     /// <summary>고양이 루틴 예고 소리 (design/cat-ideas/02). append-only — RPC로 byte 전송.</summary>
-    public enum CatCueKind : byte { Food, Litter, Sun, Bed, Water, Ambush }
+    public enum CatCueKind : byte { Food, Litter, Sun, Bed, Water, Ambush, KittenCall }
 
     /// <summary>
     /// 로컬 알림 전용 정적 이벤트 버스 (docs/02). 네트워크 동기화는 NGO 담당 — 여기 실으면 안 된다.

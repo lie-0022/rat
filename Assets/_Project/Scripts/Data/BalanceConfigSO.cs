@@ -292,6 +292,7 @@ namespace RatGame.Data
         [SerializeField] private float _catFlankSeconds = 8f;
         [SerializeField] private float _catFlankSpeed = 4f;
         [SerializeField] private float _catBuddySleepMul = 1.5f;         // 짝꿍과 같이 자면 수면 ×
+        [SerializeField] private float _catKittenCallCooldown = 10f;     // 아기 냐앙 → 엄마 호출 재사용 대기
 
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
@@ -559,6 +560,7 @@ namespace RatGame.Data
         public float CatFlankSeconds => _catFlankSeconds;
         public float CatFlankSpeed => _catFlankSpeed;
         public float CatBuddySleepMul => _catBuddySleepMul;
+        public float CatKittenCallCooldown => _catKittenCallCooldown;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

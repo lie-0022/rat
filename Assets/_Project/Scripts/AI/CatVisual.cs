@@ -36,6 +36,8 @@ namespace RatGame.AI
         private bool _lastAlert;
         private bool _lastFighting;
         private bool _lastFlanking;
+        private sbyte _lastPersonality = -2;
+        private bool _loggedRespond;
         private Renderer[] _renderers;
         private int _lastRenderMode = 2;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
@@ -76,6 +78,7 @@ namespace RatGame.AI
                 CatState.Capture => Capture,
                 CatState.Toy => Capture,
                 CatState.Flank => Color.Lerp(Chase, Suspicious, 0.5f), // 협공 — 주황빨강
+                CatState.Respond => Chase, // 아기에게 달려감
                 CatState.Fight => Mathf.Repeat(Time.time * 6f, 1f) < 0.5f ? Chase : Suspicious, // 하악! 번쩍
                 CatState.Blunder => _brain.BlunderKind.Value == CatBlunderKind.Stun ? Stunned : baseColor,
                 CatState.Distracted => Distracted,
@@ -124,6 +127,12 @@ namespace RatGame.AI
             if (_tail != null) _tail.localRotation = Quaternion.Euler(0f, tailSwing, 20f);
             bool fighting = _brain.State.Value == CatState.Fight;
             if (fighting != _lastFighting) { _lastFighting = fighting; if (fighting) RatGame.Core.Log.Dev($"고양이 싸움 연출: {name}"); } // 2인 검증용
+            if (_brain.PersonalityIndex.Value != _lastPersonality)
+            {
+                _lastPersonality = _brain.PersonalityIndex.Value;
+                RatGame.Core.Log.Dev($"고양이 성격 연출: {name} {(_brain.Personality != null ? _brain.Personality.DisplayName + " 몸 " + _brain.Personality.BodyScale : "-")}"); // 2인 검증용
+            }
+            if (_brain.State.Value == CatState.Respond && !_loggedRespond) { _loggedRespond = true; RatGame.Core.Log.Dev($"고양이 달려감 연출: {name}"); }
             bool flanking = _brain.State.Value == CatState.Flank;
             if (flanking != _lastFlanking) { _lastFlanking = flanking; if (flanking) RatGame.Core.Log.Dev($"고양이 협공 연출: {name}"); } // 2인 검증용
             if (_brain.Alert.Value != _lastAlert)
@@ -145,7 +154,8 @@ namespace RatGame.AI
             float kick = Time.time < _pawKickUntil ? 0.18f : 0f;
             if (_visual != null)
             {
-                _visual.localScale = _visualBaseScale + new Vector3(pulse, 0f, pulse);
+                float body = _brain.Personality != null ? _brain.Personality.BodyScale : 1f; // 아기는 작다
+                _visual.localScale = _visualBaseScale * body + new Vector3(pulse, 0f, pulse);
                 _visual.localPosition = _visualBasePos + Vector3.down * sink + Vector3.forward * kick;
                 _visual.localRotation = _visualBaseRot * Quaternion.Euler(0f, 0f, roll);
             }

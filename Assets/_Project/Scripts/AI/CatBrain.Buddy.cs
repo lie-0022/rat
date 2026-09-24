@@ -17,6 +17,45 @@ namespace RatGame.AI
         private Vector3 _flankPrevPos;
         private bool _buddySleepBonus;   // 다음 잠 1회 ×1.5
 
+        public bool IsKitten => Personality != null && Personality.IsKitten;
+        private Vector3 _respondTo;
+
+        private int PickRandomPersonality()
+        {
+            var pool = new System.Collections.Generic.List<int>();
+            for (int i = 0; i < _personalities.Length; i++) if (_personalities[i] != null && !_personalities[i].IsKitten) pool.Add(i);
+            return pool.Count > 0 ? pool[Random.Range(0, pool.Count)] : 0;
+        }
+
+        // 아기 포획: 쥐를 넘어뜨리기만 (기존 Stunned 2s) — 잡지는 못한다
+        private void KittenKnockdown(PlayerCondition victim)
+        {
+            victim.ServerSetState(ConditionState.Stunned);
+            Log.Dev($"고양이 [{name}]: 아기가 client {victim.OwnerClientId} 넘어뜨림 (기절)");
+            SetState(CatState.Return);
+        }
+
+        /// <summary>호스트: 아기가 불렀다 — 추격 속도로 달려가 그 자리 조사.</summary>
+        public void ServerRespond(Vector3 pos)
+        {
+            if (!IsServer) return;
+            var st = State.Value;
+            if (st is CatState.Chase or CatState.Capture or CatState.Toy or CatState.Away or CatState.Fight) return;
+            _respondTo = pos;
+            SetState(CatState.Respond);
+            _movement.MoveTo(CatMovement.Sample(pos, 2f, pos), _balance.CatChaseSpeed);
+            Log.Dev($"고양이 [{name}]: 아기가 부른다 — 달려감 ({pos:F0})");
+        }
+
+        private void TickRespond()
+        {
+            if (CheckEscalation()) return; // 가는 길에 쥐가 보이면 평소대로
+            if (!_movement.Arrived) return;
+            _investigatePos = _respondTo;
+            _senses.RaiseGaugeTo(_balance.CatSuspicionThreshold, _respondTo);
+            SetState(CatState.Suspicious);
+        }
+
         public bool CanAssistBuddy => State.Value is CatState.Patrol or CatState.Return or CatState.Suspicious
                                       or CatState.Curious or CatState.Track or CatState.Search;
 
