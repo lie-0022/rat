@@ -20,6 +20,9 @@ namespace RatGame.Player
         // HUD 이름 — 팀 상태·토스트·결과 화면이 같은 이름을 쓴다 (Steam 이름 연결 전까지)
         private static readonly string[] PaletteNames = { "회색 쥐", "파랑 쥐", "초록 쥐", "노랑 쥐" };
 
+        [SerializeField] private Renderer _bodyRenderer;       // 털이 있는 렌더러 (Tools/RatGame/Player/Apply Rat Model이 연결)
+        [SerializeField] private int _bodyMaterialIndex = -1;  // 그 렌더러의 털 머티리얼 칸. -1 = 렌더러 전체
+
         public override void OnNetworkSpawn() => ResetBodyColor();
 
         public Color DefaultColor => ColorFor(OwnerClientId);
@@ -32,11 +35,38 @@ namespace RatGame.Player
 
         public void SetBodyColor(Color color)
         {
+            // 털만 칠한다 — 귀·코·손발·꼬리(핑크)·눈은 그대로. 쥐 모델(2026-09-24)은 렌더러 하나에 머티리얼 5칸이라 칸 번호로 고른다
+            var body = _bodyRenderer != null ? _bodyRenderer : GetComponent<MeshRenderer>(); // 없으면 그레이박스 캡슐
+            if (body == null) return;
             var block = new MaterialPropertyBlock();
-            block.SetColor("_BaseColor", color);
-            // 몸통(루트 렌더러)만 — 귀·코·꼬리는 핑크 유지
-            var body = GetComponent<MeshRenderer>();
-            if (body != null) body.SetPropertyBlock(block);
+            if (_bodyMaterialIndex >= 0)
+            {
+                body.GetPropertyBlock(block, _bodyMaterialIndex);
+                block.SetColor("_BaseColor", color);
+                body.SetPropertyBlock(block, _bodyMaterialIndex);
+            }
+            else
+            {
+                block.SetColor("_BaseColor", color);
+                body.SetPropertyBlock(block);
+            }
         }
+
+        /// <summary>지금 털 색 (테스트·디버그).</summary>
+        public Color CurrentBodyColor
+        {
+            get
+            {
+                var body = _bodyRenderer != null ? _bodyRenderer : GetComponent<MeshRenderer>();
+                if (body == null) return Color.clear;
+                var block = new MaterialPropertyBlock();
+                if (_bodyMaterialIndex >= 0) body.GetPropertyBlock(block, _bodyMaterialIndex); else body.GetPropertyBlock(block);
+                return block.GetColor("_BaseColor");
+            }
+        }
+
+#if UNITY_EDITOR
+        public void EditorSetup(Renderer bodyRenderer, int bodyMaterialIndex) { _bodyRenderer = bodyRenderer; _bodyMaterialIndex = bodyMaterialIndex; }
+#endif
     }
 }

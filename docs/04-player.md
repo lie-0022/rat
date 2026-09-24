@@ -15,6 +15,13 @@ Player (Rigidbody, CapsuleCollider, NetworkObject)
  └ CameraTarget (빈 오브젝트 — Cinemachine 타깃)
 ```
 
+### 쥐 모델 (2026-09-24)
+
+- 원본: 드라이브 `쥐 게임/개발/모델링 파일/mouse.fbx` → `Art/Models/Rat/mouse.fbx`. 블렌더 FBX, **정적 메시**(뼈대·애니 없음), 텍스처 없이 머티리얼 색 5칸(털 회색·귀코손발꼬리 핑크·배 진분홍·눈 흰색·눈동자·수염 검정).
+- `Tools/RatGame/Player/Apply Rat Model`: `Prefabs/Player/RatModel.prefab`(완성 몸 `Cylinder` + 수염만 켬, 작업용 조각 `Cube` 블록 머리·`Cylinder.001` 몸 껍데기는 끔)을 캡슐 높이(1.2m)에 맞추고 발을 캡슐 바닥에 → Player 프리팹의 그레이박스 캡슐 렌더러·귀·코·꼬리를 지우고 자식으로. 얼굴 = +Z. 콜라이더·물리 그대로.
+- 1인칭: 자기 모델은 그림자만(PlayerCameraRig.HideOwnBody가 MeshRenderer 전부 처리). 웅크리면 루트 스케일이라 모델도 같이 눌린다.
+- 남은 것: 뼈대·걷기 애니 없음(T자세로 미끄러짐), 쓰러진 동료 대리 몸(DownedBody)은 아직 캡슐.
+
 ## PlayerController — 이동 사양
 
 Rigidbody 기반 (CharacterController 아님 — 물리 상호작용 필수).
