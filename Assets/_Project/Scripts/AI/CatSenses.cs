@@ -46,6 +46,8 @@ namespace RatGame.AI
         public System.Func<ulong, float> TargetGainMultiplier { get; set; }
         /// <summary>문턱을 넘어 들린 소음 (기억·앙심 입력). heard = 배율 적용 후 크기.</summary>
         public event System.Action<NoiseEvent, float> Heard;
+        /// <summary>귀만 쫑긋할 만큼 들렸다 (전파 반경 × catEarRadiusMul 안, 크기 ≥ 임계 × catEarHearMul — 게이지가 오르는 소리도 포함). 게이지와 무관 (고양이 42).</summary>
+        public event System.Action<Vector3> EarHeard;
 
         // 잠시 못 본 척 (가지고 놀다 질린 쥐 — 놓아주자마자 다시 덮치지 않게)
         private readonly System.Collections.Generic.Dictionary<ulong, float> _ignoreUntil = new();
@@ -198,6 +200,10 @@ namespace RatGame.AI
                 float gm = TargetGainMultiplier(e.Source);
                 if (gm > 1f) heard *= _balance.CatGrudgeHearingMul;
             }
+            // 들을 뻔한 소리 — 귀만 (필러 2, 고양이 42). 전파 반경의 catEarRadiusMul배까지, 크기가 임계의 catEarHearMul배 이상이면
+            float earRaw = e.Loudness * SensitivityMultiplier * HearingMultiplier;
+            if (Vector3.Distance(e.Pos, transform.position) <= NoiseSystem.GetRadius(e) * _balance.CatEarRadiusMul
+                && earRaw >= _balance.CatHearThreshold * _balance.CatEarHearMul) EarHeard?.Invoke(e.Pos);
             if (heard < _balance.CatHearThreshold) return;
 
             // 거리감쇠 (docs/07): 반경 대비 멀수록 약하게

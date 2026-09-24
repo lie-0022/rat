@@ -86,6 +86,7 @@ namespace RatGame.AI
             _senses.CuriosityFilter = IsCuriosityAllowed;
             InitMemory();
             InitJump(); // 선반 점프 (고양이 39)
+            InitEars(); // 귀 돌리기 (고양이 42)
             _senses.Heard += OnHeardForPersonality;
             Noise.ScentSystem.Configure(_balance);
             Noise.ScentSystem.Clear(); // 정적 버퍼 — 이전 판·이전 플레이 모드 자국 제거
@@ -166,6 +167,7 @@ namespace RatGame.AI
             TickMemory();
             CheckSlip(); // 달리다 비누를 밟으면 어떤 상태든 미끄러진다 (design/cat-ideas/11)
             CheckPepper(); // 후추 패치 — 재채기 (고양이 33)
+            TickEars(); // 귀가 관심 쪽으로 (고양이 42)
             TickDirectorHints();
             TickHousePending();
             TickBedCover();

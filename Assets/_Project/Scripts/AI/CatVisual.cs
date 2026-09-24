@@ -42,13 +42,46 @@ namespace RatGame.AI
         private Renderer[] _renderers;
         private int _lastRenderMode = 2;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
+        // 귀 (고양이 42) — Ear_L·Ear_R을 이름으로 찾는다
+        private Transform _earL, _earR;
+        private Quaternion _earLBase, _earRBase;
+        private float _earYaw, _earPerk;
+        private bool _lastEarActive;
 
         private void Awake()
         {
             if (_brain == null) _brain = GetComponent<CatBrain>();
             _block = new MaterialPropertyBlock();
             if (_visual != null) { _visualBaseScale = _visual.localScale; _visualBasePos = _visual.localPosition; _visualBaseRot = _visual.localRotation; }
+            foreach (var t in GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "Ear_L") { _earL = t; _earLBase = t.localRotation; }
+                else if (t.name == "Ear_R") { _earR = t; _earRBase = t.localRotation; }
+            }
         }
+
+        // 귀가 관심 쪽으로 (design/cat-ideas/13 — 게이지보다 먼저 보이는 텔레그래프)
+        private void TickEars()
+        {
+            bool active = _brain.EarActive.Value;
+            if (active != _lastEarActive) { _lastEarActive = active; if (active) RatGame.Core.Log.Dev("고양이 귀 연출: 쫑긋"); } // 2인 검증용
+            float wantYaw = 0f, wantPerk = 0f;
+            if (active)
+            {
+                Vector3 to = _brain.EarPoint.Value - transform.position; to.y = 0f;
+                if (to.sqrMagnitude > 0.01f) wantYaw = Mathf.Clamp(Vector3.SignedAngle(transform.forward, to, Vector3.up), -80f, 80f);
+                wantPerk = -15f; // 앞으로 쫑긋
+            }
+            float k = 1f - Mathf.Exp(-12f * Time.deltaTime);
+            _earYaw = Mathf.Lerp(_earYaw, wantYaw, k);
+            _earPerk = Mathf.Lerp(_earPerk, wantPerk, k);
+            var rot = Quaternion.Euler(_earPerk, _earYaw, 0f);
+            if (_earL != null) _earL.localRotation = _earLBase * rot;
+            if (_earR != null) _earR.localRotation = _earRBase * rot;
+        }
+
+        /// <summary>테스트용 — 지금 귀 yaw(도).</summary>
+        public float EarYaw => _earYaw;
 
         private void Update()
         {
@@ -143,6 +176,7 @@ namespace RatGame.AI
                 _lastAlert = _brain.Alert.Value;
                 RatGame.Core.Log.Dev($"고양이 예민: {_lastAlert}"); // 2인 검증용
             }
+            TickEars();
             bool high = transform.position.y > 1f; // 선반 위 (고양이 39) — NetworkTransform 높이 복제 확인용
             if (high != _wasHigh)
             {

@@ -42,6 +42,7 @@
 | 두 마리 관계 | 앙숙(싸움)·짝꿍(협공·공동 수면)·엄마·아기(냐앙·달려옴) | CatRelation |
 | 선반 관찰대 | 선반 위 Perch 25s — 시야 12m·높은 눈, 선반 밑은 쥐만·안 보임, 점프 15% 실패, 사냥꾼 선호 | CatBrain.Perch, CatMovement 점프, NavMeshLink |
 | 문·쥐 구멍 | 쥐가 문을 닫으면 쫓던 고양이가 문 앞에서 4s 밀어 연다(순찰 고양이는 안 밈), 쥐 구멍은 쥐만 | RoomDoor, CatBrain.Door, CatMovement 목적지 보정 |
+| 귀 | 관심 쪽으로 귀가 돈다, 들을 뻔한 소리(반경 1~1.5배)엔 귀만 — 게이지 전 텔레그래프, 자는 고양이도 | CatBrain.Ears, CatVisual |
 | 디버그 | F3 오버레이 | UI/CatDebugOverlay |
 
 ## 검증 방식

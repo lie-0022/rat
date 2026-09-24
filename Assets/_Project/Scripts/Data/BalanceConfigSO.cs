@@ -209,6 +209,10 @@ namespace RatGame.Data
         [SerializeField] private float _doorPushSeconds = 4f;            // 쫓던 고양이가 닫힌 문을 밀어 여는 시간
         [SerializeField] private float _doorPushRange = 1.4f;            // 문 중심에서 이 안이면 미는 중
         [SerializeField] private float _doorCloseNoise = 25f;            // 쥐가 문 닫는 소리
+        [Header("귀 (design/cat-ideas/13, 고양이 42)")]
+        [SerializeField, Range(0f, 1f)] private float _catEarHearMul = 0.5f; // 청각 임계의 이 배 이상 크기면 귀만 쫑긋
+        [SerializeField] private float _catEarRadiusMul = 1.5f;          // 소리 전파 반경의 이 배까지 귀는 듣는다 (게이지는 반경 안만)
+        [SerializeField] private float _catEarHoldSeconds = 2f;          // 소리 쪽을 이만큼 들음
         [Header("레이저 포인터 (design/cat-ideas/13, 고양이 41)")]
         [SerializeField] private float _laserBatterySeconds = 20f;       // 든 동안만 닳는다
         [SerializeField] private float _laserAimRange = 25f;
@@ -550,6 +554,9 @@ namespace RatGame.Data
         public float DoorPushSeconds => _doorPushSeconds;
         public float DoorPushRange => _doorPushRange;
         public float DoorCloseNoise => _doorCloseNoise;
+        public float CatEarHearMul => _catEarHearMul;
+        public float CatEarRadiusMul => _catEarRadiusMul;
+        public float CatEarHoldSeconds => _catEarHoldSeconds;
         public float LaserBatterySeconds => _laserBatterySeconds;
         public float LaserAimRange => _laserAimRange;
         public float LaserAttractRadius => _laserAttractRadius;

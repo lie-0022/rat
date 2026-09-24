@@ -81,6 +81,12 @@ foreach player(Active만):
 - **후추** (2026-09-24, `World/PepperShaker`): 들고 던지는 통. 던져서 착지하거나 4 m/s 이상으로 떨어지면 한 번 쏟아져 바닥 반경 2m 패치 45s — 안의 자국을 계속 지우고(쥐는 안 젖음), 들어온 고양이는 **재채기**(Blunder Sneeze 2s 정지 → 자극·타깃 잊고 Return, 같은 고양이 8s 쿨다운). 추격 중에도 재채기한다 — 추적·추격 끊기 도구.
 - 자국은 **남긴 쥐 본인 화면에만** 노란 점으로 보인다(소유 클라 ClientRpc). 2단계: 젖은 발자국, 물·바람·후추로 지우기, 고양이 침대로 덮기.
 
+### 귀 (2026-09-24, 고양이 42, `AI/CatBrain.Ears.cs`·`CatVisual`)
+- 귀(Ear_L·Ear_R)가 관심 쪽으로 돈다(몸 기준 yaw ±80° + 앞으로 쫑긋) — 게이지보다 먼저 보이는 텔레그래프(필러 2).
+- **들을 뻔한 소리**: 소리 전파 반경의 `catEarRadiusMul` 1.5배 안, 크기×감각 ≥ 청각 임계 × `catEarHearMul` 0.5 → 귀만 `catEarHoldSeconds` 2s 그쪽. 게이지는 반경 안에서만 오르므로 반경 1~1.5배는 "귀만" 구간. 자는 고양이도 귀는 움직인다.
+- 상태 대상이 있으면 계속 그쪽: Chase(쫓는 쥐)·Suspicious/Search(조사 지점)·Distracted(유인 지점)·Curious(물건). 호스트 `EarPoint`·`EarActive` NV(0.25s, 0.3m 넘게 바뀔 때만).
+
+### 청각
 ### 청각
 
 - NoiseSystem.OnNoise 구독 (06 계약): `게이지 += loudness × 거리감쇠 × 0.8`
