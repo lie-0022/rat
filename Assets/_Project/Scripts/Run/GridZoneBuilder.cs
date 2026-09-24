@@ -96,6 +96,7 @@ namespace RatGame.Run
                     ZonePopulator.Spawn(_zone.TreasureGlow, Layout.Rooms[Treasure].transform.position, Quaternion.identity);
                 MaybeKitten(stage, rng);
                 MaybeGuard(stage, rng);
+                MaybePatroller(stage, rng);
             }
             FaceSpawnsToDoor(Layout.Start, Layout.Sides[0]);
             DeliverPurchases(Layout.Start, rng);
@@ -129,7 +130,7 @@ namespace RatGame.Run
             return best;
         }
 
-        public const byte BriefKitten = 1, BriefGuard = 2, BriefPipe = 4, BriefTreasure = 8;
+        public const byte BriefKitten = 1, BriefGuard = 2, BriefPipe = 4, BriefTreasure = 8, BriefPatroller = 16;
 
         // 스테이지 특징을 전원 화면에 (고양이 81) — 표시일 뿐이라 늦게 들어온 클라는 못 받아도 된다
         private void SendBriefing()
@@ -139,6 +140,7 @@ namespace RatGame.Run
             {
                 if (c.IsKitten) flags |= BriefKitten;
                 if (c.IsGuard) flags |= BriefGuard;
+                if (c.IsPatroller) flags |= BriefPatroller;
             }
             foreach (var e in Plan.Edges) if (e.IsPipe) { flags |= BriefPipe; break; }
             if (Treasure >= 0) flags |= BriefTreasure;
@@ -174,6 +176,55 @@ namespace RatGame.Run
             if (cats.Length < 2 || rng.NextDouble() >= _zone.KittenChanceFor(stage)) return;
             var kitten = cats[rng.Next(cats.Length)];
             if (kitten.ServerMakeKitten()) Log.Dev($"벽 속: 스테이지 {stage} — {kitten.name}를 아기로 (엄마·아기)");
+        }
+
+        // 깊은 스테이지: 남은 어른 한 마리를 큰길 순찰꾼으로 — 출발·목적지를 뺀 큰길 방 중심마다 지점 (고양이 92)
+        private void MaybePatroller(int stage, System.Random rng)
+        {
+            var adults = new List<AI.CatBrain>();
+            foreach (var c in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None)) if (!c.IsKitten && !c.IsGuard) adults.Add(c);
+            if (adults.Count == 0 || rng.NextDouble() >= _zone.PatrolChanceFor(stage)) return;
+            var path = MainPath();
+            var points = new List<Vector3>();
+            for (int i = 1; i < path.Count - 1; i++)
+            {
+                var room = Layout.Rooms[path[i]];
+                if (!UnityEngine.AI.NavMesh.SamplePosition(room.transform.position, out var hit, 2.5f, UnityEngine.AI.NavMesh.AllAreas)) continue;
+                var spot = new GameObject($"PatrolPoint_{points.Count}").transform;
+                spot.position = hit.position;
+                spot.SetParent(room.transform, true);
+                spot.gameObject.AddComponent<AI.CatSpot>();
+                points.Add(hit.position);
+            }
+            if (points.Count < 2) return;
+            var patroller = adults[rng.Next(adults.Count)];
+            patroller.ServerMakePatroller(points);
+            Log.Dev($"벽 속: 스테이지 {stage} — {patroller.name}가 큰길 순찰꾼 (지점 {points.Count})");
+        }
+
+        // 출발(0) → 목적지 최단 경로, 배관 빼고 (고양이는 배관을 못 지나서)
+        private List<int> MainPath()
+        {
+            int n = Plan.Cells.Count, goal = Plan.DestinationIndex;
+            var prev = new int[n];
+            for (int i = 0; i < n; i++) prev[i] = -2;
+            var queue = new Queue<int>();
+            prev[0] = -1; queue.Enqueue(0);
+            while (queue.Count > 0)
+            {
+                int cur = queue.Dequeue();
+                if (cur == goal) break;
+                foreach (var e in Plan.Edges)
+                {
+                    if (e.IsPipe) continue;
+                    int next = e.A == cur ? e.B : e.B == cur ? e.A : -1;
+                    if (next < 0 || prev[next] != -2) continue;
+                    prev[next] = cur; queue.Enqueue(next);
+                }
+            }
+            var path = new List<int>();
+            for (int at = goal; at >= 0 && prev[at] != -2; at = prev[at]) path.Insert(0, at);
+            return path;
         }
 
         // 깊은 스테이지: 어른 한 마리를 목적지 앞 문지기로 — 목적지 문(배관 아닌 면) 너머 이웃 방 문 안쪽에 초소 (고양이 80)

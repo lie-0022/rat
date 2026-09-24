@@ -35,6 +35,8 @@ namespace RatGame.Data
         public float KittenChanceFor(int stage) => KittenChanceByStage == null || KittenChanceByStage.Length == 0 ? 0f : KittenChanceByStage[Mathf.Clamp(stage - 1, 0, KittenChanceByStage.Length - 1)];
         public float[] GuardChanceByStage = { 0f, 0f, 1f, 1f, 1f }; // 어른 고양이 한 마리가 목적지 앞 문지기가 될 확률 (고양이 80)
         public float GuardChanceFor(int stage) => GuardChanceByStage == null || GuardChanceByStage.Length == 0 ? 0f : GuardChanceByStage[Mathf.Clamp(stage - 1, 0, GuardChanceByStage.Length - 1)];
+        public float[] PatrolChanceByStage = { 0f, 0f, 0f, 0.5f, 1f }; // 문지기·아기가 아닌 어른이 남으면 큰길 순찰꾼이 될 확률 (고양이 92)
+        public float PatrolChanceFor(int stage) => PatrolChanceByStage == null || PatrolChanceByStage.Length == 0 ? 0f : PatrolChanceByStage[Mathf.Clamp(stage - 1, 0, PatrolChanceByStage.Length - 1)];
         public bool TreasureRoom = true;        // 가장 먼 막다른 방 = 보물방 (전리품 전부·대형 ×3·함정 전부, 고양이 84)
         public float TreasureTrapRatio = 1f;
         public float TreasureBigWeight = 8f;    // 보물방 대형·특수 가중 (v1 보너스방 3보다 세게 — 작은 방도 비싸 보이게)

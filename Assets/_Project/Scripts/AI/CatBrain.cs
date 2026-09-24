@@ -401,6 +401,7 @@ namespace RatGame.AI
         private void GoToNextSpot()
         {
             if (IsFeeding) { int food = FindSpot(CatSpotType.Food); if (food >= 0) { _spotIndex = food; _movement.MoveTo(_spots[food].Pos, _balance.CatPatrolSpeed); return; } }
+            if (TryRouteNext()) return; // 순찰꾼은 큰길을 오간다 (고양이 92)
             if (TryFinaleHoleVisit()) return; // 귀환 카운트다운 — 쥐구멍 쪽 (design/cat-ideas/12)
             if (TryGoToMemorySpot()) return; // 가끔 기억 칸에 들른다 (design/cat-ideas/05)
             int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, (_isGuard ? GuardEligibleCount() : _spots.Length) - 1); // 문지기는 고를 스팟이 적어 최근 제외가 전부 막지 않게
