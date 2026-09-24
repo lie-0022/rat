@@ -9,10 +9,11 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 53 — 문서 수용 기준 검증 계속 (docs/11·03·10·01)
-상태: 고양이 52 커밋 후
+## 현재 작업: 고양이 54 — 문서 수용 기준 검증 계속 (docs/03·10·01)
+상태: 고양이 53 커밋 후
 
 ## 완료 기록
+- 고양이 53 docs/11 기지·메타 수용 기준 — 커밋됨 (plan cat-53). 저장 손상 체크, 2인 Hub 루프·스킨 반영. 사용자 save.json 원본 복구(298B).
 - 고양이 52 docs/12 규칙 3 — 커밋됨 (plan cat-52). 기지 패널 3건 EventBus로. Hud 프리팹에 WorldPanelHost.
 - 고양이 51 docs/08 전리품 수용 기준 — 커밋됨 (plan cat-51). 1/3 체크, 계란 던지기 판단 대기, 털실 구매는 소모품 미구현으로 막힘.
 - 고양이 50 docs/09 라운드 흐름 수용 기준 — 커밋됨 (plan cat-50). 6/7 체크(4인만 남음). save.json 백업·복구 요령.
@@ -89,5 +90,6 @@
 - 고양이를 특정 스팟으로 보낼 땐 State==Patrol을 기다린 뒤 _dwelling=false·_spotIndex 설정·MoveTo (아니면 Return이 덮는다). 쥐가 Downed인지 먼저 확인(시야는 Active만).
 - 순찰 고양이를 의심으로 바꾸려면 실제 자극(소리·목격)이 필요 — RaiseGaugeTo만으론 안 된다. 추격 시나리오(쥐를 고양이 앞 3.8m)가 가장 확실.
 - 4인: 빌드 클라 3개를 `-logFile <경로>`로 로그 분리해 띄운다(같은 Player.log를 덮어쓰므로). `-catsync`면 고양이 위치 동기화 로그.
+- **원본 save: 스크래치패드 save.original.json(누계 97523·도감 2개)** — 정산(도감 해금)·귀환·스킨 착용 테스트 뒤 save.json·save.bak을 이걸로 되돌린다. 이 파일은 절대 덮지 않는다.
 - 런 흐름 테스트는 사용자 save.json(~/Library/Application Support/DefaultCompany/Rat/save.json)을 바꾼다 — 스크래치패드에 백업하고 끝나면 되돌린다.
 - 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.

@@ -46,7 +46,11 @@ namespace RatGame.Player
             return null;
         }
 
-        private void OnSkinChanged(FixedString32Bytes prev, FixedString32Bytes now) => Apply(now.ToString());
+        private void OnSkinChanged(FixedString32Bytes prev, FixedString32Bytes now)
+        {
+            Apply(now.ToString());
+            Log.Dev($"스킨 연출: client {OwnerClientId} → {(now.Length == 0 ? "기본" : now.ToString())}"); // 2인 검증용 (다른 쥐 화면에 반영)
+        }
 
         private void Apply(string id)
         {
