@@ -23,12 +23,15 @@ namespace RatGame.Run
         /// <summary>이번 런 누적 (엔딩 요약, 고양이 108) — 창고에 모은 식량 합, 상점에서 산 물건 수.</summary>
         public NetworkVariable<int> RunHaul = new(0);
         public NetworkVariable<int> RunBuys = new(0);
+        /// <summary>오늘의 집 (고양이 120) — 위 막대에 계속 보이게, 늦게 들어온 클라도. GridZoneBuilder가 맵을 지을 때 넣는다.</summary>
+        public NetworkVariable<byte> Modifier = new(0);
 
         public override void OnNetworkSpawn()
         {
             if (!IsServer)
             {
                 Log.Dev($"할당량 연출: 스테이지 {StageNumber.Value}/{StagesPerRun.Value} 식량 {Quota.Value} 남은 식량 {Pantry.Value}"); // 2인 검증용
+                Modifier.OnValueChanged += (_, now) => Log.Dev($"오늘의 집 연출: {(StageModifier)now}"); // 2인 검증용 (고양이 120)
                 return;
             }
             StageNumber.Value = RunSession.StageNumber;

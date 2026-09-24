@@ -77,7 +77,7 @@ namespace RatGame.UI
             var quota = run.GetComponent<StageQuota>(); // 새 루프(벽 속)만 있다
             int stashed = run.StashedValue.Value;
             SetText(_mainText, quota != null
-                ? $"스테이지 {quota.StageNumber.Value}/{quota.StagesPerRun.Value}   식량 {stashed}/{quota.Quota.Value}"
+                ? $"스테이지 {quota.StageNumber.Value}/{quota.StagesPerRun.Value}   식량 {stashed}/{quota.Quota.Value}{TodayShort((StageModifier)quota.Modifier.Value)}"
                 : $"쥐구멍 {stashed}   누계 {run.RunTotalValue.Value}");
 
             bool sub = true;
@@ -95,6 +95,14 @@ namespace RatGame.UI
 
             SetVisible(true, Time.time < _popupUntil, sub);
         }
+
+        // 오늘의 집 짧게 (고양이 120) — 자세한 건 스테이지 안내 토스트
+        private static string TodayShort(StageModifier m) => m switch
+        {
+            StageModifier.Blackout => "   · 정전", StageModifier.TrapSale => "   · 덫 대방출", StageModifier.CatTreats => "   · 간식 날",
+            StageModifier.OwnerOut => "   · 집주인 외출", StageModifier.Busy => "   · 분주한 집", StageModifier.Guest => "   · 고양이 손님",
+            _ => "",
+        };
 
         // 기지 (런 매니저가 없는 씬)
         private void ShowPad()

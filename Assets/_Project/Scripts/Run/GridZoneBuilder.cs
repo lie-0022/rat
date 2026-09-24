@@ -130,6 +130,7 @@ namespace RatGame.Run
             foreach (var e in Plan.Edges) if (e.IsPipe) { flags |= BriefPipe; break; }
             if (Treasure >= 0) flags |= BriefTreasure;
             var quota = GetComponent<StageQuota>() ?? FindAnyObjectByType<StageQuota>();
+            if (quota != null && quota.IsSpawned) quota.Modifier.Value = (byte)Modifier; // 위 막대용 (고양이 120)
             int stage = RunSession.StageNumber;
             StageBriefingClientRpc(stage, quota != null ? quota.StagesTotal : 0, quota != null ? quota.QuotaFor(stage) : 0, flags, (byte)Modifier);
         }
