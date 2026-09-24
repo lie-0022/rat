@@ -59,6 +59,8 @@ namespace RatGame.Core
         public static event Action<float> CheeseEaten;
         /// <summary>내가 쥐덫 미끼를 집음 — 웅크려 성공(true) / 서서 탁(false) (고양이 129).</summary>
         public static event Action<bool> TrapBait;
+        /// <summary>미끼 얹힌 쥐덫에 처음 다가감 — 규칙 안내 (고양이 132).</summary>
+        public static event Action TrapBaitNear;
 
         public static void RaiseZoneStarted(int zoneIndex) => ZoneStarted?.Invoke(zoneIndex);
         public static void RaiseZoneEnded(int zoneIndex, bool quotaMet) => ZoneEnded?.Invoke(zoneIndex, quotaMet);
@@ -78,6 +80,7 @@ namespace RatGame.Core
         public static void RaiseNoiseRipple(UnityEngine.Vector3 pos, float loudness) => NoiseRipple?.Invoke(pos, loudness);
         public static void RaiseCheeseEaten(float amount) => CheeseEaten?.Invoke(amount);
         public static void RaiseTrapBait(bool sneaky) => TrapBait?.Invoke(sneaky);
+        public static void RaiseTrapBaitNear() => TrapBaitNear?.Invoke();
         public static void RaiseWorldPanelRequested(WorldPanelKind kind, UnityEngine.Object source) => WorldPanelRequested?.Invoke(kind, source);
         public static void RaiseWorldPanelSourceGone(UnityEngine.Object source) => WorldPanelSourceGone?.Invoke(source);
         public static void RaiseShopPurchaseResult(bool ok, string message) => ShopPurchaseResult?.Invoke(ok, message);

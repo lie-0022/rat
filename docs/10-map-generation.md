@@ -148,7 +148,7 @@ public class ZoneGenerator
 
 | 프리팹 | 효과 | 배치 규칙 |
 |---|---|---|
-| Trap_MouseTrap | 밟으면 Downed + 소음 80. 아이템 던져 격발 가능(1회성). **미끼**(고양이 129): 벽 속에선 `GridZoneSO.TrapBaitChance` 0.5로 같은 방(벽에 안 막힌 6m 안) 작은 음식을 판 위로 옮김 — 서서 집으면 격발 + 기절 `trapBaitStunSeconds` 2.5 + 떨어뜨림, 웅크려 집으면 무사, 미끼가 판 밖으로 밀리면 헛격발 | 좁은 통로 |
+| Trap_MouseTrap | 밟으면 Downed + 소음 80. 아이템 던져 격발 가능(1회성). **미끼**(고양이 129): 벽 속에선 `GridZoneSO.TrapBaitChance` 0.5로 같은 방(벽에 안 막힌 6m 안) 작은 음식을 판 위로 옮김 — 서서 집으면 격발 + 기절 `trapBaitStunSeconds` 2.5 + 떨어뜨림, 웅크려 집으면 무사, 미끼가 판 밖으로 밀리면 헛격발. 처음 3m(`trapBaitHintMeters`) 안에 오면 한 번 규칙 안내(고양이 132, 각자 계산) | 좁은 통로 |
 | Trap_GluePad | Trapped (동료 구출) | 전리품 스폰 주변 |
 | Trap_WireShock | 접촉 Stunned 2s, 3s 주기 점멸 (꺼진 타이밍에 통과) | 통로 |
 | Trap_Roomba | 경로 왕복, 충돌 시 밀쳐냄 + 소음 30. 위에 올라탈 수 있음(NavMeshObstacle) | 넓은 방 |

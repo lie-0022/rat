@@ -56,6 +56,7 @@ namespace RatGame.World
         protected override void Update()
         {
             base.Update();
+            CheckBaitHint();
             if (!IsServer || _bait == null) return;
             if (!Armed.Value || !_bait.IsSpawned) { _bait = null; return; }
             if (_bait.CarrierIds.Count > 0) { OnBaitTaken(_bait.CarrierIds[0]); return; }
@@ -88,6 +89,30 @@ namespace RatGame.World
             }
             Log.Dev($"쥐덫 미끼: client {clientId} 서서 집음 — 탁! 기절");
             BaitResultClientRpc(false, target);
+        }
+
+        // 미끼 규칙 안내 (고양이 132) — 미끼 얹힌 쥐덫에 처음 다가갔을 때 한 번(세션당). 스테이지 안내 토스트는 3칸이 차서 따로.
+        // 미끼 여부는 호스트만 알지만 "판 위에 음식이 있다"는 모두에게 보이는 위치라 각자 계산 — 동기화 없음.
+        private static bool _baitHintShown;
+        private float _nextHintCheck;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetHint() => _baitHintShown = false;
+
+        private void CheckBaitHint()
+        {
+            if (_baitHintShown || !Armed.Value || Time.time < _nextHintCheck) return;
+            _nextHintCheck = Time.time + 0.5f;
+            var me = NetworkManager != null && NetworkManager.LocalClient != null ? NetworkManager.LocalClient.PlayerObject : null;
+            if (me == null || (me.transform.position - transform.position).sqrMagnitude > _balance.TrapBaitHintMeters * _balance.TrapBaitHintMeters) return;
+            foreach (var item in FindObjectsByType<CarryableItem>(FindObjectsSortMode.None)) // 가까이 왔을 때만 — 드물다
+            {
+                if (item.IsHeavy || item.CarrierIds.Count > 0 || !Contains(item.transform.position, 0.6f)) continue;
+                _baitHintShown = true;
+                Log.Dev("쥐덫 미끼 안내 연출"); // 2인 검증용
+                EventBus.RaiseTrapBaitNear();
+                return;
+            }
         }
 
         [ClientRpc]
