@@ -91,7 +91,7 @@ sprint 금지  = loadPerRat > 3
 | Wobbly (젤리) | 조인트 damper 1/4로 — 출렁임 증폭. + 스케일 출렁 셰이더(연출) |
 | Slippery (접시·비누) | 잡기 유지 중 3s마다 12% 확률로 강제 Release (호스트 판정) + "미끌!" 이펙트 |
 | Alarming (스마트폰·방울) | 잡기/충돌 시 소음 loudness 50 즉시 발생 |
-| Edible (치즈류) | Interact 홀드로 먹기 — 스태미나 회복, 아이템 소멸 (04 문서) |
+| Edible (치즈류) | Interact 홀드로 먹기 — 스태미나 회복, 아이템 소멸 (04 문서) — `World/EdibleItem`(2026-09-24) |
 
 ## 다운된 동료 운반 (04·09 연결)
 

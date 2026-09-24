@@ -77,6 +77,7 @@ GameObject:
   - component: {fileID: 3816114089979928436}
   - component: {fileID: 6068916534211028933}
   - component: {fileID: 7617249147274322816}
+  - component: {fileID: 512779296781216936}
   m_Layer: 9
   m_Name: loot_cheese_wheel
   m_TagString: Untagged
@@ -267,6 +268,25 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 1
+  Pocketed:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &512779296781216936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7527192497953949680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6bfe3d328abd4317b5845ff98434ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.World.EdibleItem
+  ShowTopMostFoldoutHeaderGroup: 1
+  _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
 --- !u!1001 &7820638949409242364
 PrefabInstance:
   m_ObjectHideFlags: 0

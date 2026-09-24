@@ -371,6 +371,8 @@ namespace RatGame.Data
         [SerializeField] private float _staminaSprintDrain = 20f;  // /s
         [SerializeField] private float _staminaHeavyDrain = 15f;   // /s — 무거운 운반(sprint 차단 하중)
         [SerializeField] private float _staminaRegen = 25f;        // /s, 미소모 1s 후
+        [SerializeField] private float _eatSeconds = 1f;           // 치즈 먹기 E 길게 (docs/04, 고양이 48)
+        [SerializeField] private float _eatStamina = 50f;          // 즉시 회복량
         [SerializeField] private float _staminaRegenDelay = 1f;
         [SerializeField] private float _exhaustPantSeconds = 1.5f; // 0 도달 시 헐떡임
 
@@ -702,6 +704,8 @@ namespace RatGame.Data
         public float HighFallStunHeight => _highFallStunHeight;
         public float RescueHoldSeconds => _rescueHoldSeconds;
         public float StaminaMax => _staminaMax;
+        public float EatSeconds => _eatSeconds;
+        public float EatStamina => _eatStamina;
         public float StaminaSprintDrain => _staminaSprintDrain;
         public float StaminaHeavyDrain => _staminaHeavyDrain;
         public float StaminaRegen => _staminaRegen;

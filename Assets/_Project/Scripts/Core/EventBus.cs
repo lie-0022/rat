@@ -43,6 +43,8 @@ namespace RatGame.Core
         public static event Action<CatCueKind, UnityEngine.Vector3> CatCue;
         /// <summary>큰 소음 파문 (docs/06 클라 시각화) — 모든 클라.</summary>
         public static event Action<UnityEngine.Vector3, float /*loudness*/> NoiseRipple;
+        /// <summary>내가 치즈를 먹었다 (소유 클라, 회복량).</summary>
+        public static event Action<float> CheeseEaten;
 
         public static void RaiseZoneStarted(int zoneIndex) => ZoneStarted?.Invoke(zoneIndex);
         public static void RaiseZoneEnded(int zoneIndex, bool quotaMet) => ZoneEnded?.Invoke(zoneIndex, quotaMet);
@@ -58,6 +60,7 @@ namespace RatGame.Core
         public static void RaiseCodexUnlocked(string itemId) => CodexUnlocked?.Invoke(itemId);
         public static void RaiseHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEvent?.Invoke(kind, phase);
         public static void RaiseNoiseRipple(UnityEngine.Vector3 pos, float loudness) => NoiseRipple?.Invoke(pos, loudness);
+        public static void RaiseCheeseEaten(float amount) => CheeseEaten?.Invoke(amount);
         public static void RaiseCatCue(CatCueKind kind, UnityEngine.Vector3 catPos) => CatCue?.Invoke(kind, catPos);
     }
 }

@@ -41,8 +41,10 @@ namespace RatGame.UI
         private float _nextPoll;
 
         private void Awake() => _toastTemplate.SetActive(false);
-        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; }
-        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; }
+        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; }
+        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; }
+
+        private void OnCheeseEaten(float amount) => Show($"냠냠 — 스태미나 +{amount:0}", UiColorRole.Positive);
 
         [SerializeField] private BalanceConfigSO _balance; // 예고 들리는 거리
         private string _lastCue;

@@ -15,6 +15,9 @@ namespace RatGame.Player
 
         public float Current { get; private set; }
 
+        /// <summary>소유 클라: 즉시 회복 (치즈 먹기 — World/EdibleItem, docs/04).</summary>
+        public void Restore(float amount) => Current = Mathf.Min(Max, Current + amount);
+
         private PlayerController _movement;
         private PlayerCarryController _carry;
         private PlayerUpgrades _upgrades;

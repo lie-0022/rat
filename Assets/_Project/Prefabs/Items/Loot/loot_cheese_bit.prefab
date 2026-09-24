@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7149441017181614986}
   - component: {fileID: 2055060961045628780}
   - component: {fileID: 1358836029603595289}
+  - component: {fileID: 1421429523584876532}
   m_Layer: 9
   m_Name: loot_cheese_bit
   m_TagString: Untagged
@@ -203,6 +204,25 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 1
+  Pocketed:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &1421429523584876532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4932056295605621321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6bfe3d328abd4317b5845ff98434ac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.World.EdibleItem
+  ShowTopMostFoldoutHeaderGroup: 1
+  _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
 --- !u!1 &5796114012367330618
 GameObject:
   m_ObjectHideFlags: 0

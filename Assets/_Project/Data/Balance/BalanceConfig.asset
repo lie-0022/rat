@@ -316,6 +316,8 @@ MonoBehaviour:
   _staminaSprintDrain: 20
   _staminaHeavyDrain: 15
   _staminaRegen: 25
+  _eatSeconds: 1
+  _eatStamina: 50
   _staminaRegenDelay: 1
   _exhaustPantSeconds: 1.5
   _baseCarrySlots: 2

@@ -53,6 +53,7 @@ Rigidbody 기반 (CharacterController 아님 — 물리 상호작용 필수).
 | 0 도달 | sprint 불가 + 1.5s 헐떡임(소음 발생, 06) |
 
 - 치즈류 전리품을 "먹기"(Interact 길게)로 즉시 50 회복 — 아이템 소멸(가치 포기). 갈등 설계.
+  - 구현 (2026-09-24, 고양이 48, `World/EdibleItem`): 손에 든 Edible 소형(주머니·대형 제외)을 E `eatSeconds` 1s → 호스트가 손에서 빼고 디스폰, 먹은 쥐 클라에 `PlayerStamina.Restore(eatStamina 50)` + `EventBus.CheeseEaten` → 토스트 "냠냠 — 스태미나 +50". HUD 홀드 게이지는 기존 상호작용 게이지 그대로.
 
 ## PlayerCondition — 상태이상 (호스트 권한, NetworkVariable)
 
@@ -110,4 +111,4 @@ public interface IInteractable
 - [ ] MPPM 2인: 상대 이동이 부드럽게 보간, 점프·웅크림 상태 동기화
 - [ ] 경사·단차·좁은 틈(웅크려야 통과) 이동 검증용 그레이박스 코스 완주
 - [ ] Stunned/Trapped/Downed 전부 호스트 판정으로 재현, 구출 플로우 동작
-- [ ] 스태미나 UI 연동(임시 바), 치즈 먹기 회복 동작
+- [x] 스태미나 UI 연동(임시 바), 치즈 먹기 회복 동작 (UI `StaminaRing` 기존. 고양이 48: 치즈 조각 들고 실제 E 1.01s → 먹음·스태미나 20 → 95(+50 + 재생)·손 빔·토스트 이벤트)

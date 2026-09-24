@@ -407,6 +407,16 @@ namespace RatGame.Player
             return -1;
         }
 
+        /// <summary>호스트: 손에 든 이 물건을 없앤다(먹기 — World/EdibleItem). 디스폰은 호출자가.</summary>
+        public bool ServerConsumeCarried(CarryableItem item)
+        {
+            if (!IsServer || item == null || CarriedItemNetId.Value != item.NetworkObjectId) return false;
+            item.ServerRelease(OwnerClientId);
+            ClearSlotOf(item.NetworkObjectId);
+            CarriedItemNetId.Value = 0;
+            return true;
+        }
+
         private void ClearSlotOf(ulong netId)
         {
             for (int i = 0; i < Slots.Count; i++) if (Slots[i] == netId) Slots[i] = 0;
