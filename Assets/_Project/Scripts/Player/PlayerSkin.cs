@@ -99,6 +99,9 @@ namespace RatGame.Player
             else visual.ResetBodyColor();
         }
 
+        /// <summary>입고 있는 색으로 다시 칠한다 — 거울 미리보기(로컬로만 칠함)를 취소할 때.</summary>
+        public void ReapplyColor() => Apply(CurrentId);
+
         /// <summary>지금 입고 있는 털 색 (거울 미리보기용).</summary>
         public Color CurrentColor
         {

@@ -8,7 +8,8 @@ namespace RatGame.Editor
 {
     /// <summary>
     /// 거울 패널에 털 색 팔레트 붙이기 (2026-09-24). 닫기 버튼 위에 "Palette" 묶음을 넣는다 — 견본 16개(누르면 바로 입음),
-    /// 색상·채도·밝기 슬라이더, 미리보기 + "이 색 입기". 다시 실행하면 Palette 묶음만 새로 만든다(다른 요소는 안 건드림).
+    /// 색상·채도·밝기 슬라이더, 미리보기 + 색 코드 입력칸 + "이 색 입기" + 미리보기 안내. 다시 실행하면 Palette 묶음만 새로 만든다.
+    /// 창은 화면 오른쪽에 붙이고 배경 어둡게 하기를 약하게 — 가운데 거울에 비친 내 쥐가 보이게.
     /// </summary>
     public static class MirrorPaletteTools
     {
@@ -75,9 +76,7 @@ namespace RatGame.Editor
                 var previewImg = preview.gameObject.AddComponent<UnityEngine.UI.Image>();
                 previewImg.raycastTarget = false;
                 Size(preview, 120f, 44f);
-                var hex = Text("HexText", applyRow, "#FFFFFF", theme, UiColorRole.Text, UiTextRole.Body, 44f);
-                hex.alignment = TextAlignmentOptions.MidlineLeft;
-                hex.GetComponent<UnityEngine.UI.LayoutElement>().flexibleWidth = 1f;
+                var hex = HexInput(applyRow, theme);
                 var apply = NewUi("ApplyButton", applyRow);
                 var applyImg = apply.gameObject.AddComponent<UnityEngine.UI.Image>();
                 apply.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.Accent, UiTextRole.None);
@@ -88,17 +87,28 @@ namespace RatGame.Editor
                 applyText.alignment = TextAlignmentOptions.Center;
                 Stretch(applyText.rectTransform);
 
-                // 전체 높이 = 제목 34 + 격자 98 + 슬라이더 3×32 + 입기 46 + 간격 5×10
-                Height(palette, 34f + 98f + 3 * 32f + 46f + 5 * 10f);
+                var hint = Text("PreviewHint", palette, "", theme, UiColorRole.TextMuted, UiTextRole.Small, 24f);
+                hint.alignment = TextAlignmentOptions.Center;
+
+                // 전체 높이 = 제목 34 + 격자 98 + 슬라이더 3×32 + 입기 46 + 안내 24 + 간격 6×10
+                Height(palette, 34f + 98f + 3 * 32f + 46f + 24f + 6 * 10f);
                 var winRect = (RectTransform)window;
-                winRect.sizeDelta = new Vector2(600f, 850f);
+                winRect.anchorMin = winRect.anchorMax = new Vector2(1f, 0.5f);
+                winRect.pivot = new Vector2(1f, 0.5f);
+                winRect.anchoredPosition = new Vector2(-60f, 0f);
+                winRect.sizeDelta = new Vector2(600f, 880f);
+                // 거울이 보이게 배경을 살짝만 어둡게 (클릭 막이는 그대로)
+                var dim = window.parent;
+                var dimTheme = dim.GetComponent<ThemedGraphic>();
+                if (dimTheme != null) dimTheme.Setup(theme, UiColorRole.None, UiTextRole.None);
+                dim.GetComponent<UnityEngine.UI.Image>().color = new Color(0f, 0f, 0f, 0.15f);
                 var titleTf = window.Find("TitleText");
                 var titleText = titleTf != null ? titleTf.GetComponent<TMP_Text>() : null;
                 if (titleText != null) titleText.text = "거울 — 스킨·털 색";
 
-                root.GetComponent<MirrorPanel>().EditorSetupPalette(grid, hue, sat, val, previewImg, hex, applyButton);
+                root.GetComponent<MirrorPanel>().EditorSetupPalette(grid, hue, sat, val, previewImg, hex, applyButton, hint);
                 PrefabUtility.SaveAsPrefabAsset(root, PanelPath);
-                Debug.Log($"[MirrorPalette] 팔레트 — 견본 {Swatches.Length}, 슬라이더 3, 창 600×850");
+                Debug.Log($"[MirrorPalette] 팔레트 — 견본 {Swatches.Length}, 슬라이더 3, 창 오른쪽 600×880");
             }
             finally
             {
@@ -181,6 +191,35 @@ namespace RatGame.Editor
             Theme(sliderGo.transform.Find("Fill Area/Fill"), theme, UiColorRole.Accent);
             Theme(sliderGo.transform.Find("Handle Slide Area/Handle"), theme, UiColorRole.Text);
             return slider;
+        }
+
+        // "#RRGGBB" 입력칸 — TMP 기본 입력칸에 테마 색·글꼴
+        private static TMP_InputField HexInput(Transform parent, UiThemeSO theme)
+        {
+            var go = TMP_DefaultControls.CreateInputField(new TMP_DefaultControls.Resources());
+            go.name = "HexInput";
+            foreach (Transform t in go.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = parent.gameObject.layer;
+            var rt = (RectTransform)go.transform;
+            rt.SetParent(parent, false);
+            var le = go.AddComponent<UnityEngine.UI.LayoutElement>();
+            le.flexibleWidth = 1f; le.preferredHeight = 44f; le.minHeight = 44f;
+            var input = go.GetComponent<TMP_InputField>();
+            input.characterLimit = 7;
+            input.lineType = TMP_InputField.LineType.SingleLine;
+            input.onFocusSelectAll = true;
+            Theme(go.transform, theme, UiColorRole.Row);
+            var text = input.textComponent;
+            text.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.Text, UiTextRole.Body);
+            text.alignment = TextAlignmentOptions.MidlineLeft;
+            var placeholder = input.placeholder as TMP_Text;
+            if (placeholder != null)
+            {
+                placeholder.text = "#RRGGBB";
+                placeholder.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.TextMuted, UiTextRole.Body);
+                placeholder.alignment = TextAlignmentOptions.MidlineLeft;
+            }
+            input.text = "#FFFFFF";
+            return input;
         }
 
         private static void Theme(Transform t, UiThemeSO theme, UiColorRole role)
