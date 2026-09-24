@@ -105,12 +105,21 @@ namespace RatGame.Net
         private static bool IsGameplayScene(string sceneName) =>
             sceneName != "Boot" && sceneName != "MainMenu";
 
+        // 번호로 고르면(clientId % 자리 수) 재접속·실패한 접속으로 번호가 밀려 이미 있는 쥐(보통 호스트) 자리와 겹친다 →
+        // 둘이 서로 밀쳐 튕겨 올랐다 떨어져 기절 (고양이 133, 4인에서 client 4 = 호스트 자리). 다른 쥐에게서 가장 먼 자리로.
         private static Vector3 GetSpawnPosition(ulong clientId)
         {
             var points = GameObject.FindGameObjectsWithTag("PlayerSpawn");
-            if (points.Length > 0)
-                return points[(int)(clientId % (ulong)points.Length)].transform.position;
-            return new Vector3(clientId * 1.5f, 1f, 0f); // 폴백: 원점 옆으로 나란히
+            if (points.Length == 0) return new Vector3(clientId * 1.5f, 1f, 0f); // 폴백: 원점 옆으로 나란히
+            Transform best = null; float bestGap = -1f;
+            foreach (var point in points)
+            {
+                float gap = float.MaxValue;
+                foreach (var c in NetworkManager.Singleton.ConnectedClientsList)
+                    if (c.PlayerObject != null) gap = Mathf.Min(gap, Vector3.Distance(c.PlayerObject.transform.position, point.transform.position));
+                if (gap > bestGap) { bestGap = gap; best = point.transform; }
+            }
+            return best.position;
         }
     }
 }
