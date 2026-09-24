@@ -16,7 +16,7 @@ Cat (NetworkObject, NavMeshAgent, CapsuleCollider)
 ## FSM
 
 ```csharp
-public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder }
+public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder, Away }
 ```
 
 ```
@@ -37,6 +37,7 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 | Track | **냄새 추적** (2026-09-24, `AI/CatBrain.Track.cs`, design/cat-ideas/06): Patrol·Return 중(우선순위 Suspicious 아래·Curious 위) 반경 3m 안 강도 ≥8 자국을 맡으면 진입 — 시야 불필요. 그 자국 → 같은 쥐의 다음 자국 순으로 따라가며 자국마다 킁킁 0.5s. 목격·자극이면 끊김. 자국이 끊기면 끝점 3m 안 HideSpot이 있으면 Search, 없으면 Return. 따라간 자국(쥐별 순번)은 다시 안 쫓음 | 3.0 |
 | Curious | **호기심 앞발** (2026-09-24, `AI/CatBrain.Curious.cs`, design/cat-ideas/03): Patrol·Return 중 시야에 속도 ≥1.5 m/s로 움직이는 풀린 물건(안 들림·주머니 아님·대형 아님)이 보이면 진입 — 의심·추격·잠 중엔 안 속음. 물건을 따라가 수평 0.9m 안에서 앞발 3~5회(0.6s 간격, 정면 ±60° 수평 + 위, 속도 변화 1.2 m/s — 호스트 물리) → 하품 5s → Return. 그 물건은 10s 무시, 같은 물건 누적 30s면 질려서 60s 무시. 8s 안에 못 닿으면 포기, 쥐가 집으면 즉시 Return. 자기가 친 물건의 충돌 소음은 무시(깨짐은 예외) | 4.0 |
 | Capture | 앞발 스윙 애니 0.4s → 범위 내 플레이어 Downed 처리. **움직일 수 있는 동료(Active·Hidden·Stunned)가 있으면 Downed 대신 Pinned + Toy** (2026-09-24) | — |
+| Away | **집주인이 부름** (2026-09-24, `AI/CatBrain.House.cs`, design/cat-ideas/10): 하던 일을 멈추고(추격도 끊음 — 간식이 더 중요, 놀이·포획 중이면 끝난 뒤) 가까운 Door 스팟으로(3.0) → 도착하면 `AwayHidden` NV(렌더러 끔)·감각 0 → 20~40s 뒤 **랜덤 문**으로 Warp → Return. 문이 없으면 쥐들에게서 가장 먼 스팟. **밥 시간**은 Away가 아니라 Patrol에서 Food 스팟 강제·머무름 = 남은 밥 시간(25s, 감각 0.5) | 3.0 |
 | Blunder | **댕청한 실패** (2026-09-24, `AI/CatBrain.Blunder.cs`, design/cat-ideas/11 — 쥐가 만든 상황에서만): `BlunderKind` NV. **Slip** — 속도 ≥4로 달리다 바닥의 풀린 Slippery 물건(비누·접시·수박) 0.7m 안을 밟으면 진행 방향 3m를 0.6s에(NavMeshAgent.Move — NavMesh 밖 안 나감, 밟은 물건도 튕김) → 도중에 막히면 **쿵 → 기절 2s**, 아니면 추스르기 0.8s → Return. 쿨다운 4s. **Startle** — 호기심 중 2.5m 안 깨짐·찍찍·함정 → 뒤로 1.2m 펄쩍 1.5s → 소리 난 곳 Suspicious. **Wobble** — 캣닢 놀이 끝나면 10s 비틀비틀(1s마다 주변 2m, 순찰 속도 ×0.5, 감각 ×0.3, 코앞 목격은 추격). 실패는 앙심 안 올림 | 0~1.0 |
 | Toy | **가지고 놀기** (2026-09-24, `AI/CatBrain.Toy.cs`, design/cat-ideas/04): 관심 100·전체 30s. Bat 2s(1s마다 잡힌 쥐를 0.4m 툭 — 소유 클라 순간이동 RPC) → 관심 -35 → Release 3s(쥐 Active, 고양이 1m 물러남): 놓아준 자리에서 2m 벗어나면 Chase(10s 안에 다시 잡으면 관심·남은 시간 이어서), 아니면 다시 Pinned. 관심 ≤0 → 하품 2s → **생존**(Active) + 그 쥐 8s 못 본 척. 30s 만료 → 진짜 Downed. 다른 쥐가 시야에 들어오면 잡은 쥐를 놓고 그쪽 Chase(**미끼 = 구출**). 깨짐·찍찍·함정 소리 관심 -40. 솔로면 기존처럼 즉시 Downed | 0 |
 | Distracted | 유인 아이템 위치에서 놀기 | 4.0 |

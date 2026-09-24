@@ -207,6 +207,14 @@ MonoBehaviour:
   _reliefDwellMul: 1.5
   _finaleHoleBias: 0.6
   _finaleHoleRadius: 4
+  _houseEventsPerStage: {x: 2, y: 4}
+  _houseEventFirstDelay: {x: 90, y: 150}
+  _houseEventGap: {x: 180, y: 300}
+  _houseEventWarnSeconds: 3
+  _catCallAwaySeconds: {x: 20, y: 40}
+  _catFeedingSeconds: 25
+  _catAwayWalkSpeed: 3
+  _reliefCallAwayMinGap: 90
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

@@ -41,8 +41,25 @@ namespace RatGame.UI
         private float _nextPoll;
 
         private void Awake() => _toastTemplate.SetActive(false);
-        private void OnEnable() => EventBus.CodexUnlocked += OnCodexUnlocked;
-        private void OnDisable() => EventBus.CodexUnlocked -= OnCodexUnlocked;
+        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; }
+        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; }
+
+        // 집주인 이벤트 (design/cat-ideas/10) — 인간은 안 보인다, 소리·말로만
+        private void OnHouseEvent(HouseEventKind kind, HouseEventPhase phase)
+        {
+            string text = (kind, phase) switch
+            {
+                (HouseEventKind.CallAway, HouseEventPhase.Warn) => "멀리서 \"나비야~ 간식!\"",
+                (HouseEventKind.CallAway, HouseEventPhase.Start) => "고양이가 나갔다! 지금이야",
+                (HouseEventKind.CallAway, HouseEventPhase.End) => "고양이가 돌아왔다… 어느 문으로?",
+                (HouseEventKind.Feeding, HouseEventPhase.Warn) => "부엌에서 그릇 달그락 — 밥 시간",
+                (HouseEventKind.Feeding, HouseEventPhase.Start) => "고양이가 밥 먹는 중 — 부엌만 피해",
+                _ => null
+            };
+            if (text == null) return;
+            Log.Dev($"집주인 알림: {text}");
+            Show(text, phase == HouseEventPhase.Start ? UiColorRole.Positive : UiColorRole.Warning);
+        }
 
         private void OnCodexUnlocked(string itemId)
         {

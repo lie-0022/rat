@@ -61,11 +61,20 @@ namespace RatGame.Run
             var director = GetComponent<RunDirector>();
             if (director == null) director = gameObject.AddComponent<RunDirector>();
             director.Init(_balance, this);
+            var house = GetComponent<HouseEventDirector>();
+            if (house == null) house = gameObject.AddComponent<HouseEventDirector>();
+            house.Init(_balance, this);
             // 기지 발판으로 들어온 경우: 전원이 씬 로드를 끝내면 시작 위치로 옮기고 자동 출발.
             // 에디터에서 스테이지 씬을 직접 플레이하면 로드 이벤트가 없어 Ready로 대기 (개발용 Enter)
             if (RunSession.DepartPending)
                 NetworkManager.SceneManager.OnLoadEventCompleted += OnStageLoaded;
         }
+
+        /// <summary>호스트: 집주인 이벤트 예고·시작·끝을 모든 클라에 (토스트). 목소리는 소음이 아니다 — 고양이가 반응하면 안 되는 소리.</summary>
+        public void ServerHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEventClientRpc((byte)kind, (byte)phase);
+
+        [ClientRpc]
+        private void HouseEventClientRpc(byte kind, byte phase) => EventBus.RaiseHouseEvent((HouseEventKind)kind, (HouseEventPhase)phase);
 
         public override void OnNetworkDespawn()
         {

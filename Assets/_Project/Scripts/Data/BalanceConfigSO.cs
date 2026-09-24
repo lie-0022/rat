@@ -245,6 +245,16 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 1f)] private float _finaleHoleBias = 0.6f; // Finale: 순찰 목적지를 쥐구멍 근처로
         [SerializeField] private float _finaleHoleRadius = 4f;
 
+        [Header("집주인 이벤트 (design/cat-ideas/10)")]
+        [SerializeField] private Vector2Int _houseEventsPerStage = new(2, 4);
+        [SerializeField] private Vector2 _houseEventFirstDelay = new(90f, 150f);
+        [SerializeField] private Vector2 _houseEventGap = new(180f, 300f);
+        [SerializeField] private float _houseEventWarnSeconds = 3f;      // 예고음 → 본 사건
+        [SerializeField] private Vector2 _catCallAwaySeconds = new(20f, 40f);
+        [SerializeField] private float _catFeedingSeconds = 25f;
+        [SerializeField] private float _catAwayWalkSpeed = 3f;
+        [SerializeField] private float _reliefCallAwayMinGap = 90f;      // 디렉터 Relief면 마지막 사건 뒤 이만큼 지났을 때 부르기를 앞당김
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -471,6 +481,14 @@ namespace RatGame.Data
         public float ReliefDwellMul => _reliefDwellMul;
         public float FinaleHoleBias => _finaleHoleBias;
         public float FinaleHoleRadius => _finaleHoleRadius;
+        public Vector2Int HouseEventsPerStage => _houseEventsPerStage;
+        public Vector2 HouseEventFirstDelay => _houseEventFirstDelay;
+        public Vector2 HouseEventGap => _houseEventGap;
+        public float HouseEventWarnSeconds => _houseEventWarnSeconds;
+        public Vector2 CatCallAwaySeconds => _catCallAwaySeconds;
+        public float CatFeedingSeconds => _catFeedingSeconds;
+        public float CatAwayWalkSpeed => _catAwayWalkSpeed;
+        public float ReliefCallAwayMinGap => _reliefCallAwayMinGap;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

@@ -113,6 +113,8 @@ namespace RatGame.Editor
                 ("Spot_Groom", CatSpotType.Groom, new(10f, 0f, -14f),  new(-1f, 0f, 1f), 0.8f),
                 ("Spot_LookA", CatSpotType.Look,  new(0f, 0f, -6f),    new(0f, 0f, 1f),  1.5f),
                 ("Spot_LookB", CatSpotType.Look,  new(-8f, 0f, 2f),    new(1f, 0f, 0f),  1.5f),
+                ("Spot_DoorW", CatSpotType.Door,  new(-19f, 0f, 0f),   new(1f, 0f, 0f),  1f),   // 집주인이 부르면 나가는 문 (design/cat-ideas/10)
+                ("Spot_DoorE", CatSpotType.Door,  new(19f, 0f, 6f),    new(-1f, 0f, 0f), 1f),
             };
             foreach (var (name, type, pos, look, weight) in spots)
             {
@@ -179,7 +181,7 @@ namespace RatGame.Editor
 
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
             UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
-            Debug.Log("[RatGame] 고양이 데모 레이아웃: 스팟 6 · 상자 4 · 숨을 곳 2 · 고양이 1 · NavMesh 베이크");
+            Debug.Log("[RatGame] 고양이 데모 레이아웃: 스팟 6 + 문 2 · 상자 4 · 숨을 곳 2 · 고양이 1 · NavMesh 베이크");
         }
     }
 }

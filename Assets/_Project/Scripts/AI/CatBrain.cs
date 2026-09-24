@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -161,6 +161,7 @@ namespace RatGame.AI
             TickMemory();
             CheckSlip(); // 달리다 비누를 밟으면 어떤 상태든 미끄러진다 (design/cat-ideas/11)
             TickDirectorHints();
+            TickHousePending();
             switch (State.Value)
             {
                 case CatState.Sleep: TickSleep(); break;
@@ -175,6 +176,7 @@ namespace RatGame.AI
                 case CatState.Track: TickTrack(); break;
                 case CatState.Toy: TickToy(); break;
                 case CatState.Blunder: TickBlunder(); break;
+                case CatState.Away: TickAway(); break;
             }
         }
 
@@ -184,6 +186,7 @@ namespace RatGame.AI
             Log.Dev($"고양이 [{name}]: {State.Value} → {next}");
             if (State.Value == CatState.Toy) ExitToy(); // 잡힌 쥐를 Pinned로 남기지 않게
             if (State.Value == CatState.Blunder) ExitBlunder();
+            if (State.Value == CatState.Away) ExitAway();
             var prevState = State.Value;
             State.Value = next;
             RaiseStateChanged(prevState, next); // 경계도 디렉터 긴장 입력
@@ -238,6 +241,9 @@ namespace RatGame.AI
                     break;
                 case CatState.Toy:
                     EnterToyState();
+                    break;
+                case CatState.Away:
+                    EnterAwayState();
                     break;
             }
         }
@@ -341,17 +347,19 @@ namespace RatGame.AI
         // 다음 스팟: 가중치 랜덤, 최근 n개 제외 (스팟이 적으면 제외 목록을 줄인다)
         private void GoToNextSpot()
         {
+            if (IsFeeding) { int food = FindSpot(CatSpotType.Food); if (food >= 0) { _spotIndex = food; _movement.MoveTo(_spots[food].Pos, _balance.CatPatrolSpeed); return; } }
             if (TryFinaleHoleVisit()) return; // 귀환 카운트다운 — 쥐구멍 쪽 (design/cat-ideas/12)
             if (TryGoToMemorySpot()) return; // 가끔 기억 칸에 들른다 (design/cat-ideas/05)
             int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, _spots.Length - 1);
             while (_recentSpots.Count > avoid) _recentSpots.RemoveAt(0);
             float total = 0f;
             for (int i = 0; i < _spots.Length; i++) if (!_recentSpots.Contains(i)) total += SpotWeight(i);
+            if (total <= 0f) { _movement.Stop(); return; } // 순찰할 스팟이 없음 (문뿐)
             float r = Random.value * total;
             int pick = -1;
             for (int i = 0; i < _spots.Length; i++)
             {
-                if (_recentSpots.Contains(i)) continue;
+                if (_recentSpots.Contains(i) || SpotWeight(i) <= 0f) continue;
                 r -= SpotWeight(i);
                 if (r <= 0f) { pick = i; break; }
             }
@@ -364,6 +372,7 @@ namespace RatGame.AI
         // 성격이 잠자리·관찰점 선호를 바꾼다 (design/cat-ideas/01)
         private float SpotWeight(int i)
         {
+            if (_spots[i].Type == CatSpotType.Door) return 0f; // 문은 순찰 대상 아님
             float w = _spots[i].Weight * DirSpotWeightMul(_spots[i].Type); // 디렉터 Relief면 루틴 스팟 쪽으로
             var p = Personality;
             if (p == null) return w;
@@ -386,7 +395,8 @@ namespace RatGame.AI
                     SetState(CatState.Sleep);
                     return;
                 case CatSpotType.Food:
-                    Dwell(_balance.CatSpotFoodSeconds * DirRoutineDwellMul, _balance.CatSpotFoodSense); return;
+                    // 밥 시간이면 남은 시간만큼 먹는다 (집주인 이벤트)
+                    Dwell(IsFeeding ? _feedingUntil - Time.time : _balance.CatSpotFoodSeconds * DirRoutineDwellMul, _balance.CatSpotFoodSense); return;
                 case CatSpotType.Sun:
                     Dwell(_balance.CatSpotSunSeconds * DirRoutineDwellMul, _balance.CatSpotSunSense); return;
                 case CatSpotType.Groom:
@@ -592,6 +602,7 @@ namespace RatGame.AI
             for (int i = 0; i < _spots.Length; i++)
             {
                 if (_spots[i].Type == CatSpotType.Bed && _recentSpots.Contains(i) && _spots.Length > 1) continue;
+                if (_spots[i].Type == CatSpotType.Door) continue; // 문은 복귀 지점이 아니다
                 float d = Vector3.Distance(transform.position, _spots[i].Pos);
                 if (d < bestDist) { bestDist = d; best = _spots[i].Pos; _spotIndex = i; }
             }

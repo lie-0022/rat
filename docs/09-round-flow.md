@@ -130,3 +130,27 @@ public struct RunResult
 | buildupSleepMul / DwellMul / MemoryBonus | 0.7 / 0.6 / +0.3 |
 | reliefRoutineWeightMul / LookWeightMul / DwellMul | 4 / 0.3 / 1.5 |
 | finaleHoleBias / Radius | 0.6 / 4 m |
+
+## 집주인 이벤트 (2026-09-24, `Run/HouseEventDirector`, design/cat-ideas/10)
+
+고양이 밖에서 오는 사건으로 판의 막을 나눈다. 인간은 안 보인다 — 알림은 `RunManager.HouseEventClientRpc` → `EventBus.HouseEvent` → 토스트(목소리는 NoiseSystem이 아니다 — 고양이가 반응하면 안 되는 소리). 호스트 전용 MonoBehaviour, RunManager가 서버 스폰 때 런타임에 붙인다.
+
+- 스케줄: Phase StageActive에서 스테이지당 2~4건, 첫 사건 90~150s, 간격 180~300s, 같은 사건 연속 금지(지금은 번갈아). 경계도 디렉터가 Relief면 마지막 사건 뒤 90s 지났을 때 부르기를 앞당긴다. `ServerTrigger(kind)`로 수동 발동(테스트·초인종 등).
+- 사건마다 예고 3s → 시작.
+
+| 사건 | 예고 토스트 | 시작 토스트 | 고양이 |
+|---|---|---|---|
+| 부르기 CallAway | 멀리서 "나비야~ 간식!" | 고양이가 나갔다! 지금이야 | 문으로 나가 20~40s 부재 → 랜덤 문으로 복귀("고양이가 돌아왔다… 어느 문으로?") |
+| 밥 시간 Feeding | 부엌에서 그릇 달그락 — 밥 시간 | 고양이가 밥 먹는 중 — 부엌만 피해 | Food 스팟으로 서둘러 가서 남은 시간(25s)만큼 먹음 |
+
+- 나중: 청소기(지속 소음 마스킹·물리 밀기), 불 켜짐(LightZone 해제), TV, 초인종(쥐가 유발).
+
+| 수치 (BalanceConfigSO) | 값 |
+|---|---|
+| houseEventsPerStage | 2~4 |
+| houseEventFirstDelay / Gap | 90~150 s / 180~300 s |
+| houseEventWarnSeconds | 3 |
+| catCallAwaySeconds | 20~40 |
+| catFeedingSeconds | 25 |
+| catAwayWalkSpeed | 3 |
+| reliefCallAwayMinGap | 90 s |

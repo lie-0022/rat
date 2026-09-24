@@ -3,7 +3,7 @@ using UnityEngine;
 namespace RatGame.AI
 {
     /// <summary>스팟 종류 (design/cat-design/02 카탈로그). 직렬화가 정수라 새 종류는 끝에만 추가.</summary>
-    public enum CatSpotType { Look, Bed, Food, Sun, Groom, Water, Litter, Perch, Ambush, Box }
+    public enum CatSpotType { Look, Bed, Food, Sun, Groom, Water, Litter, Perch, Ambush, Box, Door /* 집주인이 부르면 나가고 들어오는 문 (2026-09-24) — 순찰 대상 아님 */ }
 
     /// <summary>
     /// 고양이가 "볼일 보러" 가는 지점 (웨이포인트 대체 — 좌표 + 종류 + 머무는 행동). 방 모듈·씬에 배치.

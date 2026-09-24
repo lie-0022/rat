@@ -34,6 +34,7 @@ namespace RatGame.AI
         private byte _lastPawTick;
         private CatBlunderKind _lastBlunder;
         private bool _lastAlert;
+        private Renderer[] _renderers;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
 
         private void Awake()
@@ -46,6 +47,14 @@ namespace RatGame.AI
         private void Update()
         {
             if (_brain == null || !_brain.IsSpawned) return;
+            // 집주인이 불러 문 밖에 있으면 안 보인다
+            bool show = !_brain.AwayHidden.Value;
+            if (_renderers == null) _renderers = GetComponentsInChildren<Renderer>(true);
+            if (_renderers.Length > 0 && _renderers[0].enabled != show)
+            {
+                foreach (var r in _renderers) r.enabled = show;
+                RatGame.Core.Log.Dev($"고양이 모습: {(show ? "보임" : "숨김")}"); // 2인 검증용
+            }
             var state = _brain.State.Value;
             var phase = _brain.SleepPhase.Value;
 
