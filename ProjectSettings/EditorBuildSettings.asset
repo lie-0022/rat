@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/Sandbox_Net.unity
     guid: 07f59211550c64698adaff5c9a1dda07
+  - enabled: 1
+    path: Assets/_Project/Scenes/Stage_Generated.unity
+    guid: cec3131708692457d85f3668267bbe55
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

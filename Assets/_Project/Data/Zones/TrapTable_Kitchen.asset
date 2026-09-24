@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4977f59022bf549e2821aadb1a9c3bf4, type: 3}
+  m_Name: TrapTable_Kitchen
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.TrapTableSO
+  Entries:
+  - Prefab: {fileID: 5595059189383665623, guid: dde983933acfb47cda57bd94e56b76dd, type: 3}
+    Weight: 3
+  - Prefab: {fileID: 3958931700260059063, guid: e1508368525494d259a678c0217a2682, type: 3}
+    Weight: 2
+  - Prefab: {fileID: 4740148572338866869, guid: db65ad0c06bf04e1b853fa970c3d5f50, type: 3}
+    Weight: 1
+  UseRatio: 0.5

@@ -1,3 +1,4 @@
+using RatGame.AI;
 using System.Collections.Generic;
 using RatGame.Data;
 using RatGame.Run;
@@ -25,7 +26,7 @@ namespace RatGame.Editor
         private struct RoomSpec
         {
             public string Name; public float W, D; public bool HasEntry; public (Side side, float offset)[] Exits;
-            public bool Cat, RatHole, Bonus; public int Loot, Traps;
+            public bool Cat, RatHole, Bonus; public int Loot, Traps; public CatSpotType[] Spots;
         }
 
         [MenuItem("Tools/RatGame/Zone/Create Greybox Rooms")]
@@ -34,11 +35,11 @@ namespace RatGame.Editor
             var specs = new[]
             {
                 new RoomSpec { Name = "Room_RatHole",  W = 8,  D = 8,  HasEntry = false, Exits = new[] { (Side.North, 0f) }, RatHole = true, Loot = 3, Traps = 0 },
-                new RoomSpec { Name = "Room_Straight", W = 8,  D = 10, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Cat = true, Loot = 7, Traps = 2 },
-                new RoomSpec { Name = "Room_Corner",   W = 8,  D = 8,  HasEntry = true,  Exits = new[] { (Side.East, 0f) }, Loot = 6, Traps = 2 },
-                new RoomSpec { Name = "Room_Hall",     W = 12, D = 10, HasEntry = true,  Exits = new[] { (Side.North, -3f), (Side.West, 2f) }, Cat = true, Loot = 9, Traps = 2 },
-                new RoomSpec { Name = "Room_Corridor", W = 4,  D = 12, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Loot = 4, Traps = 2 },
-                new RoomSpec { Name = "Room_Bonus",    W = 8,  D = 8,  HasEntry = true,  Exits = new (Side, float)[0], Bonus = true, Loot = 10, Traps = 1 },
+                new RoomSpec { Name = "Room_Straight", W = 8,  D = 10, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Cat = true, Loot = 7, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Food } },
+                new RoomSpec { Name = "Room_Corner",   W = 8,  D = 8,  HasEntry = true,  Exits = new[] { (Side.East, 0f) }, Loot = 6, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Sun } },
+                new RoomSpec { Name = "Room_Hall",     W = 12, D = 10, HasEntry = true,  Exits = new[] { (Side.North, -3f), (Side.West, 2f) }, Cat = true, Loot = 9, Traps = 2, Spots = new[] { CatSpotType.Bed, CatSpotType.Look, CatSpotType.Groom } },
+                new RoomSpec { Name = "Room_Corridor", W = 4,  D = 12, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Loot = 4, Traps = 2, Spots = new[] { CatSpotType.Look } },
+                new RoomSpec { Name = "Room_Bonus",    W = 8,  D = 8,  HasEntry = true,  Exits = new (Side, float)[0], Bonus = true, Loot = 10, Traps = 1, Spots = new[] { CatSpotType.Bed } },
             };
             if (!AssetDatabase.IsValidFolder("Assets/_Project/Data/Zones")) AssetDatabase.CreateFolder("Assets/_Project/Data", "Zones");
             var prefabs = new Dictionary<string, GameObject>();
@@ -64,6 +65,7 @@ namespace RatGame.Editor
             var bounds = root.AddComponent<BoxCollider>();
             bounds.isTrigger = true; bounds.center = new Vector3(0f, WallH * 0.5f, 0f); bounds.size = new Vector3(s.W, WallH, s.D);
             var room = root.AddComponent<RoomModule>();
+            root.AddComponent<Unity.Netcode.NetworkObject>(); // 호스트가 스폰 — 클라는 지오메트리를 받는다 (고양이 58)
             int wallLayer = LayerMask.NameToLayer("NoiseBlocker");
 
             var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -96,6 +98,16 @@ namespace RatGame.Editor
                 for (int i = 0; i < 4; i++) { var p = new GameObject("PlayerSpawn_" + i).transform; p.SetParent(root.transform, false); p.localPosition = new Vector3(-1.5f + i, 0.65f, -s.D * 0.5f + 3f); p.tag = "PlayerSpawn"; ps.Add(p); }
                 room.PlayerSpawns = ps.ToArray();
             }
+            // 고양이 스팟 — 벽에서 1.5m 안쪽, 방마다 고정 (docs/10 "방마다 Look ≥1, 존마다 Bed 1")
+            if (s.Spots != null)
+                for (int i = 0; i < s.Spots.Length; i++)
+                {
+                    var sp = new GameObject($"Spot_{s.Spots[i]}_{i}").transform; sp.SetParent(root.transform, false);
+                    float a = (i + 0.5f) / s.Spots.Length * Mathf.PI * 2f;
+                    sp.localPosition = new Vector3(Mathf.Cos(a) * (s.W * 0.5f - 1.5f), 0f, Mathf.Sin(a) * (s.D * 0.5f - 1.5f));
+                    sp.localRotation = Quaternion.LookRotation(-sp.localPosition.normalized);
+                    sp.gameObject.AddComponent<CatSpot>().EditorSetup(s.Spots[i], 1f);
+                }
             // 가운데 상자 하나 — 시야를 끊는다 (좁은 복도엔 없음)
             if (s.W >= 8)
             {
@@ -164,10 +176,110 @@ namespace RatGame.Editor
             return list.ToArray();
         }
 
+        private const string MatDir = "Assets/_Project/Art/Materials/Greybox";
+
+        // 프리팹은 메모리 머티리얼을 저장하지 못한다(씬은 된다) — 색마다 머티리얼 에셋으로 (고양이 58에서 방이 마젠타로 나와서)
+        private static Material GreyboxMat(Color c, Shader shader)
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/_Project/Art/Materials")) AssetDatabase.CreateFolder("Assets/_Project/Art", "Materials");
+            if (!AssetDatabase.IsValidFolder(MatDir)) AssetDatabase.CreateFolder("Assets/_Project/Art/Materials", "Greybox");
+            string name = "Greybox_" + ColorUtility.ToHtmlStringRGB(c);
+            string path = $"{MatDir}/{name}.mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat != null) return mat;
+            mat = new Material(shader) { color = c, name = name };
+            AssetDatabase.CreateAsset(mat, path);
+            return mat;
+        }
+
         private static void Tint(GameObject go, Color c)
         {
             var r = go.GetComponent<Renderer>();
-            r.sharedMaterial = new Material(r.sharedMaterial) { color = c };
+            r.sharedMaterial = GreyboxMat(c, r.sharedMaterial.shader);
+        }
+
+        // 씬 오브젝트를 프리팹으로 뽑기 전에: 에셋이 아닌 머티리얼(씬에만 저장된 것)을 같은 색 에셋으로 바꾼다
+        private static void PersistMaterials(GameObject root)
+        {
+            foreach (var r in root.GetComponentsInChildren<Renderer>(true))
+            {
+                var m = r.sharedMaterial;
+                if (m == null || AssetDatabase.Contains(m)) continue;
+                r.sharedMaterial = GreyboxMat(m.HasProperty("_BaseColor") ? m.GetColor("_BaseColor") : m.color, m.shader);
+            }
+        }
+
+        /// <summary>
+        /// 생성 스테이지 준비 (고양이 58): Stage_Warehouse01의 쥐구멍·함정 3종을 네트워크 프리팹으로 뽑고, 전리품·함정 테이블을 만들고,
+        /// 존 정의에 연결한 뒤 Stage_Generated 씬(빛·카메라·RunManager + ZoneBuilder만)을 만들어 빌드 목록에 넣는다.
+        /// Stage_Warehouse01을 연 상태에서 실행.
+        /// </summary>
+        [MenuItem("Tools/RatGame/Zone/Create Generated Stage")]
+        public static void CreateGeneratedStage()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (scene.name != "Stage_Warehouse01") { Debug.LogWarning("[RatGame] Stage_Warehouse01을 연 뒤 실행"); return; }
+            var balance = AssetDatabase.LoadAssetAtPath<BalanceConfigSO>("Assets/_Project/Data/Balance/BalanceConfig.asset");
+            var zone = AssetDatabase.LoadAssetAtPath<ZoneDefinitionSO>(ZonePath);
+
+            GameObject ToPrefab(string sceneName, string path)
+            {
+                var src = GameObject.Find(sceneName);
+                if (src == null) { Debug.LogWarning($"[RatGame] {sceneName} 없음"); return AssetDatabase.LoadAssetAtPath<GameObject>(path); }
+                var copy = Object.Instantiate(src); copy.name = System.IO.Path.GetFileNameWithoutExtension(path);
+                PersistMaterials(copy);
+                copy.transform.SetParent(null); copy.transform.position = new Vector3(0f, src.transform.position.y, 0f); copy.transform.rotation = Quaternion.identity;
+                var prefab = PrefabUtility.SaveAsPrefabAsset(copy, path);
+                Object.DestroyImmediate(copy);
+                return prefab;
+            }
+            var ratHole = ToPrefab("RatHole", "Assets/_Project/Prefabs/Net/RatHoleZone.prefab");
+            var mouse = ToPrefab("Trap_MouseTrap", "Assets/_Project/Prefabs/Traps/Trap_MouseTrap.prefab");
+            var glue = ToPrefab("Trap_GluePad", "Assets/_Project/Prefabs/Traps/Trap_GluePad.prefab");
+            var wire = ToPrefab("Trap_WireShock", "Assets/_Project/Prefabs/Traps/Trap_WireShock.prefab");
+
+            // 전리품 테이블 — 티어별 가중치 (헤어볼은 고양이가 뱉는 것, 다운 몸은 전리품 아님)
+            var loot = AssetDatabase.LoadAssetAtPath<SpawnTableSO>("Assets/_Project/Data/Zones/LootTable_Kitchen.asset");
+            if (loot == null) { loot = ScriptableObject.CreateInstance<SpawnTableSO>(); AssetDatabase.CreateAsset(loot, "Assets/_Project/Data/Zones/LootTable_Kitchen.asset"); }
+            var entries = new List<SpawnEntry>();
+            foreach (var g in AssetDatabase.FindAssets("t:LootItemSO", new[] { "Assets/_Project/Data/Items" }))
+            {
+                var so = AssetDatabase.LoadAssetAtPath<LootItemSO>(AssetDatabase.GUIDToAssetPath(g));
+                if (so == null || so.Id == null || !so.Id.StartsWith("loot_") || so.Id == "loot_hairball" || so.Prefab == null) continue;
+                int w = so.Tier switch { LootTier.Small => 10, LootTier.Tricky => 6, LootTier.Large => 3, _ => 1 };
+                int max = so.Tier switch { LootTier.Large => 3, LootTier.Special => 1, _ => 0 };
+                entries.Add(new SpawnEntry { Item = so, Weight = w, Max = max });
+            }
+            loot.Entries = entries.ToArray(); loot.UseRatio = 0.7f; EditorUtility.SetDirty(loot);
+
+            var traps = AssetDatabase.LoadAssetAtPath<TrapTableSO>("Assets/_Project/Data/Zones/TrapTable_Kitchen.asset");
+            if (traps == null) { traps = ScriptableObject.CreateInstance<TrapTableSO>(); AssetDatabase.CreateAsset(traps, "Assets/_Project/Data/Zones/TrapTable_Kitchen.asset"); }
+            traps.Entries = new[] { new TrapEntry { Prefab = mouse, Weight = 3 }, new TrapEntry { Prefab = glue, Weight = 2 }, new TrapEntry { Prefab = wire, Weight = 1 } };
+            traps.UseRatio = 0.5f; EditorUtility.SetDirty(traps);
+
+            zone.LootTable = loot; zone.TrapTable = traps; zone.RatHolePrefab = ratHole;
+            zone.CatPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Cat/Cat.prefab");
+            EditorUtility.SetDirty(zone);
+            AssetDatabase.SaveAssets();
+
+            // 씬: 창고 씬을 복사해 빛·카메라·RunManager만 남기고 ZoneBuilder 붙이기
+            const string genPath = "Assets/_Project/Scenes/Stage_Generated.unity";
+            string warehousePath = scene.path;
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(genPath) == null) AssetDatabase.CopyAsset(warehousePath, genPath);
+            var gen = EditorSceneManager.OpenScene(genPath, OpenSceneMode.Single);
+            foreach (var root in gen.GetRootGameObjects())
+                if (root.name != "Directional Light" && root.name != "Main Camera" && root.name != "RunManager") Object.DestroyImmediate(root);
+            var rm = GameObject.Find("RunManager");
+            if (rm.GetComponent<NavMeshSurface>() == null) rm.AddComponent<NavMeshSurface>();
+            var builder = rm.GetComponent<ZoneBuilder>() ?? rm.AddComponent<ZoneBuilder>();
+            builder.EditorSetup(zone, balance);
+            EditorSceneManager.MarkSceneDirty(gen);
+            EditorSceneManager.SaveScene(gen);
+
+            var list = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
+            if (!list.Exists(x => x.path == genPath)) { list.Add(new EditorBuildSettingsScene(genPath, true)); EditorBuildSettings.scenes = list.ToArray(); }
+            EditorSceneManager.OpenScene(warehousePath, OpenSceneMode.Single);
+            Debug.Log($"[RatGame] 생성 스테이지 준비 — 전리품 {entries.Count}종, 함정 3종, {genPath}");
         }
 
         [MenuItem("Tools/RatGame/Zone/Stress Test (20 seeds)")]

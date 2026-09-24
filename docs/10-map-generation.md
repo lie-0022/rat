@@ -80,7 +80,17 @@ public class ZoneGenerator
 
 - `World/DoorSocket`(+Z 바깥, 폭 1.8) · `World/RoomModule`(루트 BoxCollider 트리거 = 바운즈, Entry·Exits·LootSpawns·TrapSpawns·CatSpawn·PlayerSpawns·RatHole) · `Data/ZoneDefinitionSO` · `Run/ZoneGenerator`(시드 → 쥐구멍방 → 중간방 `roomModulesPerZone` 3~4개 중복 없이 → 보너스방 확률, 접합은 yaw만 — FromToRotation은 180°에서 방을 눕혀서 SignedAngle로, 겹침은 수평 사각형 교차(여유 0.05m), 5번 버리면 끝, 방은 부모 기준 위치).
 - 그레이박스 방 6종(`Tools/RatGame/Zone/Create Greybox Rooms` → `Prefabs/Rooms/Kitchen/`): 쥐구멍방 8×8 · 직선 8×10 · 모서리 8×8(옆 출구) · 홀 12×10(출구 2) · 복도 4×12 · 보너스 8×8(막다른). 벽은 NoiseBlocker(소리·시야 차단), 문틈 1.8m, 가운데 상자. `Data/Zones/Zone_Kitchen_Greybox`.
-- 다음(2단계): 방·스폰을 NetworkObject로, 호스트 런타임 NavMesh, 전리품·함정 테이블, 고양이 배치, RunManager 연결.
+- ~~다음(2단계)~~ → 아래 2단계에서 구현: 방·스폰을 NetworkObject로, 호스트 런타임 NavMesh, 전리품·함정 테이블, 고양이 배치, RunManager 연결.
+
+## 구현 2단계 (2026-09-24, 고양이 58)
+
+- `Run/ZoneBuilder`(NetworkBehaviour + NavMeshSurface, 씬 오브젝트): 호스트가 스폰될 때 존을 만든다. 순서: 방 NetworkObject 스폰 → NavMesh 굽기(RoomStatic·NoiseBlocker 레이어만) → 쥐구멍(DepositZone) → 전리품 → 함정 → 고양이 → `PlayerPlacement.TeleportAllToSpawns`. 클라는 스폰을 받기만 한다.
+- 방 프리팹은 정적 지오메트리 + 루트 NetworkObject만(중첩 NetworkObject 없음). 움직이는 건 전부 따로 스폰.
+- `Data/SpawnTableSO`(항목·가중치·최대 개수, Large/Special 보정 `× (1 + DeepZoneBonusPerIndex(0.3) × 존 인덱스)`, 보너스방은 ×3에 스폰 지점 전부 사용) · `Data/TrapTableSO`. `ZoneDefinitionSO`에 LootTable·TrapTable·RatHolePrefab·CatPrefab.
+- 규칙: 전리품은 LootSpawns의 70%, y>1m 지점엔 Large 금지. 함정은 TrapSpawns의 50%, 쥐구멍방엔 없음. 고양이는 CatSpawn 있는 방 중 CatCount곳(NavMesh 위로 보정).
+- `RunManager.UpdateReturn`은 쥐구멍을 늦게 찾는다(생성 스테이지는 쥐구멍이 런매니저보다 늦게 생긴다).
+- 에디터: `Tools/RatGame/Zone/Create Generated Stage` → 쥐구멍·함정 프리팹, `LootTable_Kitchen`·`TrapTable_Kitchen`, `Scenes/Stage_Generated`(빌드 세팅 등록). 그레이박스 색은 `Art/Materials/Greybox/`에 머티리얼 에셋으로 저장(프리팹은 메모리 머티리얼을 못 들고 있어 마젠타가 됐음).
+- 아직: 방 안 HideSpot·LightZone, 기지 출발 발판 → 생성 스테이지 연결(지금은 Warehouse), 존 전환, 반지 스폰 규칙.
 
 ## 존 전환 (09 Transition 페이즈)
 
@@ -101,7 +111,7 @@ public class ZoneGenerator
 
 ## 수용 기준 (W8)
 
-- [ ] 같은 시드 → 호스트·클라 동일 결과 (클라는 스폰 수신만이므로 자동 보장 — 검증만)
+- [x] 같은 시드 → 호스트·클라 동일 결과 (클라는 스폰 수신만이므로 자동 보장 — 검증만) (2026-09-24 고양이 58: 에디터 호스트 + macOS 빌드 클라, Stage_Generated. 스폰된 NetworkObject 31/31이 클라에게 보임, 방 4개 전부. 클라 쥐는 쥐구멍방 바닥(y 0.6, 쥐구멍 2.5m)에 섬. 출발 → 적립 12 → 둘 다 쥐구멍 → Returning → Returned → Hub(둘 다 접속). 호스트·클라 예외 0)
 - [x] 시드 20개 연속 생성 스트레스 테스트: 오버랩 0, 생성 실패 0, NavMesh 구멍 0 (2026-09-24 고양이 57, `Tools/RatGame/Zone/Stress Test`: 시드 20개 방 4~6(평균 5.1)·보너스 12·겹침 0·실패 0·NavMesh 끊김 0·98ms, 시드 200개도 같음(942ms). 모서리방만으로 강제로 말리게 하면 겹침 후보 5번 버리고 4방에서 멈춤 — 겹침 0)
 - [ ] 부엌 테마 그레이박스 방 4종으로 존 3개 연속 플레이
 - [ ] 반지가 항상 고양이 옆에 있는지, 선반 위 Large 금지 규칙 확인

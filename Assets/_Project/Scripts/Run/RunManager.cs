@@ -165,6 +165,7 @@ namespace RatGame.Run
         // 다운 안 된 전원이 쥐구멍 위면 카운트다운, 한 명이라도 벗어나면 취소
         private void UpdateReturn()
         {
+            if (_returnZone == null) _returnZone = FindFirstObjectByType<DepositZone>(); // 생성 스테이지는 쥐구멍이 런매니저보다 늦게 생긴다 (고양이 58)
             GatherCheck.Count(_returnZone != null ? _returnZone.Area : null, out int ready, out int needed);
             ReturnNeededCount.Value = needed;
             ReturnReadyCount.Value = ready;

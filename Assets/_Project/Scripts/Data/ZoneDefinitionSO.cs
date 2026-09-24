@@ -12,5 +12,9 @@ namespace RatGame.Data
         public GameObject[] BonusRoomPool;      // 1~2개 (고가치·고위험)
         [Range(0f, 1f)] public float BonusRoomChance = 0.4f;
         public int CatCount = 1;
+        public SpawnTableSO LootTable;
+        public TrapTableSO TrapTable;
+        public GameObject RatHolePrefab;        // 쥐구멍(DepositZone) — 쥐구멍방 RatHole 표시에
+        public GameObject CatPrefab;
     }
 }
