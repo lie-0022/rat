@@ -34,6 +34,7 @@ namespace RatGame.AI
         private byte _lastPawTick;
         private CatBlunderKind _lastBlunder;
         private bool _lastAlert;
+        private bool _lastFighting;
         private Renderer[] _renderers;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
 
@@ -69,6 +70,7 @@ namespace RatGame.AI
                 CatState.Chase => Chase,
                 CatState.Capture => Capture,
                 CatState.Toy => Capture,
+                CatState.Fight => Mathf.Repeat(Time.time * 6f, 1f) < 0.5f ? Chase : Suspicious, // 하악! 번쩍
                 CatState.Blunder => _brain.BlunderKind.Value == CatBlunderKind.Stun ? Stunned : baseColor,
                 CatState.Distracted => Distracted,
                 _ => baseColor
@@ -91,6 +93,7 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
+                    else if (state == CatState.Fight) { roll = Mathf.Sin(t * 25f) * 12f; tailSwing = Mathf.Sin(t * 20f) * 50f; } // 몸싸움 — 부르르
                     else if (state == CatState.Patrol && _brain.Alert.Value) tailSwing = Mathf.Sin(t * 7f) * 22f; // 예민 — 꼬리가 빠르다
                     else if (state == CatState.Blunder)
                     {
@@ -109,6 +112,8 @@ namespace RatGame.AI
                     break;
             }
             if (_tail != null) _tail.localRotation = Quaternion.Euler(0f, tailSwing, 20f);
+            bool fighting = _brain.State.Value == CatState.Fight;
+            if (fighting != _lastFighting) { _lastFighting = fighting; if (fighting) RatGame.Core.Log.Dev($"고양이 싸움 연출: {name}"); } // 2인 검증용
             if (_brain.Alert.Value != _lastAlert)
             {
                 _lastAlert = _brain.Alert.Value;

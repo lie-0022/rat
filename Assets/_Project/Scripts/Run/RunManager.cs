@@ -64,6 +64,9 @@ namespace RatGame.Run
             var house = GetComponent<HouseEventDirector>();
             if (house == null) house = gameObject.AddComponent<HouseEventDirector>();
             house.Init(_balance, this);
+            var relation = GetComponent<AI.CatRelation>();
+            if (relation == null) relation = gameObject.AddComponent<AI.CatRelation>();
+            relation.Init(_balance);
             // 기지 발판으로 들어온 경우: 전원이 씬 로드를 끝내면 시작 위치로 옮기고 자동 출발.
             // 에디터에서 스테이지 씬을 직접 플레이하면 로드 이벤트가 없어 Ready로 대기 (개발용 Enter)
             if (RunSession.DepartPending)

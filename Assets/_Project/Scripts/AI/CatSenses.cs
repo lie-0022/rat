@@ -48,6 +48,8 @@ namespace RatGame.AI
         // 잠시 못 본 척 (가지고 놀다 질린 쥐 — 놓아주자마자 다시 덮치지 않게)
         private readonly System.Collections.Generic.Dictionary<ulong, float> _ignoreUntil = new();
         public void IgnorePlayer(ulong clientId, float until) => _ignoreUntil[clientId] = until;
+        /// <summary>청각 차단 (앙숙 싸움 — 서로에게 꽂혀 다른 소리가 묻힌다).</summary>
+        public bool Deaf { get; set; }
         public bool IsIgnoring(ulong clientId) => _ignoreUntil.TryGetValue(clientId, out float t) && Time.time < t;
         private float _nextItemScan;
 
@@ -168,7 +170,7 @@ namespace RatGame.AI
 
         private void OnNoise(NoiseEvent e)
         {
-            if (!IsServer) return;
+            if (!IsServer || Deaf) return; // 싸움 중엔 못 듣는다 (design/cat-ideas/07)
             if (e.Type == NoiseType.Impact && IgnoreImpactNear != null
                 && Vector3.Distance(e.Pos, IgnoreImpactNear.position) < 1.5f) return;
             float heard = NoiseSystem.GetLoudnessAt(e, transform.position) * SensitivityMultiplier * HearingMultiplier;

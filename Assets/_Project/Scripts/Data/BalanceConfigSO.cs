@@ -257,6 +257,14 @@ namespace RatGame.Data
         [SerializeField] private float _doorbellHoldSeconds = 1f;        // 초인종 E 홀드 (런당 1회)
         [SerializeField] private float _attentionIndicatorRange = 15f;   // 이 안에서 노는 고양이면 HUD "♪"
 
+        [Header("두 마리 — 앙숙 (design/cat-ideas/07)")]
+        [SerializeField] private float _catFightDistance = 4f;           // 이 안에서 서로 보이면
+        [SerializeField, Range(0f, 1f)] private float _catFightChance = 0.7f;
+        [SerializeField] private float _catFightSeconds = 15f;
+        [SerializeField] private float _catFightCooldown = 30f;          // 싸운 뒤 재발 금지
+        [SerializeField] private float _catFightDeclineCooldown = 10f;   // 서로 무시하고 지나간 뒤 재판정 금지
+        [SerializeField] private float _catFightViewMul = 0.2f;          // 싸우는 동안 시야 배율 (서로에게 꽂힘)
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -493,6 +501,12 @@ namespace RatGame.Data
         public float ReliefCallAwayMinGap => _reliefCallAwayMinGap;
         public float DoorbellHoldSeconds => _doorbellHoldSeconds;
         public float AttentionIndicatorRange => _attentionIndicatorRange;
+        public float CatFightDistance => _catFightDistance;
+        public float CatFightChance => _catFightChance;
+        public float CatFightSeconds => _catFightSeconds;
+        public float CatFightCooldown => _catFightCooldown;
+        public float CatFightDeclineCooldown => _catFightDeclineCooldown;
+        public float CatFightViewMul => _catFightViewMul;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

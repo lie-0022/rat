@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -177,6 +177,7 @@ namespace RatGame.AI
                 case CatState.Toy: TickToy(); break;
                 case CatState.Blunder: TickBlunder(); break;
                 case CatState.Away: TickAway(); break;
+                case CatState.Fight: TickFight(); break;
             }
         }
 
@@ -187,6 +188,7 @@ namespace RatGame.AI
             if (State.Value == CatState.Toy) ExitToy(); // 잡힌 쥐를 Pinned로 남기지 않게
             if (State.Value == CatState.Blunder) ExitBlunder();
             if (State.Value == CatState.Away) ExitAway();
+            if (State.Value == CatState.Fight) ExitFight();
             var prevState = State.Value;
             State.Value = next;
             RaiseStateChanged(prevState, next); // 경계도 디렉터 긴장 입력
@@ -244,6 +246,9 @@ namespace RatGame.AI
                     break;
                 case CatState.Away:
                     EnterAwayState();
+                    break;
+                case CatState.Fight:
+                    EnterFightState();
                     break;
             }
         }
