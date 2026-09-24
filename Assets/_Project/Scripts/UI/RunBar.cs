@@ -74,14 +74,20 @@ namespace RatGame.UI
                 return;
             }
 
-            SetText(_mainText, $"쥐구멍 {run.StashedValue.Value}   누계 {run.RunTotalValue.Value}");
+            var quota = run.GetComponent<StageQuota>(); // 새 루프(벽 속)만 있다
+            int stashed = run.StashedValue.Value;
+            SetText(_mainText, quota != null
+                ? $"스테이지 {quota.StageNumber.Value}/{quota.StagesPerRun.Value}   식량 {stashed}/{quota.Quota.Value}"
+                : $"쥐구멍 {stashed}   누계 {run.RunTotalValue.Value}");
 
             bool sub = true;
             int ready = run.ReturnReadyCount.Value, needed = run.ReturnNeededCount.Value;
             if (phase == RunPhase.Returning)
-                ShowSub($"<size=130%>귀환 중… {Remaining(run.ReturnAt.Value):0}</size>", true);
+                ShowSub($"<size=130%>{(quota != null ? "다음으로" : "귀환 중")}… {Remaining(run.ReturnAt.Value):0}</size>", true);
+            else if (ready > 0 && quota != null && !quota.Met(stashed)) // 창고에 왔는데 모자람
+                ShowSub($"식량이 모자라요 — {quota.Quota.Value - stashed} 더 모아 창고에", false);
             else if (ready > 0) // 누가 쥐구멍에 들어가 있을 때만 — 나머지를 부르는 신호
-                ShowSub($"쥐구멍에 모이면 귀환   {ready}/{needed}", false);
+                ShowSub(quota != null ? $"창고에 모이면 다음으로   {ready}/{needed}" : $"쥐구멍에 모이면 귀환   {ready}/{needed}", false);
             else
                 sub = false;
 

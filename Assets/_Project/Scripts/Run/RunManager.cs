@@ -49,8 +49,11 @@ namespace RatGame.Run
         // NetworkList는 스폰 전(Awake)에 만들어야 동기화 대상에 들어간다
         private void Awake() => Contributions = new NetworkList<PlayerContribution>();
 
+        private StageQuota _quota; // 있으면 새 루프 할당량 규칙 (벽 속 스테이지)
+
         public override void OnNetworkSpawn()
         {
+            _quota = GetComponent<StageQuota>();
             Instance = this;
             if (!IsServer) { enabled = false; return; }
             RunTotalValue.Value = RunSession.TotalValue;
@@ -175,7 +178,7 @@ namespace RatGame.Run
             {
                 // 씬을 다시 불러와도 플레이어는 제자리 — 쥐구멍 위에서 출발하면 곧장 귀환되므로, 누군가 한 번 벗어나야 귀환 판정 시작
                 if (!allGathered) { _returnArmed = true; return; }
-                if (!_returnArmed) return;
+                if (!_returnArmed || (_quota != null && !_quota.Met(StashedValue.Value))) return; // 새 루프: 할당량 전엔 못 떠남
                 ReturnAt.Value = NetworkManager.ServerTime.Time + _balance.ReturnCountdownSeconds;
                 SetPhase(RunPhase.Returning);
             }
@@ -213,7 +216,7 @@ namespace RatGame.Run
             }
 
             int haul = StashedValue.Value + carriedValue;
-            RunSession.AddHaul(haul); // 누계에 더하고 바로 저장
+            if (_quota != null) _quota.ServerOnCleared(haul); else RunSession.AddHaul(haul); // 누계에 더하고 바로 저장
             ResultCarriedValue.Value = carriedValue;
             RunTotalValue.Value = RunSession.TotalValue;
             ResultEndsAt.Value = NetworkManager.ServerTime.Time + _balance.ResultScreenSeconds;
@@ -249,6 +252,7 @@ namespace RatGame.Run
         private void Wipe()
         {
             SetPhase(RunPhase.Wiped);
+            if (_quota != null) _quota.ServerOnWiped();
             ResultEndsAt.Value = NetworkManager.ServerTime.Time + _balance.ResultScreenSeconds;
             var depositCounts = new Dictionary<ulong, int>();
             for (int i = 0; i < Contributions.Count; i++)

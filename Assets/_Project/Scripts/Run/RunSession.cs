@@ -18,6 +18,14 @@ namespace RatGame.Run
         /// <summary>기지 목적지 게시판에서 고른 스테이지 (DeparturePad 인덱스). 기지 씬은 귀환 때마다 새로 로드돼서 여기 둔다.</summary>
         public static int StageChoice { get; set; }
 
+        /// <summary>새 루프(docs/09): 이번 런의 스테이지 번호(1부터). 클리어하면 +1, 전멸·엔딩이면 1로.</summary>
+        public static int StageNumber { get; set; } = 1;
+
+        /// <summary>새 루프: 할당량을 내고 남은 식량 — 스테이지 사이 상점 돈 (런이 끝나면 0).</summary>
+        public static int Pantry { get; set; }
+
+        public static void ResetRun() { StageNumber = 1; Pantry = 0; }
+
         /// <summary>귀환 정산분을 누계에 더하고 바로 저장.</summary>
         public static void AddHaul(int haul)
         {
@@ -26,6 +34,6 @@ namespace RatGame.Run
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetOnPlay() { DepartPending = false; StageChoice = 0; }
+        private static void ResetOnPlay() { DepartPending = false; StageChoice = 0; ResetRun(); }
     }
 }

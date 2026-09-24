@@ -19,6 +19,11 @@ namespace RatGame.Data
         [SerializeField] private float _returnCountdownSeconds = 3f; // 전원 쥐구멍 집합 후 귀환까지 (s)
         [SerializeField] private float _resultScreenSeconds = 8f;    // 귀환·전멸 결과 화면 표시 시간 (s)
 
+        [Header("새 루프 — 스테이지·할당량 (docs/09, 2026-09-24 잠정)")]
+        [SerializeField] private int _stagesPerRun = 5;          // 이만큼 클리어하면 엔딩
+        [SerializeField] private int _stageQuotaBase = 150;      // 1스테이지 식량 할당량
+        [SerializeField] private int _stageQuotaPerStage = 75;   // 스테이지마다 더해지는 할당량
+
         [Header("솔로 보정")]
         [SerializeField, Range(0f, 1f)] private float _soloCatVisionMultiplier = 0.8f; // 시야 -20%
 
@@ -400,6 +405,8 @@ namespace RatGame.Data
         public float DepartCountdownSeconds => _departCountdownSeconds;
         public float ReturnCountdownSeconds => _returnCountdownSeconds;
         public float ResultScreenSeconds => _resultScreenSeconds;
+        public int StagesPerRun => _stagesPerRun;
+        public int StageQuota(int stage) => _stageQuotaBase + _stageQuotaPerStage * Mathf.Max(0, stage - 1);
 
         public float WalkSpeed => _walkSpeed;
         public float SprintSpeed => _sprintSpeed;

@@ -30,6 +30,10 @@ namespace RatGame.Editor
             var builder = rm.GetComponent<GridZoneBuilder>();
             if (builder == null) builder = rm.AddComponent<GridZoneBuilder>();
             builder.EditorSetup(zone);
+            // 새 루프 할당량 (docs/09) — 벽 속 스테이지에만
+            var quota = rm.GetComponent<StageQuota>();
+            if (quota == null) quota = rm.AddComponent<StageQuota>();
+            quota.EditorSetup(AssetDatabase.LoadAssetAtPath<BalanceConfigSO>("Assets/_Project/Data/Balance/BalanceConfig.asset"));
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
 
