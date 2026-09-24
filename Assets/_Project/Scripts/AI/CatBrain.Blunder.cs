@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble }
+    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble, Hairball /* 그루밍 뒤 웩웩 (2026-09-24) */ }
 
     /// <summary>
     /// 댕청한 실패 (design/cat-ideas/11, 2026-09-24). 쥐가 만든 상황에서만 확실히 — 무작위 실패는 억울하지도 웃기지도 않다.
@@ -30,6 +30,30 @@ namespace RatGame.AI
         private bool _wobbleAfterDistract;
         private CarryableItem[] _slipItems;
         private float _nextSlipScan;
+
+        [SerializeField] private LootItemSO _hairballItem; // 헤어볼 전리품 (Cat 프리팹에서 연결)
+
+        /// <summary>헤어볼 몇 개 뱉었나 (테스트용).</summary>
+        public int HairballsSpawned { get; private set; }
+
+        // Groom 스팟 머무름이 끝날 때 (TickPatrol): 가끔 웩웩
+        private bool TryHairball()
+        {
+            if (_hairballItem == null || _hairballItem.Prefab == null) return false;
+            if (Random.value >= _balance.CatHairballChance) return false;
+            Log.Dev($"고양이 [{name}]: 웩웩…");
+            EnterBlunder(CatBlunderKind.Hairball, _balance.CatHairballSeconds);
+            return true;
+        }
+
+        private void SpawnHairball()
+        {
+            Vector3 pos = transform.position + transform.forward * 0.6f + Vector3.up * 0.3f;
+            var go = Instantiate(_hairballItem.Prefab, pos, Quaternion.identity);
+            go.GetComponent<NetworkObject>().Spawn(true); // 씬과 함께 사라지게
+            HairballsSpawned++;
+            Log.Dev($"고양이 [{name}]: 헤어볼 퉤 ({pos:F1})");
+        }
 
         /// <summary>테스트용 — 이번 미끄러짐에서 실제로 밀린 거리.</summary>
         public float LastSlipDistance => _slipTraveled;
@@ -147,6 +171,12 @@ namespace RatGame.AI
                     SetState(CatState.Suspicious); // 뭐였지? 소리 난 곳 조사
                     return;
                 }
+                case CatBlunderKind.Hairball:
+                    if (Time.time < _blunderUntil) return;
+                    SpawnHairball();
+                    SetState(CatState.Return);
+                    return;
+
                 case CatBlunderKind.Wobble:
                     if (CheckEscalation()) return; // 취해도 코앞 쥐는 쫓는다
                     if (Time.time >= _blunderUntil) { Log.Dev($"고양이 [{name}]: 술 깸"); SetState(CatState.Return); return; }

@@ -222,6 +222,8 @@ namespace RatGame.Data
         [SerializeField] private float _catStartleSeconds = 1.5f;
         [SerializeField] private float _catWobbleSeconds = 10f;          // 캣닢 뒤 비틀거림
         [SerializeField] private float _catWobbleSpeedMul = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float _catHairballChance = 0.2f; // 그루밍 끝나면 헤어볼 확률
+        [SerializeField] private float _catHairballSeconds = 3f;         // 웩웩
 
         [Header("경계도 디렉터 (design/cat-ideas/12) — 고양이 감각 수치는 안 건드린다")]
         [SerializeField] private float _directorTickSeconds = 10f;
@@ -471,6 +473,8 @@ namespace RatGame.Data
         public float CatStartleSeconds => _catStartleSeconds;
         public float CatWobbleSeconds => _catWobbleSeconds;
         public float CatWobbleSpeedMul => _catWobbleSpeedMul;
+        public float CatHairballChance => _catHairballChance;
+        public float CatHairballSeconds => _catHairballSeconds;
         public float DirectorTickSeconds => _directorTickSeconds;
         public float TensionSuspicious => _tensionSuspicious;
         public float TensionChase => _tensionChase;

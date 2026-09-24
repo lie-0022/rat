@@ -42,8 +42,9 @@ public class LootItemSO : ScriptableObject
 | loot_watermelon | 수박 조각 | Large | 160 | 18 | Slippery |
 | loot_chicken | 로스트치킨 | Large | 200 | 22 | — |
 | loot_ring | 반지 | Special | 250 | 0.3 | — (고양이 스팟 옆 스폰 고정, 10 문서) |
-| loot_phone | 스마트폰 | Special | 220 | 2.5 | Alarming |
+| loot_phone | 스마트폰 | Special | 220 | 5 | Alarming (5kg — 샌드박스 끌기 검증용으로 올림, 커밋 5c1f400. 2026-09-24 표 정정) |
 | loot_watch | 회중시계 | Special | 180 | 1.5 | Alarming |
+| loot_hairball | 헤어볼 | Small | 5 | 0.3 | Slippery — **스폰 안 됨, 고양이가 그루밍 뒤 20%로 뱉는다** (2026-09-24, docs/07). 도감: "고양이가 준 선물. 받기 싫었다." |
 
 ## 정산 — World/DepositZone.cs (쥐구멍)
 

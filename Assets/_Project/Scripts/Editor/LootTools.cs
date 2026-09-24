@@ -9,7 +9,7 @@ using UnityEngine;
 namespace RatGame.Editor
 {
     /// <summary>
-    /// Tools/RatGame/Create Loot Assets — docs/08 표 20종의 SO + 프리미티브 프리팹 + ItemDatabase 생성.
+    /// Tools/RatGame/Create Loot Assets — docs/08 표 21종(헤어볼 포함)의 SO + 프리미티브 프리팹 + ItemDatabase 생성.
     /// 표와 어긋나면 여기와 docs를 함께 고칠 것 (docs/14 Validate Balance 후보).
     /// </summary>
     public static class LootTools
@@ -35,15 +35,19 @@ namespace RatGame.Editor
             ("loot_watermelon",   "수박 조각",  LootTier.Large,  160, 18f,   ItemTrait.Slippery, "즙이 손잡이를 배신한다."),
             ("loot_chicken",      "로스트치킨", LootTier.Large,  200, 22f,   ItemTrait.None, "4인 운반 권장. 4인 시식 금지."),
             ("loot_ring",         "반지",       LootTier.Special, 250, 0.3f, ItemTrait.None, "고양이 옆에서 반짝인다. 함정 같지만 진짜다."),
-            ("loot_phone",        "스마트폰",   LootTier.Special, 220, 2.5f, ItemTrait.Alarming, "만지면 운다. 인간도 그렇다."),
+            ("loot_phone",        "스마트폰",   LootTier.Special, 220, 5f,   ItemTrait.Alarming, "만지면 운다. 인간도 그렇다."),
             ("loot_watch",        "회중시계",   LootTier.Special, 180, 1.5f, ItemTrait.Alarming, "똑딱똑딱. 고양이 귀에도 똑딱똑딱."),
+            // 스폰 테이블엔 없음 — 고양이가 그루밍 뒤 뱉는다 (2026-09-24, design/cat-ideas/11)
+            ("loot_hairball",     "헤어볼",     LootTier.Small,    5,  0.3f, ItemTrait.Slippery, "고양이가 준 선물. 받기 싫었다."),
         };
 
         [MenuItem("Tools/RatGame/Create Loot Assets")]
         public static void CreateLootAssets()
         {
             var balance = AssetDatabase.LoadAssetAtPath<BalanceConfigSO>("Assets/_Project/Data/Balance/BalanceConfig.asset");
-            AssetDatabase.CreateFolder("Assets/_Project/Prefabs/Items", "Loot");
+            // 이미 있으면 만들지 않는다 — CreateFolder는 같은 이름이 있으면 "Loot 1"을 새로 만든다
+            if (!AssetDatabase.IsValidFolder("Assets/_Project/Prefabs/Items/Loot"))
+                AssetDatabase.CreateFolder("Assets/_Project/Prefabs/Items", "Loot");
             var all = new List<LootItemSO>();
 
             foreach (var row in Table)

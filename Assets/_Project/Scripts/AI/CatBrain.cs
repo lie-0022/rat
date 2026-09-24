@@ -341,6 +341,7 @@ namespace RatGame.AI
                 if (Time.time < _waitUntil) return;
                 _dwelling = false;
                 _senses.SensitivityMultiplier = 1f;
+                if (CurrentSpotType == CatSpotType.Groom && TryHairball()) return; // 그루밍 끝 — 가끔 헤어볼 (design/cat-ideas/11)
                 GoToNextSpot();
                 return;
             }

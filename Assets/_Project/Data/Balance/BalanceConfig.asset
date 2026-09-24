@@ -187,6 +187,8 @@ MonoBehaviour:
   _catStartleSeconds: 1.5
   _catWobbleSeconds: 10
   _catWobbleSpeedMul: 0.5
+  _catHairballChance: 0.2
+  _catHairballSeconds: 3
   _directorTickSeconds: 10
   _tensionSuspicious: 10
   _tensionChase: 25
@@ -217,6 +219,12 @@ MonoBehaviour:
   _reliefCallAwayMinGap: 90
   _doorbellHoldSeconds: 1
   _attentionIndicatorRange: 15
+  _catFightDistance: 4
+  _catFightChance: 0.7
+  _catFightSeconds: 15
+  _catFightCooldown: 30
+  _catFightDeclineCooldown: 10
+  _catFightViewMul: 0.2
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15
