@@ -85,6 +85,7 @@ namespace RatGame.AI
             CollectHideSpots();
             _senses.CuriosityFilter = IsCuriosityAllowed;
             InitMemory();
+            InitJump(); // 선반 점프 (고양이 39)
             _senses.Heard += OnHeardForPersonality;
             Noise.ScentSystem.Configure(_balance);
             Noise.ScentSystem.Clear(); // 정적 버퍼 — 이전 판·이전 플레이 모드 자국 제거
@@ -205,7 +206,7 @@ namespace RatGame.AI
             State.Value = next;
             RaiseStateChanged(prevState, next); // 경계도 디렉터 긴장 입력
             _senses.SensitivityMultiplier = next == CatState.Sleep ? _balance.CatSleepSenseMultiplier : 1f;
-            if (next != CatState.Patrol) { _dwelling = false; _goSit = false; }
+            if (next != CatState.Patrol) { _dwelling = false; _goSit = false; ExitPerch(); }
             if (next != CatState.Sleep) SleepPhase.Value = CatSleepPhase.None;
             if (next != CatState.Curious) ExitCurious();
             if (next != CatState.Patrol) CancelMemoryVisit();
@@ -370,6 +371,7 @@ namespace RatGame.AI
                 if (Time.time < _waitUntil) return;
                 _goSit = false;
                 _dwelling = false;
+                ExitPerch();
                 _senses.SensitivityMultiplier = 1f;
                 if (CurrentSpotType == CatSpotType.Groom && TryHairball()) return; // 그루밍 끝 — 가끔 헤어볼 (design/cat-ideas/11)
                 if (TryStartZoomies()) return; // 화장실 끝 — 우다다 (design/cat-ideas/02)
@@ -419,6 +421,7 @@ namespace RatGame.AI
             {
                 CatSpotType.Bed => w * p.BedWeightMultiplier,
                 CatSpotType.Look => w * p.LookWeightMultiplier,
+                CatSpotType.Perch => w * p.PerchWeightMultiplier,
                 _ => w
             };
         }
@@ -453,6 +456,8 @@ namespace RatGame.AI
                     Dwell(_balance.CatLitterSeconds, _balance.CatLitterSense); return;
                 case CatSpotType.Water:
                     Dwell(_balance.CatWaterSeconds, 1f); return;
+                case CatSpotType.Perch:
+                    EnterPerch(); return;    // 선반 위에서 내려다보기 (고양이 39)
                 default:
                     Dwell(Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y) * LookDwellMul * DirLookDwellMul, 1f); return;
             }

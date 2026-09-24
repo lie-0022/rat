@@ -26,7 +26,56 @@ namespace RatGame.AI
             NavMesh.SamplePosition(pos, out var hit, radius, NavMesh.AllAreas) ? hit.position : fallback;
         public Vector3 Velocity => _agent.velocity;
 
-        private void Awake() => _agent = GetComponent<NavMeshAgent>();
+        private void Awake()
+        {
+            _agent = GetComponent<NavMeshAgent>();
+            _agent.autoTraverseOffMeshLink = false; // 선반 점프는 직접 — 호를 그리고 가끔 실패한다 (고양이 39)
+        }
+
+        // ---- 점프 (NavMeshLink) ----
+        /// <summary>올라가는 점프를 실패할지 (CatBrain이 준다). null이면 실패 없음.</summary>
+        public System.Func<bool> JumpFailCheck { get; set; }
+        /// <summary>점프 실패 — 원래 자리로 떨어졌다.</summary>
+        public event System.Action JumpFailed;
+        public float JumpSeconds { get; set; } = 0.45f;
+        public bool IsJumping => _jumping;
+
+        private bool _jumping;
+        private bool _jumpFail;
+        private float _jumpT;
+        private Vector3 _jumpFrom, _jumpTo;
+
+        private void Update()
+        {
+            if (!_agent.enabled || !_agent.isOnNavMesh) return;
+            if (!_jumping)
+            {
+                if (!_agent.isOnOffMeshLink) return;
+                var link = _agent.currentOffMeshLinkData;
+                _jumpFrom = transform.position;
+                _jumpTo = link.endPos + Vector3.up * _agent.baseOffset;
+                _jumpT = 0f;
+                _jumping = true;
+                bool up = _jumpTo.y > _jumpFrom.y + 0.3f;
+                _jumpFail = up && JumpFailCheck != null && JumpFailCheck();
+                return;
+            }
+            _jumpT += Time.deltaTime / Mathf.Max(0.05f, JumpSeconds);
+            float t = Mathf.Clamp01(_jumpT);
+            if (_jumpFail && t >= 0.5f)
+            {
+                // 머리를 박고 떨어진다 — 링크를 버리고 출발점으로
+                _jumping = false;
+                _agent.Warp(_jumpFrom);
+                JumpFailed?.Invoke();
+                return;
+            }
+            float arc = Mathf.Sin(t * Mathf.PI) * 0.8f;
+            transform.position = Vector3.Lerp(_jumpFrom, _jumpTo, t) + Vector3.up * arc;
+            if (t < 1f) return;
+            _jumping = false;
+            _agent.CompleteOffMeshLink();
+        }
 
         public void SetEnabled(bool value)
         {

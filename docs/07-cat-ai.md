@@ -140,6 +140,11 @@ FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에�
 - **잡지 못한다**: Capture 명중 시 쥐를 Stunned(2s)만 → Return.
 - 무작위 성격 추첨에서 제외(`isKitten`) — 존 생성기·테스트가 `ServerSetPersonality`로 명시. 아기가 있으면 관계는 엄마·아기.
 
+## 선반 관찰대·점프 (2026-09-24, 고양이 39, `AI/CatBrain.Perch.cs`·`AI/CatMovement`, design/cat-ideas/09·01·11)
+- Perch 스팟(선반 윗면)에 도착하면 `catPerchSeconds` 25s 머무름(감각 1) + 시야 거리 `catPerchViewDistance` 12(성격 배율 곱). 눈높이가 높아(윗면 1.6 + 0.5) 1.5m 상자 너머도 보인다. 선반 **밑**(1.4m, 쥐만 — 고양이 에이전트 높이 1.7)은 판이 가려 위에서 안 보인다.
+- 점프: `NavMeshLink`(양방향)를 `CatMovement`가 직접 넘는다 — 0.45s 호(높이 0.8). **올라가는** 점프는 `catJumpFailChance` 0.15로 실패: 중간에서 출발점으로 떨어져 Blunder Stun `catJumpFailStunSeconds` 1.5s → Return.
+- 성격 `perchWeightMultiplier`: 기본 1, 사냥꾼 3(선반을 좋아함).
+
 ## 데모 레이아웃 (2026-09-24)
 
 `Tools/RatGame/Cat/Build Demo Layout (Stage_Warehouse01)`: 스팟 6(Bed·Food·Sun·Groom·Look×2, 쥐구멍 반대편에 잠자리·밥)·시야 가림 상자 4·고양이 1(잠자리에서 시작)·NavMesh 베이크. 방 모듈 전 검증용 — 선반 층·틈은 다음 단계(design/cat-design/02-6). 검증: 4배속 6분 관찰에서 스팟 14회 방문(같은 스팟 연속 없음), Bed 수면 45.0s 뒤 깸, Food 머무는 동안 감각 0.5. 참고: 쥐가 쥐구멍 위에 서 있으면 포획→쥐구멍 부활→재포획이 반복된다(쥐구멍 부활 사양의 자연스러운 결과).

@@ -33,6 +33,7 @@ namespace RatGame.AI
         private Quaternion _visualBaseRot = Quaternion.identity;
         private byte _lastPawTick;
         private CatBlunderKind _lastBlunder;
+        private bool _wasHigh;
         private bool _lastAlert;
         private bool _lastFighting;
         private bool _lastFlanking;
@@ -141,6 +142,12 @@ namespace RatGame.AI
             {
                 _lastAlert = _brain.Alert.Value;
                 RatGame.Core.Log.Dev($"고양이 예민: {_lastAlert}"); // 2인 검증용
+            }
+            bool high = transform.position.y > 1f; // 선반 위 (고양이 39) — NetworkTransform 높이 복제 확인용
+            if (high != _wasHigh)
+            {
+                _wasHigh = high;
+                RatGame.Core.Log.Dev($"고양이 높이 연출: {(high ? "선반 위" : "바닥")}"); // 2인 검증용
             }
             if (_brain.BlunderKind.Value != _lastBlunder)
             {

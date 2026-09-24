@@ -199,6 +199,12 @@ namespace RatGame.Data
         [SerializeField] private float _catTrackSniffSeconds = 0.5f;     // 자국마다 킁킁
         [SerializeField] private float _puddleRadius = 2.5f;             // 엎은 물그릇 웅덩이 (design/cat-ideas/06 2단계)
         [SerializeField] private float _puddleSeconds = 60f;
+        [Header("선반·점프 (design/cat-ideas/09·01·11, 고양이 39)")]
+        [SerializeField] private float _catPerchSeconds = 25f;           // 선반 위에서 내려다보는 시간
+        [SerializeField] private float _catPerchViewDistance = 12f;      // 선반 위 시야 거리 (평소 8)
+        [SerializeField] private float _catJumpSeconds = 0.45f;
+        [SerializeField, Range(0f, 1f)] private float _catJumpFailChance = 0.15f; // 올라가는 점프 실패
+        [SerializeField] private float _catJumpFailStunSeconds = 1.5f;
         [Header("흔들리는 끈 (design/cat-ideas/13, 고양이 38)")]
         [SerializeField] private float _stringSwingSeconds = 30f;
         [SerializeField] private float _stringAttractRadius = 8f;        // 이 안의 한가한 고양이가 보면 온다
@@ -526,6 +532,11 @@ namespace RatGame.Data
         public float CatTrackSniffSeconds => _catTrackSniffSeconds;
         public float PuddleRadius => _puddleRadius;
         public float PuddleSeconds => _puddleSeconds;
+        public float CatPerchSeconds => _catPerchSeconds;
+        public float CatPerchViewDistance => _catPerchViewDistance;
+        public float CatJumpSeconds => _catJumpSeconds;
+        public float CatJumpFailChance => _catJumpFailChance;
+        public float CatJumpFailStunSeconds => _catJumpFailStunSeconds;
         public float StringSwingSeconds => _stringSwingSeconds;
         public float StringAttractRadius => _stringAttractRadius;
         public float StringDistractSeconds => _stringDistractSeconds;

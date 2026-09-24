@@ -21,6 +21,7 @@ namespace RatGame.Data
         [SerializeField] private float _sleepDurationMultiplier = 1f;   // 잠자리 총 수면 시간
         [SerializeField] private float _bedWeightMultiplier = 1f;       // 잠자리를 다음 스팟으로 뽑을 확률
         [SerializeField] private float _lookWeightMultiplier = 1f;      // 관찰점 선호
+        [SerializeField] private float _perchWeightMultiplier = 1f; // 선반(Perch) 스팟 선호 — 사냥꾼 3 (고양이 39)
         [SerializeField] private float _lookDwellMultiplier = 1f;       // 관찰점에 머무는 시간
 
         [Header("특이 행동")]
@@ -42,6 +43,7 @@ namespace RatGame.Data
         public float SleepDurationMultiplier => _sleepDurationMultiplier;
         public float BedWeightMultiplier => _bedWeightMultiplier;
         public float LookWeightMultiplier => _lookWeightMultiplier;
+        public float PerchWeightMultiplier => _perchWeightMultiplier;
         public float LookDwellMultiplier => _lookDwellMultiplier;
         public float ChaseGiveUpSeconds => _chaseGiveUpSeconds;
         public float CuriositySpeedMultiplier => _curiositySpeedMultiplier;
@@ -54,6 +56,7 @@ namespace RatGame.Data
         public float WakeStretchSeconds => _wakeStretchSeconds;
 
 #if UNITY_EDITOR
+        public void EditorSetupPerch(float perchWeight) => _perchWeightMultiplier = perchWeight;
         public void EditorSetup(string name, Color color, float view, float hearing, float chaseSpeed,
                                 float sleepDur, float bedWeight, float lookWeight, float lookDwell, float giveUp)
         {

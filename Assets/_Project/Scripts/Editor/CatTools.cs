@@ -117,6 +117,7 @@ namespace RatGame.Editor
                 ("Spot_Water",  CatSpotType.Water,  new(11f, 0f, 16f),   new(0f, 0f, 1f), 0.6f),
                 ("Spot_Ambush", CatSpotType.Ambush, new(-7.6f, 0f, 9f), new(0f, 0f, -1f), 0.5f), // 상자 B 옆 매복 (design/cat-ideas/09)
                 ("Spot_Box",    CatSpotType.Box,    new(-2.1f, 0f, 7f), new(1f, 0f, 0f),  0.5f), // 빈 상자(숨을 곳) 입구에 앉기
+                ("Spot_Perch",  CatSpotType.Perch,  new(14f, 1.6f, 8.3f), new(0f, 0f, -1f), 0.8f), // 선반 위 관찰대 (고양이 39)
                 ("Spot_DoorW", CatSpotType.Door,  new(-19f, 0f, 0f),   new(1f, 0f, 0f),  1f),   // 집주인이 부르면 나가는 문 (design/cat-ideas/10)
                 ("Spot_DoorE", CatSpotType.Door,  new(19f, 0f, 6f),    new(-1f, 0f, 0f), 1f),
             };
@@ -145,6 +146,32 @@ namespace RatGame.Editor
                 c.name = name; c.transform.SetParent(root.transform);
                 c.transform.position = pos; c.transform.localScale = size;
                 c.isStatic = true;
+            }
+
+            // 선반 (고양이 39) — 판 윗면 y 1.6, 밑 1.4m는 쥐만(쥐 키 1.3, 고양이 에이전트 높이 1.7). 앞에 점프 링크
+            if (GameObject.Find("Shelf_Perch") == null)
+            {
+                var shelf = new GameObject("Shelf_Perch");
+                shelf.transform.SetParent(root.transform);
+                shelf.transform.position = new Vector3(14f, 0f, 8f);
+                var top = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                top.name = "Top"; top.transform.SetParent(shelf.transform, false);
+                top.transform.localPosition = new Vector3(0f, 1.5f, 0f); top.transform.localScale = new Vector3(4f, 0.2f, 2.2f);
+                top.isStatic = true;
+                var topR = top.GetComponent<Renderer>();
+                topR.sharedMaterial = new Material(topR.sharedMaterial) { color = new Color(0.55f, 0.4f, 0.28f) };
+                foreach (var lp in new[] { new Vector3(-1.9f, 0.7f, -1f), new Vector3(1.9f, 0.7f, -1f), new Vector3(-1.9f, 0.7f, 1f), new Vector3(1.9f, 0.7f, 1f) })
+                {
+                    var leg = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    leg.name = "Leg"; leg.transform.SetParent(shelf.transform, false);
+                    leg.transform.localPosition = lp; leg.transform.localScale = new Vector3(0.12f, 1.4f, 0.12f);
+                    leg.isStatic = true;
+                }
+                var link = shelf.AddComponent<NavMeshLink>();
+                link.startPoint = new Vector3(0f, 0f, -2.2f);  // 바닥 (14, 0, 5.8)
+                link.endPoint = new Vector3(0f, 1.6f, -0.4f);  // 윗면 (14, 1.6, 7.6)
+                link.width = 1f;
+                link.bidirectional = true;
             }
 
             // 숨을 곳 2개 (design/cat-ideas/14): 관찰점 A 근처 신발(1인), 상자 B 옆 빈 상자(2인). 트리거 콜라이더 — 안으로 순간이동하므로 몸이 끼지 않게

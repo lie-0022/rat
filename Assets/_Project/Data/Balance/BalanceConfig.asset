@@ -168,6 +168,11 @@ MonoBehaviour:
   _catTrackSniffSeconds: 0.5
   _puddleRadius: 2.5
   _puddleSeconds: 60
+  _catPerchSeconds: 25
+  _catPerchViewDistance: 12
+  _catJumpSeconds: 0.45
+  _catJumpFailChance: 0.15
+  _catJumpFailStunSeconds: 1.5
   _stringSwingSeconds: 30
   _stringAttractRadius: 8
   _stringDistractSeconds: 10

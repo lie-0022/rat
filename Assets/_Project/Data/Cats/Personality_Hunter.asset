@@ -20,5 +20,14 @@ MonoBehaviour:
   _sleepDurationMultiplier: 0.5
   _bedWeightMultiplier: 1
   _lookWeightMultiplier: 1.5
+  _perchWeightMultiplier: 3
   _lookDwellMultiplier: 3
   _chaseGiveUpSeconds: 0
+  _curiositySpeedMultiplier: 1
+  _curiousWhileSuspicious: 0
+  _fleeLoudness: 0
+  _fleeSeconds: 3
+  _isKitten: 0
+  _moveSpeedMultiplier: 1
+  _bodyScale: 1
+  _wakeStretchSeconds: 0
