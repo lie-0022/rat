@@ -115,6 +115,7 @@ namespace RatGame.AI
                 var condition = playerObj.GetComponent<PlayerCondition>();
                 if (condition == null || condition.State.Value != ConditionState.Active) continue;
                 if (IsIgnoring(condition.OwnerClientId)) continue;
+                if (World.SafeZone.Contains(playerObj.transform.position)) continue; // 안전지대 안은 안 보인다 (고양이 72)
 
                 Vector3 toPlayer = playerObj.transform.position - transform.position;
                 float dist = toPlayer.magnitude;
@@ -190,6 +191,7 @@ namespace RatGame.AI
         private void OnNoise(NoiseEvent e)
         {
             if (!IsServer || Deaf) return; // 싸움 중엔 못 듣는다 (design/cat-ideas/07)
+            if (World.SafeZone.Contains(e.Pos)) return; // 안전지대 안 소리는 안 들린다 (고양이 72)
             if (e.Loudness < NoiseSystem.MaskLoudness) return; // 청소기 소리에 묻힘 (design/cat-ideas/10)
             if (e.Type == NoiseType.Impact && IgnoreImpactNear != null
                 && Vector3.Distance(e.Pos, IgnoreImpactNear.position) < 1.5f) return;

@@ -111,6 +111,20 @@ namespace RatGame.Editor
             {
                 depot = Marker(root.transform, "Depot", Vector3.zero, null); // 식량 창고·상점 자리 (새 루프 2단계)
                 room.LootSpawns = new Transform[0];
+                // 안전지대 (고양이 72): 고양이 시야·청각 제외 + 고양이 NavMesh 제외 + 따뜻한 불빛(멀리서도 보이게)
+                var safe = new GameObject("SafeZone");
+                safe.layer = LayerMask.NameToLayer("Ignore Raycast");
+                safe.transform.SetParent(root.transform, false);
+                var safeBox = safe.AddComponent<BoxCollider>(); safeBox.isTrigger = true;
+                safeBox.center = new Vector3(0f, WallH * 0.5f, 0f); safeBox.size = new Vector3(s.W - 0.4f, WallH, s.D - 0.4f);
+                safe.AddComponent<SafeZone>();
+                var noCat = new GameObject("NoCatVolume") { layer = floorLayer };
+                noCat.transform.SetParent(root.transform, false);
+                var vol = noCat.AddComponent<Unity.AI.Navigation.NavMeshModifierVolume>();
+                vol.center = new Vector3(0f, WallH * 0.5f, 0f); vol.size = new Vector3(s.W, WallH + 1f, s.D);
+                vol.area = 1; // Not Walkable
+                var lamp = new GameObject("WarmLight"); lamp.transform.SetParent(root.transform, false); lamp.transform.localPosition = new Vector3(0f, WallH - 0.3f, 0f);
+                var light = lamp.AddComponent<Light>(); light.type = LightType.Point; light.range = 8f; light.intensity = 2f; light.color = new Color(1f, 0.8f, 0.55f);
             }
             else
             {

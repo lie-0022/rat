@@ -514,6 +514,16 @@ namespace RatGame.AI
                 return;
             }
 
+            // 쫓던 쥐가 안전지대(목적지방)로 들어가면 포기 — 거기엔 못 들어간다 (고양이 72)
+            if (World.SafeZone.Contains(_chaseTarget.transform.position))
+            {
+                Log.Dev($"고양이 [{name}]: 안전지대로 도망침 — 포기");
+                _chaseTarget = null;
+                _senses.ConsumeStimulus();
+                SetState(CatState.Return);
+                return;
+            }
+
             // 게으름뱅이: 오래 쫓으면 하품하고 포기 (design/cat-ideas/01)
             float giveUp = ChaseGiveUp > 0f && IsGrudged(_chaseTarget.OwnerClientId) ? ChaseGiveUp + _balance.CatGrudgeGiveUpBonus : ChaseGiveUp;
             if (giveUp > 0f && Time.time - _chaseStartedAt >= giveUp)
