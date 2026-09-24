@@ -57,7 +57,7 @@ namespace RatGame.World
             if (RunManager.Instance != null)
                 RunManager.Instance.ServerDeposit(value, lastCarrier);
             Log.Dev($"정산: {item.name} → {value} 가치");
-            item.NetworkObject.Despawn();
+            item.NetworkObject.DespawnSafe();
         }
 
     }

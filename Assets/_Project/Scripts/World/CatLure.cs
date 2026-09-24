@@ -71,10 +71,16 @@ namespace RatGame.World
         private static CatBrain[] FindCats() =>
             Object.FindObjectsByType<CatBrain>(FindObjectsSortMode.None);
 
+        // 씬에 놓인 캣닢·부스러기는 CarryableItem이 없어 여기서 끈다 — 파괴 대신 디스폰만 되므로 (고양이 134)
+        public override void OnNetworkDespawn()
+        {
+            if (NetworkObject.IsSceneObject == true) gameObject.SetActive(false);
+        }
+
         private void Consume()
         {
             _consumed = true;
-            if (NetworkObject.IsSpawned) NetworkObject.Despawn();
+            NetworkObject.DespawnSafe();
         }
     }
 }

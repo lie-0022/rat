@@ -35,7 +35,7 @@ namespace RatGame.World
             float amount = _balance.EatStamina;
             AteClientRpc(amount, new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { clientId } } });
             Log.Dev($"먹기: client {clientId}가 {name} 먹음 (+{amount} 스태미나, 가치 {_item.EffectiveValue} 포기)");
-            NetworkObject.Despawn();
+            NetworkObject.DespawnSafe();
         }
 
         [ClientRpc]

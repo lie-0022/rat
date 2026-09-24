@@ -90,7 +90,14 @@ namespace RatGame.World
             if (Has(ItemTrait.Rolling)) _rb.angularDamping = 0.05f; // 놓으면 굴러간다 (docs/05)
         }
 
-        public override void OnNetworkDespawn() => Pocketed.OnValueChanged -= OnPocketedChanged;
+        public override void OnNetworkDespawn()
+        {
+            Pocketed.OnValueChanged -= OnPocketedChanged;
+            // 씬에 놓인 물건은 적립·파괴·먹기 때 파괴 대신 디스폰만 된다(DespawnSafe) — 모두의 화면에서 끈다 (고양이 134)
+            if (NetworkObject.IsSceneObject != true) return;
+            gameObject.SetActive(false);
+            if (Run.RunManager.Instance != null && Run.RunManager.Instance.AcceptsDeposits) Log.Dev($"씬 물건 끔: {name}"); // 2인 검증용 — 씬 언로드 때 일괄 디스폰은 안 찍게
+        }
 
         private void OnPocketedChanged(bool _, bool now) => ApplyPocketVisual(now);
 
@@ -284,7 +291,7 @@ namespace RatGame.World
             ServerReleaseAll();
             Noise.NoiseSystem.Emit(transform.position, _balance.BreakLoudness, Noise.NoiseType.Break, AttributedClient);
             EventBus.RaiseLootBroken(_data);
-            NetworkObject.Despawn();
+            NetworkObject.DespawnSafe();
         }
 
         private float _nextImpactNoiseTime; // 연쇄 충돌 스팸 방지

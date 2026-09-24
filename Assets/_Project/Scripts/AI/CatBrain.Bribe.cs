@@ -69,7 +69,7 @@ namespace RatGame.AI
             {
                 Log.Dev($"고양이 [{name}]: 냠냠 — {_bribeItem.name} 먹음");
                 ServerAddGrudge(_bribeFrom, -_balance.CatGrudgeBribe, "뇌물");
-                if (_bribeItem.IsSpawned) _bribeItem.NetworkObject.Despawn();
+                _bribeItem.NetworkObject.DespawnSafe();
                 _bribeItem = null;
             }
             if (_fooledBy.HasValue)
