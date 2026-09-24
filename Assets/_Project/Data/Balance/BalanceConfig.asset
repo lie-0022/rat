@@ -168,6 +168,11 @@ MonoBehaviour:
   _catTrackSniffSeconds: 0.5
   _puddleRadius: 2.5
   _puddleSeconds: 60
+  _stringSwingSeconds: 30
+  _stringAttractRadius: 8
+  _stringDistractSeconds: 10
+  _stringCatCooldown: 40
+  _stringRetriggerRadius: 1.5
   _pepperSpillImpactSpeed: 4
   _pepperRadius: 2
   _pepperSeconds: 45

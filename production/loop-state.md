@@ -9,10 +9,11 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 38 — (다음 후보 기획 중)
-상태: 고양이 37 커밋 후 다음 후보 선정
+## 현재 작업: 고양이 39 — (다음 후보 기획 중)
+상태: 고양이 38 커밋 후 다음 후보 선정
 
 ## 완료 기록
+- 고양이 38 흔들리는 끈 — 커밋됨 (plan cat-38). 관심 경제 신규 유인 1종(레이저는 아이템 사용 시스템 필요 — 보류).
 - 고양이 37 창문 바람 — 커밋됨 (plan cat-37). 집주인 이벤트 7종. 꾸준한 힘은 마찰에 막힘 → 돌풍 3 m/s.
 - 고양이 36 통합 소크 3 — 커밋됨 (plan cat-36). 게임 580s, 예외·갇힘·루프 0. 소크 스크립트는 plan에 방법만 — 원본은 고양이 21 스크립트 + 쥐 짓 8종.
 - 고양이 35 버둥거리기 — 커밋됨 (plan cat-35). 가지고 놀기 3단계. Player 프리팹에 PlayerStruggle 추가. 남은 04: 뒤집힌 카메라(옵션).
@@ -66,4 +67,5 @@
 - 2인 테스트에서 클라 쥐는 호스트가 `PlayerController.TeleportClientRpc`(TargetClientIds=클라)로 옮긴다. 다운되면 `RunManager.ServerRevive(id)`.
 - 키 입력 테스트: `InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.A))` — 에디터가 백그라운드여도 들어갔다(고양이 35). 끝나면 빈 KeyboardState로 떼기.
 - 컴파일 요청이 멈춰 있으면(isCompiling=True 지속) `refresh_unity compile=request` 한 번 더.
+- 빌드 클라는 호스트 play가 뜬 뒤에 띄운다(먼저 띄우면 5회 재시도 후 실패).
 - 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.

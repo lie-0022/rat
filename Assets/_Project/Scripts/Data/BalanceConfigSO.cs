@@ -199,6 +199,12 @@ namespace RatGame.Data
         [SerializeField] private float _catTrackSniffSeconds = 0.5f;     // 자국마다 킁킁
         [SerializeField] private float _puddleRadius = 2.5f;             // 엎은 물그릇 웅덩이 (design/cat-ideas/06 2단계)
         [SerializeField] private float _puddleSeconds = 60f;
+        [Header("흔들리는 끈 (design/cat-ideas/13, 고양이 38)")]
+        [SerializeField] private float _stringSwingSeconds = 30f;
+        [SerializeField] private float _stringAttractRadius = 8f;        // 이 안의 한가한 고양이가 보면 온다
+        [SerializeField] private float _stringDistractSeconds = 10f;     // 앞발질 시간
+        [SerializeField] private float _stringCatCooldown = 40f;         // 같은 고양이는 이만큼 다시 안 속음
+        [SerializeField] private float _stringRetriggerRadius = 1.5f;    // 쥐가 이만큼 옆을 지나가면 다시 흔들림
         [Header("후추 (design/cat-ideas/06, 고양이 33)")]
         [SerializeField] private float _pepperSpillImpactSpeed = 4f;     // 던지지 않고 떨어뜨려도 이 속도 이상이면 쏟아짐
         [SerializeField] private float _pepperRadius = 2f;
@@ -520,6 +526,11 @@ namespace RatGame.Data
         public float CatTrackSniffSeconds => _catTrackSniffSeconds;
         public float PuddleRadius => _puddleRadius;
         public float PuddleSeconds => _puddleSeconds;
+        public float StringSwingSeconds => _stringSwingSeconds;
+        public float StringAttractRadius => _stringAttractRadius;
+        public float StringDistractSeconds => _stringDistractSeconds;
+        public float StringCatCooldown => _stringCatCooldown;
+        public float StringRetriggerRadius => _stringRetriggerRadius;
         public float PepperSpillImpactSpeed => _pepperSpillImpactSpeed;
         public float PepperRadius => _pepperRadius;
         public float PepperSeconds => _pepperSeconds;

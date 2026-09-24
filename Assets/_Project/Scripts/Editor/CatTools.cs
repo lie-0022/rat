@@ -234,6 +234,32 @@ namespace RatGame.Editor
                 bowl.AddComponent<WaterBowl>().EditorSetup(hideBalance);
             }
 
+            // 흔들리는 끈 (design/cat-ideas/13, 고양이 38) — 서쪽, 기둥에 매단 장난감
+            if (GameObject.Find("DanglingString") == null)
+            {
+                var ds = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                ds.name = "DanglingString"; ds.transform.SetParent(root.transform);
+                ds.transform.position = new Vector3(-12f, 0.9f, 4f);
+                ds.transform.localScale = new Vector3(0.12f, 0.9f, 0.12f);
+                var dsr = ds.GetComponent<Renderer>();
+                dsr.sharedMaterial = new Material(dsr.sharedMaterial) { color = new Color(0.5f, 0.35f, 0.2f) };
+                // 기둥 스케일을 안 물려받게 피벗은 루트 아래 별도 오브젝트
+                var pivot = new GameObject("StringPivot").transform;
+                pivot.SetParent(root.transform); pivot.position = new Vector3(-12f, 1.8f, 4.3f);
+                var cord = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                cord.name = "Cord"; cord.transform.SetParent(pivot, false);
+                cord.transform.localPosition = new Vector3(0f, -0.45f, 0f); cord.transform.localScale = new Vector3(0.02f, 0.45f, 0.02f);
+                Object.DestroyImmediate(cord.GetComponent<Collider>());
+                var toyBall = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                toyBall.name = "Toy"; toyBall.transform.SetParent(pivot, false);
+                toyBall.transform.localPosition = new Vector3(0f, -0.95f, 0f); toyBall.transform.localScale = Vector3.one * 0.18f;
+                Object.DestroyImmediate(toyBall.GetComponent<Collider>());
+                var tr2 = toyBall.GetComponent<Renderer>();
+                tr2.sharedMaterial = new Material(tr2.sharedMaterial) { color = new Color(0.95f, 0.4f, 0.6f) };
+                ds.AddComponent<NetworkObject>();
+                ds.AddComponent<DanglingString>().EditorSetup(hideBalance, pivot);
+            }
+
             // 창문 (design/cat-ideas/06·10, 고양이 37) — 북쪽 벽, 바람은 남쪽(-z)으로
             if (GameObject.Find("WindowWind") == null)
             {
