@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 namespace RatGame.UI
 {
     /// <summary>
-    /// 벽 속 지도 (docs/12 WallsMap, 고양이 102). Tab을 누르고 있는 동안 가운데 지도 — 내가 들어가 본 방만(안개) + 목적지는 항상,
+    /// 벽 속 지도 (docs/12 WallsMap, 고양이 102). Tab을 누르고 있는 동안 가운데 지도 — 우리 팀이 들어가 본 방만(안개, 고양이 122) + 목적지는 항상,
     /// 가 본 방의 열린 면마다 짧은 선이라 안 가 본 출구가 보인다(배관 면은 파랑). 나·동료 점.
     /// 클라에도 있는 GridRoom 위치·크기·OpenSides만 읽는 로컬 기록 — 동기화 없음, 맵(씬)이 바뀌면 새로.
     /// </summary>
@@ -144,13 +144,12 @@ namespace RatGame.UI
             Log.Dev($"지도 연출: 방 {_rooms.Length}, 목적지 {(_destination != null)}, 보물방 {(_treasure != null)}"); // 2인 검증용
         }
 
+        // 팀 전원의 위치로 — 쥐 오브젝트 위치는 이미 모두에게 동기화돼 있어서 추가 동기화 없이 "우리 팀이 가 본 방" (고양이 122)
         private void TrackVisit()
         {
-            var nm = NetworkManager.Singleton;
-            var me = nm != null && nm.LocalClient != null ? nm.LocalClient.PlayerObject : null;
-            if (me == null) return;
-            foreach (var r in _rooms)
-                if (r != null && Inside(r, me.transform.position)) { _visited.Add(r); return; }
+            foreach (var p in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None))
+                foreach (var r in _rooms)
+                    if (r != null && Inside(r, p.transform.position)) { _visited.Add(r); break; }
         }
 
         private void UpdateDots()
