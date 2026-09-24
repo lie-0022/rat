@@ -46,6 +46,7 @@ namespace RatGame.AI
             }
             _toyVictim = victim;
             _toyVictimId = victim.OwnerClientId;
+            victim.GetComponent<PlayerStruggle>()?.ConsumePresses(); // 잡히기 전 입력은 버린다
             victim.ServerSetState(ConditionState.Pinned);
             SetState(CatState.Toy);
             Log.Dev($"고양이 [{name}]: 가지고 놀기 {(resume ? "재개" : "시작")} — client {_toyVictimId} (관심 {_toyInterest:0}, 남은 {_toyUntil - Time.time:0}s)");
@@ -133,6 +134,7 @@ namespace RatGame.AI
                     if (Time.time < _toyPhaseEnd) return;
                     if (TryBeginCarry(victim)) return; // 첫 툭툭 뒤 — 자기 자리로 물고 간다
                     _toyInterest -= _balance.CatToyLoopDrain;
+                    DrainStruggle(victim);
                     if (_toyInterest <= 0f)
                     {
                         _toyPhase = ToyPhase.Yawn;
@@ -238,6 +240,18 @@ namespace RatGame.AI
             BeginBat();
         }
 
+        // Bat 끝: 이번 Bat 동안 버둥 횟수만큼 관심 추가 감소
+        private void DrainStruggle(PlayerCondition victim)
+        {
+            var struggle = victim.GetComponent<PlayerStruggle>();
+            if (struggle == null) return;
+            int presses = struggle.ConsumePresses();
+            int chunks = presses / Mathf.Max(1, _balance.CatToyStrugglePressesPerDrain);
+            if (chunks <= 0) return;
+            _toyInterest -= chunks * _balance.CatToyStruggleDrain;
+            Log.Dev($"고양이 [{name}]: 버둥 {presses}회 — 관심 -{chunks * _balance.CatToyStruggleDrain:0} (남은 {_toyInterest:0})");
+        }
+
         private Vector3 MouthPoint(PlayerCondition victim)
         {
             Vector3 p = transform.position + transform.forward * 0.6f;
@@ -266,7 +280,17 @@ namespace RatGame.AI
         private void Nudge(PlayerCondition victim)
         {
             Vector3 dir = Quaternion.Euler(0f, Random.Range(-90f, 90f), 0f) * transform.forward; dir.y = 0f;
-            Vector3 target = victim.transform.position + dir.normalized * _balance.CatToyNudge;
+            float dist = _balance.CatToyNudge;
+            var struggle = victim.GetComponent<PlayerStruggle>();
+            if (struggle != null && struggle.RecentlyStruggling)
+            {
+                // 버둥 — 쥐가 보는 쪽으로 더 멀리 (몸은 Pinned여도 시선을 따라 돈다)
+                dir = victim.transform.forward; dir.y = 0f;
+                if (dir.sqrMagnitude < 0.01f) dir = transform.forward;
+                dist *= _balance.CatToyStruggleNudgeMul;
+                Log.Dev($"고양이 [{name}]: 버둥 — client {victim.OwnerClientId} 보는 쪽으로 굴러감");
+            }
+            Vector3 target = victim.transform.position + dir.normalized * dist;
             Vector3 onMesh = CatMovement.Sample(target, 0.8f, victim.transform.position);
             onMesh.y = victim.transform.position.y;
             PushVictim(victim, onMesh);

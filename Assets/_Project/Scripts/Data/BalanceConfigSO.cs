@@ -229,6 +229,10 @@ namespace RatGame.Data
         [SerializeField] private float _catToyCarryMaxDistance = 12f;
         [SerializeField] private float _catToyCarrySpeedMul = 1.2f;      // 순찰 속도 배율 — 자랑스럽게 종종
         [SerializeField, Range(0f, 1f)] private float _catToyCarryDropChance = 0.1f; // 초당 — 물고 가다 떨어뜨림
+        [SerializeField] private float _catToyStruggleNudgeMul = 2f;     // 버둥 (고양이 35) — 툭 칠 때 보는 쪽으로 이 배수만큼
+        [SerializeField] private int _catToyStrugglePressesPerDrain = 6; // 버둥 이만큼마다
+        [SerializeField] private float _catToyStruggleDrain = 8f;        // 관심 -
+        [SerializeField] private float _catToyStruggleMinInterval = 0.08f; // 버둥 최소 간격(초) — 매크로 연타 거름
 
         [Header("댕청한 실패 (design/cat-ideas/11)")]
         [SerializeField] private float _catSlipMinSpeed = 4f;            // 이 속도 이상으로 달릴 때만 미끄러진다
@@ -527,6 +531,10 @@ namespace RatGame.Data
         public float CatToyCarryMaxDistance => _catToyCarryMaxDistance;
         public float CatToyCarrySpeedMul => _catToyCarrySpeedMul;
         public float CatToyCarryDropChance => _catToyCarryDropChance;
+        public float CatToyStruggleNudgeMul => _catToyStruggleNudgeMul;
+        public int CatToyStrugglePressesPerDrain => _catToyStrugglePressesPerDrain;
+        public float CatToyStruggleDrain => _catToyStruggleDrain;
+        public float CatToyStruggleMinInterval => _catToyStruggleMinInterval;
         public float CatToySeconds => _catToySeconds;
         public float CatToyInterest => _catToyInterest;
         public float CatToyLoopDrain => _catToyLoopDrain;

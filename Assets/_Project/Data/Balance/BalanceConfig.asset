@@ -195,6 +195,10 @@ MonoBehaviour:
   _catToyCarryMaxDistance: 12
   _catToyCarrySpeedMul: 1.2
   _catToyCarryDropChance: 0.1
+  _catToyStruggleNudgeMul: 2
+  _catToyStrugglePressesPerDrain: 6
+  _catToyStruggleDrain: 8
+  _catToyStruggleMinInterval: 0.08
   _catSlipMinSpeed: 4
   _catSlipDetectRadius: 0.7
   _catSlipDistance: 3

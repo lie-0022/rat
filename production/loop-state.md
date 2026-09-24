@@ -9,10 +9,11 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 35 — (다음 후보 기획 중)
-상태: 고양이 34 커밋 후 다음 후보 선정
+## 현재 작업: 고양이 36 — (다음 후보 기획 중)
+상태: 고양이 35 커밋 후 다음 후보 선정
 
 ## 완료 기록
+- 고양이 35 버둥거리기 — 커밋됨 (plan cat-35). 가지고 놀기 3단계. Player 프리팹에 PlayerStruggle 추가. 남은 04: 뒤집힌 카메라(옵션).
 - 고양이 34 물고 옮기기 — 커밋됨 (plan cat-34). 가지고 놀기 2단계. 남은 04: 버둥거리기(좌우 연타로 툭툭 방향 조종), 뒤집힌 카메라.
 - 고양이 33 후추통 — 커밋됨 (plan cat-33). 냄새 지우기 3종(물·침대·후추) 완료, 재채기 Blunder 추가.
 - 고양이 32 불 켜짐 — 커밋됨 (plan cat-32). 집주인 이벤트 5종 완료(부르기·밥·초인종·청소기·TV·불 켜짐). TV/불 켜짐은 ServerGoSit 공용.
@@ -61,4 +62,6 @@
 - 순찰 중 목적지를 스팟이 아닌 곳으로 바꾸려면 TickPatrol에 별도 분기 필요 — "멈췄으면 현재 스팟으로" 줄이 첫 프레임에 덮는다.
 - 감각 테스트는 CatBrain.enabled=false로 두뇌만 멈추고 회전·위치를 고정하면 깨끗하다. 시선 줄에 Crate_C(x 7.25~8.75, z -5~1) 같은 상자가 있는지 Linecast로 먼저 확인.
 - 2인 테스트에서 클라 쥐는 호스트가 `PlayerController.TeleportClientRpc`(TargetClientIds=클라)로 옮긴다. 다운되면 `RunManager.ServerRevive(id)`.
+- 키 입력 테스트: `InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.A))` — 에디터가 백그라운드여도 들어갔다(고양이 35). 끝나면 빈 KeyboardState로 떼기.
+- 컴파일 요청이 멈춰 있으면(isCompiling=True 지속) `refresh_unity compile=request` 한 번 더.
 - 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.
