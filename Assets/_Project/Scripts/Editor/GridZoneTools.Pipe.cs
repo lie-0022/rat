@@ -27,6 +27,52 @@ namespace RatGame.Editor
             return mouth;
         }
 
+        private const string PipeWaterMatPath = "Assets/_Project/Art/Materials/PipeWater.mat";
+
+        // 배관 물 (고양이 98): 관 바닥 얕은 물 — 평소 꺼 둠, PipeFlushView가 사건 때 켠다. 콜라이더 없음
+        private static void AddPipeWater(GameObject root)
+        {
+            var old = root.transform.Find("Water");
+            if (old != null) Object.DestroyImmediate(old.gameObject);
+            var water = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Object.DestroyImmediate(water.GetComponent<Collider>());
+            water.name = "Water";
+            water.transform.SetParent(root.transform, false);
+            water.transform.localPosition = new Vector3(0f, 0.05f, 0f);
+            water.transform.localScale = new Vector3(PipeW, 0.08f, 1f);
+            var r = water.GetComponent<MeshRenderer>();
+            r.sharedMaterial = PipeWaterMat();
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            var view = root.GetComponent<World.PipeFlushView>() ?? root.AddComponent<World.PipeFlushView>();
+            view.EditorSetup(water);
+        }
+
+        private static Material PipeWaterMat()
+        {
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(PipeWaterMatPath);
+            if (mat != null) return mat;
+            mat = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+            mat.SetFloat("_Surface", 1f); mat.SetFloat("_Blend", 0f);
+            mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetFloat("_ZWrite", 0f);
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            mat.SetColor("_BaseColor", new Color(0.35f, 0.6f, 0.9f, 0.7f));
+            AssetDatabase.CreateAsset(mat, PipeWaterMatPath);
+            return mat;
+        }
+
+        /// <summary>배관 프리팹에 물만 붙인다 — 방 전체를 다시 만들면 프리팹 7개가 fileID만 바뀌어 커밋이 불어나서.</summary>
+        [MenuItem("Tools/RatGame/Zone/Add Pipe Water")]
+        public static void AddPipeWaterToPrefab()
+        {
+            string path = $"{RoomDir}/Wall_Pipe.prefab";
+            var root = PrefabUtility.LoadPrefabContents(path);
+            try { AddPipeWater(root); PrefabUtility.SaveAsPrefabAsset(root, path); Debug.Log("[RatGame] 배관 물 → Wall_Pipe"); }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
+        }
+
         // 쥐 전용 배관: 좁은 바닥 + 낮은 벽 + 천장 판 (길이는 루트 Z 스케일)
         private static GameObject BuildPipe(string name)
         {
@@ -37,6 +83,7 @@ namespace RatGame.Editor
             Box(root.transform, "Wall_L", new Vector3(-(PipeW + WallT) * 0.5f, PipeH * 0.5f, 0f), new Vector3(WallT, PipeH, 1f), wallLayer, PipeColor);
             Box(root.transform, "Wall_R", new Vector3((PipeW + WallT) * 0.5f, PipeH * 0.5f, 0f), new Vector3(WallT, PipeH, 1f), wallLayer, PipeColor);
             root.AddComponent<World.PipeEcho>(); // 안에서 뛰면 울림 (고양이 87)
+            AddPipeWater(root);
             Box(root.transform, "Ceiling", new Vector3(0f, PipeH + WallT * 0.5f, 0f), new Vector3(PipeW + 2f * WallT, WallT, 1f), wallLayer, PipeColor);
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, $"{RoomDir}/{name}.prefab");
             Object.DestroyImmediate(root);
