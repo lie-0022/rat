@@ -130,7 +130,7 @@ namespace RatGame.AI
             _senses.ViewMultiplier = ViewMul;
             _senses.HearingMultiplier = HearingMul;
             _senses.CuriositySpeedMultiplier = Personality != null ? Personality.CuriositySpeedMultiplier : 1f;
-            _movement.SpeedMultiplier = Personality != null ? Personality.MoveSpeedMultiplier : 1f;
+            _movement.SpeedMultiplier = (Personality != null ? Personality.MoveSpeedMultiplier : 1f) * _stageSpeedMul; // 스테이지 조건(간식 날) 곱 (고양이 106)
         }
 
         // 씬의 CatSpot 전부 (방 모듈 단계에서는 존 그래프로 — 지금은 씬 = 방 1개). 없으면 CatWaypoint* 이름을 Look으로

@@ -19,6 +19,21 @@ namespace RatGame.Run
             if (kitten.ServerMakeKitten()) Log.Dev($"벽 속: 스테이지 {stage} — {kitten.name}를 아기로 (엄마·아기)");
         }
 
+        // 오늘의 집 — 맵 모양과 따로 굴린다(같은 시드면 같은 맵, 조건만 스테이지 확률) (고양이 106)
+        /// <summary>테스트용 — 설정하면 다음 맵부터 이 조건 (PlayerController.DevForcedInput과 같은 방식).</summary>
+        public static StageModifier? DevForceModifier;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetDevOnPlay() => DevForceModifier = null; // 도메인 리로드 없이 플레이해도 지난 테스트 값이 남지 않게
+
+        private StageModifier PickModifier(int seed, int stage)
+        {
+            if (DevForceModifier.HasValue) return DevForceModifier.Value;
+            var rng = new System.Random(seed * 31 + stage);
+            if (rng.NextDouble() >= _zone.ModifierChanceFor(stage)) return StageModifier.None;
+            return (StageModifier)(1 + rng.Next(5)); // None 뺀 다섯 가지 같은 비중
+        }
+
         // 출발방에서 칸 그래프 거리가 가장 먼 막다른 방 — 돌아가는 수고가 보상이 되게
         private int PickTreasure()
         {

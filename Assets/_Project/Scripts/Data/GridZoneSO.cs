@@ -37,6 +37,12 @@ namespace RatGame.Data
         public float GuardChanceFor(int stage) => GuardChanceByStage == null || GuardChanceByStage.Length == 0 ? 0f : GuardChanceByStage[Mathf.Clamp(stage - 1, 0, GuardChanceByStage.Length - 1)];
         public float[] PatrolChanceByStage = { 0f, 0f, 0f, 0.5f, 1f }; // 문지기·아기가 아닌 어른이 남으면 큰길 순찰꾼이 될 확률 (고양이 92)
         public float PatrolChanceFor(int stage) => PatrolChanceByStage == null || PatrolChanceByStage.Length == 0 ? 0f : PatrolChanceByStage[Mathf.Clamp(stage - 1, 0, PatrolChanceByStage.Length - 1)];
+        public float[] ModifierChanceByStage = { 0f, 0.5f, 0.6f, 0.7f, 0.8f }; // 오늘의 집 — 스테이지 조건 확률 (고양이 106)
+        public float ModifierChanceFor(int stage) => ModifierChanceByStage == null || ModifierChanceByStage.Length == 0 ? 0f : ModifierChanceByStage[Mathf.Clamp(stage - 1, 0, ModifierChanceByStage.Length - 1)];
+        public float BlackoutDarkChance = 0.9f;  // 정전 — 방마다 어둠 구역 확률
+        public float TrapSaleBonus = 0.2f;       // 덫 대방출 — 함정 비율 더하기
+        public float TreatsCatSpeed = 0.85f;     // 고양이 간식 날 — 고양이 이동 배율
+        public int BusyExtraEvents = 2;          // 분주한 집 — 집주인 사건 더하기
         public bool TreasureRoom = true;        // 가장 먼 막다른 방 = 보물방 (전리품 전부·대형 ×3·함정 전부, 고양이 84)
         public float TreasureTrapRatio = 1f;
         public float TreasureBigWeight = 8f;    // 보물방 대형·특수 가중 (v1 보너스방 3보다 세게 — 작은 방도 비싸 보이게)

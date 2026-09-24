@@ -65,6 +65,8 @@ namespace RatGame.Run
                 _scheduled = true;
                 var n = _balance.HouseEventsPerStage;
                 _remaining = Random.Range(n.x, n.y + 1);
+                var walls = FindAnyObjectByType<GridZoneBuilder>(); // 오늘의 집 — 외출이면 0, 분주하면 더 (고양이 106)
+                if (walls != null) _remaining = walls.OwnerOut ? 0 : _remaining + walls.ExtraHouseEvents;
                 _nextAt = Time.time + Random.Range(_balance.HouseEventFirstDelay.x, _balance.HouseEventFirstDelay.y);
                 Log.Dev($"집주인: 이번 스테이지 {_remaining}건, 첫 사건 {_nextAt - Time.time:0}s 뒤");
             }

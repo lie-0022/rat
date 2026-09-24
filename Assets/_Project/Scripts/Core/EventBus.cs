@@ -24,7 +24,7 @@ namespace RatGame.Core
         public static event Action<RunResult> RunEnded;
         public static event Action<int /*current*/, int /*quota*/> QuotaChanged;
         /// <summary>벽 속 스테이지 안내 (각 클라 로컬 — GridZoneBuilder.StageBriefingClientRpc가 발행, 고양이 81). flags: 1 아기, 2 문지기, 4 배관 고리.</summary>
-        public static event Action<int /*stage*/, int /*stages*/, int /*quota*/, byte /*flags*/> StageBriefing;
+        public static event Action<int /*stage*/, int /*stages*/, int /*quota*/, byte /*flags*/, byte /*modifier*/> StageBriefing;
 
         // Player
         public static event Action<ulong /*clientId*/> PlayerDowned;
@@ -62,7 +62,7 @@ namespace RatGame.Core
         public static void RaiseZoneEnded(int zoneIndex, bool quotaMet) => ZoneEnded?.Invoke(zoneIndex, quotaMet);
         public static void RaiseRunEnded(RunResult result) => RunEnded?.Invoke(result);
         public static void RaiseQuotaChanged(int current, int quota) => QuotaChanged?.Invoke(current, quota);
-        public static void RaiseStageBriefing(int stage, int stages, int quota, byte flags) => StageBriefing?.Invoke(stage, stages, quota, flags);
+        public static void RaiseStageBriefing(int stage, int stages, int quota, byte flags, byte modifier = 0) => StageBriefing?.Invoke(stage, stages, quota, flags, modifier);
         public static void RaisePlayerDowned(ulong clientId) => PlayerDowned?.Invoke(clientId);
         public static void RaisePlayerRevived(ulong clientId) => PlayerRevived?.Invoke(clientId);
         public static void RaisePingReceived(ulong clientId, UnityEngine.Vector3 worldPos) => PingReceived?.Invoke(clientId, worldPos);

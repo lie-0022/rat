@@ -32,6 +32,7 @@ namespace RatGame.Run
         public int CatCountOverride = -1;
         public float TrapRatioOverride = -1f;
         public float BonusTrapRatio = -1f; // >=0이면 보너스방 함정 비율 (벽 속 보물방 — 고양이 84)
+        public float DarkChanceOverride = -1f; // >=0이면 어둠 구역 확률 (오늘의 집 정전 — 고양이 106)
         public float BonusBigWeight = 3f;  // 보너스방 대형·특수 가중 배율 (v1 3, 벽 속 보물방은 테마 에셋에서)
 
         public ZonePopulator(ZoneDefinitionSO pop, List<RoomModule> rooms, RoomModule safeRoom, RoomModule bonusRoom)
@@ -211,7 +212,7 @@ namespace RatGame.Run
                         Spawn(prefab, p.position + Vector3.up * prefab.transform.position.y, p.rotation);
                         hides++;
                     }
-                if (Pop.DarkZonePrefab != null && room.DarkZone != null && rng.NextDouble() < Pop.DarkZoneChance)
+                if (Pop.DarkZonePrefab != null && room.DarkZone != null && rng.NextDouble() < (DarkChanceOverride >= 0f ? DarkChanceOverride : Pop.DarkZoneChance))
                 {
                     Spawn(Pop.DarkZonePrefab, room.DarkZone.position, room.DarkZone.rotation);
                     dark++;

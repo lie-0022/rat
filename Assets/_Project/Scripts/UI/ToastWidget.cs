@@ -47,9 +47,10 @@ namespace RatGame.UI
         private const float BriefingSeconds = 6f; // 읽을 게 많아서 평소 토스트보다 길게
 
         // 벽 속 스테이지 안내 (고양이 81·84) — 토스트가 최대 3개라 머리줄 + 고양이 줄 + 지도 줄
-        private void OnStageBriefing(int stage, int stages, int quota, byte flags)
+        private void OnStageBriefing(int stage, int stages, int quota, byte flags, byte modifier)
         {
-            Show($"스테이지 {stage}/{stages} — 식량 {quota} 모아 목적지(주황 방)로", UiColorRole.Accent, BriefingSeconds);
+            string today = ModifierText((Run.StageModifier)modifier);
+            Show($"스테이지 {stage}/{stages} — 식량 {quota} 모아 목적지(주황 방)로{(today != null ? "\n오늘: " + today : "")}", UiColorRole.Accent, BriefingSeconds);
             // 고양이 줄 — 이 스테이지에 있는 역할만 이어서 (토스트 칸 두 줄 안)
             var cats = new List<string>();
             if ((flags & Run.GridZoneBuilder.BriefGuard) != 0) cats.Add("문지기(푸른 회색)가 목적지 앞");
@@ -60,6 +61,17 @@ namespace RatGame.UI
             if ((flags & Run.GridZoneBuilder.BriefTreasure) != 0) Show("막다른 방 하나는 보물방 — 비싼 음식, 함정 가득", UiColorRole.Secondary, BriefingSeconds);
             if (stage == 1) Show(((flags & Run.GridZoneBuilder.BriefPipe) != 0 ? "회색 배관은 쥐만 · " : "") + "R 킁킁 = 목적지 냄새 · Tab 지도", UiColorRole.Secondary, BriefingSeconds); // 조작 팁은 배관 없는 맵에도
         }
+
+        // 오늘의 집 (고양이 106) — 머리줄에 붙여 토스트 수를 안 늘린다
+        private static string ModifierText(Run.StageModifier m) => m switch
+        {
+            Run.StageModifier.Blackout => "정전 (어두운 방이 많아요)",
+            Run.StageModifier.TrapSale => "덫 대방출 (함정이 많아요)",
+            Run.StageModifier.CatTreats => "고양이 간식 날 (고양이가 느릿느릿)",
+            Run.StageModifier.OwnerOut => "집주인 외출 (집주인 사건 없음)",
+            Run.StageModifier.Busy => "분주한 집 (집주인 사건이 잦아요)",
+            _ => null,
+        };
 
         private void OnCheeseEaten(float amount) => Show($"냠냠 — 스태미나 +{amount:0}", UiColorRole.Positive);
 

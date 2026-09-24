@@ -26,6 +26,10 @@ namespace RatGame.Run
         public ZonePopulator Populator { get; private set; }
         /// <summary>보물방 칸 번호 (없으면 -1, 고양이 84).</summary>
         public int Treasure { get; private set; } = -1;
+        /// <summary>오늘의 집 (고양이 106).</summary>
+        public StageModifier Modifier { get; private set; }
+        public bool OwnerOut => Modifier == StageModifier.OwnerOut;
+        public int ExtraHouseEvents => Modifier == StageModifier.Busy ? _zone.BusyExtraEvents : 0;
 
         public override void OnNetworkSpawn()
         {
@@ -83,11 +87,13 @@ namespace RatGame.Run
             if (pop != null)
             {
                 int stage = RunSession.StageNumber; // 새 루프 깊이 — 고양이 수·함정 비율·고가치 가중 (고양이 66)
+                Modifier = PickModifier(seed, stage);
                 Treasure = _zone.TreasureRoom ? PickTreasure() : -1;
                 Populator = new ZonePopulator(pop, rooms, rooms[0], Treasure >= 0 ? rooms[Treasure] : null)
                 {
                     CatCountOverride = _zone.CatCountFor(stage),
-                    TrapRatioOverride = _zone.TrapRatioFor(stage),
+                    TrapRatioOverride = Mathf.Min(1f, _zone.TrapRatioFor(stage) + (Modifier == StageModifier.TrapSale ? _zone.TrapSaleBonus : 0f)),
+                    DarkChanceOverride = Modifier == StageModifier.Blackout ? _zone.BlackoutDarkChance : -1f,
                     BonusTrapRatio = _zone.TreasureTrapRatio,
                     BonusBigWeight = _zone.TreasureBigWeight,
                 };
@@ -97,12 +103,14 @@ namespace RatGame.Run
                 MaybeKitten(stage, rng);
                 MaybeGuard(stage, rng);
                 MaybePatroller(stage, rng);
+                if (Modifier == StageModifier.CatTreats)
+                    foreach (var cat in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None)) cat.ServerSetStageSpeed(_zone.TreatsCatSpeed);
             }
             FaceSpawnsToDoor(Layout.Start, Layout.Sides[0]);
             DeliverPurchases(Layout.Start, rng);
             PlayerPlacement.TeleportAllToSpawns();
             SendBriefing();
-            Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed} — 방 {rooms.Count}{(Treasure >= 0 ? $" (보물방 {Layout.Rooms[Treasure].transform.position:F0})" : "")}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
+            Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed}, 오늘 {Modifier} — 방 {rooms.Count}{(Treasure >= 0 ? $" (보물방 {Layout.Rooms[Treasure].transform.position:F0})" : "")}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
                     $"전리품 {Populator?.LootSpawned}개(가치 {Populator?.LootValue}), 함정 {Populator?.TrapsSpawned}, 숨을 곳 {Populator?.HidesSpawned}, 어둠 {Populator?.DarkSpawned}, 고양이 {Populator?.CatsSpawned}");
         }
 
@@ -122,14 +130,14 @@ namespace RatGame.Run
             if (Treasure >= 0) flags |= BriefTreasure;
             var quota = GetComponent<StageQuota>() ?? FindAnyObjectByType<StageQuota>();
             int stage = RunSession.StageNumber;
-            StageBriefingClientRpc(stage, quota != null ? quota.StagesTotal : 0, quota != null ? quota.QuotaFor(stage) : 0, flags);
+            StageBriefingClientRpc(stage, quota != null ? quota.StagesTotal : 0, quota != null ? quota.QuotaFor(stage) : 0, flags, (byte)Modifier);
         }
 
         [ClientRpc]
-        private void StageBriefingClientRpc(int stage, int stages, int quota, byte flags)
+        private void StageBriefingClientRpc(int stage, int stages, int quota, byte flags, byte modifier)
         {
-            Log.Dev($"스테이지 안내 연출: {stage}/{stages} 식량 {quota} 특징 {flags}"); // 2인 검증용
-            EventBus.RaiseStageBriefing(stage, stages, quota, flags);
+            Log.Dev($"스테이지 안내 연출: {stage}/{stages} 식량 {quota} 특징 {flags} 오늘 {(StageModifier)modifier}"); // 2인 검증용
+            EventBus.RaiseStageBriefing(stage, stages, quota, flags, modifier);
         }
 
         /// <summary>호스트: 집주인 덫 놓기 (고양이 89) — 쥐 근처는 피해서. 놓은 수.</summary>
