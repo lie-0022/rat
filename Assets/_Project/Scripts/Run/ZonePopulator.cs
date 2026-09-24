@@ -30,6 +30,8 @@ namespace RatGame.Run
         /// <summary>새 루프 깊이별 덮어쓰기 (고양이 66). 음수면 테이블 값.</summary>
         public int CatCountOverride = -1;
         public float TrapRatioOverride = -1f;
+        public float BonusTrapRatio = -1f; // >=0이면 보너스방 함정 비율 (벽 속 보물방 — 고양이 84)
+        public float BonusBigWeight = 3f;  // 보너스방 대형·특수 가중 배율 (v1 3, 벽 속 보물방은 테마 에셋에서)
 
         public ZonePopulator(ZoneDefinitionSO pop, List<RoomModule> rooms, RoomModule safeRoom, RoomModule bonusRoom)
         {
@@ -51,7 +53,10 @@ namespace RatGame.Run
             var table = Pop.LootTable;
             if (table == null || table.Entries == null) return;
             var counts = new Dictionary<LootItemSO, int>();
-            foreach (var room in Rooms)
+            // 보너스방을 먼저 — 대형은 맵 전체 상한(Max)이 있어서 뒤에 채우면 이미 동나 있다
+            var order = new List<RoomModule>(Rooms);
+            if (BonusRoom != null && order.Remove(BonusRoom)) order.Insert(0, BonusRoom);
+            foreach (var room in order)
             {
                 bool bonus = room == BonusRoom;
                 var points = new List<Transform>(room.LootSpawns);
@@ -61,7 +66,9 @@ namespace RatGame.Run
                 {
                     var p = points[i];
                     bool high = p.position.y > 1f; // 선반 위엔 대형 금지 (docs/10)
-                    var item = PickLoot(table, rng, zoneIndex, bonus, high, counts);
+                    // 보너스방 첫 자리는 거의 확실히 대형·특수 — 운 나쁘면 "보물방"이 평범해지지 않게
+                    float bigMul = !bonus ? 1f : i == 0 ? BonusBigWeight * 100f : BonusBigWeight;
+                    var item = PickLoot(table, rng, zoneIndex, bigMul, high, counts);
                     if (item == null || item.Prefab == null) continue;
                     counts[item] = (counts.TryGetValue(item, out int c) ? c : 0) + 1;
                     Spawn(item.Prefab, p.position + Vector3.up * (item.Tier == LootTier.Large ? 0.4f : 0.1f), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
@@ -105,7 +112,7 @@ namespace RatGame.Run
             Log.Dev($"반지: 침대 {anchor:F1} 옆 {Vector3.Distance(at, anchor):0.0}m");
         }
 
-        private static LootItemSO PickLoot(SpawnTableSO table, System.Random rng, int zoneIndex, bool bonus, bool high, Dictionary<LootItemSO, int> counts)
+        private static LootItemSO PickLoot(SpawnTableSO table, System.Random rng, int zoneIndex, float bigMul, bool high, Dictionary<LootItemSO, int> counts)
         {
             float total = 0f;
             var weights = new float[table.Entries.Length];
@@ -118,7 +125,7 @@ namespace RatGame.Run
                 bool big = e.Item.Tier == LootTier.Large || e.Item.Tier == LootTier.Special;
                 if (high && e.Item.Tier == LootTier.Large) continue;
                 float w = e.Weight;
-                if (big) w *= (1f + table.DeepZoneBonusPerIndex * zoneIndex) * (bonus ? 3f : 1f); // 보너스방 = 고가치
+                if (big) w *= (1f + table.DeepZoneBonusPerIndex * zoneIndex) * bigMul; // 보너스방 = 고가치
                 weights[i] = w; total += w;
             }
             if (total <= 0f) return null;
@@ -137,7 +144,8 @@ namespace RatGame.Run
                 if (room == SafeRoom) continue; // 쥐구멍방엔 함정 없음 — 시작하자마자 걸리지 않게
                 foreach (var p in room.TrapSpawns)
                 {
-                    if (rng.NextDouble() >= (TrapRatioOverride >= 0f ? TrapRatioOverride : table.UseRatio) || total <= 0) continue;
+                    float ratio = room == BonusRoom && BonusTrapRatio >= 0f ? BonusTrapRatio : TrapRatioOverride >= 0f ? TrapRatioOverride : table.UseRatio;
+                    if (rng.NextDouble() >= ratio || total <= 0) continue;
                     int roll = rng.Next(total); GameObject prefab = null;
                     foreach (var e in table.Entries) { roll -= e.Weight; if (roll < 0) { prefab = e.Prefab; break; } }
                     if (prefab == null) continue;

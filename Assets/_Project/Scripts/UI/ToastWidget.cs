@@ -46,12 +46,16 @@ namespace RatGame.UI
 
         private const float BriefingSeconds = 6f; // 읽을 게 많아서 평소 토스트보다 길게
 
-        // 벽 속 스테이지 안내 (고양이 81) — 토스트가 최대 3개라 한 번에 3줄까지
+        // 벽 속 스테이지 안내 (고양이 81·84) — 토스트가 최대 3개라 머리줄 + 고양이 줄 + 지도 줄
         private void OnStageBriefing(int stage, int stages, int quota, byte flags)
         {
             Show($"스테이지 {stage}/{stages} — 식량 {quota} 모아 목적지(주황 방)로", UiColorRole.Accent, BriefingSeconds);
-            if ((flags & Run.GridZoneBuilder.BriefGuard) != 0) Show("문지기 고양이가 목적지 앞을 지켜요 — 털실·레이저로 끌어내기", UiColorRole.Warning, BriefingSeconds);
-            if ((flags & Run.GridZoneBuilder.BriefKitten) != 0) Show("아기 고양이 — 들키면 냐앙! 엄마가 달려와요", UiColorRole.Warning, BriefingSeconds);
+            bool guard = (flags & Run.GridZoneBuilder.BriefGuard) != 0, kitten = (flags & Run.GridZoneBuilder.BriefKitten) != 0;
+            if (guard && kitten) Show("문지기(푸른 회색)가 목적지 앞을 지키고, 아기 고양이는 들키면 엄마를 불러요", UiColorRole.Warning, BriefingSeconds);
+            else if (guard) Show("문지기 고양이(푸른 회색)가 목적지 앞을 지켜요 — 털실·레이저로 끌어내기", UiColorRole.Warning, BriefingSeconds);
+            else if (kitten) Show("아기 고양이 — 들키면 냐앙! 엄마가 달려와요", UiColorRole.Warning, BriefingSeconds);
+            // 토스트 칸은 두 줄 높이라 한 토스트에 한 문장 (스테이지 1엔 고양이 줄이 없어 3개 안에 든다)
+            if ((flags & Run.GridZoneBuilder.BriefTreasure) != 0) Show("막다른 방 하나는 보물방 — 비싼 음식, 함정 가득", UiColorRole.Secondary, BriefingSeconds);
             if (stage == 1 && (flags & Run.GridZoneBuilder.BriefPipe) != 0) Show("회색 배관은 쥐만 지나가요 · R 킁킁 = 목적지 냄새", UiColorRole.Secondary, BriefingSeconds);
         }
 

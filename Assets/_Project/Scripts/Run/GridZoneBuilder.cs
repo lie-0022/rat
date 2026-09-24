@@ -24,6 +24,8 @@ namespace RatGame.Run
         public GridPlan Plan { get; private set; }
         public GridZoneLayout.Result Layout { get; private set; }
         public ZonePopulator Populator { get; private set; }
+        /// <summary>보물방 칸 번호 (없으면 -1, 고양이 84).</summary>
+        public int Treasure { get; private set; } = -1;
 
         public override void OnNetworkSpawn()
         {
@@ -81,10 +83,13 @@ namespace RatGame.Run
             if (pop != null)
             {
                 int stage = RunSession.StageNumber; // 새 루프 깊이 — 고양이 수·함정 비율·고가치 가중 (고양이 66)
-                Populator = new ZonePopulator(pop, rooms, rooms[0], null)
+                Treasure = _zone.TreasureRoom ? PickTreasure() : -1;
+                Populator = new ZonePopulator(pop, rooms, rooms[0], Treasure >= 0 ? rooms[Treasure] : null)
                 {
                     CatCountOverride = _zone.CatCountFor(stage),
                     TrapRatioOverride = _zone.TrapRatioFor(stage),
+                    BonusTrapRatio = _zone.TreasureTrapRatio,
+                    BonusBigWeight = _zone.TreasureBigWeight,
                 };
                 Populator.PopulateAll(rng, stage - 1);
                 MaybeKitten(stage, rng);
@@ -94,11 +99,35 @@ namespace RatGame.Run
             DeliverPurchases(Layout.Start, rng);
             PlayerPlacement.TeleportAllToSpawns();
             SendBriefing();
-            Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed} — 방 {rooms.Count}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
+            Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed} — 방 {rooms.Count}{(Treasure >= 0 ? $" (보물방 {Layout.Rooms[Treasure].transform.position:F0})" : "")}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
                     $"전리품 {Populator?.LootSpawned}개(가치 {Populator?.LootValue}), 함정 {Populator?.TrapsSpawned}, 숨을 곳 {Populator?.HidesSpawned}, 어둠 {Populator?.DarkSpawned}, 고양이 {Populator?.CatsSpawned}");
         }
 
-        public const byte BriefKitten = 1, BriefGuard = 2, BriefPipe = 4;
+        // 출발방에서 칸 그래프 거리가 가장 먼 막다른 방 — 돌아가는 수고가 보상이 되게
+        private int PickTreasure()
+        {
+            var dist = new int[Plan.Cells.Count];
+            for (int i = 0; i < dist.Length; i++) dist[i] = -1;
+            var queue = new Queue<int>();
+            dist[0] = 0; queue.Enqueue(0);
+            while (queue.Count > 0)
+            {
+                int cur = queue.Dequeue();
+                foreach (var e in Plan.Edges)
+                {
+                    int next = e.A == cur ? e.B : e.B == cur ? e.A : -1;
+                    if (next < 0 || dist[next] >= 0) continue;
+                    dist[next] = dist[cur] + 1;
+                    queue.Enqueue(next);
+                }
+            }
+            int best = -1;
+            for (int i = 0; i < Plan.Cells.Count; i++)
+                if (Plan.Cells[i].Role == GridCellRole.DeadEnd && (best < 0 || dist[i] > dist[best])) best = i;
+            return best;
+        }
+
+        public const byte BriefKitten = 1, BriefGuard = 2, BriefPipe = 4, BriefTreasure = 8;
 
         // 스테이지 특징을 전원 화면에 (고양이 81) — 표시일 뿐이라 늦게 들어온 클라는 못 받아도 된다
         private void SendBriefing()
@@ -110,6 +139,7 @@ namespace RatGame.Run
                 if (c.IsGuard) flags |= BriefGuard;
             }
             foreach (var e in Plan.Edges) if (e.IsPipe) { flags |= BriefPipe; break; }
+            if (Treasure >= 0) flags |= BriefTreasure;
             var quota = GetComponent<StageQuota>() ?? FindAnyObjectByType<StageQuota>();
             int stage = RunSession.StageNumber;
             StageBriefingClientRpc(stage, quota != null ? quota.StagesTotal : 0, quota != null ? quota.QuotaFor(stage) : 0, flags);
