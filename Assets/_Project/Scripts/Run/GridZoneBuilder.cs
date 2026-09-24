@@ -69,6 +69,12 @@ namespace RatGame.Run
             var depot = Layout.Destination != null ? Layout.Destination.Depot : null;
             if (pop != null && pop.RatHolePrefab != null && depot != null)
                 ZonePopulator.Spawn(pop.RatHolePrefab, depot.position + Vector3.up * 0.15f, depot.rotation);
+            // 판매대: 목적지방 모서리 쪽(문은 면 가운데라 막지 않게), 글씨가 창고 쪽을 보게
+            if (_zone.ShopCounterPrefab != null && depot != null)
+            {
+                Vector3 at = depot.position + new Vector3(2.8f, 0f, 2.8f);
+                ZonePopulator.Spawn(_zone.ShopCounterPrefab, at, Quaternion.LookRotation(at - depot.position));
+            }
 
             var rooms = new List<RoomModule>();
             foreach (var r in Layout.Rooms) rooms.Add(r.GetComponent<RoomModule>());

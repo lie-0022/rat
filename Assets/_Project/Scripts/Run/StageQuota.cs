@@ -51,6 +51,24 @@ namespace RatGame.Run
             else RunSession.StageNumber++;
         }
 
+        /// <summary>상점 지갑 = 남은 식량 + 이번 초과분(창고 적립 − 할당량).</summary>
+        public int Wallet(int stashed) => RunSession.Pantry + Mathf.Max(0, stashed - Quota.Value);
+
+        /// <summary>호스트: 상점 결제. 남은 식량에서 먼저, 모자라면 **할당량을 넘은 적립**에서 뺀다 — 적립이 할당량 밑으로는 안 내려간다
+        /// (처음 기획은 밑으로도 허용했는데, 화면의 "쓸 수 있는 식량"과 어긋나고 모르고 발이 묶이는 쪽이 나빠서 바꿈 — plan cat-65).</summary>
+        public bool ServerTrySpend(RunManager run, int price, out string reason)
+        {
+            reason = null;
+            if (Finished.Value || StageNumber.Value >= StagesPerRun.Value) { reason = "마지막 스테이지 — 다음 맵이 없어요"; return false; }
+            int wallet = Wallet(run.StashedValue.Value);
+            if (wallet < price) { reason = $"식량 부족 ({price} 필요)"; return false; }
+            int fromPantry = Mathf.Min(RunSession.Pantry, price);
+            RunSession.Pantry -= fromPantry;
+            Pantry.Value = RunSession.Pantry;
+            if (price > fromPantry) run.StashedValue.Value -= price - fromPantry;
+            return true;
+        }
+
         /// <summary>호스트: 결과 화면 뒤 갈 씬. 클리어했고 마지막이 아니면 바로 다음 맵(같은 씬을 새로 — 새 시드), 아니면 null = 기지.</summary>
         public string NextSceneAfterResult(bool cleared) => cleared && !Finished.Value ? gameObject.scene.name : null;
 

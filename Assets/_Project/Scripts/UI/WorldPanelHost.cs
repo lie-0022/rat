@@ -13,11 +13,13 @@ namespace RatGame.UI
         [SerializeField] private ShopPanel _shopPrefab;
         [SerializeField] private MirrorPanel _mirrorPrefab;
         [SerializeField] private CodexPanel _codexPrefab;
+        [SerializeField] private StageShopPanel _stageShopPrefab; // 새 루프 목적지 상점 (고양이 65)
 
         private ShopPanel _shop;
         private MirrorPanel _mirror;
         private CodexPanel _codex;
-        private Object _shopSource, _mirrorSource, _codexSource;
+        private StageShopPanel _stageShop;
+        private Object _shopSource, _mirrorSource, _codexSource, _stageShopSource;
 
         private void OnEnable()
         {
@@ -55,6 +57,12 @@ namespace RatGame.UI
                     _codexSource = source;
                     _codex.Open(book.Database);
                     break;
+                case WorldPanelKind.StageShop:
+                    if (_stageShopPrefab == null || source is not StageShopCounter counter) return;
+                    if (_stageShop == null) _stageShop = Instantiate(_stageShopPrefab);
+                    _stageShopSource = source;
+                    _stageShop.Open(counter);
+                    break;
             }
             Log.Dev($"패널 연출: {kind} 열림"); // 검증용
         }
@@ -65,15 +73,18 @@ namespace RatGame.UI
             if (source == _shopSource && _shop != null) { Destroy(_shop.gameObject); _shop = null; }
             if (source == _mirrorSource && _mirror != null) { Destroy(_mirror.gameObject); _mirror = null; }
             if (source == _codexSource && _codex != null) { Destroy(_codex.gameObject); _codex = null; }
+            if (source == _stageShopSource && _stageShop != null) { Destroy(_stageShop.gameObject); _stageShop = null; }
         }
 
         private void OnShopResult(bool ok, string message)
         {
-            if (_shop != null) _shop.ShowMessage(ok, message);
+            if (_shop != null && _shop.IsOpen) _shop.ShowMessage(ok, message);
+            if (_stageShop != null && _stageShop.IsOpen) _stageShop.ShowMessage(ok, message);
         }
 
 #if UNITY_EDITOR
         public void EditorSetup(ShopPanel shop, MirrorPanel mirror, CodexPanel codex) { _shopPrefab = shop; _mirrorPrefab = mirror; _codexPrefab = codex; }
+        public void EditorSetupStageShop(StageShopPanel panel) => _stageShopPrefab = panel;
 #endif
     }
 }

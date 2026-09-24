@@ -8259,6 +8259,7 @@ MonoBehaviour:
   _shopPrefab: {fileID: 6125324764225488796, guid: d6385c4d15d3b4f52aace00664eb8497, type: 3}
   _mirrorPrefab: {fileID: 5747573621488925790, guid: 655603d74767f49bd8d63e85abf3b71e, type: 3}
   _codexPrefab: {fileID: 3282085328299846866, guid: 78c68b739ad5b4b6599b91e44f6239af, type: 3}
+  _stageShopPrefab: {fileID: 2581675894105729502, guid: 8771868c86ef84e71900b2b11057ee3c, type: 3}
 --- !u!1 &5996074192161083967
 GameObject:
   m_ObjectHideFlags: 0
