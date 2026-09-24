@@ -77,6 +77,7 @@ MonoBehaviour:
   _catReturnSpeed: 2
   _catViewDistance: 8
   _catCrouchViewMultiplier: 0.5
+  _catDarkViewMultiplier: 0.5
   _catViewHalfAngle: 35
   _catGazeGainPerSec: 60
   _catGaugeDecayPerSec: 20
@@ -167,6 +168,11 @@ MonoBehaviour:
   _catTrackSniffSeconds: 0.5
   _puddleRadius: 2.5
   _puddleSeconds: 60
+  _pepperSpillImpactSpeed: 4
+  _pepperRadius: 2
+  _pepperSeconds: 45
+  _pepperSneezeSeconds: 2
+  _pepperSneezeCooldown: 8
   _wetSeconds: 20
   _scentWet: 40
   _waterBowlSpillNoise: 30
@@ -183,6 +189,12 @@ MonoBehaviour:
   _catToyYawnSeconds: 2
   _catToyResumeWindow: 10
   _catToyBoredIgnoreSeconds: 6
+  _catToyCarryChance: 0.6
+  _catToyCarrySeconds: 6
+  _catToyCarryMinDistance: 4
+  _catToyCarryMaxDistance: 12
+  _catToyCarrySpeedMul: 1.2
+  _catToyCarryDropChance: 0.1
   _catSlipMinSpeed: 4
   _catSlipDetectRadius: 0.7
   _catSlipDistance: 3
@@ -246,6 +258,12 @@ MonoBehaviour:
   _vacuumSpeed: 1.5
   _vacuumMaskLoudness: 40
   _vacuumCatSense: 0.6
+  _tvSeconds: 90
+  _tvMaskLoudness: 25
+  _tvWatchDistance: 2.5
+  _lightOnSeconds: 30
+  _lightOnGreetSeconds: 10
+  _lightOnGreetSense: 0.5
   _catFightDistance: 4
   _catFightChance: 0.7
   _catFightSeconds: 15

@@ -9,11 +9,11 @@ namespace RatGame.AI
     /// 가지고 놀기 (design/cat-ideas/04, 2026-09-24). Capture 명중 뒤, 움직일 수 있는 동료가 있으면 Downed 대신 Pinned로 붙잡고 논다.
     /// 루프: Bat(앞발로 툭툭) → 관심 감소 → Release(놓고 물러남, 쥐 Active) → 2m 도주하면 Chase, 아니면 다시 Pinned.
     /// 관심이 바닥나면 하품하고 풀어 준다(생존). 전체 시간이 끝나면 진짜 Downed. 다른 쥐가 눈에 띄면 그쪽을 쫓는다(미끼 = 구출).
-    /// 물고 옮기기(Carry)는 다음 단계 — 소유 클라 위치를 매 프레임 밀어줘야 해서.
+    /// 물고 옮기기(Carry, 고양이 34): 한 판에 한 번, 첫 툭툭 뒤 확률로 침대·햇볕 자리로 물고 간다 — 가끔 떨어뜨린다.
     /// </summary>
     public partial class CatBrain
     {
-        private enum ToyPhase { Bat, Release, Yawn }
+        private enum ToyPhase { Bat, Release, Yawn, Carry }
 
         private PlayerCondition _toyVictim;
         private ToyPhase _toyPhase;
@@ -24,6 +24,10 @@ namespace RatGame.AI
         private float _toyLeftAt = -99f;  // Toy를 떠난 시각 — 재개 창 판단
         private ulong _toyVictimId;
         private Vector3 _toyReleasePos;
+        private bool _toyCarried;         // 이번 판에 이미 물고 옮겼나
+        private Vector3 _carryDest;
+        private float _carryNextPush;
+        private float _carryNextDropRoll;
 
         /// <summary>테스트·HUD용.</summary>
         public float ToyInterest => _toyInterest;
@@ -38,6 +42,7 @@ namespace RatGame.AI
             {
                 _toyInterest = _balance.CatToyInterest;
                 _toyUntil = Time.time + _balance.CatToySeconds;
+                _toyCarried = false;
             }
             _toyVictim = victim;
             _toyVictimId = victim.OwnerClientId;
@@ -126,6 +131,7 @@ namespace RatGame.AI
                         Nudge(victim);
                     }
                     if (Time.time < _toyPhaseEnd) return;
+                    if (TryBeginCarry(victim)) return; // 첫 툭툭 뒤 — 자기 자리로 물고 간다
                     _toyInterest -= _balance.CatToyLoopDrain;
                     if (_toyInterest <= 0f)
                     {
@@ -137,15 +143,11 @@ namespace RatGame.AI
                         Log.Dev($"고양이 [{name}]: 흥미 잃음 — client {_toyVictimId} 풀어 줌(하품)");
                         return;
                     }
-                    // 놓아주기 — 한 발 물러난다
-                    _toyPhase = ToyPhase.Release;
-                    _toyPhaseEnd = Time.time + _balance.CatToyReleaseSeconds;
-                    _toyReleasePos = victim.transform.position;
-                    victim.ServerSetState(ConditionState.Active);
-                    Vector3 back = transform.position - victim.transform.position; back.y = 0f;
-                    if (back.sqrMagnitude < 0.01f) back = -transform.forward;
-                    _movement.MoveTo(CatMovement.Sample(transform.position + back.normalized, 1f, transform.position), _balance.CatPatrolSpeed);
-                    Log.Dev($"고양이 [{name}]: 놓아줌 (관심 {_toyInterest:0}, {_balance.CatToyReleaseSeconds}s)");
+                    BeginRelease(victim, true); // 놓아주기 — 한 발 물러난다
+                    return;
+
+                case ToyPhase.Carry:
+                    TickCarry(victim);
                     return;
 
                 case ToyPhase.Release:
@@ -170,6 +172,90 @@ namespace RatGame.AI
             }
         }
 
+        private void BeginRelease(PlayerCondition victim, bool stepBack)
+        {
+            _toyPhase = ToyPhase.Release;
+            _toyPhaseEnd = Time.time + _balance.CatToyReleaseSeconds;
+            _toyReleasePos = victim.transform.position;
+            victim.ServerSetState(ConditionState.Active);
+            if (stepBack)
+            {
+                Vector3 back = transform.position - victim.transform.position; back.y = 0f;
+                if (back.sqrMagnitude < 0.01f) back = -transform.forward;
+                _movement.MoveTo(CatMovement.Sample(transform.position + back.normalized, 1f, transform.position), _balance.CatPatrolSpeed);
+            }
+            else _movement.Stop();
+            Log.Dev($"고양이 [{name}]: 놓아줌 (관심 {_toyInterest:0}, {_balance.CatToyReleaseSeconds}s)");
+        }
+
+        private bool TryBeginCarry(PlayerCondition victim)
+        {
+            if (_toyCarried) return false;
+            _toyCarried = true; // 굴림은 한 번만 — 실패해도 이번 판엔 다시 안 굴린다
+            if (Random.value >= _balance.CatToyCarryChance) return false;
+            int best = -1; float bestD = float.MaxValue;
+            for (int i = 0; i < _spots.Length; i++)
+            {
+                if (_spots[i].Type != CatSpotType.Bed && _spots[i].Type != CatSpotType.Sun) continue;
+                float d = Vector3.Distance(transform.position, _spots[i].Pos);
+                if (d < _balance.CatToyCarryMinDistance || d > _balance.CatToyCarryMaxDistance || d >= bestD) continue;
+                bestD = d; best = i;
+            }
+            if (best < 0) return false;
+            _carryDest = _spots[best].Pos;
+            _toyPhase = ToyPhase.Carry;
+            _toyPhaseEnd = Time.time + _balance.CatToyCarrySeconds;
+            _carryNextPush = 0f;
+            _carryNextDropRoll = Time.time + 1f;
+            _movement.MoveTo(_carryDest, _balance.CatPatrolSpeed * _balance.CatToyCarrySpeedMul);
+            Log.Dev($"고양이 [{name}]: 물고 감 — client {_toyVictimId} → {_spots[best].Name} ({bestD:0.0}m)");
+            return true;
+        }
+
+        private void TickCarry(PlayerCondition victim)
+        {
+            // 입에 문 쥐 — 소유 클라에 위치를 밀어 준다 (Nudge와 같은 docs/03 예외, 10Hz)
+            if (Time.time >= _carryNextPush)
+            {
+                _carryNextPush = Time.time + 0.1f;
+                PushVictim(victim, MouthPoint(victim));
+            }
+            if (Time.time >= _carryNextDropRoll)
+            {
+                _carryNextDropRoll = Time.time + 1f;
+                if (Random.value < _balance.CatToyCarryDropChance)
+                {
+                    Log.Dev($"고양이 [{name}]: 앗 — 떨어뜨림! (client {_toyVictimId})");
+                    BeginRelease(victim, false); // 공짜 도주 창
+                    return;
+                }
+            }
+            if (Vector3.Distance(transform.position, _carryDest) > 0.8f && Time.time < _toyPhaseEnd) return;
+            // 도착 — 내려놓고 자기 자리에서 계속 논다
+            PushVictim(victim, MouthPoint(victim));
+            Log.Dev($"고양이 [{name}]: 내려놓음 ({Vector3.Distance(transform.position, _carryDest):0.0}m 남음)");
+            _movement.Stop();
+            BeginBat();
+        }
+
+        private Vector3 MouthPoint(PlayerCondition victim)
+        {
+            Vector3 p = transform.position + transform.forward * 0.6f;
+            p = CatMovement.Sample(p, 0.8f, transform.position);
+            p.y = victim.transform.position.y;
+            return p;
+        }
+
+        private static void PushVictim(PlayerCondition victim, Vector3 pos)
+        {
+            var pc = victim.GetComponent<PlayerController>();
+            if (pc == null) return;
+            pc.TeleportClientRpc(pos, victim.transform.rotation, new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams { TargetClientIds = new[] { victim.OwnerClientId } }
+            });
+        }
+
         private void FaceTowards(Vector3 pos)
         {
             Vector3 d = pos - transform.position; d.y = 0f;
@@ -179,16 +265,11 @@ namespace RatGame.AI
         // 앞발로 툭 — 잡힌 쥐를 옆으로 조금 민다. 이동은 소유 클라 권한이라 소유자에게 순간이동 RPC (docs/03 예외)
         private void Nudge(PlayerCondition victim)
         {
-            var pc = victim.GetComponent<PlayerController>();
-            if (pc == null) return;
             Vector3 dir = Quaternion.Euler(0f, Random.Range(-90f, 90f), 0f) * transform.forward; dir.y = 0f;
             Vector3 target = victim.transform.position + dir.normalized * _balance.CatToyNudge;
             Vector3 onMesh = CatMovement.Sample(target, 0.8f, victim.transform.position);
             onMesh.y = victim.transform.position.y;
-            pc.TeleportClientRpc(onMesh, victim.transform.rotation, new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams { TargetClientIds = new[] { victim.OwnerClientId } }
-            });
+            PushVictim(victim, onMesh);
             PawTick.Value++; // 앞발 연출 재사용 (CatVisual 몸 튐)
         }
     }

@@ -223,6 +223,12 @@ namespace RatGame.Data
         [SerializeField] private float _catToyYawnSeconds = 2f;
         [SerializeField] private float _catToyResumeWindow = 10f;        // 다시 잡으면 관심·남은 시간 이어서
         [SerializeField] private float _catToyBoredIgnoreSeconds = 6f;   // 질려서 놓아준 쥐는 하품 뒤 이만큼 못 본 척
+        [SerializeField, Range(0f, 1f)] private float _catToyCarryChance = 0.6f; // 물고 옮기기 (고양이 34) — 놀이 한 판에 한 번, 첫 툭툭 뒤
+        [SerializeField] private float _catToyCarrySeconds = 6f;
+        [SerializeField] private float _catToyCarryMinDistance = 4f;     // 목적지(침대·햇볕) 거리 범위
+        [SerializeField] private float _catToyCarryMaxDistance = 12f;
+        [SerializeField] private float _catToyCarrySpeedMul = 1.2f;      // 순찰 속도 배율 — 자랑스럽게 종종
+        [SerializeField, Range(0f, 1f)] private float _catToyCarryDropChance = 0.1f; // 초당 — 물고 가다 떨어뜨림
 
         [Header("댕청한 실패 (design/cat-ideas/11)")]
         [SerializeField] private float _catSlipMinSpeed = 4f;            // 이 속도 이상으로 달릴 때만 미끄러진다
@@ -515,6 +521,12 @@ namespace RatGame.Data
         public float WaterBowlSpillNoise => _waterBowlSpillNoise;
         public float BedCoverRadius => _bedCoverRadius;
         public float BedCoverSeconds => _bedCoverSeconds;
+        public float CatToyCarryChance => _catToyCarryChance;
+        public float CatToyCarrySeconds => _catToyCarrySeconds;
+        public float CatToyCarryMinDistance => _catToyCarryMinDistance;
+        public float CatToyCarryMaxDistance => _catToyCarryMaxDistance;
+        public float CatToyCarrySpeedMul => _catToyCarrySpeedMul;
+        public float CatToyCarryDropChance => _catToyCarryDropChance;
         public float CatToySeconds => _catToySeconds;
         public float CatToyInterest => _catToyInterest;
         public float CatToyLoopDrain => _catToyLoopDrain;
