@@ -76,6 +76,12 @@ public class ZoneGenerator
 - 스폰 높이 규약: LootSpawn 트랜스폼이 선반 위(y>1m)면 Large 금지 (내려올 수 없는 물건 방지 — 던져야 함).
 - **반지(loot_ring)**: 고양이 Sleep 스팟 반경 2m 내 스폰 고정 — 고위험 고수익의 상징. Special 전용 규칙으로 하드코딩 허용.
 
+## 구현 1단계 (2026-09-24, 고양이 57)
+
+- `World/DoorSocket`(+Z 바깥, 폭 1.8) · `World/RoomModule`(루트 BoxCollider 트리거 = 바운즈, Entry·Exits·LootSpawns·TrapSpawns·CatSpawn·PlayerSpawns·RatHole) · `Data/ZoneDefinitionSO` · `Run/ZoneGenerator`(시드 → 쥐구멍방 → 중간방 `roomModulesPerZone` 3~4개 중복 없이 → 보너스방 확률, 접합은 yaw만 — FromToRotation은 180°에서 방을 눕혀서 SignedAngle로, 겹침은 수평 사각형 교차(여유 0.05m), 5번 버리면 끝, 방은 부모 기준 위치).
+- 그레이박스 방 6종(`Tools/RatGame/Zone/Create Greybox Rooms` → `Prefabs/Rooms/Kitchen/`): 쥐구멍방 8×8 · 직선 8×10 · 모서리 8×8(옆 출구) · 홀 12×10(출구 2) · 복도 4×12 · 보너스 8×8(막다른). 벽은 NoiseBlocker(소리·시야 차단), 문틈 1.8m, 가운데 상자. `Data/Zones/Zone_Kitchen_Greybox`.
+- 다음(2단계): 방·스폰을 NetworkObject로, 호스트 런타임 NavMesh, 전리품·함정 테이블, 고양이 배치, RunManager 연결.
+
 ## 존 전환 (09 Transition 페이즈)
 
 - 방식: **교체** — 이전 존 전체 디스폰 → 같은 씬에서 새 존 생성 → 플레이어를 새 쥐구멍으로 텔레포트.
@@ -96,6 +102,6 @@ public class ZoneGenerator
 ## 수용 기준 (W8)
 
 - [ ] 같은 시드 → 호스트·클라 동일 결과 (클라는 스폰 수신만이므로 자동 보장 — 검증만)
-- [ ] 시드 20개 연속 생성 스트레스 테스트: 오버랩 0, 생성 실패 0, NavMesh 구멍 0
+- [x] 시드 20개 연속 생성 스트레스 테스트: 오버랩 0, 생성 실패 0, NavMesh 구멍 0 (2026-09-24 고양이 57, `Tools/RatGame/Zone/Stress Test`: 시드 20개 방 4~6(평균 5.1)·보너스 12·겹침 0·실패 0·NavMesh 끊김 0·98ms, 시드 200개도 같음(942ms). 모서리방만으로 강제로 말리게 하면 겹침 후보 5번 버리고 4방에서 멈춤 — 겹침 0)
 - [ ] 부엌 테마 그레이박스 방 4종으로 존 3개 연속 플레이
 - [ ] 반지가 항상 고양이 옆에 있는지, 선반 위 Large 금지 규칙 확인

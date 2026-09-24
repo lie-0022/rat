@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59fccfb3a1f8a4544a455afbfd199e66, type: 3}
+  m_Name: Zone_Kitchen_Greybox
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.ZoneDefinitionSO
+  ThemeId: kitchen
+  RatHoleRoom: {fileID: 5433838277302057074, guid: c75e8eadfa5a04b6889d3eae35fe1b02, type: 3}
+  MiddleRoomPool:
+  - {fileID: 4476158705842217983, guid: 33828b944e76940e996341d5167f529d, type: 3}
+  - {fileID: 6439818802276722264, guid: 6f6ad8a6625014d7f85f7b7c0cfe9494, type: 3}
+  - {fileID: 8972679629797063548, guid: efcbc3c7a18bd4963a926faad9265107, type: 3}
+  - {fileID: 2694666325863245090, guid: 51146be7b2f2c4cdbbfc21fb7ca50301, type: 3}
+  BonusRoomPool:
+  - {fileID: 3575132241640603717, guid: b485fd93d548f4d2a82dd5af041ce73b, type: 3}
+  BonusRoomChance: 0.4
+  CatCount: 1
