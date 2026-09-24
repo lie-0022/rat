@@ -1,6 +1,7 @@
 using RatGame.AI;
 using RatGame.Core;
 using RatGame.Data;
+using RatGame.World;
 using UnityEngine;
 
 namespace RatGame.Run
@@ -71,10 +72,11 @@ namespace RatGame.Run
 
         private HouseEventKind Pick()
         {
-            // 같은 사건 연속 금지 — 지금은 두 종류라 번갈아
-            if (_last == HouseEventKind.CallAway) return HouseEventKind.Feeding;
-            if (_last == HouseEventKind.Feeding) return HouseEventKind.CallAway;
-            return Random.value < 0.5f ? HouseEventKind.CallAway : HouseEventKind.Feeding;
+            // 같은 사건 연속 금지 — 부르기·밥·청소기 중 직전 것 빼고 무작위
+            var pool = new System.Collections.Generic.List<HouseEventKind> { HouseEventKind.CallAway, HouseEventKind.Feeding };
+            if (FindAnyObjectByType<RobotVacuum>() != null) pool.Add(HouseEventKind.Vacuum);
+            if (_last.HasValue) pool.Remove(_last.Value);
+            return pool[Random.Range(0, pool.Count)];
         }
 
         /// <summary>호스트: 사건 예약(예고부터). 테스트·다른 시스템(초인종 등)용.</summary>
@@ -107,6 +109,12 @@ namespace RatGame.Run
                     break;
                 case HouseEventKind.Feeding:
                     foreach (var cat in cats) cat.ServerFeedingTime(_balance.CatFeedingSeconds);
+                    break;
+                case HouseEventKind.Vacuum:
+                    var vac = FindAnyObjectByType<RobotVacuum>();
+                    if (vac == null) break;
+                    vac.ServerStart(_balance.VacuumSeconds);
+                    foreach (var cat in cats) cat.ServerAvoidVacuum(vac.Position, _balance.VacuumSeconds);
                     break;
             }
             _run.ServerHouseEvent(kind, HouseEventPhase.Start);

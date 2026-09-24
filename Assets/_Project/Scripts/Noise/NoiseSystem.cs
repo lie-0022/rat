@@ -25,6 +25,9 @@ namespace RatGame.Noise
     {
         public static event Action<NoiseEvent> OnNoise;
 
+        /// <summary>호스트: 이 loudness 미만 소리는 배경 소음에 묻힌다 (로봇청소기 — design/cat-ideas/10). 0이면 없음.</summary>
+        public static float MaskLoudness;
+
         /// <summary>docs/06 기즈모·파문용 최근 이벤트 (호스트 로컬 링버퍼).</summary>
         public static readonly NoiseEvent[] Recent = new NoiseEvent[16];
         private static int _recentIndex;

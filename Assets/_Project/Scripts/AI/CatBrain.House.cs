@@ -49,6 +49,32 @@ namespace RatGame.AI
             Log.Dev($"고양이 [{name}]: 밥 시간 — {_spots[food].Name}로 ({seconds}s)");
         }
 
+        /// <summary>호스트: 로봇청소기가 켜졌다 — 청소기에서 가장 먼 스팟으로 가서 끝날 때까지 웅크림.</summary>
+        public void ServerAvoidVacuum(Vector3 vacuumPos, float seconds)
+        {
+            if (!IsServer) return;
+            var st = State.Value;
+            if (st is CatState.Chase or CatState.Capture or CatState.Toy or CatState.Away or CatState.Fight) return;
+            int best = -1; float bestD = -1f;
+            for (int i = 0; i < _spots.Length; i++)
+            {
+                if (_spots[i].Type == CatSpotType.Door) continue;
+                float d = Vector3.Distance(_spots[i].Pos, vacuumPos);
+                if (d > bestD) { bestD = d; best = i; }
+            }
+            if (best < 0) return;
+            _avoidVacuumUntil = Time.time + seconds;
+            SetState(CatState.Patrol);
+            CancelMemoryVisit();
+            _dwelling = false;
+            _spotIndex = best;
+            _movement.MoveTo(_spots[best].Pos, _balance.CatPatrolSpeed * 1.5f);
+            Log.Dev($"고양이 [{name}]: 청소기 싫어 — {_spots[best].Name}로 피신 ({seconds}s)");
+        }
+
+        private float _avoidVacuumUntil;
+        private bool AvoidingVacuum => Time.time < _avoidVacuumUntil;
+
         private int FindSpot(CatSpotType type)
         {
             int best = -1; float bestD = float.MaxValue;

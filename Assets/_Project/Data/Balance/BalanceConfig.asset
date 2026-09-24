@@ -242,6 +242,10 @@ MonoBehaviour:
   _reliefCallAwayMinGap: 90
   _doorbellHoldSeconds: 1
   _attentionIndicatorRange: 15
+  _vacuumSeconds: 30
+  _vacuumSpeed: 1.5
+  _vacuumMaskLoudness: 40
+  _vacuumCatSense: 0.6
   _catFightDistance: 4
   _catFightChance: 0.7
   _catFightSeconds: 15

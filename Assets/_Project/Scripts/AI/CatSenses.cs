@@ -184,6 +184,7 @@ namespace RatGame.AI
         private void OnNoise(NoiseEvent e)
         {
             if (!IsServer || Deaf) return; // 싸움 중엔 못 듣는다 (design/cat-ideas/07)
+            if (e.Loudness < NoiseSystem.MaskLoudness) return; // 청소기 소리에 묻힘 (design/cat-ideas/10)
             if (e.Type == NoiseType.Impact && IgnoreImpactNear != null
                 && Vector3.Distance(e.Pos, IgnoreImpactNear.position) < 1.5f) return;
             float heard = NoiseSystem.GetLoudnessAt(e, transform.position) * SensitivityMultiplier * HearingMultiplier;

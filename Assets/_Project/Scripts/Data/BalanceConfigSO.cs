@@ -285,6 +285,10 @@ namespace RatGame.Data
         [SerializeField] private float _reliefCallAwayMinGap = 90f;      // 디렉터 Relief면 마지막 사건 뒤 이만큼 지났을 때 부르기를 앞당김
         [SerializeField] private float _doorbellHoldSeconds = 1f;        // 초인종 E 홀드 (런당 1회)
         [SerializeField] private float _attentionIndicatorRange = 15f;   // 이 안에서 노는 고양이면 HUD "♪"
+        [SerializeField] private float _vacuumSeconds = 30f;             // 로봇청소기 (집주인 이벤트)
+        [SerializeField] private float _vacuumSpeed = 1.5f;
+        [SerializeField] private float _vacuumMaskLoudness = 40f;        // 이 미만 소리는 청소기 소리에 묻힘
+        [SerializeField] private float _vacuumCatSense = 0.6f;           // 피신한 고양이 감각
 
         [Header("두 마리 — 앙숙 (design/cat-ideas/07)")]
         [SerializeField] private float _catFightDistance = 4f;           // 이 안에서 서로 보이면
@@ -562,6 +566,10 @@ namespace RatGame.Data
         public float ReliefCallAwayMinGap => _reliefCallAwayMinGap;
         public float DoorbellHoldSeconds => _doorbellHoldSeconds;
         public float AttentionIndicatorRange => _attentionIndicatorRange;
+        public float VacuumSeconds => _vacuumSeconds;
+        public float VacuumSpeed => _vacuumSpeed;
+        public float VacuumMaskLoudness => _vacuumMaskLoudness;
+        public float VacuumCatSense => _vacuumCatSense;
         public float CatFightDistance => _catFightDistance;
         public float CatFightChance => _catFightChance;
         public float CatFightSeconds => _catFightSeconds;

@@ -88,6 +88,7 @@ namespace RatGame.AI
             _senses.Heard += OnHeardForPersonality;
             Noise.ScentSystem.Configure(_balance);
             Noise.ScentSystem.Clear(); // 정적 버퍼 — 이전 판·이전 플레이 모드 자국 제거
+            Noise.NoiseSystem.MaskLoudness = 0f; // 정적 — 이전 판 청소기가 켜진 채 끝났을 수 있다
             if (PersonalityIndex.Value < 0 && _personalities != null && _personalities.Length > 0)
                 ServerSetPersonality(PickRandomPersonality()); // 아기는 무작위에서 뺀다 (존 생성기가 명시)
             else ApplyPersonality();
@@ -422,6 +423,8 @@ namespace RatGame.AI
         private void ArriveAtSpot()
         {
             var spot = _spots[_spotIndex];
+            // 청소기 피신 중이면 스팟 종류와 상관없이 끝날 때까지 웅크림 (design/cat-ideas/10)
+            if (AvoidingVacuum) { Dwell(_avoidVacuumUntil - Time.time, _balance.VacuumCatSense); return; }
             // 복귀(NearestSpot)로 도착한 스팟도 "방금 쓴 스팟"으로 — 안 그러면 복귀 → 같은 매복 스팟 → 또 매복이 반복된다 (고양이 21 소크)
             if (!_recentSpots.Contains(_spotIndex)) _recentSpots.Add(_spotIndex);
             Log.Dev($"고양이 [{name}]: 스팟 도착 {spot.Name} ({spot.Type})");

@@ -170,6 +170,21 @@ namespace RatGame.Editor
                 hs.EditorSetup(hideBalance, label, cap);
             }
 
+            // 로봇청소기 (design/cat-ideas/10) — 충전대 서쪽 벽
+            if (GameObject.Find("RobotVacuum") == null)
+            {
+                var vac = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                vac.name = "RobotVacuum"; vac.transform.SetParent(root.transform);
+                vac.transform.position = new Vector3(-16f, 0.1f, -4f);
+                vac.transform.localScale = new Vector3(0.7f, 0.08f, 0.7f);
+                var vr = vac.GetComponent<Renderer>();
+                vr.sharedMaterial = new Material(vr.sharedMaterial) { color = new Color(0.15f, 0.15f, 0.18f) };
+                var rb = vac.AddComponent<Rigidbody>(); rb.isKinematic = true; rb.interpolation = RigidbodyInterpolation.Interpolate;
+                vac.AddComponent<Unity.Netcode.NetworkObject>();
+                vac.AddComponent<NetworkTransform>();
+                vac.AddComponent<RobotVacuum>().EditorSetup(hideBalance);
+            }
+
             // 물그릇 (design/cat-ideas/06 2단계) — 물 스팟 옆, 엎으면 웅덩이
             if (GameObject.Find("WaterBowl") == null)
             {
