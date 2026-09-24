@@ -156,6 +156,22 @@ namespace RatGame.UI
             if (now < _nextPoll) return;
             _nextPoll = now + PollSeconds;
             PollPlayers();
+            PollQuota();
+        }
+
+        // 할당량을 처음 채운 순간 한 번 (고양이 95) — 판정은 이미 NV(적립·할당량)라 읽기만. 스테이지가 바뀌면(새 StageQuota) 다시
+        private Run.StageQuota _quotaSeen;
+        private bool _quotaWasMet;
+
+        private void PollQuota()
+        {
+            var run = Run.RunManager.Instance;
+            var quota = run != null ? run.GetComponent<Run.StageQuota>() : null;
+            if (quota == null || !quota.IsSpawned || quota.Quota.Value <= 0) { _quotaSeen = null; return; }
+            bool met = quota.Met(run.StashedValue.Value);
+            if (quota != _quotaSeen) { _quotaSeen = quota; _quotaWasMet = met; return; } // 늦게 들어와 이미 채운 상태면 알리지 않음
+            if (met && !_quotaWasMet) Show("할당량 채움! 이제 목적지에 모두 모이면 다음 스테이지", UiColorRole.Accent);
+            _quotaWasMet = met;
         }
 
         private void PollPlayers()

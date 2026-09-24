@@ -88,6 +88,8 @@ namespace RatGame.UI
                 ShowSub($"식량이 모자라요 — {quota.Quota.Value - stashed} 더 모아 창고에", false);
             else if (ready > 0) // 누가 쥐구멍에 들어가 있을 때만 — 나머지를 부르는 신호
                 ShowSub(quota != null ? $"창고에 모이면 다음으로   {ready}/{needed}" : $"쥐구멍에 모이면 귀환   {ready}/{needed}", false);
+            else if (quota != null && quota.Met(stashed)) // 채웠지만 아직 아무도 창고에 없음 — 갈지 더 모을지 (고양이 95)
+                ShowSub($"할당량 채움! 창고에 모이면 다음 · 상점 돈 +{stashed - quota.Quota.Value}", false); // 짧게 — 오른쪽 토스트 칸과 안 겹치게
             else
                 sub = false;
 
