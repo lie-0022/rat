@@ -88,6 +88,8 @@ public enum EquipmentEffect { CarrySlots, MoveSpeed, ClimbAssist, DarkVision }
 ## 스킨 (Data/SkinSO) — 도전과제 해금, 판매 아님
 
 - **색 바꾸기 (2026-09-24, 쥐 모델)**: `PlayerVisual.SetBodyColor`가 MaterialPropertyBlock으로 **털 머티리얼 칸만** `_BaseColor`를 바꾼다(렌더러 `Cylinder`, 칸 = 가장 큰 서브메시 0번). 귀·코·손발·꼬리·배·눈은 모델 색 그대로. 머티리얼 에셋은 안 건드려서 쥐마다 다른 색이 된다. 기본은 팀 팔레트(회색·파랑·초록·노랑), 스킨이 있으면 `SkinSO.TintColor`. 새 색 = SkinSO 에셋 하나 추가. 검증: 스킨 4종 털만 바뀜, 2인에서 호스트 착용 → 클라 "스킨 연출" 반영.
+- **털 색 팔레트 (2026-09-24, 사용자 결정 "자유롭게, 겹쳐도 됨")**: 거울 패널 아래 `Palette` — 견본 16개(누르면 바로 입음)와 색상·채도·밝기 슬라이더 + 미리보기 `#RRGGBB` + "이 색 입기". `PlayerSkin.CustomColor`(Color32 NV, 소유 클라 쓰기, 알파 0 = 안 고름)로 동기화하고 `SaveData.BodyColorHex`에 저장. 스킨과는 **나중에 고른 것 하나만** 남는다(스킨 착용 → 팔레트 색 지움, 팔레트 색 → 스킨 벗음). 우선순위 표시: 스킨 > 팔레트 > 팀 기본색. 다른 쥐와 같은 색도 된다. 레이아웃은 `Tools/RatGame/UI/Build Mirror Palette`(창 600×850).
+  - 팀 구분 표시(HUD 팀 상태 네모·핑·결과 화면·쓰러진 몸)는 아직 **팀 기본색** 그대로 — 털 색과 다를 수 있다.
 - 무늬·부위별 색(배만 다른 색 등)이 필요해지면: 배 칸(1~2번)도 같은 방식으로 따로 칠하거나, 모델에 텍스처(마스크)를 받는다.
 
 ```csharp

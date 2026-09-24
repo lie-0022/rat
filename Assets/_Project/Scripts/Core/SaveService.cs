@@ -15,6 +15,8 @@ namespace RatGame.Core
         public RatGame.Data.UpgradeLevels Upgrades;
         /// <summary>개인: 착용 스킨 Id (빈 문자열 = 기본 팀 색).</summary>
         public string EquippedSkinId = "";
+        /// <summary>개인: 팔레트로 고른 털 색 "#RRGGBB" (빈 문자열 = 안 고름). 스킨과 둘 중 나중에 고른 것만 남는다.</summary>
+        public string BodyColorHex = "";
         /// <summary>개인: 도감 해금 아이템 Id (첫 정산 시 호스트 ClientRpc → 각자 저장, docs/08).</summary>
         public System.Collections.Generic.List<string> UnlockedCodexIds = new();
     }
