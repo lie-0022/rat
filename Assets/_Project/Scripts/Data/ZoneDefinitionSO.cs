@@ -16,5 +16,8 @@ namespace RatGame.Data
         public TrapTableSO TrapTable;
         public GameObject RatHolePrefab;        // 쥐구멍(DepositZone) — 쥐구멍방 RatHole 표시에
         public GameObject CatPrefab;
+        public GameObject[] HideSpotPrefabs;    // 숨을 곳 종류 (고양이 60) — HideSpawns마다 시드로 하나
+        public GameObject DarkZonePrefab;       // 어둠 구역 (LightZone)
+        [Range(0f, 1f)] public float DarkZoneChance = 0.6f; // DarkZone 표시가 있는 방이 실제로 어두울 확률
     }
 }

@@ -15,7 +15,7 @@ namespace RatGame.Editor
     /// 존 생성기 도구 (docs/10, 2026-09-24 고양이 57): 그레이박스 방 모듈 6종 + 존 정의 에셋 생성, 시드 20개 스트레스 테스트.
     /// 방은 직사각형(W×D) — 남쪽(-Z) 벽 가운데가 Entry, 출구는 (벽, 오프셋)으로. 벽은 문틈 1.8m를 비우고 조각으로 세운다.
     /// </summary>
-    public static class ZoneTools
+    public static partial class ZoneTools
     {
         private const string RoomDir = "Assets/_Project/Prefabs/Rooms/Kitchen";
         private const string ZonePath = "Assets/_Project/Data/Zones/Zone_Kitchen_Greybox.asset";
@@ -27,6 +27,7 @@ namespace RatGame.Editor
         {
             public string Name; public float W, D; public bool HasEntry; public (Side side, float offset)[] Exits;
             public bool Cat, RatHole, Bonus; public int Loot, Traps; public CatSpotType[] Spots;
+            public Vector2[] Hides; public Vector2? Dark; // 숨을 곳·어둠 구역 자리 (방 로컬 x,z — 고양이 60)
         }
 
         [MenuItem("Tools/RatGame/Zone/Create Greybox Rooms")]
@@ -35,11 +36,11 @@ namespace RatGame.Editor
             var specs = new[]
             {
                 new RoomSpec { Name = "Room_RatHole",  W = 8,  D = 8,  HasEntry = false, Exits = new[] { (Side.North, 0f) }, RatHole = true, Loot = 3, Traps = 0 },
-                new RoomSpec { Name = "Room_Straight", W = 8,  D = 10, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Cat = true, Loot = 7, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Food } },
-                new RoomSpec { Name = "Room_Corner",   W = 8,  D = 8,  HasEntry = true,  Exits = new[] { (Side.East, 0f) }, Loot = 6, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Sun } },
-                new RoomSpec { Name = "Room_Hall",     W = 12, D = 10, HasEntry = true,  Exits = new[] { (Side.North, -3f), (Side.West, 2f) }, Cat = true, Loot = 9, Traps = 2, Spots = new[] { CatSpotType.Bed, CatSpotType.Look, CatSpotType.Groom } },
+                new RoomSpec { Name = "Room_Straight", W = 8,  D = 10, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Cat = true, Loot = 7, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Food }, Hides = new[] { new Vector2(-2.7f, 3.7f) }, Dark = new Vector2(0f, 2.8f) },
+                new RoomSpec { Name = "Room_Corner",   W = 8,  D = 8,  HasEntry = true,  Exits = new[] { (Side.East, 0f) }, Loot = 6, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Sun }, Hides = new[] { new Vector2(-2.5f, 2.5f) }, Dark = new Vector2(1.9f, -1.9f) },
+                new RoomSpec { Name = "Room_Hall",     W = 12, D = 10, HasEntry = true,  Exits = new[] { (Side.North, -3f), (Side.West, 2f) }, Cat = true, Loot = 9, Traps = 2, Spots = new[] { CatSpotType.Bed, CatSpotType.Look, CatSpotType.Groom }, Hides = new[] { new Vector2(4.7f, 3.7f), new Vector2(4.7f, -3.7f) }, Dark = new Vector2(-3.5f, -2.5f) },
                 new RoomSpec { Name = "Room_Corridor", W = 4,  D = 12, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Loot = 4, Traps = 2, Spots = new[] { CatSpotType.Look } },
-                new RoomSpec { Name = "Room_Bonus",    W = 8,  D = 8,  HasEntry = true,  Exits = new (Side, float)[0], Bonus = true, Loot = 10, Traps = 1, Spots = new[] { CatSpotType.Bed } },
+                new RoomSpec { Name = "Room_Bonus",    W = 8,  D = 8,  HasEntry = true,  Exits = new (Side, float)[0], Bonus = true, Loot = 10, Traps = 1, Spots = new[] { CatSpotType.Bed }, Hides = new[] { new Vector2(-2.5f, 2.5f) } },
             };
             if (!AssetDatabase.IsValidFolder("Assets/_Project/Data/Zones")) AssetDatabase.CreateFolder("Assets/_Project/Data", "Zones");
             var prefabs = new Dictionary<string, GameObject>();
@@ -108,6 +109,25 @@ namespace RatGame.Editor
                     sp.localRotation = Quaternion.LookRotation(-sp.localPosition.normalized);
                     sp.gameObject.AddComponent<CatSpot>().EditorSetup(s.Spots[i], 1f);
                 }
+            // 숨을 곳 자리 — 모서리, 방 가운데를 본다(나오는 쪽). 문틈·가운데 상자는 피해서 방마다 손으로 고름 (고양이 60)
+            if (s.Hides != null)
+            {
+                var hides = new List<Transform>();
+                for (int i = 0; i < s.Hides.Length; i++)
+                {
+                    var h = new GameObject("HideSpawn_" + i).transform; h.SetParent(root.transform, false);
+                    h.localPosition = new Vector3(s.Hides[i].x, 0f, s.Hides[i].y);
+                    h.localRotation = Quaternion.LookRotation(new Vector3(-s.Hides[i].x, 0f, -s.Hides[i].y).normalized);
+                    hides.Add(h);
+                }
+                room.HideSpawns = hides.ToArray();
+            }
+            if (s.Dark.HasValue)
+            {
+                var d = new GameObject("DarkZone").transform; d.SetParent(root.transform, false);
+                d.localPosition = new Vector3(s.Dark.Value.x, 0f, s.Dark.Value.y);
+                room.DarkZone = d;
+            }
             // 가운데 상자 하나 — 시야를 끊는다 (좁은 복도엔 없음)
             if (s.W >= 8)
             {
@@ -174,39 +194,6 @@ namespace RatGame.Editor
                 list.Add(m);
             }
             return list.ToArray();
-        }
-
-        private const string MatDir = "Assets/_Project/Art/Materials/Greybox";
-
-        // 프리팹은 메모리 머티리얼을 저장하지 못한다(씬은 된다) — 색마다 머티리얼 에셋으로 (고양이 58에서 방이 마젠타로 나와서)
-        private static Material GreyboxMat(Color c, Shader shader)
-        {
-            if (!AssetDatabase.IsValidFolder("Assets/_Project/Art/Materials")) AssetDatabase.CreateFolder("Assets/_Project/Art", "Materials");
-            if (!AssetDatabase.IsValidFolder(MatDir)) AssetDatabase.CreateFolder("Assets/_Project/Art/Materials", "Greybox");
-            string name = "Greybox_" + ColorUtility.ToHtmlStringRGB(c);
-            string path = $"{MatDir}/{name}.mat";
-            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (mat != null) return mat;
-            mat = new Material(shader) { color = c, name = name };
-            AssetDatabase.CreateAsset(mat, path);
-            return mat;
-        }
-
-        private static void Tint(GameObject go, Color c)
-        {
-            var r = go.GetComponent<Renderer>();
-            r.sharedMaterial = GreyboxMat(c, r.sharedMaterial.shader);
-        }
-
-        // 씬 오브젝트를 프리팹으로 뽑기 전에: 에셋이 아닌 머티리얼(씬에만 저장된 것)을 같은 색 에셋으로 바꾼다
-        private static void PersistMaterials(GameObject root)
-        {
-            foreach (var r in root.GetComponentsInChildren<Renderer>(true))
-            {
-                var m = r.sharedMaterial;
-                if (m == null || AssetDatabase.Contains(m)) continue;
-                r.sharedMaterial = GreyboxMat(m.HasProperty("_BaseColor") ? m.GetColor("_BaseColor") : m.color, m.shader);
-            }
         }
 
         /// <summary>
@@ -280,66 +267,6 @@ namespace RatGame.Editor
             if (!list.Exists(x => x.path == genPath)) { list.Add(new EditorBuildSettingsScene(genPath, true)); EditorBuildSettings.scenes = list.ToArray(); }
             EditorSceneManager.OpenScene(warehousePath, OpenSceneMode.Single);
             Debug.Log($"[RatGame] 생성 스테이지 준비 — 전리품 {entries.Count}종, 함정 3종, {genPath}");
-        }
-
-        [MenuItem("Tools/RatGame/Zone/Stress Test (20 seeds)")]
-        public static void StressTest() => RunStress(20, 1000);
-
-        /// <summary>시드 n개: 겹침 쌍·방 수·보너스·NavMesh 도달(쥐구멍방 → 모든 방 중심)·시간. 임시 씬에서, 끝나면 닫는다.</summary>
-        public static string RunStress(int count, int firstSeed)
-        {
-            var zone = AssetDatabase.LoadAssetAtPath<ZoneDefinitionSO>(ZonePath);
-            var balance = AssetDatabase.LoadAssetAtPath<BalanceConfigSO>("Assets/_Project/Data/Balance/BalanceConfig.asset");
-            var temp = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
-            var prevActive = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            UnityEngine.SceneManagement.SceneManager.SetActiveScene(temp);
-            int overlaps = 0, failures = 0, navHoles = 0, bonus = 0, totalRooms = 0, minRooms = 99, maxRooms = 0, rejects = 0;
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            var notes = new List<string>();
-            for (int i = 0; i < count; i++)
-            {
-                int seed = firstSeed + i;
-                var parent = new GameObject("Zone_" + seed).transform;
-                parent.position = new Vector3(1000f, 0f, 1000f); // 스테이지 NavMesh와 안 섞이게 멀리
-                var gen = new ZoneGenerator();
-                ZoneLayout layout;
-                try { layout = gen.Generate(zone, balance, seed, 0, parent); }
-                catch (System.Exception e) { failures++; notes.Add($"시드 {seed} 예외 {e.Message}"); Object.DestroyImmediate(parent.gameObject); continue; }
-                var all = new List<RoomModule>(layout.Rooms); if (layout.BonusRoom != null) { all.Add(layout.BonusRoom); bonus++; }
-                totalRooms += all.Count; minRooms = Mathf.Min(minRooms, all.Count); maxRooms = Mathf.Max(maxRooms, all.Count); rejects += layout.OverlapRejects;
-                if (layout.Rooms.Count < 2) failures++;
-                Physics.SyncTransforms();
-                for (int a = 0; a < all.Count; a++)
-                    for (int b = a + 1; b < all.Count; b++)
-                    {
-                        var A = all[a].WorldBounds; var B = all[b].WorldBounds;
-                        A.Expand(-0.1f); B.Expand(-0.1f);
-                        if (A.Intersects(B)) { overlaps++; notes.Add($"시드 {seed} 겹침 {all[a].name}-{all[b].name}"); }
-                    }
-                // NavMesh: 이 존만 굽고 쥐구멍방 → 각 방 중심
-                var surface = parent.gameObject.AddComponent<NavMeshSurface>();
-                surface.collectObjects = CollectObjects.Children;
-                surface.BuildNavMesh();
-                Vector3 start = all[0].transform.position;
-                foreach (var r in all)
-                {
-                    var path = new NavMeshPath();
-                    Vector3 target = r.transform.position;
-                    NavMesh.SamplePosition(start, out var hs, 2f, NavMesh.AllAreas);
-                    NavMesh.SamplePosition(target, out var ht, 3f, NavMesh.AllAreas);
-                    NavMesh.CalculatePath(hs.position, ht.position, NavMesh.AllAreas, path);
-                    if (path.status != NavMeshPathStatus.PathComplete) { navHoles++; notes.Add($"시드 {seed} {r.name} 경로 {path.status}"); }
-                }
-                surface.RemoveData();
-                Object.DestroyImmediate(parent.gameObject);
-            }
-            sw.Stop();
-            UnityEngine.SceneManagement.SceneManager.SetActiveScene(prevActive);
-            EditorSceneManager.CloseScene(temp, true);
-            string result = $"시드 {count}개: 방 평균 {(float)totalRooms / count:0.0} (최소 {minRooms} 최대 {maxRooms}), 보너스 {bonus}, 겹침 버림 {rejects}, 겹침 쌍 {overlaps}, 생성 실패 {failures}, NavMesh 끊김 {navHoles}, {sw.ElapsedMilliseconds}ms" +
-                            (notes.Count > 0 ? " | " + string.Join(" ; ", notes.GetRange(0, Mathf.Min(8, notes.Count))) : "");
-            Debug.Log("[ZONESTRESS] " + result);
-            return result;
         }
     }
 }

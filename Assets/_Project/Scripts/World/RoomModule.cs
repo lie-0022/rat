@@ -16,6 +16,8 @@ namespace RatGame.World
         public Transform CatSpawn;            // 없으면 이 방엔 고양이 배정 안 함
         public Transform[] PlayerSpawns;      // 쥐구멍방만
         public Transform RatHole;             // 쥐구멍방만 — DepositZone 자리
+        public Transform[] HideSpawns;        // 숨을 곳 자리 (고양이 60) — forward가 나오는 쪽
+        public Transform DarkZone;            // 어둠 구역 중심 (없으면 이 방은 밝다)
 
         private BoxCollider _bounds;
 

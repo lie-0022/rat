@@ -464,6 +464,8 @@ MonoBehaviour:
   CatSpawn: {fileID: 0}
   PlayerSpawns: []
   RatHole: {fileID: 0}
+  HideSpawns: []
+  DarkZone: {fileID: 0}
 --- !u!114 &27040626265933919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3638244304
+  GlobalObjectIdHash: 280624099
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0

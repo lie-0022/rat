@@ -90,7 +90,15 @@ public class ZoneGenerator
 - 규칙: 전리품은 LootSpawns의 70%, y>1m 지점엔 Large 금지. 함정은 TrapSpawns의 50%, 쥐구멍방엔 없음. 고양이는 CatSpawn 있는 방 중 CatCount곳(NavMesh 위로 보정).
 - `RunManager.UpdateReturn`은 쥐구멍을 늦게 찾는다(생성 스테이지는 쥐구멍이 런매니저보다 늦게 생긴다).
 - 에디터: `Tools/RatGame/Zone/Create Generated Stage` → 쥐구멍·함정 프리팹, `LootTable_Kitchen`·`TrapTable_Kitchen`, `Scenes/Stage_Generated`(빌드 세팅 등록). 그레이박스 색은 `Art/Materials/Greybox/`에 머티리얼 에셋으로 저장(프리팹은 메모리 머티리얼을 못 들고 있어 마젠타가 됐음).
-- 아직: 방 안 HideSpot·LightZone, 기지 출발 발판 → 생성 스테이지 연결(지금은 Warehouse), 존 전환, 반지 스폰 규칙.
+- 아직: ~~방 안 HideSpot·LightZone~~(고양이 60), ~~기지 출발 발판 → 생성 스테이지~~(고양이 59 목적지 게시판), 존 전환, 반지 스폰 규칙.
+
+## 구현 3단계 — 방 안 숨을 곳·어둠 (2026-09-24, 고양이 60)
+
+- `RoomModule.HideSpawns`(모서리, 방 가운데를 봄 = 나오는 쪽) · `RoomModule.DarkZone`(중심). 방 프리팹엔 자리만.
+- 소품 프리팹(`Tools/RatGame/Zone/Create Room Props (Hide·Dark)` → `Prefabs/Zones/`): `Hide_Box`(빈 상자 2명, 1.8×1.5×1.8, 입구 1.4m 앞 Box 고양이 스팟) · `Hide_Shoe`(장화 1명, 1.1×1.4×2.2) · `DarkZone_4`(4×4 LightZone, 바닥 어두운 판). 창고 데모와 같은 크기·인원.
+- `ZoneDefinitionSO.HideSpotPrefabs`·`DarkZonePrefab`·`DarkZoneChance`(0.6). `ZoneBuilder`가 함정 뒤·고양이 전에 스폰(자리마다 시드로 종류, 어둠은 확률) — 고양이가 스폰 때 상자 입구 스팟을 모은다.
+- 방별 자리: 직선 NW 1 + 어둠(북쪽 출구 앞) / 모서리 NW 1 + 어둠 SE / 홀 NE·SE 2 + 어둠 SW / 보너스 NW 1 / 쥐구멍방·복도 없음. 8×8 방 모서리는 45°로 놓이면 상자 대각선(1.27m)이 벽을 뚫어서 벽에서 1.5m 안쪽.
+- 검증: 방 × 소품 10조합 벽·상자 겹침 0, 나오는 자리 막힘 0, 어둠 판은 전부 방 안. 시드 200개 스트레스 그대로(겹침·실패·끊김 0). 1인 실제 E로 숨기 → Hidden → E로 나옴, 어둠 중심 IsDark true / 3m 밖 false, 고양이 스팟 7개 중 Box 1. 2인(기지 출발): NetworkObject 43/43 클라 수신, 숨을 곳 4·어둠 2, 클라 숨기 Hidden(1/2) → 나옴 Active, 예외 0.
 
 ## 존 전환 (09 Transition 페이즈)
 

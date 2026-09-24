@@ -29,6 +29,8 @@ namespace RatGame.Run
         public int LootValue { get; private set; }
         public int TrapsSpawned { get; private set; }
         public int CatsSpawned { get; private set; }
+        public int HidesSpawned { get; private set; }
+        public int DarkSpawned { get; private set; }
 
         public override void OnNetworkSpawn()
         {
@@ -76,9 +78,10 @@ namespace RatGame.Run
 
             SpawnLoot(rooms, rng, zoneIndex);
             SpawnTraps(rooms, rng);
+            SpawnHidesAndDark(rooms, rng); // 고양이보다 먼저 — 고양이가 스폰 때 상자 입구 스팟을 모은다
             SpawnCats(rooms, rng);
             PlayerPlacement.TeleportAllToSpawns(); // 직접 플레이(기지를 안 거침)에서도 쥐구멍방에 서게
-            Log.Dev($"존 스폰: 시드 {seed} — 방 {rooms.Count}, 전리품 {LootSpawned}개(가치 {LootValue}), 함정 {TrapsSpawned}, 고양이 {CatsSpawned}");
+            Log.Dev($"존 스폰: 시드 {seed} — 방 {rooms.Count}, 전리품 {LootSpawned}개(가치 {LootValue}), 함정 {TrapsSpawned}, 숨을 곳 {HidesSpawned}, 어둠 {DarkSpawned}, 고양이 {CatsSpawned}");
         }
 
         private void SpawnLoot(List<RoomModule> rooms, System.Random rng, int zoneIndex)
@@ -145,6 +148,28 @@ namespace RatGame.Run
                     TrapsSpawned++;
                 }
             }
+        }
+
+        private void SpawnHidesAndDark(List<RoomModule> rooms, System.Random rng)
+        {
+            int hides = 0, dark = 0;
+            foreach (var room in rooms)
+            {
+                if (_zone.HideSpotPrefabs != null && _zone.HideSpotPrefabs.Length > 0 && room.HideSpawns != null)
+                    foreach (var p in room.HideSpawns)
+                    {
+                        var prefab = _zone.HideSpotPrefabs[rng.Next(_zone.HideSpotPrefabs.Length)];
+                        if (prefab == null) continue;
+                        Spawn(prefab, p.position + Vector3.up * prefab.transform.position.y, p.rotation);
+                        hides++;
+                    }
+                if (_zone.DarkZonePrefab != null && room.DarkZone != null && rng.NextDouble() < _zone.DarkZoneChance)
+                {
+                    Spawn(_zone.DarkZonePrefab, room.DarkZone.position, room.DarkZone.rotation);
+                    dark++;
+                }
+            }
+            HidesSpawned = hides; DarkSpawned = dark;
         }
 
         private void SpawnCats(List<RoomModule> rooms, System.Random rng)

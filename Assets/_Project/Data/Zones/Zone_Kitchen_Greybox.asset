@@ -27,3 +27,8 @@ MonoBehaviour:
   TrapTable: {fileID: 11400000, guid: f0d6e7aee72b3421dbae6ba2bf33346d, type: 2}
   RatHolePrefab: {fileID: 2233613830475510885, guid: c7b7f81cce90541ee9901716860136ae, type: 3}
   CatPrefab: {fileID: 7338030491282097720, guid: 3bd5bb184e5f84d8d9ae6dcb3cd3f82c, type: 3}
+  HideSpotPrefabs:
+  - {fileID: 3087476143818116976, guid: e41505e86f8d44109b13a9d6374a30cd, type: 3}
+  - {fileID: 3662979787403753294, guid: 6cd4699da21ca44af85c51673a16dfae, type: 3}
+  DarkZonePrefab: {fileID: 8608319041304009577, guid: c03250194bb7643249e835a8617fe5bb, type: 3}
+  DarkZoneChance: 0.6
