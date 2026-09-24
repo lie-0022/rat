@@ -78,9 +78,28 @@ namespace RatGame.Run
                 Populator.PopulateAll(rng, 0);
             }
             FaceSpawnsToDoor(Layout.Start, Layout.Sides[0]);
+            DeliverPurchases(Layout.Start, rng);
             PlayerPlacement.TeleportAllToSpawns();
             Log.Dev($"벽 속 스폰: 시드 {seed} — 방 {rooms.Count}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
                     $"전리품 {Populator?.LootSpawned}개(가치 {Populator?.LootValue}), 함정 {Populator?.TrapsSpawned}, 숨을 곳 {Populator?.HidesSpawned}, 어둠 {Populator?.DarkSpawned}, 고양이 {Populator?.CatsSpawned}");
+        }
+
+        // 지난 스테이지 상점에서 산 물건을 출발방 바닥에 (plan cat-65)
+        private void DeliverPurchases(GridRoom start, System.Random rng)
+        {
+            if (RunSession.PendingItems.Count == 0 || _zone.Shop == null || start == null) return;
+            var names = new List<string>();
+            int i = 0;
+            foreach (var id in RunSession.PendingItems)
+            {
+                if (!_zone.Shop.TryGet(id, out var entry) || entry.Prefab == null) continue;
+                float a = i++ * 1.3f;
+                Vector3 p = start.transform.position + new Vector3(Mathf.Cos(a) * 1.8f, 0.4f, Mathf.Sin(a) * 1.8f);
+                ZonePopulator.Spawn(entry.Prefab, p, Quaternion.identity);
+                names.Add(entry.DisplayName);
+            }
+            RunSession.PendingItems.Clear();
+            Log.Dev($"택배: 출발방에 {string.Join(", ", names)}");
         }
 
         // 출발방은 문이 하나 — 시작하자마자 그 문을 보고 서게 (호스트만 쓰는 자리라 동기화 불필요)

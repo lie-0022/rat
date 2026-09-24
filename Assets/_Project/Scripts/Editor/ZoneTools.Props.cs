@@ -37,7 +37,7 @@ namespace RatGame.Editor
         }
 
         // 씬 오브젝트를 프리팹으로 뽑기 전에: 에셋이 아닌 머티리얼(씬에만 저장된 것)을 같은 색 에셋으로 바꾼다
-        private static void PersistMaterials(GameObject root)
+        internal static void PersistMaterials(GameObject root)
         {
             foreach (var r in root.GetComponentsInChildren<Renderer>(true))
             {

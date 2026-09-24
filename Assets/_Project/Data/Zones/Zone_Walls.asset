@@ -36,3 +36,4 @@ MonoBehaviour:
   Corridor: {fileID: 645501856502609310, guid: fa646069dd5b84cff936dc98f7395c67, type: 3}
   Pipe: {fileID: 4075131089715974587, guid: 1ed8bb9956e54490b878aa25a47d9789, type: 3}
   Population: {fileID: 11400000, guid: b61ca7206c6064373843bdca4dc19c28, type: 2}
+  Shop: {fileID: 11400000, guid: a88db844f25954cd9afbc997f68d133b, type: 2}

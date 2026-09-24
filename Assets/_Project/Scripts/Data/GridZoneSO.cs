@@ -24,5 +24,6 @@ namespace RatGame.Data
         public GameObject Corridor;           // 보통 연결
         public GameObject Pipe;               // 고리를 닫는 연결 (벽 속 파이프)
         public ZoneDefinitionSO Population;
+        public StageShopSO Shop;              // 목적지방 상점 (새 루프, 고양이 65)
     }
 }

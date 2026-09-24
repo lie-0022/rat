@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d65ed14a419b348dbbffc82a396a10ac, type: 3}
+  m_Name: StageShop_Walls
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.StageShopSO
+  Entries:
+  - Id: yarn
+    DisplayName: "\uD138\uC2E4"
+    Prefab: {fileID: 9216367458185246126, guid: 1e31a2bc81bcd42fb9f3ac6b7329a4df, type: 3}
+    Price: 40
+    Description: "\uB358\uC9C0\uBA74 \uACE0\uC591\uC774\uAC00 \uCAD3\uC544\uAC00\uC694"
+  - Id: pepper
+    DisplayName: "\uD6C4\uCD94\uD1B5"
+    Prefab: {fileID: 8420208942002123405, guid: 4c9d0e94a67f24750b5d1963ffe7fc8b, type: 3}
+    Price: 50
+    Description: "\uC3DF\uC73C\uBA74 \uB0C4\uC0C8 \uC790\uAD6D\uC774 \uC9C0\uC6CC\uC9C0\uACE0
+      \uACE0\uC591\uC774\uAC00 \uC7AC\uCC44\uAE30"
+  - Id: laser
+    DisplayName: "\uB808\uC774\uC800 \uD3EC\uC778\uD130"
+    Prefab: {fileID: 6891179139343942286, guid: 5df386749272c47488f00d562c508c14, type: 3}
+    Price: 80
+    Description: "\uB4E4\uACE0 \uC788\uC73C\uBA74 \uBE68\uAC04 \uC810 \u2014 \uD55C\uAC00\uD55C
+      \uACE0\uC591\uC774\uAC00 \uCAD3\uC544\uC694"

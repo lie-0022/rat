@@ -29,3 +29,11 @@
 
 ## 체크리스트 (예정)
 - U-65 상점: 목적지방 판매대 E → 패널, 털실 사기 → 지갑 −40, 다음 맵 출발방에 털실.
+
+## 진행 1 — 물건·목록·택배 (2026-09-24)
+- `Data/StageShopSO`(Id·이름·프리팹·값·설명, `TryGet`), `GridZoneSO.Shop`, `RunSession.PendingItems`(런 초기화 때 비움).
+- `Tools/RatGame/Zone/Create Stage Shop Items`: 창고 데모의 레이저·후추 → `Prefabs/Items/Shop_LaserPointer`·`Shop_PepperShaker`(머티리얼 에셋화, 네트워크 프리팹 자동 등록 2), 털실은 기존 `Lure_Yarn`. 목록 에셋 `Data/Zones/StageShop_Walls`(털실 40·후추통 50·레이저 80). 셋 다 식량 가치 0 확인.
+- `GridZoneBuilder.DeliverPurchases`: 출발방 가운데 1.8m 둘레에 택배 스폰 후 목록 비움.
+- 확인: 스테이지 1 중 택배 목록에 털실·레이저 → 클리어 → 스테이지 2 출발방에 둘 다(1.8m, 바닥 위), 목록 0, 로그 "택배: 출발방에 털실, 레이저 포인터".
+- 테스트 절차 메모: 출발과 같은 프레임에 창고로 옮기면 "출발 뒤 한 번은 창고 밖" 규칙 때문에 귀환이 안 걸린다(실제 플레이에선 안 생김).
+- 남은 것: 판매대(IInteractable)·구매 RPC·지갑 규칙·UI 패널 → 2인.
