@@ -197,6 +197,14 @@ MonoBehaviour:
   _catZoomiesStep: 1.2
   _catWaterSeconds: 8
   _catCueHearRange: 18
+  _catAmbushSeconds: 60
+  _catAmbushPounceRange: 2
+  _catAmbushCueInterval: 10
+  _catPounceSwingSeconds: 0.2
+  _catBoxSeconds: {x: 15, y: 40}
+  _catBoxViewDistance: 3
+  _catBoxViewHalfAngle: 45
+  _catBoxBlockRadius: 2
   _directorTickSeconds: 10
   _tensionSuspicious: 10
   _tensionChase: 25

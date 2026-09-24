@@ -36,6 +36,7 @@ namespace RatGame.AI
         private bool _lastAlert;
         private bool _lastFighting;
         private Renderer[] _renderers;
+        private int _lastRenderMode = 2;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
 
         private void Awake()
@@ -50,11 +51,14 @@ namespace RatGame.AI
             if (_brain == null || !_brain.IsSpawned) return;
             // 집주인이 불러 문 밖에 있으면 안 보인다
             bool show = !_brain.AwayHidden.Value;
+            bool tailOnly = _brain.AmbushHidden.Value; // 매복 — 꼬리만 삐져나온다 (텔레그래프)
             if (_renderers == null) _renderers = GetComponentsInChildren<Renderer>(true);
-            if (_renderers.Length > 0 && _renderers[0].enabled != show)
+            int mode = !show ? 0 : tailOnly ? 1 : 2;
+            if (mode != _lastRenderMode)
             {
-                foreach (var r in _renderers) r.enabled = show;
-                RatGame.Core.Log.Dev($"고양이 모습: {(show ? "보임" : "숨김")}"); // 2인 검증용
+                _lastRenderMode = mode;
+                foreach (var r in _renderers) r.enabled = mode == 2 || (mode == 1 && _tail != null && r.transform.IsChildOf(_tail));
+                RatGame.Core.Log.Dev($"고양이 모습: {(mode == 0 ? "숨김" : mode == 1 ? "꼬리만" : "보임")}"); // 2인 검증용
             }
             var state = _brain.State.Value;
             var phase = _brain.SleepPhase.Value;

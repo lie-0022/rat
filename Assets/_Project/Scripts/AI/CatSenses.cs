@@ -50,6 +50,9 @@ namespace RatGame.AI
         public void IgnorePlayer(ulong clientId, float until) => _ignoreUntil[clientId] = until;
         /// <summary>청각 차단 (앙숙 싸움 — 서로에게 꽂혀 다른 소리가 묻힌다).</summary>
         public bool Deaf { get; set; }
+        /// <summary>시야 거리·반각 덮어쓰기 (상자 안 — 정면 좁게, design/cat-ideas/09). null이면 기본.</summary>
+        public float? ViewDistanceOverride { get; set; }
+        public float? ViewHalfAngleOverride { get; set; }
         public bool IsIgnoring(ulong clientId) => _ignoreUntil.TryGetValue(clientId, out float t) && Time.time < t;
         private float _nextItemScan;
 
@@ -103,10 +106,10 @@ namespace RatGame.AI
 
                 // 웅크림(동기화 스케일)이면 시야 거리 절반 (docs/07)
                 bool crouching = playerObj.transform.localScale.y < Player.PlayerController.BaseScaleY * 0.75f;
-                float viewDist = _balance.CatViewDistance * (crouching ? _balance.CatCrouchViewMultiplier : 1f)
+                float viewDist = (ViewDistanceOverride ?? _balance.CatViewDistance) * (crouching ? _balance.CatCrouchViewMultiplier : 1f)
                                  * SensitivityMultiplier * ViewMultiplier;
                 if (dist > viewDist) continue;
-                if (Vector3.Angle(transform.forward, toPlayer) > _balance.CatViewHalfAngle) continue;
+                if (Vector3.Angle(transform.forward, toPlayer) > (ViewHalfAngleOverride ?? _balance.CatViewHalfAngle)) continue;
 
                 int blockMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker", "Default");
                 if (Physics.Linecast(transform.position + Vector3.up * 0.5f,

@@ -61,6 +61,7 @@ namespace RatGame.UI
                 CatCueKind.Sun => "(창가 쪽 기지개 — 햇볕 쬐러)",
                 CatCueKind.Bed => "(쩌억 하품 — 자러 간다)",
                 CatCueKind.Water => "(할짝할짝 — 물 마시러)",
+                CatCueKind.Ambush => "(츄릅… 어디선가)",
                 _ => null
             };
             if (text == null || text == _lastCue) return;

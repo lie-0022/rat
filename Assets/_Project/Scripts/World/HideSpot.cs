@@ -27,6 +27,8 @@ namespace RatGame.World
 
         /// <summary>안에 있는 쥐 수 (HUD·수색용, 복제).</summary>
         public NetworkVariable<int> OccupantCount = new(0);
+        /// <summary>고양이가 입구에 앉아 있다 — 드나들 수 없다 (design/cat-ideas/09).</summary>
+        public NetworkVariable<bool> CatBlocking = new(false);
 
         public string DisplayName => _displayName;
         public int Capacity => _capacity;
@@ -44,6 +46,7 @@ namespace RatGame.World
 
         public bool CanInteract(ulong clientId)
         {
+            if (CatBlocking.Value) return false; // 고양이가 입구를 막았다 — 안에 있으면 갇힘
             if (IsOccupant(clientId)) return true;
             if (OccupantCount.Value >= _capacity) return false;
             // 대형을 끌고는 못 숨는다 — 클라 프롬프트용 근사(호스트에서 다시 검사)

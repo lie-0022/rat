@@ -16,7 +16,7 @@ Cat (NetworkObject, NavMeshAgent, CapsuleCollider)
 ## FSM
 
 ```csharp
-public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder, Away, Fight, Zoomies }
+public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder, Away, Fight, Zoomies, Ambush, BoxSit }
 ```
 
 ```
@@ -38,6 +38,8 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 | Track | **냄새 추적** (2026-09-24, `AI/CatBrain.Track.cs`, design/cat-ideas/06): Patrol·Return 중(우선순위 Suspicious 아래·Curious 위) 반경 3m 안 강도 ≥8 자국을 맡으면 진입 — 시야 불필요. 그 자국 → 같은 쥐의 다음 자국 순으로 따라가며 자국마다 킁킁 0.5s. 목격·자극이면 끊김. 자국이 끊기면 끝점 3m 안 HideSpot이 있으면 Search, 없으면 Return. 따라간 자국(쥐별 순번)은 다시 안 쫓음 | 3.0 |
 | Curious | **호기심 앞발** (2026-09-24, `AI/CatBrain.Curious.cs`, design/cat-ideas/03): Patrol·Return 중 시야에 속도 ≥1.5 m/s로 움직이는 풀린 물건(안 들림·주머니 아님·대형 아님)이 보이면 진입 — 의심·추격·잠 중엔 안 속음. 물건을 따라가 수평 0.9m 안에서 앞발 3~5회(0.6s 간격, 정면 ±60° 수평 + 위, 속도 변화 1.2 m/s — 호스트 물리) → 하품 5s → Return. 그 물건은 10s 무시, 같은 물건 누적 30s면 질려서 60s 무시. 8s 안에 못 닿으면 포기, 쥐가 집으면 즉시 Return. 자기가 친 물건의 충돌 소음은 무시(깨짐은 예외) | 4.0 |
 | Capture | 앞발 스윙 애니 0.4s → 범위 내 플레이어 Downed 처리. **움직일 수 있는 동료(Active·Hidden·Stunned)가 있으면 Downed 대신 Pinned + Toy** (2026-09-24) | — |
+| Ambush | **매복** (2026-09-24, `AI/CatBrain.Lurk.cs`, design/cat-ideas/09): Ambush 스팟 도착 → 60s 정지, `AmbushHidden` NV로 **꼬리만 보임**(텔레그래프 타협 불가) + 10s마다 "(츄릅… 어디선가)" 자막(18m). 2m 안 쥐 목격 → **덮치기**(추격 없이 Capture, 스윙 0.2s). 더 멀리서 보이면 평소 전이 | 0 |
+| BoxSit | **상자 입구에 앉기** (2026-09-24): Box 스팟(쥐의 숨을 곳 입구) 도착 → 15~40s, 시야 정면 3m·반각 45°만(`CatSenses.ViewDistanceOverride/HalfAngleOverride`). 2m 안 숨을 곳에 `CatBlocking` NV → 쥐가 들어가지도 나오지도 못함(갇힘). 도착 때 안에 쥐가 있으면 끄집어내 덮치기 | 0 |
 | Zoomies | **우다다** (2026-09-24, `AI/CatBrain.Routine.cs`, design/cat-ideas/02): Litter 스팟 볼일 12s(감각 0.3) 뒤 10s 동안 속도 6.5(추격보다 빠름)로 반경 8m 랜덤 지점을 1.2s마다 — 목적 없음, 복도는 도박. 코앞 목격은 추격, 비누 밟으면 미끄러짐 | 6.5 |
 | Fight | **앙숙 싸움** (2026-09-24, `AI/CatBrain.Fight.cs` + `AI/CatRelation`, design/cat-ideas/07): 고양이 2마리 이상일 때 호스트 중재자가 0.25s마다 판정 — 둘 다 Patrol·Return·Suspicious·Curious·Track·Search, 4m 안, 가림 없음 → 70% 싸움 15s / 30% 째려보고 지나감(10s 재판정 금지). 싸움 뒤 30s 재발 금지. 싸우는 동안 가운데 1.2m를 1s마다 빙글(3.0), 청각 차단(`CatSenses.Deaf`)·시야 ×0.2. 2m 안 쥐 목격이면 싸움 깨고 Chase, 상대가 빠지면 같이 끝. 관계는 지금 앙숙 고정(엄마·아기·짝꿍은 다음) | 3.0 |
 | Away | **집주인이 부름** (2026-09-24, `AI/CatBrain.House.cs`, design/cat-ideas/10): 하던 일을 멈추고(추격도 끊음 — 간식이 더 중요, 놀이·포획 중이면 끝난 뒤) 가까운 Door 스팟으로(3.0) → 도착하면 `AwayHidden` NV(렌더러 끔)·감각 0 → 20~40s 뒤 **랜덤 문**으로 Warp → Return. 문이 없으면 쥐들에게서 가장 먼 스팟. **밥 시간**은 Away가 아니라 Patrol에서 Food 스팟 강제·머무름 = 남은 밥 시간(25s, 감각 0.5) | 3.0 |

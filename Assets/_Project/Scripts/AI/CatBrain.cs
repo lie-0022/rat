@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */, Zoomies /* 화장실 뒤 우다다 (2026-09-24, CatBrain.Routine.cs) */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */, Zoomies /* 화장실 뒤 우다다 (2026-09-24, CatBrain.Routine.cs) */, Ambush /* 매복 (2026-09-24, CatBrain.Lurk.cs) */, BoxSit /* 상자 입구에 앉음 */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -179,6 +179,8 @@ namespace RatGame.AI
                 case CatState.Away: TickAway(); break;
                 case CatState.Fight: TickFight(); break;
                 case CatState.Zoomies: TickZoomies(); break;
+                case CatState.Ambush:
+                case CatState.BoxSit: TickLurk(); break;
             }
         }
 
@@ -190,6 +192,7 @@ namespace RatGame.AI
             if (State.Value == CatState.Blunder) ExitBlunder();
             if (State.Value == CatState.Away) ExitAway();
             if (State.Value == CatState.Fight) ExitFight();
+            if (State.Value == CatState.Ambush || State.Value == CatState.BoxSit) ExitLurk();
             var prevState = State.Value;
             State.Value = next;
             RaiseStateChanged(prevState, next); // 경계도 디렉터 긴장 입력
@@ -223,6 +226,7 @@ namespace RatGame.AI
                 case CatState.Capture:
                     _movement.Stop();
                     _captureSwingEnd = Time.time + _balance.CatCaptureSwingSeconds;
+                    ApplyPounceSwing(); // 매복·상자 덮치기는 스윙이 짧다
                     _groomUntil = 0f;
                     break;
                 case CatState.Return:
@@ -253,6 +257,12 @@ namespace RatGame.AI
                     break;
                 case CatState.Zoomies:
                     EnterZoomiesState();
+                    break;
+                case CatState.Ambush:
+                    EnterAmbushState();
+                    break;
+                case CatState.BoxSit:
+                    EnterBoxSitState();
                     break;
             }
         }
@@ -406,6 +416,10 @@ namespace RatGame.AI
                 case CatSpotType.Bed:
                     SetState(CatState.Sleep);
                     return;
+                case CatSpotType.Ambush:
+                    EnterAmbush(); return;   // 커튼 뒤 매복 (design/cat-ideas/09)
+                case CatSpotType.Box:
+                    EnterBoxSit(); return;   // 상자 입구에 앉기
                 case CatSpotType.Food:
                     // 밥 시간이면 남은 시간만큼 먹는다 (집주인 이벤트)
                     Dwell(IsFeeding ? _feedingUntil - Time.time : _balance.CatSpotFoodSeconds * DirRoutineDwellMul, _balance.CatSpotFoodSense); return;

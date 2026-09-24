@@ -115,6 +115,8 @@ namespace RatGame.Editor
                 ("Spot_LookB", CatSpotType.Look,  new(-8f, 0f, 2f),    new(1f, 0f, 0f),  1.5f),
                 ("Spot_Litter", CatSpotType.Litter, new(-15f, 0f, -15f), new(1f, 0f, 1f), 0.6f), // 화장실 → 우다다 (design/cat-ideas/02)
                 ("Spot_Water",  CatSpotType.Water,  new(11f, 0f, 16f),   new(0f, 0f, 1f), 0.6f),
+                ("Spot_Ambush", CatSpotType.Ambush, new(-7.6f, 0f, 9f), new(0f, 0f, -1f), 0.5f), // 상자 B 옆 매복 (design/cat-ideas/09)
+                ("Spot_Box",    CatSpotType.Box,    new(-2.1f, 0f, 7f), new(1f, 0f, 0f),  0.5f), // 빈 상자(숨을 곳) 입구에 앉기
                 ("Spot_DoorW", CatSpotType.Door,  new(-19f, 0f, 0f),   new(1f, 0f, 0f),  1f),   // 집주인이 부르면 나가는 문 (design/cat-ideas/10)
                 ("Spot_DoorE", CatSpotType.Door,  new(19f, 0f, 6f),    new(-1f, 0f, 0f), 1f),
             };

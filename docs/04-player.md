@@ -64,7 +64,7 @@ public enum ConditionState { Active, Stunned, Trapped, Downed, Hidden, Pinned }
 |---|---|---|---|
 | Stunned | 감전 전선, 높은 낙하(>6m) | 2s 조작 불가 | 시간 경과 |
 | Trapped | 끈끈이 | 이동 불가, 잡기 불가 | 동료가 Interact 1.5s 홀드 |
-| Hidden | HideSpot에 E 홀드 0.3s (2026-09-24, `World/HideSpot`) | 이동·잡기 불가, 고양이 시야 판정 제외. 대형을 끌고는 못 들어감 | E 즉시 나오기(소음 35) 또는 고양이가 건드려 발각 |
+| Hidden | HideSpot에 E 홀드 0.3s (2026-09-24, `World/HideSpot`) | 이동·잡기 불가, 고양이 시야 판정 제외. 대형을 끌고는 못 들어감 | E 즉시 나오기(소음 35) 또는 고양이가 건드려 발각. 고양이가 입구에 앉아 있으면(BoxSit) 드나들 수 없음 — 갇힘 |
 | Pinned | 고양이가 잡고 가지고 노는 중 (동료가 있을 때, 2026-09-24, docs/07 Toy) | 이동·잡기 불가, 찍찍 가능, 든 물건 떨어뜨림 | 고양이가 놓아줌(Release·질림) / 동료가 미끼 / 30s 뒤 Downed |
 | Downed | 고양이 포획, 쥐덫 | 조작 불가 + 래그돌 + **CarryableItem화** | 동료가 쥐구멍까지 운반 (09 문서) |
 

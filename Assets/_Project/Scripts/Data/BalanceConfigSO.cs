@@ -235,6 +235,16 @@ namespace RatGame.Data
         [SerializeField] private float _catWaterSeconds = 8f;
         [SerializeField] private float _catCueHearRange = 18f;           // 루틴 예고가 들리는 거리
 
+        [Header("매복·상자 (design/cat-ideas/09)")]
+        [SerializeField] private float _catAmbushSeconds = 60f;
+        [SerializeField] private float _catAmbushPounceRange = 2f;       // 이 안 쥐는 추격 없이 덮친다
+        [SerializeField] private float _catAmbushCueInterval = 10f;      // "츄릅" 자막 간격
+        [SerializeField] private float _catPounceSwingSeconds = 0.2f;    // 덮치기 스윙 (보통 0.4)
+        [SerializeField] private Vector2 _catBoxSeconds = new(15f, 40f);
+        [SerializeField] private float _catBoxViewDistance = 3f;         // 상자 안 — 정면 좁게
+        [SerializeField] private float _catBoxViewHalfAngle = 45f;
+        [SerializeField] private float _catBoxBlockRadius = 2f;          // 이 안 숨을 곳 입구를 막는다
+
         [Header("경계도 디렉터 (design/cat-ideas/12) — 고양이 감각 수치는 안 건드린다")]
         [SerializeField] private float _directorTickSeconds = 10f;
         [SerializeField] private float _tensionSuspicious = 10f;
@@ -493,6 +503,14 @@ namespace RatGame.Data
         public float CatZoomiesStep => _catZoomiesStep;
         public float CatWaterSeconds => _catWaterSeconds;
         public float CatCueHearRange => _catCueHearRange;
+        public float CatAmbushSeconds => _catAmbushSeconds;
+        public float CatAmbushPounceRange => _catAmbushPounceRange;
+        public float CatAmbushCueInterval => _catAmbushCueInterval;
+        public float CatPounceSwingSeconds => _catPounceSwingSeconds;
+        public Vector2 CatBoxSeconds => _catBoxSeconds;
+        public float CatBoxViewDistance => _catBoxViewDistance;
+        public float CatBoxViewHalfAngle => _catBoxViewHalfAngle;
+        public float CatBoxBlockRadius => _catBoxBlockRadius;
         public float DirectorTickSeconds => _directorTickSeconds;
         public float TensionSuspicious => _tensionSuspicious;
         public float TensionChase => _tensionChase;
