@@ -126,7 +126,8 @@ namespace RatGame.Player
 
         private void Place(Vector3 position, Quaternion rotation)
         {
-            _rb.linearVelocity = Vector3.zero;
+            // 쓰러진 동안은 키네마틱(PlayerDownedBody) — 몸을 따라 0.1s마다 불려서 속도 쓰기가 오류 도배가 됐다 (고양이 126)
+            if (!_rb.isKinematic) _rb.linearVelocity = Vector3.zero;
             _rb.position = position;
             _rb.rotation = rotation;
             transform.SetPositionAndRotation(position, rotation);
@@ -148,7 +149,7 @@ namespace RatGame.Player
                 Place(_groundWaitPos, _groundWaitRot);
                 return false;
             }
-            _rb.linearVelocity = Vector3.zero;
+            if (!_rb.isKinematic) _rb.linearVelocity = Vector3.zero;
             _rb.position = _groundWaitPos;
             return true;
         }
