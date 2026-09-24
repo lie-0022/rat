@@ -12,16 +12,29 @@ namespace RatGame.World
     public class GluePad : TrapBase
     {
         private readonly Dictionary<ulong, float> _graceUntil = new();
+        // 쥐 오브젝트는 씬을 넘어 살아 있어서, 구독을 안 풀면 사라진 끈끈이의 처리기가 다음 스테이지에서 불려 예외가 났다 (고양이 125)
+        private readonly List<(PlayerCondition cond, Unity.Netcode.NetworkVariable<ConditionState>.OnValueChangedDelegate handler)> _watched = new();
+        private System.Action<ulong> _onConnected;
 
         public override void OnNetworkSpawn()
         {
             if (!IsServer) return;
             // 이 끈끈이에서 풀려난 쥐 — 유예 시작
             foreach (var client in NetworkManager.ConnectedClientsList) Watch(client.PlayerObject);
-            NetworkManager.OnClientConnectedCallback += id =>
+            _onConnected = id =>
             {
                 if (NetworkManager.ConnectedClients.TryGetValue(id, out var c)) Watch(c.PlayerObject);
             };
+            NetworkManager.OnClientConnectedCallback += _onConnected;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            foreach (var (cond, handler) in _watched) if (cond != null) cond.State.OnValueChanged -= handler;
+            _watched.Clear();
+            if (_onConnected != null && NetworkManager != null) NetworkManager.OnClientConnectedCallback -= _onConnected;
+            _onConnected = null;
+            base.OnNetworkDespawn();
         }
 
         private void Watch(Unity.Netcode.NetworkObject po)
@@ -29,11 +42,13 @@ namespace RatGame.World
             var cond = po != null ? po.GetComponent<PlayerCondition>() : null;
             if (cond == null) return;
             ulong id = cond.OwnerClientId;
-            cond.State.OnValueChanged += (prev, next) =>
+            Unity.Netcode.NetworkVariable<ConditionState>.OnValueChangedDelegate handler = (prev, next) =>
             {
-                if (prev == ConditionState.Trapped && next == ConditionState.Active && Contains(cond.transform.position, 1.2f))
+                if (this != null && prev == ConditionState.Trapped && next == ConditionState.Active && Contains(cond.transform.position, 1.2f))
                     _graceUntil[id] = Time.time + _balance.GlueGraceSeconds;
             };
+            cond.State.OnValueChanged += handler;
+            _watched.Add((cond, handler));
         }
 
         protected override void OnRat(PlayerCondition rat)
