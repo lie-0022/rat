@@ -38,3 +38,10 @@ MonoBehaviour:
   Population: {fileID: 11400000, guid: b61ca7206c6064373843bdca4dc19c28, type: 2}
   Shop: {fileID: 11400000, guid: a88db844f25954cd9afbc997f68d133b, type: 2}
   ShopCounterPrefab: {fileID: 5350419221439318653, guid: 64ae7148bb6534e338679fe44256e927, type: 3}
+  CatCountByStage: 0100000001000000020000000200000003000000
+  TrapRatioByStage:
+  - 0.4
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
