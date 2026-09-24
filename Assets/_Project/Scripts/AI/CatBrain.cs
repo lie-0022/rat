@@ -107,6 +107,15 @@ namespace RatGame.AI
             GoToNextSpot();
         }
 
+        /// <summary>호스트: 아기 고양이로 (존 생성기 — 엄마·아기 관계는 CatRelation이 알아서). 아기 성격이 없으면 false.</summary>
+        public bool ServerMakeKitten()
+        {
+            if (!IsServer || _personalities == null) return false;
+            for (int i = 0; i < _personalities.Length; i++)
+                if (_personalities[i] != null && _personalities[i].IsKitten) { ServerSetPersonality(i); return true; }
+            return false;
+        }
+
         /// <summary>성격 지정 (스폰 시 랜덤, 테스트·존 생성기가 명시 지정 가능). 호스트 전용.</summary>
         public void ServerSetPersonality(int index)
         {

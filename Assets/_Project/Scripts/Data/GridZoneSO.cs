@@ -30,6 +30,8 @@ namespace RatGame.Data
         [Header("스테이지 깊이별 난이도 (고양이 66, 잠정) — 배열 끝을 넘으면 마지막 값")]
         public int[] CatCountByStage = { 1, 1, 2, 2, 3 };
         public float[] TrapRatioByStage = { 0.4f, 0.5f, 0.6f, 0.7f, 0.8f };
+        public float[] KittenChanceByStage = { 0f, 0f, 0.5f, 0.5f, 0.6f }; // 고양이 2마리 이상일 때 한 마리가 아기일 확률 (엄마·아기, 고양이 75)
+        public float KittenChanceFor(int stage) => KittenChanceByStage == null || KittenChanceByStage.Length == 0 ? 0f : KittenChanceByStage[Mathf.Clamp(stage - 1, 0, KittenChanceByStage.Length - 1)];
 
         public int CatCountFor(int stage) => CatCountByStage == null || CatCountByStage.Length == 0 ? -1 : CatCountByStage[Mathf.Clamp(stage - 1, 0, CatCountByStage.Length - 1)];
         public float TrapRatioFor(int stage) => TrapRatioByStage == null || TrapRatioByStage.Length == 0 ? -1f : TrapRatioByStage[Mathf.Clamp(stage - 1, 0, TrapRatioByStage.Length - 1)];

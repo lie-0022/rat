@@ -87,12 +87,22 @@ namespace RatGame.Run
                     TrapRatioOverride = _zone.TrapRatioFor(stage),
                 };
                 Populator.PopulateAll(rng, stage - 1);
+                MaybeKitten(stage, rng);
             }
             FaceSpawnsToDoor(Layout.Start, Layout.Sides[0]);
             DeliverPurchases(Layout.Start, rng);
             PlayerPlacement.TeleportAllToSpawns();
             Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed} — 방 {rooms.Count}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
                     $"전리품 {Populator?.LootSpawned}개(가치 {Populator?.LootValue}), 함정 {Populator?.TrapsSpawned}, 숨을 곳 {Populator?.HidesSpawned}, 어둠 {Populator?.DarkSpawned}, 고양이 {Populator?.CatsSpawned}");
+        }
+
+        // 깊은 스테이지에서 2마리 이상이면 확률로 한 마리를 아기로 — 엄마·아기 관계(부르면 엄마가 달려옴)는 CatRelation이 붙인다 (고양이 75)
+        private void MaybeKitten(int stage, System.Random rng)
+        {
+            var cats = FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None);
+            if (cats.Length < 2 || rng.NextDouble() >= _zone.KittenChanceFor(stage)) return;
+            var kitten = cats[rng.Next(cats.Length)];
+            if (kitten.ServerMakeKitten()) Log.Dev($"벽 속: 스테이지 {stage} — {kitten.name}를 아기로 (엄마·아기)");
         }
 
         // 지난 스테이지 상점에서 산 물건을 출발방 바닥에 (plan cat-65)
