@@ -59,3 +59,14 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 - [ ] 달리기 vs 웅크림으로 고양이(임시 큐브 리스너) 반응 차이 재현
 - [ ] 유리병 낙하 → 파문 이펙트 → 리스너 로그까지 전 체인 동작
 - [ ] 벽 뒤 소음 감쇠 확인
+
+## 냄새 자국 (2026-09-24, design/cat-ideas/06)
+
+소리와 별개의 느린 채널. `Noise/ScentSystem` — NoiseSystem처럼 정적·호스트 전용 링 버퍼(32). 자국 = 위치·처음 강도·시각·남긴 쥐·순번, 강도는 선형 감쇠(-3/s).
+
+| 원인 | 강도 | 간격 |
+|---|---|---|
+| 치즈류(Edible) 들기·주머니 | 60 | 1.5m (웅크리면 3m) |
+| 고양이에게 찍힘(앙심) | 20 | 동일 |
+
+리스너는 고양이 Track 상태(docs/07). 쥐 본인에게만 노란 점 표시.

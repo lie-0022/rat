@@ -148,6 +148,16 @@ MonoBehaviour:
   _catGrudgeSightMul: 1.5
   _catGrudgeHearingMul: 1.3
   _catGrudgeGiveUpBonus: 2
+  _scentIntervalMeters: 1.5
+  _scentEdible: 60
+  _scentGrudge: 20
+  _scentDecayPerSec: 3
+  _scentMaxMarks: 32
+  _scentCrouchIntervalMul: 2
+  _catScentDetectRadius: 3
+  _catScentMinStrength: 8
+  _catTrackSpeed: 3
+  _catTrackSniffSeconds: 0.5
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

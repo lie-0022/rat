@@ -16,7 +16,7 @@ Cat (NetworkObject, NavMeshAgent, CapsuleCollider)
 ## FSM
 
 ```csharp
-public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious }
+public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track }
 ```
 
 ```
@@ -34,6 +34,7 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 | Suspicious | 마지막 자극 지점으로 이동, 주변 3m 배회 6s | 3.0 |
 | Chase | **예측 추격** (2026-09-24): 타깃 속도(위치 차분)로 1s 앞 지점을 노림(NavMesh 샘플, 최대 5.5m). 시야 상실 시 마지막 진행 방향으로 **3m 오버슛** 뒤 마지막 목격점, 3s 후 Suspicious. **코너 감속**: 몸 방향과 경로 방향이 어긋나면 속도 ×0.55까지 — 직선은 최고 속도, 지그재그는 실제로 도움. Agent angularSpeed 240·acceleration 8 | 5.5 (직선) |
 | Search | **숨을 곳 수색** (2026-09-24, `AI/CatBrain.Search.cs`, design/cat-ideas/14): Chase 시야 상실 3s 뒤 마지막 목격점 반경 6m에 HideSpot이 있으면 진입(없으면 Suspicious). 타깃이 Hidden이 되면 Return이 아니라 시야 상실로 처리. 가까운 순 최대 3곳 → 출구 앞 킁킁 2s(여럿 숨었으면 × 인원 × 1.5) → 30% 건드림 → 안의 쥐 발각(출구로 튀어나옴) → Pounce 창 0.5s → Chase. 25s 또는 스팟 소진 → Return. 목격·소음·미끼가 끊는다 | 3.0 |
+| Track | **냄새 추적** (2026-09-24, `AI/CatBrain.Track.cs`, design/cat-ideas/06): Patrol·Return 중(우선순위 Suspicious 아래·Curious 위) 반경 3m 안 강도 ≥8 자국을 맡으면 진입 — 시야 불필요. 그 자국 → 같은 쥐의 다음 자국 순으로 따라가며 자국마다 킁킁 0.5s. 목격·자극이면 끊김. 자국이 끊기면 끝점 3m 안 HideSpot이 있으면 Search, 없으면 Return. 따라간 자국(쥐별 순번)은 다시 안 쫓음 | 3.0 |
 | Curious | **호기심 앞발** (2026-09-24, `AI/CatBrain.Curious.cs`, design/cat-ideas/03): Patrol·Return 중 시야에 속도 ≥1.5 m/s로 움직이는 풀린 물건(안 들림·주머니 아님·대형 아님)이 보이면 진입 — 의심·추격·잠 중엔 안 속음. 물건을 따라가 수평 0.9m 안에서 앞발 3~5회(0.6s 간격, 정면 ±60° 수평 + 위, 속도 변화 1.2 m/s — 호스트 물리) → 하품 5s → Return. 그 물건은 10s 무시, 같은 물건 누적 30s면 질려서 60s 무시. 8s 안에 못 닿으면 포기, 쥐가 집으면 즉시 Return. 자기가 친 물건의 충돌 소음은 무시(깨짐은 예외) | 4.0 |
 | Capture | 앞발 스윙 애니 0.4s → 범위 내 플레이어 Downed 처리 | — |
 | Distracted | 유인 아이템 위치에서 놀기 | 4.0 |
@@ -61,6 +62,11 @@ foreach player(Active만):
 ### 움직임 (2026-09-24, 시야 틱과 같이)
 - 풀린 `CarryableItem` 중 속도 ≥ `catCuriosityMinSpeed` 1.5, 시야 거리·각도 안, 가려지지 않음 → `CuriosityTarget` (가장 가까운 것). 목록 2s마다 갱신. 필터(쿨다운·질림)는 CatBrain이 준다.
 - 청각 예외: `IgnoreImpactNear`(노는 물건) 1.5m 안의 Impact 소음은 무시.
+
+### 냄새 (2026-09-24, `Noise/ScentSystem`·`Player/PlayerScent`)
+- 치즈류(Edible)를 손이나 주머니에 든 쥐 = 강도 60, 고양이에게 찍힌 쥐(앙심) = 빈손이어도 20. 1.5m마다 자국(웅크리면 3m), 초당 -3 감쇠(60 → 20s), 버퍼 32개.
+- 고양이는 Patrol·Return 중 3m 안 자국을 맡으면 Track. 수색(Search) 후보 중 2m 안에 자국이 있는 스팟을 먼저 뒤진다.
+- 자국은 **남긴 쥐 본인 화면에만** 노란 점으로 보인다(소유 클라 ClientRpc). 2단계: 젖은 발자국, 물·바람·후추로 지우기, 고양이 침대로 덮기.
 
 ### 청각
 

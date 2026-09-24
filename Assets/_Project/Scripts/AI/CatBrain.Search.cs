@@ -32,15 +32,19 @@ namespace RatGame.AI
         }
 
         /// <summary>마지막 목격점 반경 안에 숨을 곳이 있으면 수색 시작. 없으면 false(호출자가 Suspicious로).</summary>
-        private bool TryEnterSearch(Vector3 center)
+        private bool TryEnterSearch(Vector3 center, float radius = -1f)
         {
+            if (radius < 0f) radius = _balance.CatSearchRadius;
             if (_hideSpots == null || _hideSpots.Length == 0) return false;
             var near = new List<(float d, HideSpot s)>();
             foreach (var s in _hideSpots)
             {
                 if (s == null || !s.IsSpawned) continue;
                 float d = Vector3.Distance(center, s.transform.position);
-                if (d <= _balance.CatSearchRadius) near.Add((d, s));
+                if (d > radius) continue;
+                // 냄새 자국이 바로 옆에 있는 스팟부터 (design/cat-ideas/14 — 냄새 우선)
+                if (RatGame.Noise.ScentSystem.FindNearest(s.transform.position, 2f, _balance.CatScentMinStrength, null, out _)) d -= 100f;
+                near.Add((d, s));
             }
             if (near.Count == 0) return false;
             near.Sort((a, b) => a.d.CompareTo(b.d));

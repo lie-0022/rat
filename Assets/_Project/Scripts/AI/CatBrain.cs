@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -85,6 +85,8 @@ namespace RatGame.AI
             CollectHideSpots();
             _senses.CuriosityFilter = IsCuriosityAllowed;
             InitMemory();
+            Noise.ScentSystem.Configure(_balance);
+            Noise.ScentSystem.Clear(); // 정적 버퍼 — 이전 판·이전 플레이 모드 자국 제거
             if (PersonalityIndex.Value < 0 && _personalities != null && _personalities.Length > 0)
                 ServerSetPersonality(Random.Range(0, _personalities.Length));
             else ApplyPersonality();
@@ -164,6 +166,7 @@ namespace RatGame.AI
                 case CatState.Return: TickReturn(); break;
                 case CatState.Search: TickSearch(); break;
                 case CatState.Curious: TickCurious(); break;
+                case CatState.Track: TickTrack(); break;
             }
         }
 
@@ -217,6 +220,9 @@ namespace RatGame.AI
                     break;
                 case CatState.Curious:
                     EnterCuriousState();
+                    break;
+                case CatState.Track:
+                    EnterTrackState();
                     break;
             }
         }
@@ -286,6 +292,7 @@ namespace RatGame.AI
         private void TickPatrol()
         {
             if (CheckEscalation()) return;
+            if (CheckScent()) return;     // 냄새 자국 (의심 아래, 호기심 위 — design/cat-ideas/06)
             if (CheckCuriosity()) return; // 순찰 중엔 굴러가는 물건에 속는다 (의심·추격 중엔 안 속음)
 
             // 임시 웨이포인트(쿠키) 우선 — 도착하면 소비
@@ -513,6 +520,7 @@ namespace RatGame.AI
         private void TickReturn()
         {
             if (CheckEscalation()) return;
+            if (CheckScent()) return;
             if (CheckCuriosity()) return;
             if (_spots.Length == 0 || _movement.Arrived) SetState(CatState.Patrol);
         }

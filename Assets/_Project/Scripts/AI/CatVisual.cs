@@ -20,6 +20,7 @@ namespace RatGame.AI
         private static readonly Color Suspicious = new(1f, 0.85f, 0.2f);
         private static readonly Color Search = new(1f, 0.95f, 0.55f);
         private static readonly Color Curious = new(0.6f, 0.9f, 0.4f);
+        private static readonly Color Track = new(1f, 0.7f, 0.45f);
         private static readonly Color Chase = new(0.9f, 0.15f, 0.1f);
         private static readonly Color Capture = new(0.6f, 0.05f, 0.05f);
         private static readonly Color Distracted = new(0.4f, 0.75f, 1f);
@@ -51,6 +52,7 @@ namespace RatGame.AI
                 CatState.Suspicious => Suspicious,
                 CatState.Search => Search,
                 CatState.Curious => Curious,
+                CatState.Track => Track,
                 CatState.Chase => Chase,
                 CatState.Capture => Capture,
                 CatState.Distracted => Distracted,
@@ -74,7 +76,7 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
-                    else if (_brain.Sniffing.Value) { tailSwing = Mathf.Sin(t * 3f) * 20f; sink = 0.06f + 0.03f * Mathf.Sin(t * 8f); } // 기억 칸 킁킁
+                    else if (_brain.Sniffing.Value || state == CatState.Track) { tailSwing = Mathf.Sin(t * 3f) * 20f; sink = 0.06f + 0.03f * Mathf.Sin(t * 8f); } // 기억 칸 킁킁
                     else if (state == CatState.Curious) tailSwing = Mathf.Sin(t * 18f) * 10f; // 꼬리 곧추 파르르
                     else if (state == CatState.Search) { tailSwing = Mathf.Sin(t * 3f) * 20f; sink = 0.06f + 0.03f * Mathf.Sin(t * 8f); } // 코를 바닥에 대고 킁킁
                     break;

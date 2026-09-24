@@ -178,6 +178,18 @@ namespace RatGame.Data
         [SerializeField] private float _catGrudgeHearingMul = 1.3f;      // 찍힌 쥐 발소리·찍찍 청각 배율
         [SerializeField] private float _catGrudgeGiveUpBonus = 2f;       // 성격 추격 포기 시간 + (찍힌 쥐)
 
+        [Header("냄새 (design/cat-ideas/06)")]
+        [SerializeField] private float _scentIntervalMeters = 1.5f;      // 이만큼 걸을 때마다 자국 1개
+        [SerializeField] private float _scentEdible = 60f;               // 치즈류를 들었을 때 자국 강도
+        [SerializeField] private float _scentGrudge = 20f;               // 찍힌 쥐는 빈손이어도 약한 자국
+        [SerializeField] private float _scentDecayPerSec = 3f;           // 60 → 20s
+        [SerializeField] private int _scentMaxMarks = 32;
+        [SerializeField] private float _scentCrouchIntervalMul = 2f;     // 웅크리면 간격 ×
+        [SerializeField] private float _catScentDetectRadius = 3f;       // 순찰 중 이 반경 자국을 맡음
+        [SerializeField] private float _catScentMinStrength = 8f;
+        [SerializeField] private float _catTrackSpeed = 3f;
+        [SerializeField] private float _catTrackSniffSeconds = 0.5f;     // 자국마다 킁킁
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -345,6 +357,16 @@ namespace RatGame.Data
         public float CatGrudgeSightMul => _catGrudgeSightMul;
         public float CatGrudgeHearingMul => _catGrudgeHearingMul;
         public float CatGrudgeGiveUpBonus => _catGrudgeGiveUpBonus;
+        public float ScentIntervalMeters => _scentIntervalMeters;
+        public float ScentEdible => _scentEdible;
+        public float ScentGrudge => _scentGrudge;
+        public float ScentDecayPerSec => _scentDecayPerSec;
+        public int ScentMaxMarks => _scentMaxMarks;
+        public float ScentCrouchIntervalMul => _scentCrouchIntervalMul;
+        public float CatScentDetectRadius => _catScentDetectRadius;
+        public float CatScentMinStrength => _catScentMinStrength;
+        public float CatTrackSpeed => _catTrackSpeed;
+        public float CatTrackSniffSeconds => _catTrackSniffSeconds;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;
