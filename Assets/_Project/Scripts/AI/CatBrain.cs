@@ -635,7 +635,10 @@ namespace RatGame.AI
             float bestDist = float.MaxValue;
             for (int i = 0; i < _spots.Length; i++)
             {
-                if (_spots[i].Type == CatSpotType.Bed && _recentSpots.Contains(i) && _spots.Length > 1) continue;
+                // 방금 쓴 "행동 스팟"(잠자리·매복·상자·화장실)으로는 복귀하지 않는다 — 도착하면 그 행동을 또 해서
+                // 매복 60s → 복귀 → 같은 매복 스팟 → 또 매복… 무한 반복되던 문제 (고양이 20 소크 테스트)
+                bool activitySpot = _spots[i].Type is CatSpotType.Bed or CatSpotType.Ambush or CatSpotType.Box or CatSpotType.Litter;
+                if (activitySpot && _recentSpots.Contains(i) && _spots.Length > 1) continue;
                 if (_spots[i].Type == CatSpotType.Door) continue; // 문은 복귀 지점이 아니다
                 float d = Vector3.Distance(transform.position, _spots[i].Pos);
                 if (d < bestDist) { bestDist = d; best = _spots[i].Pos; _spotIndex = i; }
