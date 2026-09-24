@@ -74,7 +74,7 @@ namespace RatGame.Run
             // 기지 발판으로 들어온 경우: 전원이 씬 로드를 끝내면 시작 위치로 옮기고 자동 출발.
             // 에디터에서 스테이지 씬을 직접 플레이하면 로드 이벤트가 없어 Ready로 대기 (개발용 Enter)
             if (RunSession.DepartPending)
-                NetworkManager.SceneManager.OnLoadEventCompleted += OnStageLoaded;
+                _loadGate = new SceneLoadGate(NetworkManager, gameObject.scene.name, OnStageLoaded); // 유령 연결에 안 묶이게 (고양이 121)
         }
 
         /// <summary>호스트: 집주인 이벤트 예고·시작·끝을 모든 클라에 (토스트). 목소리는 소음이 아니다 — 고양이가 반응하면 안 되는 소리.</summary>
@@ -94,14 +94,13 @@ namespace RatGame.Run
             if (Instance == this) Instance = null;
             if (!IsServer) return;
             EventBus.PlayerDowned -= OnPlayerDowned;
-            if (NetworkManager != null && NetworkManager.SceneManager != null)
-                NetworkManager.SceneManager.OnLoadEventCompleted -= OnStageLoaded;
+            _loadGate?.Cancel();
         }
 
-        private void OnStageLoaded(string sceneName, LoadSceneMode mode, List<ulong> completed, List<ulong> timedOut)
+        private SceneLoadGate _loadGate;
+
+        private void OnStageLoaded()
         {
-            if (sceneName != gameObject.scene.name) return;
-            NetworkManager.SceneManager.OnLoadEventCompleted -= OnStageLoaded;
             RunSession.DepartPending = false;
             PlayerPlacement.TeleportAllToSpawns();
             ServerStartStage(Random.Range(0, int.MaxValue));

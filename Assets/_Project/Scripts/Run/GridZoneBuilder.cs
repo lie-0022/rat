@@ -35,22 +35,13 @@ namespace RatGame.Run
         {
             if (!IsServer || _zone == null) return;
             // 기지에서 출발해 로드 중이면 클라 로딩이 끝난 뒤에 (로드 중 스폰은 클라에 안 간다 — 고양이 59)
-            if (RunSession.DepartPending) NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
+            if (RunSession.DepartPending) _loadGate = new SceneLoadGate(NetworkManager, gameObject.scene.name, () => Build(_fixedSeed != 0 ? _fixedSeed : Random.Range(1, int.MaxValue))); // 유령 연결에 안 묶이게 (고양이 121)
             else Build(_fixedSeed != 0 ? _fixedSeed : Random.Range(1, int.MaxValue));
         }
 
-        public override void OnNetworkDespawn()
-        {
-            if (IsServer && NetworkManager != null && NetworkManager.SceneManager != null)
-                NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
-        }
+        private SceneLoadGate _loadGate;
 
-        private void OnSceneLoaded(string sceneName, UnityEngine.SceneManagement.LoadSceneMode mode, List<ulong> completed, List<ulong> timedOut)
-        {
-            if (sceneName != gameObject.scene.name) return;
-            NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
-            Build(_fixedSeed != 0 ? _fixedSeed : Random.Range(1, int.MaxValue));
-        }
+        public override void OnNetworkDespawn() => _loadGate?.Cancel();
 
         private void Build(int seed)
         {
