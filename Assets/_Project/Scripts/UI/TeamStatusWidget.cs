@@ -26,6 +26,7 @@ namespace RatGame.UI
         private readonly List<TeamStatusRow> _rows = new();
         private readonly List<PlayerCondition> _players = new();
         private float _nextPoll;
+        private string _lastLogged;
 
         private void Awake() => _rowTemplate.gameObject.SetActive(false);
 
@@ -63,6 +64,7 @@ namespace RatGame.UI
                 string name = PlayerVisual.ColorNameFor(p.OwnerClientId) + (p.IsOwner ? " (나)" : "");
                 _rows[i].Show(PlayerVisual.ColorFor(p.OwnerClientId), name, p.State.Value, IsGrudged(p.OwnerClientId));
             }
+            LogIfChanged();
         }
 
         // 어느 고양이든 이 쥐를 찍었으면 (CatBrain NV 읽기만 — 규칙 3). 0.25s 폴링 안에서만 호출
@@ -71,6 +73,17 @@ namespace RatGame.UI
             foreach (var cat in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None))
                 if (cat.IsSpawned && cat.HasGrudge.Value && cat.GrudgeClientId.Value == clientId) return true;
             return false;
+        }
+
+        // 다인 검증용 — 보이는 내용이 바뀔 때만 (고양이 133)
+        private void LogIfChanged()
+        {
+            var sb = new System.Text.StringBuilder(_headerText.text);
+            foreach (var p in _players) sb.Append(" | ").Append(p.OwnerClientId).Append(' ').Append(p.State.Value);
+            string now = sb.ToString();
+            if (now == _lastLogged) return;
+            _lastLogged = now;
+            Core.Log.Dev($"팀 상태 연출: {now}");
         }
 
         private static void SetText(TMP_Text label, string text)
