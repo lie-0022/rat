@@ -145,6 +145,12 @@ FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에�
 - 점프: `NavMeshLink`(양방향)를 `CatMovement`가 직접 넘는다 — 0.45s 호(높이 0.8). **올라가는** 점프는 `catJumpFailChance` 0.15로 실패: 중간에서 출발점으로 떨어져 Blunder Stun `catJumpFailStunSeconds` 1.5s → Return.
 - 성격 `perchWeightMultiplier`: 기본 1, 사냥꾼 3(선반을 좋아함).
 
+## 문 닫기·밀기 (2026-09-24, 고양이 40, `World/RoomDoor`·`AI/CatBrain.Door.cs`, design/cat-ideas/09)
+- 쥐가 E 0.4s로 문을 닫는다(소리 25, 귀속 — 고양이 1m 안이면 못 닫음). 닫힌 문판의 `NavMeshObstacle`(carve)이 고양이 길을 막는다.
+- 목적지 보정: `CatMovement.MoveTo`가 닫힌 문 너머(방 박스 안↔밖) 목적지를 **문 앞(내 쪽 0.8m)**으로 바꾼다 — 안 그러면 NavMesh가 방 벽 바깥 "가장 가까운 곳"으로 보낸다.
+- 밀기: Chase·Suspicious·Track·Search 고양이가 닫힌 문 1.4m 안에 있으면 0.25s마다 누적, `doorPushSeconds` 4s면 열림(순찰·복귀 고양이는 안 민다). 미는 동안 `ServerHoldAtDoor`가 추격 놓침 타이머·의심·수색 시간·게이지 감쇠를 붙잡는다(4s > 놓침 3s).
+- 쥐 전용 틈: 벽 구멍 폭 0.8·높이 1.4 — 쥐 캡슐(반경 0.3·키 1.2)은 지나가고, 고양이 NavMesh는 안 이어진다(에이전트 반경 0.5·높이 2).
+
 ## 데모 레이아웃 (2026-09-24)
 
 `Tools/RatGame/Cat/Build Demo Layout (Stage_Warehouse01)`: 스팟 6(Bed·Food·Sun·Groom·Look×2, 쥐구멍 반대편에 잠자리·밥)·시야 가림 상자 4·고양이 1(잠자리에서 시작)·NavMesh 베이크. 방 모듈 전 검증용 — 선반 층·틈은 다음 단계(design/cat-design/02-6). 검증: 4배속 6분 관찰에서 스팟 14회 방문(같은 스팟 연속 없음), Bed 수면 45.0s 뒤 깸, Food 머무는 동안 감각 0.5. 참고: 쥐가 쥐구멍 위에 서 있으면 포획→쥐구멍 부활→재포획이 반복된다(쥐구멍 부활 사양의 자연스러운 결과).

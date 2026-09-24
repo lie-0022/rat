@@ -9,10 +9,11 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 40 — (다음 후보 기획 중)
-상태: 고양이 39 커밋 후 다음 후보 선정
+## 현재 작업: 고양이 41 — (다음 후보 기획 중)
+상태: 고양이 40 커밋 후 다음 후보 선정
 
 ## 완료 기록
+- 고양이 40 문 닫기·밀기 + 쥐 구멍 — 커밋됨 (plan cat-40). 환경 쓰기(09) 4종 완료(매복·상자·선반·문).
 - 고양이 39 선반 관찰대·점프 — 커밋됨 (plan cat-39). 맵에 높이 1칸(NavMeshLink). 남은 09: 문 밀기.
 - 고양이 38 흔들리는 끈 — 커밋됨 (plan cat-38). 관심 경제 신규 유인 1종(레이저는 아이템 사용 시스템 필요 — 보류).
 - 고양이 37 창문 바람 — 커밋됨 (plan cat-37). 집주인 이벤트 7종. 꾸준한 힘은 마찰에 막힘 → 돌풍 3 m/s.
@@ -70,4 +71,5 @@
 - 컴파일 요청이 멈춰 있으면(isCompiling=True 지속) `refresh_unity compile=request` 한 번 더.
 - 빌드 클라는 호스트 play가 뜬 뒤에 띄운다(먼저 띄우면 5회 재시도 후 실패).
 - 고양이를 특정 스팟으로 보낼 땐 State==Patrol을 기다린 뒤 _dwelling=false·_spotIndex 설정·MoveTo (아니면 Return이 덮는다). 쥐가 Downed인지 먼저 확인(시야는 Active만).
+- 순찰 고양이를 의심으로 바꾸려면 실제 자극(소리·목격)이 필요 — RaiseGaugeTo만으론 안 된다. 추격 시나리오(쥐를 고양이 앞 3.8m)가 가장 확실.
 - 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.

@@ -91,7 +91,7 @@ namespace RatGame.AI
             if (!_agent.enabled || !_agent.isOnNavMesh) return;
             _agent.speed = speed * SpeedMultiplier;
             _agent.isStopped = false;
-            _agent.SetDestination(pos);
+            _agent.SetDestination(World.RoomDoor.Redirect(transform.position, pos)); // 닫힌 문 너머면 문 앞으로 (고양이 40)
         }
 
         public void Stop()

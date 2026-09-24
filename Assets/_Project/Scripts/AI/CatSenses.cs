@@ -74,6 +74,9 @@ namespace RatGame.AI
 
         public void ConsumeStimulus() { HasNewStimulus = false; ImmediateInvestigate = false; }
 
+        /// <summary>호스트: 게이지 감쇠를 잠깐 멈춘다 (닫힌 문을 미는 동안 — 고양이 40).</summary>
+        public void HoldGauge() => _lastStimulusTime = Time.time;
+
         /// <summary>호스트: 게이지를 최소 v로 (겁쟁이가 도망쳤다 돌아와 조사할 때 — 도망 3s 동안 게이지가 식어 바로 복귀하던 문제).</summary>
         public void RaiseGaugeTo(float v, Vector3 pos)
         {

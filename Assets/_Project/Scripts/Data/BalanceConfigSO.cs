@@ -205,6 +205,10 @@ namespace RatGame.Data
         [SerializeField] private float _catJumpSeconds = 0.45f;
         [SerializeField, Range(0f, 1f)] private float _catJumpFailChance = 0.15f; // 올라가는 점프 실패
         [SerializeField] private float _catJumpFailStunSeconds = 1.5f;
+        [Header("문 (design/cat-ideas/09, 고양이 40)")]
+        [SerializeField] private float _doorPushSeconds = 4f;            // 쫓던 고양이가 닫힌 문을 밀어 여는 시간
+        [SerializeField] private float _doorPushRange = 1.4f;            // 문 중심에서 이 안이면 미는 중
+        [SerializeField] private float _doorCloseNoise = 25f;            // 쥐가 문 닫는 소리
         [Header("흔들리는 끈 (design/cat-ideas/13, 고양이 38)")]
         [SerializeField] private float _stringSwingSeconds = 30f;
         [SerializeField] private float _stringAttractRadius = 8f;        // 이 안의 한가한 고양이가 보면 온다
@@ -537,6 +541,9 @@ namespace RatGame.Data
         public float CatJumpSeconds => _catJumpSeconds;
         public float CatJumpFailChance => _catJumpFailChance;
         public float CatJumpFailStunSeconds => _catJumpFailStunSeconds;
+        public float DoorPushSeconds => _doorPushSeconds;
+        public float DoorPushRange => _doorPushRange;
+        public float DoorCloseNoise => _doorCloseNoise;
         public float StringSwingSeconds => _stringSwingSeconds;
         public float StringAttractRadius => _stringAttractRadius;
         public float StringDistractSeconds => _stringDistractSeconds;

@@ -173,6 +173,9 @@ MonoBehaviour:
   _catJumpSeconds: 0.45
   _catJumpFailChance: 0.15
   _catJumpFailStunSeconds: 1.5
+  _doorPushSeconds: 4
+  _doorPushRange: 1.4
+  _doorCloseNoise: 25
   _stringSwingSeconds: 30
   _stringAttractRadius: 8
   _stringDistractSeconds: 10

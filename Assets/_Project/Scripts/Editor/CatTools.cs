@@ -287,6 +287,48 @@ namespace RatGame.Editor
                 ds.AddComponent<DanglingString>().EditorSetup(hideBalance, pivot);
             }
 
+            // 창고방 (고양이 40) — 남동쪽 모서리 x 13~20, z -20~-14. 서쪽 벽에 문, 북쪽 벽에 쥐 구멍(폭 0.8·높이 1.4)
+            if (GameObject.Find("Storeroom") == null)
+            {
+                var room = new GameObject("Storeroom");
+                room.transform.SetParent(root.transform);
+                int roomLayer = LayerMask.NameToLayer("RoomStatic");
+                System.Action<string, Vector3, Vector3> wall = (n, center, size) =>
+                {
+                    var w = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    w.name = n; w.transform.SetParent(room.transform);
+                    w.transform.position = center; w.transform.localScale = size;
+                    w.layer = roomLayer; w.isStatic = true;
+                };
+                // 서쪽 벽 x 13: z -20~-14, 문틈 z -17.9~-16.1 (1.8m — 고양이 반경 0.55×2를 빼고도 길이 남게)
+                wall("Wall_StoreW1", new Vector3(13f, 1.25f, -18.95f), new Vector3(0.2f, 2.5f, 2.1f));
+                wall("Wall_StoreW2", new Vector3(13f, 1.25f, -15.05f), new Vector3(0.2f, 2.5f, 2.1f));
+                // 북쪽 벽 z -14: x 13~20, 쥐 구멍 x 16.6~17.4 (위 인방 1.4~2.5)
+                wall("Wall_StoreN1", new Vector3(14.8f, 1.25f, -14f), new Vector3(3.6f, 2.5f, 0.2f));
+                wall("Wall_StoreN2", new Vector3(18.7f, 1.25f, -14f), new Vector3(2.6f, 2.5f, 0.2f));
+                wall("Wall_StoreNHole", new Vector3(17f, 1.95f, -14f), new Vector3(0.8f, 1.1f, 0.2f));
+
+                var door = new GameObject("RoomDoor");
+                door.transform.SetParent(room.transform);
+                door.transform.position = new Vector3(13f, 0f, -17f);
+                door.transform.rotation = Quaternion.LookRotation(Vector3.left); // forward = 방 밖(서쪽)
+                var doorBox = door.AddComponent<BoxCollider>(); // 상호작용 대상 (문틀 트리거)
+                doorBox.isTrigger = true; doorBox.center = new Vector3(0f, 1f, 0f); doorBox.size = new Vector3(1.8f, 2f, 0.6f); // 로컬 x = 월드 z (문이 서쪽을 본다)
+                var hinge = new GameObject("Hinge").transform;
+                hinge.SetParent(door.transform, false); hinge.localPosition = new Vector3(-0.9f, 0f, 0f);
+                var pane = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                pane.name = "DoorPane"; pane.transform.SetParent(hinge, false);
+                pane.transform.localPosition = new Vector3(0.9f, 1.05f, 0f); pane.transform.localScale = new Vector3(1.8f, 2.1f, 0.08f);
+                pane.layer = roomLayer;
+                var paneR = pane.GetComponent<Renderer>();
+                paneR.sharedMaterial = new Material(paneR.sharedMaterial) { color = new Color(0.6f, 0.45f, 0.3f) };
+                var obstacle = pane.AddComponent<NavMeshObstacle>();
+                obstacle.carving = true; obstacle.shape = NavMeshObstacleShape.Box; obstacle.size = Vector3.one; obstacle.enabled = false;
+                var mod = door.AddComponent<NavMeshModifier>(); mod.ignoreFromBuild = true; // 열림·닫힘은 런타임 carve로만
+                door.AddComponent<NetworkObject>();
+                door.AddComponent<RoomDoor>().EditorSetup(hideBalance, hinge, obstacle, new Vector3(16.5f, 0f, -17f), new Vector3(7f, 0f, 6f));
+            }
+
             // 창문 (design/cat-ideas/06·10, 고양이 37) — 북쪽 벽, 바람은 남쪽(-z)으로
             if (GameObject.Find("WindowWind") == null)
             {
