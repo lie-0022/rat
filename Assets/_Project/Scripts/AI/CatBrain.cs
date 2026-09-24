@@ -403,7 +403,7 @@ namespace RatGame.AI
             if (IsFeeding) { int food = FindSpot(CatSpotType.Food); if (food >= 0) { _spotIndex = food; _movement.MoveTo(_spots[food].Pos, _balance.CatPatrolSpeed); return; } }
             if (TryFinaleHoleVisit()) return; // 귀환 카운트다운 — 쥐구멍 쪽 (design/cat-ideas/12)
             if (TryGoToMemorySpot()) return; // 가끔 기억 칸에 들른다 (design/cat-ideas/05)
-            int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, _spots.Length - 1);
+            int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, (_isGuard ? GuardEligibleCount() : _spots.Length) - 1); // 문지기는 고를 스팟이 적어 최근 제외가 전부 막지 않게
             while (_recentSpots.Count > avoid) _recentSpots.RemoveAt(0);
             float total = 0f;
             for (int i = 0; i < _spots.Length; i++) if (!_recentSpots.Contains(i)) total += SpotWeight(i);
@@ -429,14 +429,15 @@ namespace RatGame.AI
             if (_spots[i].Type == CatSpotType.Door) return 0f; // 문은 순찰 대상 아님
             float w = _spots[i].Weight * DirSpotWeightMul(_spots[i].Type); // 디렉터 Relief면 루틴 스팟 쪽으로
             var p = Personality;
-            if (p == null) return w;
-            return _spots[i].Type switch
-            {
-                CatSpotType.Bed => w * p.BedWeightMultiplier,
-                CatSpotType.Look => w * p.LookWeightMultiplier,
-                CatSpotType.Perch => w * p.PerchWeightMultiplier,
-                _ => w
-            };
+            if (p != null)
+                w = _spots[i].Type switch
+                {
+                    CatSpotType.Bed => w * p.BedWeightMultiplier,
+                    CatSpotType.Look => w * p.LookWeightMultiplier,
+                    CatSpotType.Perch => w * p.PerchWeightMultiplier,
+                    _ => w
+                };
+            return GuardFilter(i, w); // 문지기는 초소 둘레만 (고양이 80)
         }
 
         // 스팟 종류별 머무름: 잠자리는 Sleep 상태로, 나머지는 시간+감각 배율 (design/cat-design/02 카탈로그)

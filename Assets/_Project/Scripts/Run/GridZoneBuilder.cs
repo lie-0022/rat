@@ -88,6 +88,7 @@ namespace RatGame.Run
                 };
                 Populator.PopulateAll(rng, stage - 1);
                 MaybeKitten(stage, rng);
+                MaybeGuard(stage, rng);
             }
             FaceSpawnsToDoor(Layout.Start, Layout.Sides[0]);
             DeliverPurchases(Layout.Start, rng);
@@ -103,6 +104,34 @@ namespace RatGame.Run
             if (cats.Length < 2 || rng.NextDouble() >= _zone.KittenChanceFor(stage)) return;
             var kitten = cats[rng.Next(cats.Length)];
             if (kitten.ServerMakeKitten()) Log.Dev($"벽 속: 스테이지 {stage} — {kitten.name}를 아기로 (엄마·아기)");
+        }
+
+        // 깊은 스테이지: 어른 한 마리를 목적지 앞 문지기로 — 목적지 문(배관 아닌 면) 너머 이웃 방 문 안쪽에 초소 (고양이 80)
+        private void MaybeGuard(int stage, System.Random rng)
+        {
+            var dest = Layout.Destination;
+            var cats = FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None);
+            var adults = new List<AI.CatBrain>();
+            foreach (var c in cats) if (!c.IsKitten) adults.Add(c);
+            if (dest == null || cats.Length < 2 || adults.Count == 0 || rng.NextDouble() >= _zone.GuardChanceFor(stage)) return;
+            int di = Plan.DestinationIndex;
+            foreach (var e in Plan.Edges)
+            {
+                if (e.IsPipe || (e.A != di && e.B != di)) continue;
+                int other = e.A == di ? e.B : e.A;
+                int side = GridZoneLayout.SideIndex(Plan.Cells[other].Pos - Plan.Cells[di].Pos);
+                var neighbor = Layout.Rooms[other];
+                Vector3 door = neighbor.DoorCenter((side + 2) % 4);
+                Vector3 inward = neighbor.transform.position - door; inward.y = 0f; inward.Normalize();
+                var post = new GameObject("GuardPost").transform;
+                post.SetPositionAndRotation(door + inward * 1.5f, Quaternion.LookRotation(inward)); // 들어오는 쥐 쪽을 본다
+                post.SetParent(neighbor.transform, true);
+                post.gameObject.AddComponent<AI.CatSpot>();
+                var guard = adults[rng.Next(adults.Count)];
+                guard.ServerMakeGuard(post.position);
+                Log.Dev($"벽 속: 스테이지 {stage} — {guard.name}가 목적지 앞 문지기");
+                return;
+            }
         }
 
         // 지난 스테이지 상점에서 산 물건을 출발방 바닥에 (plan cat-65)
