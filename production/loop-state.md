@@ -9,9 +9,11 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 30 — 기획 단계 (다음 후보에서 골라 plan 작성부터)
+## 현재 작업: 고양이 31 — (다음 후보 기획 중)
+상태: 고양이 30 커밋 후 다음 후보 선정
 
 ## 완료 기록
+- 고양이 30 TV — 커밋됨 (plan cat-30). 소리 마스킹을 소스별(SetMask)로 바꿈. 집주인 이벤트 남은 것: 불 켜짐(LightZone 필요).
 - 고양이 29 로봇청소기 — 커밋됨 (plan cat-29). 집주인 이벤트 남은 것: 불 켜짐·TV.
 - 고양이 28 미검증 모음 검증 — 커밋됨 (plan cat-28). 6개 확인, 웅크림 간격만 남음.
 - 고양이 27 구현 요약 문서(design/cat-design/04-implemented-summary.md) — 커밋됨.
@@ -52,4 +54,5 @@
 - 게이지 배율 비교는 시간 창 말고 시야 틱 1회 상승폭으로(0.5s 창은 틱 2~3회 차이로 흔들림).
 - 상태 통계는 샘플링 말고 `CatBrain.ServerStateChanged` 이벤트 구독으로 센다.
 - 한 플레이 세션에 테스트를 여러 개 이으면 앞 단계에서 쥐가 다운돼 다음 셋업이 깨진다 → 셋업마다 플레이 모드 새로 시작, 또는 쥐 상태 확인 후 진행.
+- 순찰 중 목적지를 스팟이 아닌 곳으로 바꾸려면 TickPatrol에 별도 분기 필요 — "멈췄으면 현재 스팟으로" 줄이 첫 프레임에 덮는다.
 - 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.

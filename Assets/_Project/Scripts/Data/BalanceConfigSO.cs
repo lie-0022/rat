@@ -289,6 +289,9 @@ namespace RatGame.Data
         [SerializeField] private float _vacuumSpeed = 1.5f;
         [SerializeField] private float _vacuumMaskLoudness = 40f;        // 이 미만 소리는 청소기 소리에 묻힘
         [SerializeField] private float _vacuumCatSense = 0.6f;           // 피신한 고양이 감각
+        [SerializeField] private float _tvSeconds = 90f;                 // TV (집주인 이벤트)
+        [SerializeField] private float _tvMaskLoudness = 25f;            // TV 소리에 묻히는 loudness
+        [SerializeField] private float _tvWatchDistance = 2.5f;          // 고양이가 TV 앞 이만큼에 앉는다
 
         [Header("두 마리 — 앙숙 (design/cat-ideas/07)")]
         [SerializeField] private float _catFightDistance = 4f;           // 이 안에서 서로 보이면
@@ -570,6 +573,9 @@ namespace RatGame.Data
         public float VacuumSpeed => _vacuumSpeed;
         public float VacuumMaskLoudness => _vacuumMaskLoudness;
         public float VacuumCatSense => _vacuumCatSense;
+        public float TvSeconds => _tvSeconds;
+        public float TvMaskLoudness => _tvMaskLoudness;
+        public float TvWatchDistance => _tvWatchDistance;
         public float CatFightDistance => _catFightDistance;
         public float CatFightChance => _catFightChance;
         public float CatFightSeconds => _catFightSeconds;

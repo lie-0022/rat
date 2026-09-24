@@ -75,6 +75,7 @@ namespace RatGame.Run
             // 같은 사건 연속 금지 — 부르기·밥·청소기 중 직전 것 빼고 무작위
             var pool = new System.Collections.Generic.List<HouseEventKind> { HouseEventKind.CallAway, HouseEventKind.Feeding };
             if (FindAnyObjectByType<RobotVacuum>() != null) pool.Add(HouseEventKind.Vacuum);
+            if (FindAnyObjectByType<TvSet>() != null) pool.Add(HouseEventKind.TV);
             if (_last.HasValue) pool.Remove(_last.Value);
             return pool[Random.Range(0, pool.Count)];
         }
@@ -109,6 +110,12 @@ namespace RatGame.Run
                     break;
                 case HouseEventKind.Feeding:
                     foreach (var cat in cats) cat.ServerFeedingTime(_balance.CatFeedingSeconds);
+                    break;
+                case HouseEventKind.TV:
+                    var tv = FindAnyObjectByType<TvSet>();
+                    if (tv == null) break;
+                    tv.ServerStart(_balance.TvSeconds);
+                    foreach (var cat in cats) cat.ServerWatchTv(tv.transform.position, tv.WatchPoint, _balance.TvSeconds);
                     break;
                 case HouseEventKind.Vacuum:
                     var vac = FindAnyObjectByType<RobotVacuum>();

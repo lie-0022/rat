@@ -73,6 +73,50 @@ namespace RatGame.AI
         }
 
         private float _avoidVacuumUntil;
+
+        private bool _watchingTv;
+        private float _watchTvUntil;
+        private Vector3 _tvPos;
+        private Vector3 _tvWatchPoint;
+
+        /// <summary>호스트: TV가 켜졌다 — TV 앞 시청 지점으로 가서 끝날 때까지 화면만 본다.</summary>
+        public void ServerWatchTv(Vector3 tvPos, Vector3 watchPoint, float seconds)
+        {
+            if (!IsServer) return;
+            var st = State.Value;
+            if (st is CatState.Chase or CatState.Capture or CatState.Toy or CatState.Away or CatState.Fight) return;
+            _tvPos = tvPos;
+            _watchTvUntil = Time.time + seconds;
+            SetState(CatState.Patrol);
+            CancelMemoryVisit();
+            _dwelling = false;
+            _watchingTv = true;
+            _tvWatchPoint = CatMovement.Sample(watchPoint, 1.5f, watchPoint);
+            _movement.MoveTo(_tvWatchPoint, _balance.CatPatrolSpeed);
+            Log.Dev($"고양이 [{name}]: TV 보러 ({seconds}s)");
+        }
+
+        // TickPatrol에서 (TV 보러 가는 중, 아직 안 앉음)
+        private void TickWalkToTv()
+        {
+            if (Time.time >= _watchTvUntil) { _watchingTv = false; GoToNextSpot(); return; }
+            if (Vector3.Distance(transform.position, _tvWatchPoint) <= 0.6f)
+            {
+                _movement.Stop();
+                Dwell(_watchTvUntil - Time.time, 1f); // TV 앞에 앉아 본다 — 감각은 그대로, 방향만 TV에 고정
+                return;
+            }
+            if (_movement.Arrived || _movement.Velocity.sqrMagnitude < 0.01f) _movement.MoveTo(_tvWatchPoint, _balance.CatPatrolSpeed);
+        }
+
+        private void FaceTv()
+        {
+            Vector3 d = _tvPos - transform.position; d.y = 0f;
+            if (d.sqrMagnitude > 0.01f) transform.rotation = Quaternion.LookRotation(d);
+        }
+
+        /// <summary>TV를 보는 중 (테스트·디버그).</summary>
+        public bool IsWatchingTv => _watchingTv && _dwelling;
         private bool AvoidingVacuum => Time.time < _avoidVacuumUntil;
 
         private int FindSpot(CatSpotType type)

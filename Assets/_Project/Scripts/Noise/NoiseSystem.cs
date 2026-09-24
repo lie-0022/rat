@@ -25,8 +25,23 @@ namespace RatGame.Noise
     {
         public static event Action<NoiseEvent> OnNoise;
 
-        /// <summary>호스트: 이 loudness 미만 소리는 배경 소음에 묻힌다 (로봇청소기 — design/cat-ideas/10). 0이면 없음.</summary>
-        public static float MaskLoudness;
+        // 배경 소음 소스별 마스크 (로봇청소기 40·TV 25 — design/cat-ideas/10). 여러 개가 동시에 켜질 수 있어 최댓값을 쓴다.
+        private static readonly System.Collections.Generic.Dictionary<object, float> _masks = new();
+
+        /// <summary>호스트: 이 loudness 미만 소리는 배경 소음에 묻힌다. 0이면 없음.</summary>
+        public static float MaskLoudness
+        {
+            get { float m = 0f; foreach (var v in _masks.Values) if (v > m) m = v; return m; }
+        }
+
+        /// <summary>호스트: 소스별 배경 소음 켜기(loudness &gt; 0)·끄기(0).</summary>
+        public static void SetMask(object source, float loudness)
+        {
+            if (loudness <= 0f) _masks.Remove(source); else _masks[source] = loudness;
+        }
+
+        /// <summary>정적 — 판이 바뀌면 비운다 (고양이 스폰 때).</summary>
+        public static void ClearMasks() => _masks.Clear();
 
         /// <summary>docs/06 기즈모·파문용 최근 이벤트 (호스트 로컬 링버퍼).</summary>
         public static readonly NoiseEvent[] Recent = new NoiseEvent[16];

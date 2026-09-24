@@ -52,7 +52,7 @@ namespace RatGame.World
             _until = Time.time + seconds;
             _returning = false;
             Running.Value = true;
-            NoiseSystem.MaskLoudness = _balance.VacuumMaskLoudness;
+            NoiseSystem.SetMask(this, _balance.VacuumMaskLoudness);
             Log.Dev($"청소기: 켜짐 ({seconds}s, 소리 {NoiseSystem.MaskLoudness} 미만 묻힘)");
         }
 
@@ -63,7 +63,7 @@ namespace RatGame.World
             if (!_returning && Time.time >= _until)
             {
                 _returning = true;
-                NoiseSystem.MaskLoudness = 0f;
+                NoiseSystem.SetMask(this, 0f);
                 Log.Dev("청소기: 청소 끝 — 충전대로");
                 if (Run.RunManager.Instance != null) Run.RunManager.Instance.ServerHouseEvent(HouseEventKind.Vacuum, HouseEventPhase.End);
             }
@@ -84,7 +84,7 @@ namespace RatGame.World
 
         public override void OnNetworkDespawn()
         {
-            if (IsServer && Running.Value) NoiseSystem.MaskLoudness = 0f;
+            if (IsServer) NoiseSystem.SetMask(this, 0f);
         }
 
 #if UNITY_EDITOR

@@ -170,6 +170,20 @@ namespace RatGame.Editor
                 hs.EditorSetup(hideBalance, label, cap);
             }
 
+            // TV (design/cat-ideas/10) — 남쪽 벽 앞, 화면은 북쪽(+z)을 본다
+            if (GameObject.Find("TvSet") == null)
+            {
+                var tvGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                tvGo.name = "TvSet"; tvGo.transform.SetParent(root.transform);
+                tvGo.transform.position = new Vector3(8f, 0.75f, -19.2f);
+                tvGo.transform.localScale = new Vector3(2.4f, 1.5f, 0.3f);
+                tvGo.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+                var tr = tvGo.GetComponent<Renderer>();
+                tr.sharedMaterial = new Material(tr.sharedMaterial) { color = new Color(0.08f, 0.08f, 0.1f) };
+                tvGo.AddComponent<Unity.Netcode.NetworkObject>();
+                tvGo.AddComponent<TvSet>().EditorSetup(hideBalance);
+            }
+
             // 로봇청소기 (design/cat-ideas/10) — 충전대 서쪽 벽
             if (GameObject.Find("RobotVacuum") == null)
             {
