@@ -182,7 +182,8 @@ namespace RatGame.Net
             nm.OnClientDisconnectCallback -= OnClientDisconnected;
             nm.OnClientDisconnectCallback += OnClientDisconnected;
             Log.Dev($"클라이언트 접속 시도 ({TransportName})");
-            GameStateMachine.Instance.TransitionTo(GameState.Lobby);
+            // 접속이 늦어 다시 시도할 때(-autojoin 재시도)는 이미 Lobby — 같은 상태로 전이하면 오류 로그만 남는다
+            if (GameStateMachine.Instance.Current != GameState.Lobby) GameStateMachine.Instance.TransitionTo(GameState.Lobby);
             return true;
         }
 
