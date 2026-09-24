@@ -312,6 +312,11 @@ namespace RatGame.Data
         [SerializeField] private float _lightOnSeconds = 30f;            // 불 켜짐 (집주인 이벤트) — 어둠 해제 시간
         [SerializeField] private float _lightOnGreetSeconds = 10f;       // 고양이가 집주인 다리에 부비는 시간
         [SerializeField] private float _lightOnGreetSense = 0.5f;        // 부비는 동안 감각
+        [SerializeField] private float _windowSeconds = 20f;             // 창문 바람 (집주인 이벤트, 고양이 37)
+        [SerializeField] private float _windowGustSpeed = 3f;            // 돌풍 한 번에 가벼운 물건에 주는 속도 (m/s) — 꾸준한 힘은 바닥 마찰(≈6 m/s²)을 못 이긴다
+        [SerializeField] private float _windowGustInterval = 2f;         // 돌풍 간격 (s)
+        [SerializeField] private float _windowMaxItemMass = 1f;          // 이 질량 이하만 바람에 굴러간다
+        [SerializeField] private float _windowMaskLoudness = 20f;        // 바람 소리에 묻히는 loudness
 
         [Header("두 마리 — 앙숙 (design/cat-ideas/07)")]
         [SerializeField] private float _catFightDistance = 4f;           // 이 안에서 서로 보이면
@@ -615,6 +620,11 @@ namespace RatGame.Data
         public float LightOnSeconds => _lightOnSeconds;
         public float LightOnGreetSeconds => _lightOnGreetSeconds;
         public float LightOnGreetSense => _lightOnGreetSense;
+        public float WindowSeconds => _windowSeconds;
+        public float WindowGustSpeed => _windowGustSpeed;
+        public float WindowGustInterval => _windowGustInterval;
+        public float WindowMaxItemMass => _windowMaxItemMass;
+        public float WindowMaskLoudness => _windowMaskLoudness;
         public float CatFightDistance => _catFightDistance;
         public float CatFightChance => _catFightChance;
         public float CatFightSeconds => _catFightSeconds;

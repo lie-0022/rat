@@ -234,6 +234,32 @@ namespace RatGame.Editor
                 bowl.AddComponent<WaterBowl>().EditorSetup(hideBalance);
             }
 
+            // 창문 (design/cat-ideas/06·10, 고양이 37) — 북쪽 벽, 바람은 남쪽(-z)으로
+            if (GameObject.Find("WindowWind") == null)
+            {
+                var win = new GameObject("WindowWind");
+                win.transform.SetParent(root.transform);
+                win.transform.position = new Vector3(0f, 1.5f, 19.7f);
+                win.transform.rotation = Quaternion.LookRotation(Vector3.back);
+                var frame = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                frame.name = "Frame"; frame.transform.SetParent(win.transform, false);
+                frame.transform.localScale = new Vector3(2.2f, 1.6f, 0.1f);
+                Object.DestroyImmediate(frame.GetComponent<Collider>());
+                var fr = frame.GetComponent<Renderer>();
+                fr.sharedMaterial = new Material(fr.sharedMaterial) { color = new Color(0.55f, 0.75f, 0.95f) };
+                var hinge = new GameObject("PaneHinge").transform;
+                hinge.SetParent(win.transform, false); hinge.localPosition = new Vector3(-1f, 0f, 0.08f);
+                var pane = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                pane.name = "Pane"; pane.transform.SetParent(hinge, false);
+                pane.transform.localPosition = new Vector3(1f, 0f, 0f);
+                pane.transform.localScale = new Vector3(2f, 1.4f, 0.05f);
+                Object.DestroyImmediate(pane.GetComponent<Collider>());
+                var pr2 = pane.GetComponent<Renderer>();
+                pr2.sharedMaterial = new Material(pr2.sharedMaterial) { color = new Color(0.85f, 0.85f, 0.8f) };
+                win.AddComponent<NetworkObject>();
+                win.AddComponent<WindowWind>().EditorSetup(hideBalance, hinge);
+            }
+
             // 후추통 (design/cat-ideas/06, 고양이 33) — 쥐구멍 쪽. 던지거나 세게 떨어뜨리면 쏟아진다
             if (GameObject.Find("PepperShaker") == null)
             {

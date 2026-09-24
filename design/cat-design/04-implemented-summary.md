@@ -38,7 +38,7 @@
 | 어둠 구역 | 꺼진 LightZone 속 쥐는 고양이 시야 절반(웅크리면 1/4) — 바닥 어두운 판 | LightZone |
 | 숨을 곳 | 장화·빈 상자, 나올 때 소리, 고양이가 입구 막기 | HideSpot |
 | 경계도 디렉터 | 잘 풀리면 예민(Build-up)·몰리면 숨 돌리기(Relief)·귀환 땐 쥐구멍 경계(Finale) — 감각 수치는 안 건드림 | RunDirector, CatBrain.Director |
-| 집주인 이벤트 | 부르기·밥 시간·초인종(쥐가 유발)·로봇청소기(소리 마스킹·물건 밀기·고양이 피신)·TV(고양이가 TV만 봄 — 등 뒤 통과)·불 켜짐(어둠 구역 30s 해제, 고양이가 와서 부빔) | HouseEventDirector, Doorbell, RobotVacuum, TvSet |
+| 집주인 이벤트 | 부르기·밥 시간·초인종(쥐가 유발)·로봇청소기(소리 마스킹·물건 밀기·고양이 피신)·TV(고양이가 TV만 봄 — 등 뒤 통과)·불 켜짐(어둠 구역 30s 해제, 고양이가 와서 부빔)·창문(바람 — 냄새 전부 날림·가벼운 물건 굴러감) | HouseEventDirector, Doorbell, RobotVacuum, TvSet, LightZone, WindowWind |
 | 두 마리 관계 | 앙숙(싸움)·짝꿍(협공·공동 수면)·엄마·아기(냐앙·달려옴) | CatRelation |
 | 디버그 | F3 오버레이 | UI/CatDebugOverlay |
 

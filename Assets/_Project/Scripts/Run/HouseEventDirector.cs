@@ -86,6 +86,7 @@ namespace RatGame.Run
             if (FindAnyObjectByType<RobotVacuum>() != null) pool.Add(HouseEventKind.Vacuum);
             if (FindAnyObjectByType<TvSet>() != null) pool.Add(HouseEventKind.TV);
             if (LightZone.All.Count > 0) pool.Add(HouseEventKind.LightOn);
+            if (FindAnyObjectByType<WindowWind>() != null) pool.Add(HouseEventKind.Window);
             if (_last.HasValue) pool.Remove(_last.Value);
             return pool[Random.Range(0, pool.Count)];
         }
@@ -126,6 +127,10 @@ namespace RatGame.Run
                     if (tv == null) break;
                     tv.ServerStart(_balance.TvSeconds);
                     foreach (var cat in cats) cat.ServerWatchTv(tv.transform.position, tv.WatchPoint, _balance.TvSeconds);
+                    break;
+                case HouseEventKind.Window:
+                    var window = FindAnyObjectByType<WindowWind>();
+                    if (window != null) window.ServerStart(_balance.WindowSeconds);
                     break;
                 case HouseEventKind.LightOn:
                     var zone = PickDarkZone();
