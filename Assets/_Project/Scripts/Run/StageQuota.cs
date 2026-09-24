@@ -20,6 +20,9 @@ namespace RatGame.Run
         public NetworkVariable<int> Pantry = new(0);
         /// <summary>이번 클리어가 마지막 스테이지였다 — 결과 화면이 엔딩을 띄운다.</summary>
         public NetworkVariable<bool> Finished = new(false);
+        /// <summary>이번 런 누적 (엔딩 요약, 고양이 108) — 창고에 모은 식량 합, 상점에서 산 물건 수.</summary>
+        public NetworkVariable<int> RunHaul = new(0);
+        public NetworkVariable<int> RunBuys = new(0);
 
         public override void OnNetworkSpawn()
         {
@@ -32,6 +35,8 @@ namespace RatGame.Run
             StagesPerRun.Value = _balance.StagesPerRun;
             Quota.Value = _balance.StageQuota(RunSession.StageNumber);
             Pantry.Value = RunSession.Pantry;
+            RunHaul.Value = RunSession.RunHaul;
+            RunBuys.Value = RunSession.RunBuys;
             Log.Dev($"할당량: 스테이지 {StageNumber.Value}/{StagesPerRun.Value} — 식량 {Quota.Value}, 남은 식량 {Pantry.Value}");
         }
 
@@ -48,6 +53,8 @@ namespace RatGame.Run
             RunSession.AddHaul(Quota.Value);           // 가족이 먹은 만큼 = 누계 (잠정 결정 2)
             RunSession.Pantry += leftover;             // 남은 식량 = 상점 돈 (잠정 결정 1)
             Pantry.Value = RunSession.Pantry;
+            RunSession.RunHaul += haul;
+            RunHaul.Value = RunSession.RunHaul; // ResetRun(엔딩) 전에 — 결과 화면이 읽는다
             bool finished = StageNumber.Value >= StagesPerRun.Value;
             Log.Dev($"스테이지 {StageNumber.Value} 클리어 — 식량 {haul} 중 {Quota.Value} 먹음, 남은 식량 +{leftover} = {RunSession.Pantry}{(finished ? " — 마지막 스테이지 (엔딩)" : "")}");
             Finished.Value = finished;
@@ -59,6 +66,9 @@ namespace RatGame.Run
             if (finished) RunSession.ResetRun();       // 엔딩 → 기지, 다음 런은 처음부터
             else RunSession.StageNumber++;
         }
+
+        /// <summary>호스트: 상점에서 하나 샀다 (엔딩 요약).</summary>
+        public void ServerCountBuy() { RunSession.RunBuys++; RunBuys.Value = RunSession.RunBuys; }
 
         /// <summary>상점 지갑 = 남은 식량 + 이번 초과분(창고 적립 − 할당량).</summary>
         public int Wallet(int stashed) => RunSession.Pantry + Mathf.Max(0, stashed - Quota.Value);

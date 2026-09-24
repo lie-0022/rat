@@ -103,7 +103,7 @@ public class SteamLobbyService
 | CatBrain | State, TargetClientId | enum, ulong |
 | CatSenses | SuspicionGauge (0~catChaseThreshold — HUD 의심 표시 게이지, docs/07·12) | float |
 | PlayerSkin | SkinId(스킨 Id), CustomColor(팔레트 털 색, 알파 0 = 없음) — 둘 다 소유 클라 쓰기 (docs/11) | FixedString32, Color32 |
-| StageQuota (벽 속 스테이지, 고양이 63·64) | StageNumber, StagesPerRun, Quota, Pantry, Finished (docs/09 새 루프) | int ×4, bool |
+| StageQuota (벽 속 스테이지, 고양이 63·64·108) | StageNumber, StagesPerRun, Quota, Pantry, Finished (docs/09 새 루프), RunHaul, RunBuys (이번 런 누적 — 엔딩 요약) | int ×4, bool, int ×2 |
 | StageShopCounter (목적지방, 고양이 65) | Wallet, PendingText, Closed | int, FixedString128, bool |
 | GridRoom (벽 속 방, 고양이 62·79) | OpenSides — 아래 4비트 = 이어진 면(N·E·S·W), 위 4비트 = 그중 쥐 전용 배관 면. 호스트가 스폰 전에 정함 | byte |
 | DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue, Destination (목적지 인덱스, 고양이 59), BestStage, Endings (새 루프 최고 기록, 고양이 74) | int, int, bool, double, int, int, int, int |

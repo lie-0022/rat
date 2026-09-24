@@ -27,7 +27,11 @@ namespace RatGame.Run
         /// <summary>새 루프 상점에서 산 물건 Id — 다음 맵 출발방에 놓인다(씬이 바뀌면 들고 있던 건 사라져서 "택배"로).</summary>
         public static readonly System.Collections.Generic.List<string> PendingItems = new();
 
-        public static void ResetRun() { StageNumber = 1; Pantry = 0; PendingItems.Clear(); }
+        /// <summary>이번 런 누적 — 엔딩 화면 요약 (고양이 108): 창고에 모은 식량 합, 상점에서 산 물건 수.</summary>
+        public static int RunHaul { get; set; }
+        public static int RunBuys { get; set; }
+
+        public static void ResetRun() { StageNumber = 1; Pantry = 0; PendingItems.Clear(); RunHaul = 0; RunBuys = 0; }
 
         /// <summary>귀환 정산분을 누계에 더하고 바로 저장.</summary>
         public static void AddHaul(int haul)

@@ -86,6 +86,7 @@ namespace RatGame.World
             if (run.Phase.Value != RunPhase.StageActive) { ResultClientRpc(false, "지금은 살 수 없어요", reply); return; }
             var entry = _shop.Entries[index];
             if (!quota.ServerTrySpend(run, entry.Price, out string reason)) { ResultClientRpc(false, reason, reply); return; }
+            quota.ServerCountBuy(); // 엔딩 요약 (고양이 108)
             RunSession.PendingItems.Add(entry.Id);
             Log.Dev($"상점: client {buyer}가 {entry.DisplayName}({entry.Price}) — 남은 식량 {RunSession.Pantry}, 창고 {run.StashedValue.Value}, 택배 {RunSession.PendingItems.Count}");
             ResultClientRpc(true, $"{entry.DisplayName} 샀어요 — 다음 맵 출발방에", reply);

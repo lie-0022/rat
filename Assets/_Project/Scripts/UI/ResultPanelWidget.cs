@@ -82,7 +82,7 @@ namespace RatGame.UI
             {
                 // 엔딩 (docs/09 새 루프 — 짧은 이야기, 스토리는 기획이 채운다)
                 SetText(_title, "배불리 겨울을 났다!");
-                SetText(_subtitle, $"스테이지 {quota.StagesPerRun.Value}개를 모두 넘어 가족이 굶지 않았어요 — 엔딩");
+                SetText(_subtitle, $"스테이지 {quota.StagesPerRun.Value}개를 모두 넘어 가족이 굶지 않았어요 — 엔딩\n이번 런: 모은 식량 {quota.RunHaul.Value} · 상점에서 산 물건 {quota.RunBuys.Value}개"); // 요약 (고양이 108)
             }
             else
             {
@@ -102,6 +102,9 @@ namespace RatGame.UI
         {
             int stashed = run.StashedValue.Value, carried = run.ResultCarriedValue.Value;
             SetText(_stashedText, stashed.ToString());
+            // 줄 이름표 — 벽 속은 목적지 창고 (고양이 96 말투와 같게, 프리팹 글자는 창고 맵 기준)
+            var label = _stashedText.transform.parent.Find("Label");
+            if (label != null) SetText(label.GetComponent<TMP_Text>(), run.GetComponent<StageQuota>() != null ? "창고 적립" : "쥐구멍 적립");
             SetText(_carriedText, returned ? carried.ToString() : "—");
             SetText(_haulLabel, returned ? "이번 수확" : "잃은 적립");
             SetText(_haulText, returned ? $"+{stashed + carried}" : $"-{stashed}");
