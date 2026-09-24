@@ -1,5 +1,5 @@
+using RatGame.Core;
 using RatGame.Data;
-using RatGame.UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,9 +9,10 @@ namespace RatGame.World
     public class CodexBook : NetworkBehaviour, IInteractable
     {
         [SerializeField] private ItemDatabase _database;
-        [SerializeField] private CodexPanel _panelPrefab;
 
-        private CodexPanel _panel;
+
+        /// <summary>도감 패널이 읽는 전체 목록.</summary>
+        public ItemDatabase Database => _database;
 
         public string PromptText => "도감";
         public float HoldSeconds => 0f;
@@ -19,7 +20,7 @@ namespace RatGame.World
 
         public override void OnNetworkDespawn()
         {
-            if (_panel != null) Destroy(_panel.gameObject);
+            EventBus.RaiseWorldPanelSourceGone(this);
         }
 
         public void ServerInteract(ulong clientId)
@@ -30,8 +31,7 @@ namespace RatGame.World
         [ClientRpc]
         private void OpenClientRpc(ClientRpcParams rpcParams = default)
         {
-            if (_panel == null) _panel = Instantiate(_panelPrefab);
-            _panel.Open(_database);
+            EventBus.RaiseWorldPanelRequested(WorldPanelKind.Codex, this);
         }
     }
 }

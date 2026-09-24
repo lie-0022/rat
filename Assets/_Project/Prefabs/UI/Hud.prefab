@@ -8137,6 +8137,7 @@ GameObject:
   - component: {fileID: 5310623166450933402}
   - component: {fileID: 3000643770632078725}
   - component: {fileID: 3430841215707521231}
+  - component: {fileID: 6828947681646836335}
   m_Layer: 0
   m_Name: Hud
   m_TagString: Untagged
@@ -8243,6 +8244,21 @@ MonoBehaviour:
   _holdGauge: {fileID: 6124303462849112943}
   _carryInfo: {fileID: 4712468078589990196}
   _hiddenOverlay: {fileID: 8906621369939533483}
+--- !u!114 &6828947681646836335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5994336288585783860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04bc42640a0814d2cb9cf9767de1b660, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.WorldPanelHost
+  _shopPrefab: {fileID: 6125324764225488796, guid: d6385c4d15d3b4f52aace00664eb8497, type: 3}
+  _mirrorPrefab: {fileID: 5747573621488925790, guid: 655603d74767f49bd8d63e85abf3b71e, type: 3}
+  _codexPrefab: {fileID: 3282085328299846866, guid: 78c68b739ad5b4b6599b91e44f6239af, type: 3}
 --- !u!1 &5996074192161083967
 GameObject:
   m_ObjectHideFlags: 0

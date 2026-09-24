@@ -1,4 +1,4 @@
-using RatGame.UI;
+using RatGame.Core;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,9 +7,7 @@ namespace RatGame.World
     /// <summary>기지 거울 = 스킨 선택 (docs/11). E로 열면 그 클라에만 MirrorPanel. 착용 자체는 개인(PlayerSkin 소유 클라).</summary>
     public class Mirror : NetworkBehaviour, IInteractable
     {
-        [SerializeField] private MirrorPanel _panelPrefab;
 
-        private MirrorPanel _panel;
 
         public string PromptText => "거울";
         public float HoldSeconds => 0f;
@@ -17,7 +15,7 @@ namespace RatGame.World
 
         public override void OnNetworkDespawn()
         {
-            if (_panel != null) Destroy(_panel.gameObject);
+            EventBus.RaiseWorldPanelSourceGone(this);
         }
 
         public void ServerInteract(ulong clientId)
@@ -28,8 +26,7 @@ namespace RatGame.World
         [ClientRpc]
         private void OpenClientRpc(ClientRpcParams rpcParams = default)
         {
-            if (_panel == null) _panel = Instantiate(_panelPrefab);
-            _panel.Open();
+            EventBus.RaiseWorldPanelRequested(WorldPanelKind.Mirror, this);
         }
     }
 }

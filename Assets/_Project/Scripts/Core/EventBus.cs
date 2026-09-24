@@ -6,6 +6,8 @@ namespace RatGame.Core
 {
     /// <summary>집주인 이벤트 종류 (design/cat-ideas/10). append-only — RPC로 byte 전송.</summary>
     public enum HouseEventKind : byte { CallAway, Feeding, Doorbell /* 쥐가 누른 초인종 — 부르기와 같은 부재 */, Vacuum /* 로봇청소기 */, TV /* TV 켜짐 */, LightOn /* 불 켜짐 */, Window /* 창문 바람 */ }
+    /// <summary>기지 오브젝트가 여는 패널 종류 (규칙 3 — World는 UI 타입을 모른다).</summary>
+    public enum WorldPanelKind : byte { Shop, Mirror, Codex }
     public enum HouseEventPhase : byte { Warn, Start, End }
     /// <summary>고양이 루틴 예고 소리 (design/cat-ideas/02). append-only — RPC로 byte 전송.</summary>
     public enum CatCueKind : byte { Food, Litter, Sun, Bed, Water, Ambush, KittenCall }
@@ -43,6 +45,12 @@ namespace RatGame.Core
         public static event Action<CatCueKind, UnityEngine.Vector3> CatCue;
         /// <summary>큰 소음 파문 (docs/06 클라 시각화) — 모든 클라.</summary>
         public static event Action<UnityEngine.Vector3, float /*loudness*/> NoiseRipple;
+        /// <summary>기지 오브젝트가 "이 클라에 패널을 열어 달라" (자판기·거울·도감 — 규칙 3, 2026-09-24 고양이 52). source = 그 오브젝트.</summary>
+        public static event Action<WorldPanelKind, UnityEngine.Object> WorldPanelRequested;
+        /// <summary>패널을 연 오브젝트가 사라졌다(씬 전환) — 그 패널을 닫는다.</summary>
+        public static event Action<UnityEngine.Object> WorldPanelSourceGone;
+        /// <summary>상점 구매 결과 (구매한 클라).</summary>
+        public static event Action<bool, string> ShopPurchaseResult;
         /// <summary>내가 치즈를 먹었다 (소유 클라, 회복량).</summary>
         public static event Action<float> CheeseEaten;
 
@@ -61,6 +69,9 @@ namespace RatGame.Core
         public static void RaiseHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEvent?.Invoke(kind, phase);
         public static void RaiseNoiseRipple(UnityEngine.Vector3 pos, float loudness) => NoiseRipple?.Invoke(pos, loudness);
         public static void RaiseCheeseEaten(float amount) => CheeseEaten?.Invoke(amount);
+        public static void RaiseWorldPanelRequested(WorldPanelKind kind, UnityEngine.Object source) => WorldPanelRequested?.Invoke(kind, source);
+        public static void RaiseWorldPanelSourceGone(UnityEngine.Object source) => WorldPanelSourceGone?.Invoke(source);
+        public static void RaiseShopPurchaseResult(bool ok, string message) => ShopPurchaseResult?.Invoke(ok, message);
         public static void RaiseCatCue(CatCueKind kind, UnityEngine.Vector3 catPos) => CatCue?.Invoke(kind, catPos);
     }
 }

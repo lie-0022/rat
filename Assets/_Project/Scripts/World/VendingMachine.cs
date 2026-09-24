@@ -3,7 +3,6 @@ using RatGame.Data;
 using RatGame.Meta;
 using RatGame.Player;
 using RatGame.Run;
-using RatGame.UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -16,12 +15,9 @@ namespace RatGame.World
     public class VendingMachine : NetworkBehaviour, IInteractable
     {
         [SerializeField] private UpgradeSO[] _upgrades;
-        [SerializeField] private ShopPanel _panelPrefab;
 
         public NetworkVariable<int> HaulTotal = new(0);
         public NetworkVariable<UpgradeLevels> Levels = new();
-
-        private ShopPanel _panel;
 
         public UpgradeSO[] Upgrades => _upgrades;
         public string PromptText => "상점";
@@ -37,7 +33,7 @@ namespace RatGame.World
 
         public override void OnNetworkDespawn()
         {
-            if (_panel != null) Destroy(_panel.gameObject);
+            EventBus.RaiseWorldPanelSourceGone(this); // 열린 패널 닫기 — UI가 한다 (규칙 3)
         }
 
         private void Update()
@@ -60,8 +56,7 @@ namespace RatGame.World
         [ClientRpc]
         private void OpenShopClientRpc(ClientRpcParams rpcParams = default)
         {
-            if (_panel == null) _panel = Instantiate(_panelPrefab);
-            _panel.Open(this);
+            EventBus.RaiseWorldPanelRequested(WorldPanelKind.Shop, this);
         }
 
         /// <summary>패널 → 호스트: index 항목 한 레벨 구매.</summary>
@@ -92,7 +87,7 @@ namespace RatGame.World
         [ClientRpc]
         private void PurchaseResultClientRpc(bool ok, string message, ClientRpcParams rpcParams = default)
         {
-            if (_panel != null) _panel.ShowMessage(ok, message);
+            EventBus.RaiseShopPurchaseResult(ok, message);
         }
     }
 }
