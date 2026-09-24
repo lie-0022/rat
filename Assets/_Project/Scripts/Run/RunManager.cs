@@ -57,6 +57,10 @@ namespace RatGame.Run
             _returnZone = FindFirstObjectByType<DepositZone>();
             if (_returnZone == null) Log.Dev("RunManager: 쥐구멍(DepositZone)이 없어 귀환할 수 없음");
             EventBus.PlayerDowned += OnPlayerDowned;
+            // 경계도 디렉터 — 호스트 전용 계산기라 네트워크 컴포넌트가 아니다 (design/cat-ideas/12)
+            var director = GetComponent<RunDirector>();
+            if (director == null) director = gameObject.AddComponent<RunDirector>();
+            director.Init(_balance, this);
             // 기지 발판으로 들어온 경우: 전원이 씬 로드를 끝내면 시작 위치로 옮기고 자동 출발.
             // 에디터에서 스테이지 씬을 직접 플레이하면 로드 이벤트가 없어 Ready로 대기 (개발용 Enter)
             if (RunSession.DepartPending)

@@ -157,6 +157,7 @@ namespace RatGame.AI
             if (!IsSpawned || _spots == null) return; // 자동 부트 등 스폰 전 프레임 가드
             TickMemory();
             CheckSlip(); // 달리다 비누를 밟으면 어떤 상태든 미끄러진다 (design/cat-ideas/11)
+            TickDirectorHints();
             switch (State.Value)
             {
                 case CatState.Sleep: TickSleep(); break;
@@ -180,7 +181,9 @@ namespace RatGame.AI
             Log.Dev($"고양이 [{name}]: {State.Value} → {next}");
             if (State.Value == CatState.Toy) ExitToy(); // 잡힌 쥐를 Pinned로 남기지 않게
             if (State.Value == CatState.Blunder) ExitBlunder();
+            var prevState = State.Value;
             State.Value = next;
+            RaiseStateChanged(prevState, next); // 경계도 디렉터 긴장 입력
             _senses.SensitivityMultiplier = next == CatState.Sleep ? _balance.CatSleepSenseMultiplier : 1f;
             if (next != CatState.Patrol) _dwelling = false;
             if (next != CatState.Sleep) SleepPhase.Value = CatSleepPhase.None;
@@ -191,7 +194,7 @@ namespace RatGame.AI
             {
                 case CatState.Sleep:
                     _movement.Stop();
-                    _sleepUntil = Time.time + _balance.CatBedSleepSeconds * SleepDurMul;
+                    _sleepUntil = Time.time + _balance.CatBedSleepSeconds * SleepDurMul * DirSleepMul; // 디렉터 Build-up이면 짧게
                     EnterSleepPhase(CatSleepPhase.Light);
                     break;
                 case CatState.Patrol: _waitUntil = 0f; _dwelling = false; break;
@@ -334,6 +337,7 @@ namespace RatGame.AI
         // 다음 스팟: 가중치 랜덤, 최근 n개 제외 (스팟이 적으면 제외 목록을 줄인다)
         private void GoToNextSpot()
         {
+            if (TryFinaleHoleVisit()) return; // 귀환 카운트다운 — 쥐구멍 쪽 (design/cat-ideas/12)
             if (TryGoToMemorySpot()) return; // 가끔 기억 칸에 들른다 (design/cat-ideas/05)
             int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, _spots.Length - 1);
             while (_recentSpots.Count > avoid) _recentSpots.RemoveAt(0);
@@ -356,7 +360,7 @@ namespace RatGame.AI
         // 성격이 잠자리·관찰점 선호를 바꾼다 (design/cat-ideas/01)
         private float SpotWeight(int i)
         {
-            float w = _spots[i].Weight;
+            float w = _spots[i].Weight * DirSpotWeightMul(_spots[i].Type); // 디렉터 Relief면 루틴 스팟 쪽으로
             var p = Personality;
             if (p == null) return w;
             return _spots[i].Type switch
@@ -378,13 +382,13 @@ namespace RatGame.AI
                     SetState(CatState.Sleep);
                     return;
                 case CatSpotType.Food:
-                    Dwell(_balance.CatSpotFoodSeconds, _balance.CatSpotFoodSense); return;
+                    Dwell(_balance.CatSpotFoodSeconds * DirRoutineDwellMul, _balance.CatSpotFoodSense); return;
                 case CatSpotType.Sun:
-                    Dwell(_balance.CatSpotSunSeconds, _balance.CatSpotSunSense); return;
+                    Dwell(_balance.CatSpotSunSeconds * DirRoutineDwellMul, _balance.CatSpotSunSense); return;
                 case CatSpotType.Groom:
-                    Dwell(_balance.CatSpotGroomSeconds, _balance.CatSpotGroomSense); return;
+                    Dwell(_balance.CatSpotGroomSeconds * DirRoutineDwellMul, _balance.CatSpotGroomSense); return;
                 default:
-                    Dwell(Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y) * LookDwellMul, 1f); return;
+                    Dwell(Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y) * LookDwellMul * DirLookDwellMul, 1f); return;
             }
         }
 

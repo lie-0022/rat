@@ -216,6 +216,28 @@ namespace RatGame.Data
         [SerializeField] private float _catWobbleSeconds = 10f;          // 캣닢 뒤 비틀거림
         [SerializeField] private float _catWobbleSpeedMul = 0.5f;
 
+        [Header("경계도 디렉터 (design/cat-ideas/12) — 고양이 감각 수치는 안 건드린다")]
+        [SerializeField] private float _directorTickSeconds = 10f;
+        [SerializeField] private float _tensionSuspicious = 10f;
+        [SerializeField] private float _tensionChase = 25f;
+        [SerializeField] private float _tensionToy = 20f;
+        [SerializeField] private float _tensionDown = 40f;
+        [SerializeField] private float _tensionNoise = 5f;
+        [SerializeField] private float _tensionNoiseMin = 40f;
+        [SerializeField] private float _tensionDecayPerSec = 1f;
+        [SerializeField] private float _buildupThreshold = 25f;          // 긴장이 이 아래이고
+        [SerializeField] private float _buildupQuietSeconds = 60f;       // 마지막 위기(추격·다운) 뒤 이만큼 → Build-up
+        [SerializeField] private float _reliefThreshold = 70f;
+        [SerializeField] private Vector2 _reliefSecondsRange = new(20f, 40f);
+        [SerializeField] private float _buildupSleepMul = 0.7f;          // Build-up·Finale: 잠 짧게
+        [SerializeField] private float _buildupDwellMul = 0.6f;          // Look 머무름 짧게 (촘촘한 순찰)
+        [SerializeField] private float _buildupMemoryBonus = 0.3f;       // 기억 칸 방문 확률 +
+        [SerializeField] private float _reliefRoutineWeightMul = 4f;     // Relief: Groom·Sun·Bed 스팟 가중치 ×
+        [SerializeField] private float _reliefLookWeightMul = 0.3f;
+        [SerializeField] private float _reliefDwellMul = 1.5f;           // 루틴 머무름 ×
+        [SerializeField, Range(0f, 1f)] private float _finaleHoleBias = 0.6f; // Finale: 순찰 목적지를 쥐구멍 근처로
+        [SerializeField] private float _finaleHoleRadius = 4f;
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -415,6 +437,26 @@ namespace RatGame.Data
         public float CatStartleSeconds => _catStartleSeconds;
         public float CatWobbleSeconds => _catWobbleSeconds;
         public float CatWobbleSpeedMul => _catWobbleSpeedMul;
+        public float DirectorTickSeconds => _directorTickSeconds;
+        public float TensionSuspicious => _tensionSuspicious;
+        public float TensionChase => _tensionChase;
+        public float TensionToy => _tensionToy;
+        public float TensionDown => _tensionDown;
+        public float TensionNoise => _tensionNoise;
+        public float TensionNoiseMin => _tensionNoiseMin;
+        public float TensionDecayPerSec => _tensionDecayPerSec;
+        public float BuildupThreshold => _buildupThreshold;
+        public float BuildupQuietSeconds => _buildupQuietSeconds;
+        public float ReliefThreshold => _reliefThreshold;
+        public Vector2 ReliefSecondsRange => _reliefSecondsRange;
+        public float BuildupSleepMul => _buildupSleepMul;
+        public float BuildupDwellMul => _buildupDwellMul;
+        public float BuildupMemoryBonus => _buildupMemoryBonus;
+        public float ReliefRoutineWeightMul => _reliefRoutineWeightMul;
+        public float ReliefLookWeightMul => _reliefLookWeightMul;
+        public float ReliefDwellMul => _reliefDwellMul;
+        public float FinaleHoleBias => _finaleHoleBias;
+        public float FinaleHoleRadius => _finaleHoleRadius;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

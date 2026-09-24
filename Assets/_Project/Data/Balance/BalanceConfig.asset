@@ -169,6 +169,37 @@ MonoBehaviour:
   _catToyYawnSeconds: 2
   _catToyResumeWindow: 10
   _catToyBoredIgnoreSeconds: 6
+  _catSlipMinSpeed: 4
+  _catSlipDetectRadius: 0.7
+  _catSlipDistance: 3
+  _catSlipSeconds: 0.6
+  _catSlipStunSeconds: 2
+  _catSlipRecoverSeconds: 0.8
+  _catSlipCooldown: 4
+  _catStartleRadius: 2.5
+  _catStartleSeconds: 1.5
+  _catWobbleSeconds: 10
+  _catWobbleSpeedMul: 0.5
+  _directorTickSeconds: 10
+  _tensionSuspicious: 10
+  _tensionChase: 25
+  _tensionToy: 20
+  _tensionDown: 40
+  _tensionNoise: 5
+  _tensionNoiseMin: 40
+  _tensionDecayPerSec: 1
+  _buildupThreshold: 25
+  _buildupQuietSeconds: 60
+  _reliefThreshold: 70
+  _reliefSecondsRange: {x: 20, y: 40}
+  _buildupSleepMul: 0.7
+  _buildupDwellMul: 0.6
+  _buildupMemoryBonus: 0.3
+  _reliefRoutineWeightMul: 4
+  _reliefLookWeightMul: 0.3
+  _reliefDwellMul: 1.5
+  _finaleHoleBias: 0.6
+  _finaleHoleRadius: 4
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

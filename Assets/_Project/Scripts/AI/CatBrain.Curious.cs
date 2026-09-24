@@ -36,7 +36,7 @@ namespace RatGame.AI
         private bool CheckCuriosity()
         {
             var item = _senses.CuriosityTarget;
-            if (item == null) return false;
+            if (item == null || DirIgnoreCuriosity) return false; // 귀환 카운트다운엔 안 속는다
             _curiousItem = item;
             _curiousRb = item.GetComponent<Rigidbody>();
             SetState(CatState.Curious);

@@ -111,3 +111,22 @@ public struct RunResult
 | departCountdownSeconds (기지 발판 전원 집합 후 출발까지) | 3 s |
 | returnCountdownSeconds (전원 집합 후 귀환까지) | 3 s |
 | resultScreenSeconds (결과 화면 표시) | 8 s |
+
+## 경계도 디렉터 (2026-09-24, `Run/RunDirector`, design/cat-ideas/12)
+
+런의 긴장 곡선을 조절하는 보이지 않는 감독. 호스트 전용 MonoBehaviour — RunManager가 서버 스폰 때 런타임에 붙인다(프리팹·싱글톤 추가 없음). 표시 없음(고양이 연출로만 읽힌다).
+
+- **긴장 0~100**: 고양이 Suspicious +10 · Chase +25 · Toy +20, 쥐 다운 +40, 소음 ≥40 +5. 초당 -1. 추격·놀이·다운 = "위기" 시각.
+- **10s마다 판단**: Phase Returning → Finale / Relief 진행 중(20~40s)이면 유지 / 긴장 ≥70 → Relief / 긴장 <25 이고 마지막 위기 뒤 60s → Build-up / 그 밖 Calm.
+- 손잡이는 docs/07 "경계도 디렉터 손잡이" 표.
+
+| 수치 (BalanceConfigSO) | 값 |
+|---|---|
+| directorTickSeconds | 10 |
+| tensionSuspicious / Chase / Toy / Down / Noise | 10 / 25 / 20 / 40 / 5 (소음 ≥40) |
+| tensionDecayPerSec | 1 |
+| buildupThreshold / buildupQuietSeconds | 25 / 60 s |
+| reliefThreshold / reliefSecondsRange | 70 / 20~40 s |
+| buildupSleepMul / DwellMul / MemoryBonus | 0.7 / 0.6 / +0.3 |
+| reliefRoutineWeightMul / LookWeightMul / DwellMul | 4 / 0.3 / 1.5 |
+| finaleHoleBias / Radius | 0.6 / 4 m |

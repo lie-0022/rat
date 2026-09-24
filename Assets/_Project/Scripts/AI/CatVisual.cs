@@ -33,6 +33,7 @@ namespace RatGame.AI
         private Quaternion _visualBaseRot = Quaternion.identity;
         private byte _lastPawTick;
         private CatBlunderKind _lastBlunder;
+        private bool _lastAlert;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
 
         private void Awake()
@@ -81,6 +82,7 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
+                    else if (state == CatState.Patrol && _brain.Alert.Value) tailSwing = Mathf.Sin(t * 7f) * 22f; // 예민 — 꼬리가 빠르다
                     else if (state == CatState.Blunder)
                     {
                         switch (_brain.BlunderKind.Value)
@@ -98,6 +100,11 @@ namespace RatGame.AI
                     break;
             }
             if (_tail != null) _tail.localRotation = Quaternion.Euler(0f, tailSwing, 20f);
+            if (_brain.Alert.Value != _lastAlert)
+            {
+                _lastAlert = _brain.Alert.Value;
+                RatGame.Core.Log.Dev($"고양이 예민: {_lastAlert}"); // 2인 검증용
+            }
             if (_brain.BlunderKind.Value != _lastBlunder)
             {
                 _lastBlunder = _brain.BlunderKind.Value;

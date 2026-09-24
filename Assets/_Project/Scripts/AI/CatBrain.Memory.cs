@@ -113,7 +113,7 @@ namespace RatGame.AI
         private bool TryGoToMemorySpot()
         {
             if (_lastPickWasMemory) { _lastPickWasMemory = false; return false; }
-            if (Random.value >= _balance.CatMemoryPatrolChance) return false;
+            if (Random.value >= _balance.CatMemoryPatrolChance + DirMemoryBonus) return false; // 디렉터 Build-up이면 더 자주
             float best = _balance.CatMemoryMinHeat;
             bool found = false;
             foreach (var kv in _heat)

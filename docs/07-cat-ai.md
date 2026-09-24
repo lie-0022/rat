@@ -85,6 +85,16 @@ foreach player(Active만):
   - 표시: 나를 쫓는 고양이가 나를 찍었으면 SuspicionIndicator "!!", 팀 상태 "찍힘" 칩(Danger).
 - 귀속: 충돌·파손 소음은 `NoiseEvent.Source`가 비어 있고(0 = 환경) 호스트 id도 0이라 앙심에서 제외. 유인 속음 +20·뇌물 -50은 다음 단계.
 
+## 경계도 디렉터 손잡이 (2026-09-24, `Run/RunDirector` + `AI/CatBrain.Director.cs`, design/cat-ideas/12)
+
+디렉터 모드를 읽어 **관찰로 알 수 있는 것만** 바꾼다 — 시야·청각·게이지 배율은 절대 안 건드린다(공정성).
+
+| 모드 | 손잡이 |
+|---|---|
+| Build-up·Finale | 잠 길이 ×0.7, Look 머무름 ×0.6, 기억 칸 방문 확률 +0.3, `Alert` NV → 순찰 중 꼬리 빠르게(예민) |
+| Relief | 다음 스팟 가중치 Groom·Sun·Bed ×4 · Look ×0.3, 루틴 머무름 ×1.5 |
+| Finale | 순찰 목적지 60%를 쥐구멍 4m 안 랜덤 지점(도착하면 킁킁 1.5s), 호기심 무시 |
+
 ## 성격 프로필 (2026-09-24, `Data/CatPersonalitySO`, design/cat-ideas/01)
 
 FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에서 랜덤(`PersonalityIndex` NV, `ServerSetPersonality`로 지정 가능). 몸 색이 그레이박스 표현.
