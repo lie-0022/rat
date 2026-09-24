@@ -98,8 +98,14 @@ namespace RatGame.UI
                 {
                     if (_snapshotted && !p.IsOwner) Show($"{name}가 들어왔어요", UiColorRole.Positive);
                 }
+                else if (prev != state && p.IsOwner)
+                {
+                    // 고양이가 놓아줬다 — 도망칠 창 (design/cat-ideas/04)
+                    if (prev == ConditionState.Pinned && state == ConditionState.Active) Show("풀려났다! 지금 도망쳐!", UiColorRole.Warning);
+                }
                 else if (prev != state && !p.IsOwner)
                 {
+                    if (state == ConditionState.Pinned) Show($"{name}가 고양이에게 잡혔어요! 눈에 띄어 고양이를 떼어 내요", UiColorRole.Danger);
                     if (state == ConditionState.Downed) Show($"{name}가 다운됐어요! 쥐구멍으로 옮겨 주세요", UiColorRole.Danger);
                     else if (state == ConditionState.Trapped) Show($"{name}가 끈끈이에 붙었어요! [E] 길게 눌러 구출", UiColorRole.Warning);
                 }

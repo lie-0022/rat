@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.Player
 {
-    public enum ConditionState { Active, Stunned, Trapped, Downed, Hidden /* 숨을 곳 안 (2026-09-24, design/cat-ideas/14) — append-only */ }
+    public enum ConditionState { Active, Stunned, Trapped, Downed, Hidden /* 숨을 곳 안 (2026-09-24, design/cat-ideas/14) */, Pinned /* 고양이가 가지고 노는 중 (2026-09-24, design/cat-ideas/04) — append-only */ }
 
     /// <summary>
     /// 상태이상 (docs/04, 호스트 권한). Stunned=시간 경과 해제, Trapped=동료 Interact 1.5s,
@@ -46,7 +46,7 @@ namespace RatGame.Player
             if (next == ConditionState.Stunned)
                 _stunEndTime = Time.time + _balance.StunSeconds;
 
-            if (next == ConditionState.Downed || next == ConditionState.Trapped)
+            if (next == ConditionState.Downed || next == ConditionState.Trapped || next == ConditionState.Pinned)
                 GetComponent<PlayerCarryController>()?.ServerForceDrop();
 
             if (prev == ConditionState.Downed && next == ConditionState.Active)

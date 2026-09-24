@@ -158,6 +158,17 @@ MonoBehaviour:
   _catScentMinStrength: 8
   _catTrackSpeed: 3
   _catTrackSniffSeconds: 0.5
+  _catToySeconds: 30
+  _catToyInterest: 100
+  _catToyLoopDrain: 35
+  _catToyDistractDrain: 40
+  _catToyBatSeconds: 2
+  _catToyNudge: 0.4
+  _catToyReleaseSeconds: 3
+  _catToyEscapeDistance: 2
+  _catToyYawnSeconds: 2
+  _catToyResumeWindow: 10
+  _catToyBoredIgnoreSeconds: 6
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

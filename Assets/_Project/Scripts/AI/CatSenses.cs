@@ -44,6 +44,11 @@ namespace RatGame.AI
         public System.Func<ulong, float> TargetGainMultiplier { get; set; }
         /// <summary>문턱을 넘어 들린 소음 (기억·앙심 입력). heard = 배율 적용 후 크기.</summary>
         public event System.Action<NoiseEvent, float> Heard;
+
+        // 잠시 못 본 척 (가지고 놀다 질린 쥐 — 놓아주자마자 다시 덮치지 않게)
+        private readonly System.Collections.Generic.Dictionary<ulong, float> _ignoreUntil = new();
+        public void IgnorePlayer(ulong clientId, float until) => _ignoreUntil[clientId] = until;
+        public bool IsIgnoring(ulong clientId) => _ignoreUntil.TryGetValue(clientId, out float t) && Time.time < t;
         private float _nextItemScan;
 
         private float _nextVisionTick;
@@ -89,6 +94,7 @@ namespace RatGame.AI
                 if (playerObj == null) continue;
                 var condition = playerObj.GetComponent<PlayerCondition>();
                 if (condition == null || condition.State.Value != ConditionState.Active) continue;
+                if (IsIgnoring(condition.OwnerClientId)) continue;
 
                 Vector3 toPlayer = playerObj.transform.position - transform.position;
                 float dist = toPlayer.magnitude;

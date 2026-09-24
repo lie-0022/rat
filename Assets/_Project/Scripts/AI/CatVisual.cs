@@ -55,6 +55,7 @@ namespace RatGame.AI
                 CatState.Track => Track,
                 CatState.Chase => Chase,
                 CatState.Capture => Capture,
+                CatState.Toy => Capture,
                 CatState.Distracted => Distracted,
                 _ => baseColor
             };
@@ -76,6 +77,7 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
+                    else if (state == CatState.Toy) tailSwing = Mathf.Sin(t * 2f) * 45f; // 놀이 — 꼬리 느리고 크게
                     else if (_brain.Sniffing.Value || state == CatState.Track) { tailSwing = Mathf.Sin(t * 3f) * 20f; sink = 0.06f + 0.03f * Mathf.Sin(t * 8f); } // 기억 칸 킁킁
                     else if (state == CatState.Curious) tailSwing = Mathf.Sin(t * 18f) * 10f; // 꼬리 곧추 파르르
                     else if (state == CatState.Search) { tailSwing = Mathf.Sin(t * 3f) * 20f; sink = 0.06f + 0.03f * Mathf.Sin(t * 8f); } // 코를 바닥에 대고 킁킁

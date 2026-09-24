@@ -190,6 +190,19 @@ namespace RatGame.Data
         [SerializeField] private float _catTrackSpeed = 3f;
         [SerializeField] private float _catTrackSniffSeconds = 0.5f;     // 자국마다 킁킁
 
+        [Header("가지고 놀기 (design/cat-ideas/04)")]
+        [SerializeField] private float _catToySeconds = 30f;             // 이 안에 못 벗어나면 진짜 다운
+        [SerializeField] private float _catToyInterest = 100f;
+        [SerializeField] private float _catToyLoopDrain = 35f;           // 툭툭 한 번 끝날 때마다 관심 -
+        [SerializeField] private float _catToyDistractDrain = 40f;       // 즉시 조사 소음(깨짐·찍찍·함정) 관심 -
+        [SerializeField] private float _catToyBatSeconds = 2f;
+        [SerializeField] private float _catToyNudge = 0.4f;              // 앞발로 칠 때 잡힌 쥐가 밀리는 거리 (m)
+        [SerializeField] private float _catToyReleaseSeconds = 3f;       // 놓아주는 창
+        [SerializeField] private float _catToyEscapeDistance = 2f;       // 놓아준 자리에서 이만큼 벗어나면 도주 → 추격
+        [SerializeField] private float _catToyYawnSeconds = 2f;
+        [SerializeField] private float _catToyResumeWindow = 10f;        // 다시 잡으면 관심·남은 시간 이어서
+        [SerializeField] private float _catToyBoredIgnoreSeconds = 6f;   // 질려서 놓아준 쥐는 하품 뒤 이만큼 못 본 척
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -367,6 +380,17 @@ namespace RatGame.Data
         public float CatScentMinStrength => _catScentMinStrength;
         public float CatTrackSpeed => _catTrackSpeed;
         public float CatTrackSniffSeconds => _catTrackSniffSeconds;
+        public float CatToySeconds => _catToySeconds;
+        public float CatToyInterest => _catToyInterest;
+        public float CatToyLoopDrain => _catToyLoopDrain;
+        public float CatToyDistractDrain => _catToyDistractDrain;
+        public float CatToyBatSeconds => _catToyBatSeconds;
+        public float CatToyNudge => _catToyNudge;
+        public float CatToyReleaseSeconds => _catToyReleaseSeconds;
+        public float CatToyEscapeDistance => _catToyEscapeDistance;
+        public float CatToyYawnSeconds => _catToyYawnSeconds;
+        public float CatToyResumeWindow => _catToyResumeWindow;
+        public float CatToyBoredIgnoreSeconds => _catToyBoredIgnoreSeconds;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;
