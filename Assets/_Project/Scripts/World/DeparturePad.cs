@@ -29,6 +29,9 @@ namespace RatGame.World
         public NetworkVariable<int> TotalValue = new(0);
         /// <summary>출발할 스테이지 (_stageScenes 인덱스). 클라도 게시판·RunBar에 이름을 띄운다.</summary>
         public NetworkVariable<int> Destination = new(0);
+        /// <summary>새 루프 최고 기록 (저장값 복제 — 고양이 74): 최고 스테이지, 엔딩 횟수.</summary>
+        public NetworkVariable<int> BestStage = new(0);
+        public NetworkVariable<int> Endings = new(0);
 
         public string DestinationName => _stageNames != null && Destination.Value >= 0 && Destination.Value < _stageNames.Length ? _stageNames[Destination.Value] : "?";
 
@@ -38,8 +41,14 @@ namespace RatGame.World
         public override void OnNetworkSpawn()
         {
             _box = GetComponent<BoxCollider>();
-            if (!IsServer) { enabled = false; return; } // 클라는 NetworkVariable만 읽는다
+            if (!IsServer)
+            {
+                Log.Dev($"기지 연출: 누계 {TotalValue.Value}, 최고 스테이지 {BestStage.Value}, 엔딩 {Endings.Value}"); // 2인 검증용
+                enabled = false; return; // 클라는 NetworkVariable만 읽는다
+            }
             TotalValue.Value = RunSession.TotalValue;
+            BestStage.Value = SaveService.Data.BestStage;
+            Endings.Value = SaveService.Data.Endings;
             Destination.Value = Mathf.Clamp(RunSession.StageChoice, 0, _stageScenes.Length - 1);
             NetworkManager.SceneManager.OnLoadEventCompleted += OnBaseLoaded;
         }

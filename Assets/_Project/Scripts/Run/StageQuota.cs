@@ -47,6 +47,11 @@ namespace RatGame.Run
             bool finished = StageNumber.Value >= StagesPerRun.Value;
             Log.Dev($"스테이지 {StageNumber.Value} 클리어 — 식량 {haul} 중 {Quota.Value} 먹음, 남은 식량 +{leftover} = {RunSession.Pantry}{(finished ? " — 마지막 스테이지 (엔딩)" : "")}");
             Finished.Value = finished;
+            // 최고 기록 (고양이 74) — 호스트 저장
+            bool saveRecord = false;
+            if (StageNumber.Value > SaveService.Data.BestStage) { SaveService.Data.BestStage = StageNumber.Value; saveRecord = true; }
+            if (finished) { SaveService.Data.Endings++; saveRecord = true; }
+            if (saveRecord) { SaveService.Save(); Log.Dev($"기록: 최고 스테이지 {SaveService.Data.BestStage}, 엔딩 {SaveService.Data.Endings}번"); }
             if (finished) RunSession.ResetRun();       // 엔딩 → 기지, 다음 런은 처음부터
             else RunSession.StageNumber++;
         }

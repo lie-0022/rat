@@ -109,7 +109,8 @@ namespace RatGame.UI
             else
                 SetText(_mainText, $"출발 발판에 모이면 출발   {_pad.ReadyCount.Value}/{_pad.NeededCount.Value}");
 
-            ShowSub($"누계 {_pad.TotalValue.Value}   목적지 {_pad.DestinationName}", false);
+            string record = _pad.BestStage.Value > 0 ? $"   최고 스테이지 {_pad.BestStage.Value}{(_pad.Endings.Value > 0 ? $" · 엔딩 {_pad.Endings.Value}번" : "")}" : "";
+            ShowSub($"누계 {_pad.TotalValue.Value}   목적지 {_pad.DestinationName}{record}", false);
             SetVisible(true, false, true);
         }
 

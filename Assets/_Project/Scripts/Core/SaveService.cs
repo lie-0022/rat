@@ -17,6 +17,9 @@ namespace RatGame.Core
         public string EquippedSkinId = "";
         /// <summary>개인: 팔레트로 고른 털 색 "#RRGGBB" (빈 문자열 = 안 고름). 스킨과 둘 중 나중에 고른 것만 남는다.</summary>
         public string BodyColorHex = "";
+        /// <summary>팀(호스트 저장): 새 루프에서 클리어한 가장 높은 스테이지, 엔딩 본 횟수 (고양이 74).</summary>
+        public int BestStage;
+        public int Endings;
         /// <summary>개인: 도감 해금 아이템 Id (첫 정산 시 호스트 ClientRpc → 각자 저장, docs/08).</summary>
         public System.Collections.Generic.List<string> UnlockedCodexIds = new();
     }
