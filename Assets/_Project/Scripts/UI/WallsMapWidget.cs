@@ -30,6 +30,8 @@ namespace RatGame.UI
         [SerializeField] private Color _exitColor = new(0.86f, 0.83f, 0.76f, 1f);
         [SerializeField] private Color _pipeColor = new(0.35f, 0.6f, 0.95f, 1f); // 문 선과 확 구분되게 파랑 (어두운 바탕에서 회색끼리 안 갈려서)
         [SerializeField] private Color _treasureColor = new(1f, 0.85f, 0.25f, 0.95f); // 가 본 보물방 (고양이 103)
+        [SerializeField] private Color _helpColor = new(1f, 0.2f, 0.2f, 1f); // 쓰러짐·덫·잡힘 — 구하러 갈 동료 (고양이 126)
+        [SerializeField] private float _helpBlinkHz = 3f;
 
         private GridRoom[] _rooms = new GridRoom[0];
         private GridRoom _destination;
@@ -39,6 +41,7 @@ namespace RatGame.UI
         private readonly Dictionary<ulong, UnityEngine.UI.Image> _dots = new();
         private readonly Dictionary<ulong, (Vector3 pos, float until)> _pings = new();
         private readonly Dictionary<ulong, UnityEngine.UI.Image> _pingMarks = new();
+        private readonly Dictionary<ulong, bool> _needsHelp = new();
         private Vector2 _center;
         private float _scale;
         private float _nextCheck;
@@ -100,6 +103,7 @@ namespace RatGame.UI
             foreach (var d in _pingMarks.Values) if (d != null) Destroy(d.gameObject);
             _pingMarks.Clear();
             _pings.Clear();
+            _needsHelp.Clear();
             _visited.Clear();
             _rooms = FindObjectsByType<GridRoom>(FindObjectsSortMode.None);
             if (_rooms.Length == 0) return;
@@ -148,9 +152,19 @@ namespace RatGame.UI
         private void TrackVisit()
         {
             foreach (var p in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None))
+            {
                 foreach (var r in _rooms)
                     if (r != null && Inside(r, p.transform.position)) { _visited.Add(r); break; }
+                bool help = NeedsHelp(p);
+                if (_needsHelp.TryGetValue(p.OwnerClientId, out bool was) && was == help) continue;
+                _needsHelp[p.OwnerClientId] = help;
+                if (help) Log.Dev($"지도 도움 표시: client {p.OwnerClientId} {p.State.Value}"); // 2인 검증용
+            }
         }
+
+        // 혼자선 못 빠져나오는 상태 — 동료가 가야 풀린다 (docs/04)
+        private static bool NeedsHelp(PlayerCondition p) =>
+            p.State.Value is ConditionState.Downed or ConditionState.Trapped or ConditionState.Pinned;
 
         private void UpdateDots()
         {
@@ -163,13 +177,25 @@ namespace RatGame.UI
                 {
                     dot = Instantiate(_dotTemplate, _content);
                     dot.gameObject.SetActive(true);
-                    bool me = id == myId;
-                    dot.color = me ? Color.white : PlayerVisual.ColorFor(id);
-                    dot.rectTransform.sizeDelta = Vector2.one * (me ? 18f : 14f);
                     _dots[id] = dot;
                 }
                 dot.rectTransform.anchoredPosition = (Flat(p.transform.position) - _center) * _scale;
-                if (id == myId) dot.transform.SetAsLastSibling(); // 내 점이 맨 위
+                bool me = id == myId;
+                Color baseColor = me ? Color.white : PlayerVisual.ColorFor(id);
+                if (NeedsHelp(p))
+                {
+                    // 깜빡이는 빨강 + 크게 — 지도를 펴자마자 누구를 구하러 갈지 (고양이 126)
+                    bool on = Mathf.Repeat(Time.unscaledTime * _helpBlinkHz, 1f) < 0.5f;
+                    dot.color = on ? _helpColor : baseColor;
+                    dot.rectTransform.sizeDelta = Vector2.one * 24f;
+                    dot.transform.SetAsLastSibling();
+                }
+                else
+                {
+                    dot.color = baseColor;
+                    dot.rectTransform.sizeDelta = Vector2.one * (me ? 18f : 14f);
+                    if (me) dot.transform.SetAsLastSibling(); // 내 점이 맨 위
+                }
             }
         }
 
