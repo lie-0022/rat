@@ -37,7 +37,7 @@ namespace RatGame.Net
             // 좌하단 — 좌상단은 팀 상태 HUD 자리
             var launcher = NetworkLauncher.Instance;
             bool steam = launcher != null && launcher.UsingSteam;
-            float height = steam ? 150 : 110;
+            float height = steam ? 172 : 132; // 성능 줄 한 줄 포함 (고양이 86)
             var area = new Rect(10, Screen.height - height - 10, 240, height);
             RatGame.Core.InputFocus.NoRelockGuiRect = area; // 이 패널 위 클릭은 커서 재잠금으로 먹지 않게
             GUILayout.BeginArea(area, GUI.skin.box);
@@ -60,6 +60,7 @@ namespace RatGame.Net
                     }
                 }
 
+                if (DevPerfProbe.HasData) GUILayout.Label($"FPS {1000f / DevPerfProbe.AvgMs:F0} · 평균 {DevPerfProbe.AvgMs:F1}ms · 1% {DevPerfProbe.Worst1Ms:F1}ms");
                 var run = Run.RunManager.Instance;
                 if (run != null)
                 {
