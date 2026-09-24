@@ -42,11 +42,11 @@ namespace RatGame.Editor
             {
                 new Spec { Name = "Wall_Start",  W = 8,  D = 8,  Kind = Kind.Start },
                 new Spec { Name = "Wall_Dest",   W = 10, D = 10, Kind = Kind.Destination },
-                new Spec { Name = "Wall_Small",  W = 6,  D = 6,  Spots = new[] { CatSpotType.Look }, Hides = 1 },
+                new Spec { Name = "Wall_Small",  W = 6,  D = 6,  Spots = new[] { CatSpotType.Look, CatSpotType.Door }, Hides = 1 }, // Door = 집 쪽 구멍 — 집주인이 부르면 여기로 나갔다 들어옴
                 new Spec { Name = "Wall_Medium", W = 8,  D = 8,  Spots = new[] { CatSpotType.Look, CatSpotType.Bed }, Hides = 1, Dark = true, Cat = true },
                 new Spec { Name = "Wall_Wide",   W = 12, D = 7,  Spots = new[] { CatSpotType.Look, CatSpotType.Food, CatSpotType.Sun }, Hides = 1, Dark = true, Cat = true },
                 new Spec { Name = "Wall_Tall",   W = 7,  D = 12, Spots = new[] { CatSpotType.Look, CatSpotType.Groom }, Hides = 1, Dark = true, Cat = true },
-                new Spec { Name = "Wall_Big",    W = 12, D = 12, Spots = new[] { CatSpotType.Look, CatSpotType.Bed, CatSpotType.Food }, Hides = 2, Dark = true, Cat = true },
+                new Spec { Name = "Wall_Big",    W = 12, D = 12, Spots = new[] { CatSpotType.Look, CatSpotType.Bed, CatSpotType.Food, CatSpotType.Door }, Hides = 2, Dark = true, Cat = true },
             };
             var prefabs = new Dictionary<string, GameObject>();
             foreach (var s in specs) prefabs[s.Name] = BuildRoom(s);

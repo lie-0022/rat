@@ -460,6 +460,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2988257140024573180}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1496946554188960417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3758182274374717405}
+  - component: {fileID: 5504176718279931943}
+  m_Layer: 0
+  m_Name: Spot_Door_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3758182274374717405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496946554188960417}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.55860174, z: -0, w: 0.829436}
+  m_LocalPosition: {x: 4.1699195, y: 0, z: -1.6916767}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2988257140024573180}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5504176718279931943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496946554188960417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa9921e6a6489494197c09f62896586c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.AI.CatSpot
+  _type: 10
+  _weight: 1
 --- !u!1 &1909384742113896142
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,8 +674,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2408201085205750684}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.55253124, z: 0, w: 0.8334922}
-  m_LocalPosition: {x: -4.144774, y: 0, z: -1.7523834}
+  m_LocalRotation: {x: 0, y: 0.829436, z: 0, w: 0.5586018}
+  m_LocalPosition: {x: -4.16992, y: 0, z: 1.6916761}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1148,6 +1194,7 @@ Transform:
   - {fileID: 8571937125535797787}
   - {fileID: 4077010978064218698}
   - {fileID: 2167877677823076958}
+  - {fileID: 3758182274374717405}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &3318145535217692315
@@ -1222,7 +1269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2281502911
+  GlobalObjectIdHash: 1920383502
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -1859,8 +1906,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6172325476161900868}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.44555977, z: -0, w: 0.8952522}
-  m_LocalPosition: {x: 3.5899951, y: 0, z: -2.7132885}
+  m_LocalRotation: {x: 0, y: 0.1915086, z: 0, w: 0.9814909}
+  m_LocalPosition: {x: -1.6916754, y: 0, z: -4.16992}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1967,8 +2014,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6743898002567447281}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.99809104, z: -0, w: -0.06176006}
-  m_LocalPosition: {x: 0.5547794, y: 0, z: 4.465671}
+  m_LocalRotation: {x: 0, y: 0.9814909, z: -0, w: -0.1915087}
+  m_LocalPosition: {x: 1.6916764, y: 0, z: 4.16992}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

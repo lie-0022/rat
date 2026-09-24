@@ -224,6 +224,52 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &818495665568753096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7294924906623259233}
+  - component: {fileID: 4497317524667272725}
+  m_Layer: 0
+  m_Name: Spot_Door_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7294924906623259233
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818495665568753096}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.19866937, z: -0, w: 0.9800666}
+  m_LocalPosition: {x: 0.58412766, y: 0, z: -1.3815914}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7081886207401556167}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4497317524667272725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818495665568753096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa9921e6a6489494197c09f62896586c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.AI.CatSpot
+  _type: 10
+  _weight: 1
 --- !u!1 &1500776707281353460
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,6 +578,7 @@ Transform:
   - {fileID: 6380212123632961873}
   - {fileID: 7251189851004070148}
   - {fileID: 767770530865093954}
+  - {fileID: 7294924906623259233}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &9027664507768949545
@@ -594,7 +641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 194922500
+  GlobalObjectIdHash: 1920383502
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -1231,8 +1278,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5547076121382287899}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.55253124, z: 0, w: 0.8334922}
-  m_LocalPosition: {x: -1.3815913, y: 0, z: -0.5841278}
+  m_LocalRotation: {x: 0, y: 0.9800666, z: 0, w: 0.19866933}
+  m_LocalPosition: {x: -0.58412755, y: 0, z: 1.3815914}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

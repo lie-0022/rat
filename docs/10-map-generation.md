@@ -18,6 +18,7 @@
 - **구현 (2026-09-24, 고양이 62)**: `Run/GridLayoutPlanner`(칸 그래프 — 고리가 자연히 안 생기면 빈 칸 1~3개 샛길로 닫음) · `World/GridRoom`(막음벽 4개 + `OpenSides` NV) · `Run/GridZoneLayout`(배치) · `Run/GridZoneBuilder`(네트워크 스폰·NavMesh·채우기, 식량 창고를 목적지방 Depot에) · `Run/ZonePopulator`(v1과 공유하는 채우기) · `Data/GridZoneSO`(`Zone_Walls`, 채우기 테이블은 부엌 것). 에디터: `Tools/RatGame/Zone/Create Wall Rooms`·`Create Wall Stage`(씬 `Stage_Walls`, 기지 게시판 "벽 속(생성)")·`Preview Wall Layout`·`Grid Plan Stress`.
   - 결과: 시드 2000개 실패 0·고리 93%·방 14.5개(8~23), 미리보기 겹침 0·출발→목적지 경로 OK. 플레이 한 판: 방 12·통로 12·전리품 56~60개(가치 2000~2800)·함정·숨을 곳·어둠·고양이. 2인(기지 출발): 클라 NetworkObject 109/109, 막음벽 상태 12/12 방 동기화, 두 쥐 출발방 문 쪽을 봄(오차 0°), 목적지 창고에 모이면 → 귀환 → 기지.
   - **깊이별 난이도 (고양이 66, 잠정)**: `Zone_Walls.CatCountByStage` {1,1,2,2,3}·`TrapRatioByStage` {0.4…0.8}(배열 끝을 넘으면 마지막 값), 전리품 깊은 존 보정 = 스테이지 − 1. `ZonePopulator.CatCountOverride/TrapRatioOverride`. 확인: 스테이지 1 고양이 1·함정 9/21 → 스테이지 5 고양이 3(성격 제각각)·함정 16/17, 12초 동안 셋 다 순찰로 ~20m 이동, 예외 0.
+  - **집주인 이벤트 (고양이 68)**: 벽 속 맵엔 TV·창문·청소기가 없어 부르기·밥·불 켜기(어둠 구역)만 뽑힌다(HouseEventDirector가 있는 것만 고름). 부르기용 **Door 스팟**을 소(6×6)·대(12×12) 방에 추가 — "집 쪽 구멍". 확인: 문 스팟 4개 맵에서 부르기 → 고양이가 (-41,-1) 문으로 나가 37s 뒤 다른 문(-13,-29)으로 돌아옴.
   - 시작 방향: 1인칭 시선이 몸 방향을 정해서 텔레포트 회전만으론 안 돈다 → `PlayerController.FaceClientRpc`(배치·개발 메뉴 이동 때만).
 
 | 수치 (ZoneDefinitionSO — 테마 데이터) | 기본값 |
