@@ -20,6 +20,7 @@ namespace RatGame.UI
         [SerializeField] private ThrowGaugeWidget _gauge;
         [SerializeField] private HoldGaugeWidget _holdGauge; // [E] 홀드 (구출)
         [SerializeField] private CarryInfoWidget _carryInfo; // 손에 든 물건 카드 (슬롯 그룹 안)
+        [SerializeField] private HiddenOverlayWidget _hiddenOverlay; // 숨은 동안 화면 (design/cat-ideas/14)
 
         public void Bind(PlayerCarryController carry, PlayerStamina stamina, PlayerInteractor interactor)
         {
@@ -29,6 +30,7 @@ namespace RatGame.UI
             _gauge.Bind(carry);
             if (_holdGauge != null) _holdGauge.Bind(interactor);
             if (_carryInfo != null) _carryInfo.Bind(carry);
+            if (_hiddenOverlay != null) _hiddenOverlay.Bind(carry.GetComponent<PlayerCondition>());
         }
 
         private void Update()

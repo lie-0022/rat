@@ -1,5 +1,6 @@
 using RatGame.AI;
 using RatGame.Data;
+using RatGame.World;
 using Unity.AI.Navigation;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -140,6 +141,29 @@ namespace RatGame.Editor
                 c.isStatic = true;
             }
 
+            // 숨을 곳 2개 (design/cat-ideas/14): 관찰점 A 근처 신발(1인), 상자 B 옆 빈 상자(2인). 트리거 콜라이더 — 안으로 순간이동하므로 몸이 끼지 않게
+            var hideBalance = AssetDatabase.LoadAssetAtPath<BalanceConfigSO>("Assets/_Project/Data/Balance/BalanceConfig.asset");
+            var hides = new (string name, string label, int cap, Vector3 pos, Vector3 size, Vector3 look)[]
+            {
+                ("Hide_Shoe", "신발", 1, new(3f, 0.3f, -8f),  new(0.9f, 0.6f, 2.2f), new(-1f, 0f, 0f)),
+                ("Hide_Box",  "빈 상자", 2, new(-3.5f, 0.6f, 7f), new(1.6f, 1.2f, 1.6f), new(1f, 0f, 0f)),
+            };
+            foreach (var (name, label, cap, pos, size, look) in hides)
+            {
+                if (GameObject.Find(name) != null) continue;
+                var h = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                h.name = name; h.transform.SetParent(root.transform);
+                h.transform.position = pos; h.transform.localScale = size;
+                h.transform.rotation = Quaternion.LookRotation(look);
+                h.GetComponent<BoxCollider>().isTrigger = true;
+                var r = h.GetComponent<Renderer>();
+                var mat = new Material(r.sharedMaterial) { color = new Color(0.45f, 0.3f, 0.2f) };
+                r.sharedMaterial = mat;
+                h.AddComponent<Unity.Netcode.NetworkObject>();
+                var hs = h.AddComponent<HideSpot>();
+                hs.EditorSetup(hideBalance, label, cap);
+            }
+
             if (GameObject.Find("Cat") == null)
             {
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Cat/Cat.prefab");
@@ -155,7 +179,7 @@ namespace RatGame.Editor
 
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
             UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
-            Debug.Log("[RatGame] 고양이 데모 레이아웃: 스팟 6 · 상자 4 · 고양이 1 · NavMesh 베이크");
+            Debug.Log("[RatGame] 고양이 데모 레이아웃: 스팟 6 · 상자 4 · 숨을 곳 2 · 고양이 1 · NavMesh 베이크");
         }
     }
 }

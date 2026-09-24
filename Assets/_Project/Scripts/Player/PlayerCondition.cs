@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.Player
 {
-    public enum ConditionState { Active, Stunned, Trapped, Downed }
+    public enum ConditionState { Active, Stunned, Trapped, Downed, Hidden /* 숨을 곳 안 (2026-09-24, design/cat-ideas/14) — append-only */ }
 
     /// <summary>
     /// 상태이상 (docs/04, 호스트 권한). Stunned=시간 경과 해제, Trapped=동료 Interact 1.5s,

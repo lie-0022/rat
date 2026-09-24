@@ -27,14 +27,16 @@ namespace RatGame.UI
             {
                 ConditionState.Stunned => "기절",
                 ConditionState.Trapped => "끈끈이!",
+                ConditionState.Hidden => "숨음",
                 _ => "다운"
             };
             if (_stateText.text != label) _stateText.text = label;
             if (_theme == null) return;
             // 주황 칩 위엔 어두운 글자, 빨강 칩 위엔 흰 글자 (대비)
             bool danger = state == ConditionState.Downed;
-            Color bg = _theme.GetColor(danger ? UiColorRole.Danger : UiColorRole.Warning);
-            Color fg = _theme.GetColor(danger ? UiColorRole.Text : UiColorRole.OnAccent);
+            bool calm = state == ConditionState.Hidden;
+            Color bg = _theme.GetColor(danger ? UiColorRole.Danger : calm ? UiColorRole.Secondary : UiColorRole.Warning);
+            Color fg = _theme.GetColor(danger || calm ? UiColorRole.Text : UiColorRole.OnAccent);
             if (_stateChip.color != bg) _stateChip.color = bg;
             if (_stateText.color != fg) _stateText.color = fg;
         }

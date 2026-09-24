@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -16,7 +16,7 @@ namespace RatGame.AI
     /// Distracted(유인 아이템)는 태스크 1-6에서 트리거가 생긴다 — 진입 API만 준비.
     /// 애니·사운드 연출 계약(CatAnimatorLink)은 아트 단계.
     /// </summary>
-    public class CatBrain : NetworkBehaviour
+    public partial class CatBrain : NetworkBehaviour
     {
         [SerializeField] private BalanceConfigSO _balance;
         [SerializeField] private CatPersonalitySO[] _personalities;   // 스폰 시 하나 뽑음 (비어 있으면 기본 배율 1)
@@ -82,6 +82,7 @@ namespace RatGame.AI
                 return;
             }
             CollectSpots();
+            CollectHideSpots();
             if (PersonalityIndex.Value < 0 && _personalities != null && _personalities.Length > 0)
                 ServerSetPersonality(Random.Range(0, _personalities.Length));
             else ApplyPersonality();
@@ -158,6 +159,7 @@ namespace RatGame.AI
                 case CatState.Capture: TickCapture(); break;
                 case CatState.Distracted: TickDistracted(); break;
                 case CatState.Return: TickReturn(); break;
+                case CatState.Search: TickSearch(); break;
             }
         }
 
@@ -203,6 +205,9 @@ namespace RatGame.AI
                     break;
                 case CatState.Distracted:
                     _movement.MoveTo(_distractPos, _balance.CatDistractedSpeed);
+                    break;
+                case CatState.Search:
+                    EnterSearchState();
                     break;
             }
         }
@@ -384,7 +389,8 @@ namespace RatGame.AI
 
         private void TickChase()
         {
-            if (_chaseTarget == null || _chaseTarget.State.Value != ConditionState.Active)
+            // 숨은(Hidden) 타깃은 "놓친 것"으로 다룬다 — 시야 상실 분기를 거쳐 수색으로 (design/cat-ideas/14)
+            if (_chaseTarget == null || (_chaseTarget.State.Value != ConditionState.Active && _chaseTarget.State.Value != ConditionState.Hidden))
             {
                 SetState(CatState.Return);
                 return;
@@ -442,7 +448,9 @@ namespace RatGame.AI
                     _investigatePos = _lastKnownTargetPos;
                     _chaseTarget = null;
                     _senses.ConsumeStimulus();
-                    SetState(CatState.Suspicious); // 마지막 목격점 조사 (docs/07)
+                    // 마지막 목격점 근처에 숨을 곳이 있으면 수색, 없으면 조사 (docs/07)
+                    if (TryEnterSearch(_lastKnownTargetPos)) return;
+                    SetState(CatState.Suspicious);
                     _movement.MoveTo(_investigatePos, _balance.CatSuspiciousSpeed);
                 }
             }

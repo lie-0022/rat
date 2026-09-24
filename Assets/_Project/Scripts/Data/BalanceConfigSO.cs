@@ -138,6 +138,17 @@ namespace RatGame.Data
         [SerializeField] private float _catChaseOvershootMeters = 3f;      // 시야를 잃으면 마지막 진행 방향으로 이만큼 더 가 본다
         [SerializeField, Range(0.2f, 1f)] private float _catChaseCornerSpeedMul = 0.55f; // 방향을 크게 틀 때 속도 배율 (지그재그가 통하게)
 
+        [Header("숨을 곳·수색 (design/cat-ideas/14)")]
+        [SerializeField] private float _hideExitNoise = 10f;             // 숨은 곳에서 나올 때 소음
+        [SerializeField] private float _catSearchRadius = 6f;            // 마지막 목격점 주변 수색 반경
+        [SerializeField] private float _catSearchSeconds = 25f;          // 수색 최대 시간
+        [SerializeField] private int _catSearchMaxSpots = 3;
+        [SerializeField] private float _catSniffSeconds = 2f;            // 스팟마다 킁킁
+        [SerializeField, Range(0f, 1f)] private float _catDisturbChance = 0.3f; // 스팟을 건드려 안을 확인할 확률
+        [SerializeField] private float _catPounceWindowSeconds = 0.5f;   // 발각 뒤 쥐가 튀어나갈 틈
+        [SerializeField] private float _catMultiHideSniffMul = 1.5f;     // 여럿이 같이 숨으면 킁킁 시간 × 인원 × 이 값
+        [SerializeField] private float _hideEnterSeconds = 0.3f;         // 들어가기 홀드
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -271,6 +282,15 @@ namespace RatGame.Data
         public float CatChaseLeadSeconds => _catChaseLeadSeconds;
         public float CatChaseOvershootMeters => _catChaseOvershootMeters;
         public float CatChaseCornerSpeedMul => _catChaseCornerSpeedMul;
+        public float HideExitNoise => _hideExitNoise;
+        public float CatSearchRadius => _catSearchRadius;
+        public float CatSearchSeconds => _catSearchSeconds;
+        public int CatSearchMaxSpots => _catSearchMaxSpots;
+        public float CatSniffSeconds => _catSniffSeconds;
+        public float CatDisturbChance => _catDisturbChance;
+        public float CatPounceWindowSeconds => _catPounceWindowSeconds;
+        public float CatMultiHideSniffMul => _catMultiHideSniffMul;
+        public float HideEnterSeconds => _hideEnterSeconds;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;
