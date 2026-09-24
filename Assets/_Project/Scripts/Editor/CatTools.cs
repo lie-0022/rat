@@ -166,6 +166,19 @@ namespace RatGame.Editor
                 hs.EditorSetup(hideBalance, label, cap);
             }
 
+            // 초인종 (design/cat-ideas/13) — 서쪽 문 옆, 런당 1회
+            if (GameObject.Find("Doorbell") == null)
+            {
+                var bell = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                bell.name = "Doorbell"; bell.transform.SetParent(root.transform);
+                bell.transform.position = new Vector3(-18f, 0.4f, -2f);
+                bell.transform.localScale = new Vector3(0.5f, 0.4f, 0.5f);
+                var br = bell.GetComponent<Renderer>();
+                br.sharedMaterial = new Material(br.sharedMaterial) { color = new Color(0.9f, 0.8f, 0.2f) };
+                bell.AddComponent<Unity.Netcode.NetworkObject>();
+                bell.AddComponent<Doorbell>().EditorSetup(hideBalance);
+            }
+
             if (GameObject.Find("Cat") == null)
             {
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Cat/Cat.prefab");
@@ -181,7 +194,7 @@ namespace RatGame.Editor
 
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(scene);
             UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
-            Debug.Log("[RatGame] 고양이 데모 레이아웃: 스팟 6 + 문 2 · 상자 4 · 숨을 곳 2 · 고양이 1 · NavMesh 베이크");
+            Debug.Log("[RatGame] 고양이 데모 레이아웃: 스팟 6 + 문 2 · 상자 4 · 숨을 곳 2 · 초인종 1 · 고양이 1 · NavMesh 베이크");
         }
     }
 }

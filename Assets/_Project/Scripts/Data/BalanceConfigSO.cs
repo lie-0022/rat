@@ -254,6 +254,8 @@ namespace RatGame.Data
         [SerializeField] private float _catFeedingSeconds = 25f;
         [SerializeField] private float _catAwayWalkSpeed = 3f;
         [SerializeField] private float _reliefCallAwayMinGap = 90f;      // 디렉터 Relief면 마지막 사건 뒤 이만큼 지났을 때 부르기를 앞당김
+        [SerializeField] private float _doorbellHoldSeconds = 1f;        // 초인종 E 홀드 (런당 1회)
+        [SerializeField] private float _attentionIndicatorRange = 15f;   // 이 안에서 노는 고양이면 HUD "♪"
 
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
@@ -489,6 +491,8 @@ namespace RatGame.Data
         public float CatFeedingSeconds => _catFeedingSeconds;
         public float CatAwayWalkSpeed => _catAwayWalkSpeed;
         public float ReliefCallAwayMinGap => _reliefCallAwayMinGap;
+        public float DoorbellHoldSeconds => _doorbellHoldSeconds;
+        public float AttentionIndicatorRange => _attentionIndicatorRange;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

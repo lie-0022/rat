@@ -33,9 +33,13 @@ namespace RatGame.UI
         [SerializeField] private RectTransform _gaugeFill;
 
         private RectTransform _canvasRect;
+        private string _attentionGlyph;
+        // 놀고 있음 표시. Jua(한글 폰트)엔 ♪가 없어 "냥" — 원 안에 한 글자로 읽히고 필러 4(귀여움)에도 맞는다
+        private string AttentionGlyph => _attentionGlyph ??= _symbol.font != null && _symbol.font.HasCharacter('\u266A') ? "\u266A" : "냥";
         private CatBrain _cat;
         private bool _chasingMe;
         private bool _grudgedMe; // 앙심 대상이면 "!!" (design/cat-ideas/05)
+        private bool _attending; // 놀고 있다 — 유인이 먹히는 중 "♪" (design/cat-ideas/13)
         private float _nextPoll;
         private string _lastLogged = "";
 
@@ -73,6 +77,7 @@ namespace RatGame.UI
             _cat = null;
             _chasingMe = false;
             _grudgedMe = false;
+            _attending = false;
             var nm = NetworkManager.Singleton;
             if (nm == null || !nm.IsListening || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
             if (RunManager.Instance != null && RunManager.Instance.IsShowingResult) return;
@@ -93,6 +98,17 @@ namespace RatGame.UI
                 if (state != CatState.Suspicious) continue;
                 float d = (cat.transform.position - myPos).sqrMagnitude;
                 if (d < nearest) { nearest = d; _cat = cat; }
+            }
+            if (_cat != null) return;
+            // 의심하는 고양이가 없으면: 가까이서 노는(호기심·유인) 고양이 "♪" — 지금이 기회라는 신호
+            float range = _balance != null ? _balance.AttentionIndicatorRange : 15f;
+            nearest = range * range;
+            foreach (var cat in FindObjectsByType<CatBrain>(FindObjectsSortMode.None))
+            {
+                var state = cat.State.Value;
+                if (state != CatState.Curious && state != CatState.Distracted) continue;
+                float d = (cat.transform.position - myPos).sqrMagnitude;
+                if (d < nearest) { nearest = d; _cat = cat; _attending = true; }
             }
         }
 
@@ -117,18 +133,18 @@ namespace RatGame.UI
                 _arrow.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 45f);
             }
 
-            string symbol = _chasingMe ? (_grudgedMe ? "!!" : "!") : "?";
+            string symbol = _chasingMe ? (_grudgedMe ? "!!" : "!") : _attending ? AttentionGlyph : "?";
             if (_lastLogged != symbol) { _lastLogged = symbol; Log.Dev($"의심 표시: {symbol} ({_cat.name} {_cat.State.Value})"); }
             if (_symbol.text != symbol) _symbol.text = symbol;
             if (_theme != null)
             {
-                Color c = _theme.GetColor(_chasingMe ? UiColorRole.Danger : UiColorRole.Warning);
+                Color c = _theme.GetColor(_chasingMe ? UiColorRole.Danger : _attending ? UiColorRole.Positive : UiColorRole.Warning);
                 if (_ring.color != c) _ring.color = c;
                 var arrowImage = _arrow.GetComponent<UnityEngine.UI.Image>();
                 if (arrowImage.color != c) arrowImage.color = c;
             }
 
-            bool gauge = !_chasingMe;
+            bool gauge = !_chasingMe && !_attending;
             if (_gauge.activeSelf != gauge) _gauge.SetActive(gauge);
             if (gauge)
             {

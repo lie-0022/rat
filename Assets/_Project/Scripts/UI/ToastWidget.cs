@@ -52,6 +52,8 @@ namespace RatGame.UI
                 (HouseEventKind.CallAway, HouseEventPhase.Warn) => "멀리서 \"나비야~ 간식!\"",
                 (HouseEventKind.CallAway, HouseEventPhase.Start) => "고양이가 나갔다! 지금이야",
                 (HouseEventKind.CallAway, HouseEventPhase.End) => "고양이가 돌아왔다… 어느 문으로?",
+                (HouseEventKind.Doorbell, HouseEventPhase.Warn) => "딩동! 누가 초인종을…",
+                (HouseEventKind.Doorbell, HouseEventPhase.Start) => "집주인이 현관으로 — 고양이도 따라갔다!",
                 (HouseEventKind.Feeding, HouseEventPhase.Warn) => "부엌에서 그릇 달그락 — 밥 시간",
                 (HouseEventKind.Feeding, HouseEventPhase.Start) => "고양이가 밥 먹는 중 — 부엌만 피해",
                 _ => null

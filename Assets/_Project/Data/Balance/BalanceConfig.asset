@@ -215,6 +215,8 @@ MonoBehaviour:
   _catFeedingSeconds: 25
   _catAwayWalkSpeed: 3
   _reliefCallAwayMinGap: 90
+  _doorbellHoldSeconds: 1
+  _attentionIndicatorRange: 15
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

@@ -5,7 +5,7 @@ using RatGame.Run;
 namespace RatGame.Core
 {
     /// <summary>집주인 이벤트 종류 (design/cat-ideas/10). append-only — RPC로 byte 전송.</summary>
-    public enum HouseEventKind : byte { CallAway, Feeding }
+    public enum HouseEventKind : byte { CallAway, Feeding, Doorbell /* 쥐가 누른 초인종 — 부르기와 같은 부재 */ }
     public enum HouseEventPhase : byte { Warn, Start, End }
 
     /// <summary>

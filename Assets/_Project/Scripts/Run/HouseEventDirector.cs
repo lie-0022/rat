@@ -37,7 +37,7 @@ namespace RatGame.Run
 
         private void OnCatState(CatBrain cat, CatState prev, CatState next)
         {
-            if (prev == CatState.Away && _run != null) _run.ServerHouseEvent(HouseEventKind.CallAway, HouseEventPhase.End);
+            if (prev == CatState.Away && _run != null) _run.ServerHouseEvent(HouseEventKind.CallAway, HouseEventPhase.End); // 초인종도 같은 복귀 문구
         }
 
         private void Update()
@@ -78,16 +78,19 @@ namespace RatGame.Run
         }
 
         /// <summary>호스트: 사건 예약(예고부터). 테스트·다른 시스템(초인종 등)용.</summary>
-        public void ServerTrigger(HouseEventKind kind) => Queue(kind);
+        public void ServerTrigger(HouseEventKind kind) => Queue(kind, kind != HouseEventKind.Doorbell);
 
-        private void Queue(HouseEventKind kind)
+        private void Queue(HouseEventKind kind, bool countsAsScheduled = true)
         {
             _pending = kind;
             _pendingStartAt = Time.time + _balance.HouseEventWarnSeconds;
-            _remaining = Mathf.Max(0, _remaining - 1);
-            _last = kind;
             _lastEventAt = Time.time;
-            _nextAt = Time.time + Random.Range(_balance.HouseEventGap.x, _balance.HouseEventGap.y);
+            if (countsAsScheduled) // 초인종(쥐가 유발)은 스케줄 몫을 안 깎는다
+            {
+                _remaining = Mathf.Max(0, _remaining - 1);
+                _last = kind;
+                _nextAt = Time.time + Random.Range(_balance.HouseEventGap.x, _balance.HouseEventGap.y);
+            }
             _run.ServerHouseEvent(kind, HouseEventPhase.Warn);
             Log.Dev($"집주인: {kind} 예고 (남은 {_remaining}건)");
         }
@@ -98,6 +101,7 @@ namespace RatGame.Run
             switch (kind)
             {
                 case HouseEventKind.CallAway:
+                case HouseEventKind.Doorbell: // 집주인이 현관으로 — 고양이도 따라간다
                     float away = Random.Range(_balance.CatCallAwaySeconds.x, _balance.CatCallAwaySeconds.y);
                     foreach (var cat in cats) cat.ServerCallAway(away);
                     break;
