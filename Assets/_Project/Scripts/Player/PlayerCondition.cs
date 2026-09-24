@@ -10,7 +10,7 @@ namespace RatGame.Player
 
     /// <summary>
     /// 상태이상 (docs/04, 호스트 권한). Stunned=시간 경과 해제, Trapped=동료 Interact 1.5s,
-    /// Downed=동료가 쥐구멍까지 운반(부활 분기는 태스크 1-8 — 지금은 상태·드랍·조작 차단까지).
+    /// Downed=동료가 쥐구멍까지 운반 — 대리 몸(PlayerDownedBody·World/DownedBody, 2026-09-24 고양이 46)을 끌어 쥐구멍에 넣으면 부활.
     /// Trapped 구출 대상으로서 IInteractable 구현. 래그돌·관전 카메라는 아트/후속 단계.
     /// </summary>
     public class PlayerCondition : NetworkBehaviour, IInteractable

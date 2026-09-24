@@ -69,7 +69,7 @@ public enum ConditionState { Active, Stunned, Trapped, Downed, Hidden, Pinned }
 | Downed | 고양이 포획, 쥐덫 | 조작 불가 + 래그돌 + **CarryableItem화** | 동료가 쥐구멍까지 운반 (09 문서) |
 
 - Downed 시: 들고 있던 아이템 전부 드랍(호스트가 조인트 해제), 본인 시점은 관전 카메라(동료 시점 순환).
-- 다운된 몸은 mass 3의 Carryable로 등록 → 1인 운반 가능(느림).
+- 다운된 몸은 mass 3의 Carryable로 등록 → 1인 운반 가능(느림). 구현은 호스트 소유 대리 몸(docs/05 "다운된 동료 운반", 2026-09-24 고양이 46).
 
 ## PlayerInteractor
 

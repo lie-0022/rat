@@ -36,6 +36,14 @@ namespace RatGame.World
                 return;
             }
 
+            // ①' 쓰러진 동료의 대리 몸 (고양이 46) — 정산이 아니라 부활. 들고 있는 채로 들어와도 된다
+            var body = other.attachedRigidbody.GetComponent<DownedBody>();
+            if (body != null)
+            {
+                if (RunManager.Instance != null) RunManager.Instance.ServerRevive(body.Owner.Value);
+                return;
+            }
+
             // ② 전리품 정산
             var item = other.attachedRigidbody.GetComponent<CarryableItem>();
             if (item == null || !item.IsSpawned) return;
