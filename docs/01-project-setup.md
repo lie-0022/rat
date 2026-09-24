@@ -78,7 +78,7 @@ Assets/
 
 ## 수용 기준 (W1 종료 시)
 
-- [ ] 빈 프로젝트에 위 패키지 전부 설치, 컴파일 에러 0
-- [ ] Boot→MainMenu→Sandbox_Net 씬 플로우 동작
-- [ ] Input Actions 에셋 완성, 테스트 스크립트로 전 액션 로그 확인
-- [ ] Multiplayer Play Mode로 에디터 2인스턴스 실행 확인
+- [x] 빈 프로젝트에 위 패키지 전부 설치, 컴파일 에러 0 (2026-09-24 고양이 55: manifest에 NGO 2.13.2·Input System 1.18·URP 17.3·AI Navigation 2.0.10·Multiplayer Play Mode 2.0.2, 현재 컴파일 에러 0)
+- [x] Boot→MainMenu→Sandbox_Net 씬 플로우 동작 (고양이 55: 빌드 클라 로그 "상태 전이: Boot → MainMenu" → 접속 → Lobby → Hub. Sandbox_Net 자리는 기지 Hub·스테이지가 대신)
+- [x] Input Actions 에셋 완성, 테스트 스크립트로 전 액션 로그 확인 (고양이 55: Player 맵 10개 액션에 키보드·마우스 바인딩을 InputSystem 큐로 넣어 10/10 performed — Move 4·Look 1·Jump·Sprint·Crouch·Grab·Throw·Interact·Squeak 1·Ping 2(F·휠클릭))
+- [ ] Multiplayer Play Mode로 에디터 2인스턴스 실행 확인 — 패키지는 설치돼 있음(2.0.2). 자율 검증은 에디터 호스트 + macOS 빌드 클라로 대신했다 — MPPM 가상 플레이어 창은 사람이 한 번 확인
