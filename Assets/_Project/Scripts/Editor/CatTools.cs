@@ -329,6 +329,39 @@ namespace RatGame.Editor
                 door.AddComponent<RoomDoor>().EditorSetup(hideBalance, hinge, obstacle, new Vector3(16.5f, 0f, -17f), new Vector3(7f, 0f, 6f));
             }
 
+            // 함정 3종 (docs/10, 고양이 49): 쥐덫 = 창고방 쥐 구멍 안쪽(좁은 통로), 끈끈이 = 치즈 근처, 전기선 = 창고방 문 앞
+            if (GameObject.Find("Trap_MouseTrap") == null)
+            {
+                var mt = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                mt.name = "Trap_MouseTrap"; mt.transform.SetParent(root.transform);
+                mt.transform.position = new Vector3(17f, 0.03f, -14.7f); mt.transform.localScale = new Vector3(0.7f, 0.06f, 0.5f);
+                var mtr = mt.GetComponent<Renderer>(); mtr.sharedMaterial = new Material(mtr.sharedMaterial) { color = new Color(0.75f, 0.6f, 0.4f) };
+                var box = mt.GetComponent<BoxCollider>(); box.size = new Vector3(1f, 1f, 1f);
+                var bar = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                bar.name = "Bar"; Object.DestroyImmediate(bar.GetComponent<Collider>());
+                bar.transform.SetParent(mt.transform, false); bar.transform.localPosition = new Vector3(0f, 3f, 0f); bar.transform.localScale = new Vector3(0.9f, 0.6f, 0.08f);
+                mt.AddComponent<NetworkObject>();
+                var trap = mt.AddComponent<MouseTrap>(); trap.EditorSetup(hideBalance); trap.EditorSetupBar(bar.transform);
+            }
+            if (GameObject.Find("Trap_GluePad") == null)
+            {
+                var gp = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                gp.name = "Trap_GluePad"; gp.transform.SetParent(root.transform);
+                gp.transform.position = new Vector3(-9f, 0.01f, 6f); gp.transform.localScale = new Vector3(1.2f, 0.02f, 1.2f);
+                var gr = gp.GetComponent<Renderer>(); gr.sharedMaterial = new Material(gr.sharedMaterial) { color = new Color(0.9f, 0.85f, 0.35f) };
+                gp.AddComponent<NetworkObject>();
+                gp.AddComponent<GluePad>().EditorSetup(hideBalance);
+            }
+            if (GameObject.Find("Trap_WireShock") == null)
+            {
+                var ws = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                ws.name = "Trap_WireShock"; ws.transform.SetParent(root.transform);
+                ws.transform.position = new Vector3(12.2f, 0.03f, -17f); ws.transform.localScale = new Vector3(0.3f, 0.06f, 1.8f);
+                var wr = ws.GetComponent<Renderer>();
+                ws.AddComponent<NetworkObject>();
+                var wire = ws.AddComponent<WireShock>(); wire.EditorSetup(hideBalance); wire.EditorSetupWire(wr);
+            }
+
             // 창문 (design/cat-ideas/06·10, 고양이 37) — 북쪽 벽, 바람은 남쪽(-z)으로
             if (GameObject.Find("WindowWind") == null)
             {

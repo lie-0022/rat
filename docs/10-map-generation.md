@@ -91,6 +91,8 @@ public class ZoneGenerator
 | Trap_WireShock | 접촉 Stunned 2s, 3s 주기 점멸 (꺼진 타이밍에 통과) | 통로 |
 | Trap_Roomba | 경로 왕복, 충돌 시 밀쳐냄 + 소음 30. 위에 올라탈 수 있음(NavMeshObstacle) | 넓은 방 |
 
+- 구현 (2026-09-24, 고양이 49): `World/TrapBase`(호스트 0.1s 폴링 — 박스 안 Active 쥐·풀린 물건) + `MouseTrap`(Downed + 소음 80 NoiseType.Trap, 1회성, 1s 안에 놓이거나 던져진 물건이면 헛격발) · `GluePad`(Trapped → 동료 E 1.5s 구출, 풀려난 쥐 4s 유예) · `WireShock`(켜짐 1.5s / 꺼짐 1.5s 반복, 켜진 동안 Stunned 2s + 소음 30). Roomba는 docs/13 컷 후보 + 집주인 로봇청소기(docs/09)로 대신. 데모 레이아웃에 3종(쥐 구멍 안쪽 쥐덫·끈끈이·창고방 문 앞 전기선). 시드 배치(TrapSpawns·TrapTable)는 존 생성기 태스크.
+
 ## 수용 기준 (W8)
 
 - [ ] 같은 시드 → 호스트·클라 동일 결과 (클라는 스폰 수신만이므로 자동 보장 — 검증만)

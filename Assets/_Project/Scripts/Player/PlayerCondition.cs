@@ -55,6 +55,14 @@ namespace RatGame.Player
                 EventBus.RaisePlayerDowned(OwnerClientId);
         }
 
+        /// <summary>호스트: 정해진 시간만큼 기절 (전기선 등 함정마다 다를 수 있게 — 고양이 49).</summary>
+        public void ServerStun(float seconds)
+        {
+            if (!IsServer || State.Value != ConditionState.Active) return;
+            ServerSetState(ConditionState.Stunned);
+            _stunEndTime = Time.time + seconds;
+        }
+
         /// <summary>PlayerNoiseEmitter가 착지 시 호출 (호스트) — 6m+ 낙하는 기절 (docs/04).</summary>
         public void ServerOnLanded(float fallHeight)
         {

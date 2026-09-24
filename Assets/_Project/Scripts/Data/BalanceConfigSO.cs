@@ -81,6 +81,13 @@ namespace RatGame.Data
         [SerializeField] private float _stunSeconds = 2f;
         [SerializeField] private float _highFallStunHeight = 6f;   // 이 높이(m) 초과 낙하 → Stunned
         [SerializeField] private float _rescueHoldSeconds = 1.5f;  // Trapped 동료 구출 홀드
+        [Header("함정 (docs/10, 고양이 49)")]
+        [SerializeField] private float _trapMouseLoudness = 80f;   // 쥐덫 격발 (docs/06)
+        [SerializeField] private float _glueGraceSeconds = 4f;     // 구출된 쥐가 같은 끈끈이에 다시 안 붙는 시간
+        [SerializeField] private float _wireOnSeconds = 1.5f;      // 전기선 켜짐
+        [SerializeField] private float _wireOffSeconds = 1.5f;     // 꺼짐 — 이 틈에 지나간다
+        [SerializeField] private float _wireStunSeconds = 2f;
+        [SerializeField] private float _wireZapLoudness = 30f;
 
         [Header("핑 (docs/04)")]
         [SerializeField] private float _pingCooldownSeconds = 1f; // 같은 쥐의 다음 핑까지 (서버도 검사)
@@ -703,6 +710,12 @@ namespace RatGame.Data
         public float UpgradeJumpPerLevel => _upgradeJumpPerLevel;
         public float HighFallStunHeight => _highFallStunHeight;
         public float RescueHoldSeconds => _rescueHoldSeconds;
+        public float TrapMouseLoudness => _trapMouseLoudness;
+        public float GlueGraceSeconds => _glueGraceSeconds;
+        public float WireOnSeconds => _wireOnSeconds;
+        public float WireOffSeconds => _wireOffSeconds;
+        public float WireStunSeconds => _wireStunSeconds;
+        public float WireZapLoudness => _wireZapLoudness;
         public float StaminaMax => _staminaMax;
         public float EatSeconds => _eatSeconds;
         public float EatStamina => _eatStamina;

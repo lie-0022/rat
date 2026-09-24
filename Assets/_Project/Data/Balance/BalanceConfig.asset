@@ -68,6 +68,12 @@ MonoBehaviour:
   _stunSeconds: 2
   _highFallStunHeight: 6
   _rescueHoldSeconds: 1.5
+  _trapMouseLoudness: 80
+  _glueGraceSeconds: 4
+  _wireOnSeconds: 1.5
+  _wireOffSeconds: 1.5
+  _wireStunSeconds: 2
+  _wireZapLoudness: 30
   _pingCooldownSeconds: 1
   _pingMarkerSeconds: 3
   _pingMaxDistance: 30

@@ -162,6 +162,8 @@ namespace RatGame.UI
                 {
                     // 고양이가 놓아줬다 — 도망칠 창 (design/cat-ideas/04)
                     if (prev == ConditionState.Pinned && state == ConditionState.Active) Show("풀려났다! 지금 도망쳐!", UiColorRole.Warning);
+                    if (state == ConditionState.Trapped) Show("끈끈이! 동료가 E로 구해 줘야 해요", UiColorRole.Danger);
+                    if (state == ConditionState.Stunned) Show("찌릿! 잠깐 못 움직여요", UiColorRole.Warning);
                     if (state == ConditionState.Pinned) Show("잡혔다! A·D 번갈아 연타 = 버둥 — 보는 쪽으로 굴러간다", UiColorRole.Danger);
                 }
                 else if (prev != state && !p.IsOwner)
