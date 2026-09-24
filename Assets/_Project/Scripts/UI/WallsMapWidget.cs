@@ -19,6 +19,7 @@ namespace RatGame.UI
         private const float StubMeters = 1.6f;  // 출구 선 길이
         private const float StubWidthMeters = 0.9f;
         private const float VisitCheckSeconds = 0.25f;
+        private const float PingMapSeconds = 10f; // 핑은 지도에 조금 더 오래 (고양이 118)
 
         [SerializeField] private GameObject _panel;
         [SerializeField] private RectTransform _content;
@@ -36,9 +37,15 @@ namespace RatGame.UI
         private readonly HashSet<GridRoom> _visited = new();
         private readonly Dictionary<GridRoom, GameObject> _roomViews = new();
         private readonly Dictionary<ulong, UnityEngine.UI.Image> _dots = new();
+        private readonly Dictionary<ulong, (Vector3 pos, float until)> _pings = new();
+        private readonly Dictionary<ulong, UnityEngine.UI.Image> _pingMarks = new();
         private Vector2 _center;
         private float _scale;
         private float _nextCheck;
+
+        private void OnEnable() => EventBus.PingReceived += OnPing;
+        private void OnDisable() => EventBus.PingReceived -= OnPing;
+        private void OnPing(ulong owner, Vector3 world) => _pings[owner] = (world, Time.unscaledTime + PingMapSeconds);
 
         private void Start()
         {
@@ -61,6 +68,27 @@ namespace RatGame.UI
             if (!show) return;
             foreach (var pair in _roomViews) pair.Value.SetActive(_visited.Contains(pair.Key) || pair.Key == _destination);
             UpdateDots();
+            UpdatePings();
+        }
+
+        // 동료 핑 — 팀색 마름모 (핑 마커와 같은 모양), 10초
+        private void UpdatePings()
+        {
+            float now = Time.unscaledTime;
+            foreach (var pair in _pings)
+            {
+                if (!_pingMarks.TryGetValue(pair.Key, out var mark) || mark == null)
+                {
+                    mark = Instantiate(_roomTemplate, _content);
+                    mark.color = PlayerVisual.ColorFor(pair.Key);
+                    mark.rectTransform.sizeDelta = Vector2.one * 16f;
+                    mark.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                    _pingMarks[pair.Key] = mark;
+                }
+                bool live = now < pair.Value.until;
+                if (mark.gameObject.activeSelf != live) mark.gameObject.SetActive(live);
+                if (live) { mark.rectTransform.anchoredPosition = (Flat(pair.Value.pos) - _center) * _scale; mark.transform.SetAsLastSibling(); }
+            }
         }
 
         private void Rebuild()
@@ -69,6 +97,9 @@ namespace RatGame.UI
             _roomViews.Clear();
             foreach (var d in _dots.Values) if (d != null) Destroy(d.gameObject);
             _dots.Clear();
+            foreach (var d in _pingMarks.Values) if (d != null) Destroy(d.gameObject);
+            _pingMarks.Clear();
+            _pings.Clear();
             _visited.Clear();
             _rooms = FindObjectsByType<GridRoom>(FindObjectsSortMode.None);
             if (_rooms.Length == 0) return;

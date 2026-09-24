@@ -31,8 +31,9 @@ namespace RatGame.Editor
 
                 var area = NewUi("MapArea", root.transform);
                 area.anchorMin = Vector2.zero; area.anchorMax = Vector2.one; area.offsetMin = Vector2.zero; area.offsetMax = Vector2.zero;
-                var help = root.transform.Find("HelpArea");
-                if (help != null) area.SetSiblingIndex(help.GetSiblingIndex() + 1);
+                // 핑 마커·의심 표시(월드 위 HUD)보다 위, 결과·일시정지·로딩보다 아래 — 지도 위에 마커가 겹쳐 보이지 않게 (고양이 118)
+                var above = root.transform.Find("SuspicionArea") ?? root.transform.Find("PingArea") ?? root.transform.Find("HelpArea");
+                if (above != null) area.SetSiblingIndex(above.GetSiblingIndex() + 1);
 
                 var panel = NewUi("Panel", area);
                 panel.anchorMin = panel.anchorMax = new Vector2(0.5f, 0.5f);
