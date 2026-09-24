@@ -355,6 +355,31 @@ namespace RatGame.Editor
                 win.AddComponent<WindowWind>().EditorSetup(hideBalance, hinge);
             }
 
+            // 레이저 포인터 (design/cat-ideas/13, 고양이 41) — 들고 있으면 조준점에 빨간 점
+            if (GameObject.Find("LaserPointer") == null)
+            {
+                var lp = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                lp.name = "LaserPointer"; lp.transform.SetParent(root.transform);
+                lp.layer = LayerMask.NameToLayer("Carryable");
+                lp.transform.position = new Vector3(-8f, 0.3f, -6f);
+                lp.transform.localScale = new Vector3(0.1f, 0.15f, 0.1f);
+                var lr = lp.GetComponent<Renderer>();
+                lr.sharedMaterial = new Material(lr.sharedMaterial) { color = new Color(0.2f, 0.2f, 0.25f) };
+                var lrb = lp.AddComponent<Rigidbody>();
+                lrb.mass = 0.2f; lrb.interpolation = RigidbodyInterpolation.Interpolate;
+                lp.AddComponent<NetworkObject>();
+                lp.AddComponent<NetworkTransform>();
+                lp.AddComponent<NetworkRigidbody>();
+                var lgrip = new GameObject("Grip_0").transform;
+                lgrip.SetParent(lp.transform, false); lgrip.localPosition = Vector3.up * 0.5f;
+                var litem = lp.AddComponent<CarryableItem>();
+                var lso = new SerializedObject(litem);
+                lso.FindProperty("_balance").objectReferenceValue = hideBalance;
+                var lgp = lso.FindProperty("_gripPoints"); lgp.arraySize = 1; lgp.GetArrayElementAtIndex(0).objectReferenceValue = lgrip;
+                lso.ApplyModifiedPropertiesWithoutUndo();
+                lp.AddComponent<LaserPointer>().EditorSetup(hideBalance);
+            }
+
             // 후추통 (design/cat-ideas/06, 고양이 33) — 쥐구멍 쪽. 던지거나 세게 떨어뜨리면 쏟아진다
             if (GameObject.Find("PepperShaker") == null)
             {

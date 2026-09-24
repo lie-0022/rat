@@ -176,6 +176,11 @@ MonoBehaviour:
   _doorPushSeconds: 4
   _doorPushRange: 1.4
   _doorCloseNoise: 25
+  _laserBatterySeconds: 20
+  _laserAimRange: 25
+  _laserAttractRadius: 12
+  _laserLingerSeconds: 5
+  _catLaserChaseSpeed: 4.5
   _stringSwingSeconds: 30
   _stringAttractRadius: 8
   _stringDistractSeconds: 10

@@ -209,6 +209,12 @@ namespace RatGame.Data
         [SerializeField] private float _doorPushSeconds = 4f;            // 쫓던 고양이가 닫힌 문을 밀어 여는 시간
         [SerializeField] private float _doorPushRange = 1.4f;            // 문 중심에서 이 안이면 미는 중
         [SerializeField] private float _doorCloseNoise = 25f;            // 쥐가 문 닫는 소리
+        [Header("레이저 포인터 (design/cat-ideas/13, 고양이 41)")]
+        [SerializeField] private float _laserBatterySeconds = 20f;       // 든 동안만 닳는다
+        [SerializeField] private float _laserAimRange = 25f;
+        [SerializeField] private float _laserAttractRadius = 12f;        // 점이 이 안이고 보이면 고양이가 쫓는다
+        [SerializeField] private float _laserLingerSeconds = 5f;         // 점이 꺼져도 이만큼 두리번
+        [SerializeField] private float _catLaserChaseSpeed = 4.5f;       // 점을 쫓는 속도
         [Header("흔들리는 끈 (design/cat-ideas/13, 고양이 38)")]
         [SerializeField] private float _stringSwingSeconds = 30f;
         [SerializeField] private float _stringAttractRadius = 8f;        // 이 안의 한가한 고양이가 보면 온다
@@ -544,6 +550,11 @@ namespace RatGame.Data
         public float DoorPushSeconds => _doorPushSeconds;
         public float DoorPushRange => _doorPushRange;
         public float DoorCloseNoise => _doorCloseNoise;
+        public float LaserBatterySeconds => _laserBatterySeconds;
+        public float LaserAimRange => _laserAimRange;
+        public float LaserAttractRadius => _laserAttractRadius;
+        public float LaserLingerSeconds => _laserLingerSeconds;
+        public float CatLaserChaseSpeed => _catLaserChaseSpeed;
         public float StringSwingSeconds => _stringSwingSeconds;
         public float StringAttractRadius => _stringAttractRadius;
         public float StringDistractSeconds => _stringDistractSeconds;
