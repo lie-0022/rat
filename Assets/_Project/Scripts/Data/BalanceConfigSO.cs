@@ -225,6 +225,16 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 1f)] private float _catHairballChance = 0.2f; // 그루밍 끝나면 헤어볼 확률
         [SerializeField] private float _catHairballSeconds = 3f;         // 웩웩
 
+        [Header("루틴 예고·화장실·물 (design/cat-ideas/02)")]
+        [SerializeField] private float _catLitterSeconds = 12f;
+        [SerializeField] private float _catLitterSense = 0.3f;
+        [SerializeField] private float _catZoomiesSeconds = 10f;         // 화장실 뒤 우다다
+        [SerializeField] private float _catZoomiesSpeed = 6.5f;          // 추격(5.5)보다 빠름 — 목적은 없다
+        [SerializeField] private float _catZoomiesRadius = 8f;
+        [SerializeField] private float _catZoomiesStep = 1.2f;           // 이 간격마다 새 방향
+        [SerializeField] private float _catWaterSeconds = 8f;
+        [SerializeField] private float _catCueHearRange = 18f;           // 루틴 예고가 들리는 거리
+
         [Header("경계도 디렉터 (design/cat-ideas/12) — 고양이 감각 수치는 안 건드린다")]
         [SerializeField] private float _directorTickSeconds = 10f;
         [SerializeField] private float _tensionSuspicious = 10f;
@@ -475,6 +485,14 @@ namespace RatGame.Data
         public float CatWobbleSpeedMul => _catWobbleSpeedMul;
         public float CatHairballChance => _catHairballChance;
         public float CatHairballSeconds => _catHairballSeconds;
+        public float CatLitterSeconds => _catLitterSeconds;
+        public float CatLitterSense => _catLitterSense;
+        public float CatZoomiesSeconds => _catZoomiesSeconds;
+        public float CatZoomiesSpeed => _catZoomiesSpeed;
+        public float CatZoomiesRadius => _catZoomiesRadius;
+        public float CatZoomiesStep => _catZoomiesStep;
+        public float CatWaterSeconds => _catWaterSeconds;
+        public float CatCueHearRange => _catCueHearRange;
         public float DirectorTickSeconds => _directorTickSeconds;
         public float TensionSuspicious => _tensionSuspicious;
         public float TensionChase => _tensionChase;

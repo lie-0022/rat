@@ -7,6 +7,8 @@ namespace RatGame.Core
     /// <summary>집주인 이벤트 종류 (design/cat-ideas/10). append-only — RPC로 byte 전송.</summary>
     public enum HouseEventKind : byte { CallAway, Feeding, Doorbell /* 쥐가 누른 초인종 — 부르기와 같은 부재 */ }
     public enum HouseEventPhase : byte { Warn, Start, End }
+    /// <summary>고양이 루틴 예고 소리 (design/cat-ideas/02). append-only — RPC로 byte 전송.</summary>
+    public enum CatCueKind : byte { Food, Litter, Sun, Bed, Water }
 
     /// <summary>
     /// 로컬 알림 전용 정적 이벤트 버스 (docs/02). 네트워크 동기화는 NGO 담당 — 여기 실으면 안 된다.
@@ -37,6 +39,8 @@ namespace RatGame.Core
         public static event Action<string /*itemId*/> CodexUnlocked;
         /// <summary>집주인 이벤트 알림 (각 클라 로컬 — RunManager.HouseEventClientRpc가 발행, 2026-09-24).</summary>
         public static event Action<HouseEventKind, HouseEventPhase> HouseEvent;
+        /// <summary>고양이가 루틴 스팟으로 출발 (각 클라 로컬 — CatBrain.CatCueClientRpc가 발행).</summary>
+        public static event Action<CatCueKind, UnityEngine.Vector3> CatCue;
 
         public static void RaiseZoneStarted(int zoneIndex) => ZoneStarted?.Invoke(zoneIndex);
         public static void RaiseZoneEnded(int zoneIndex, bool quotaMet) => ZoneEnded?.Invoke(zoneIndex, quotaMet);
@@ -51,5 +55,6 @@ namespace RatGame.Core
         public static void RaiseAchievementUnlocked(string achievementId) => AchievementUnlocked?.Invoke(achievementId);
         public static void RaiseCodexUnlocked(string itemId) => CodexUnlocked?.Invoke(itemId);
         public static void RaiseHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEvent?.Invoke(kind, phase);
+        public static void RaiseCatCue(CatCueKind kind, UnityEngine.Vector3 catPos) => CatCue?.Invoke(kind, catPos);
     }
 }

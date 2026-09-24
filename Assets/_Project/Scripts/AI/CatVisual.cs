@@ -93,6 +93,7 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
+                    else if (state == CatState.Zoomies) { tailSwing = Mathf.Sin(t * 16f) * 35f; roll = Mathf.Sin(t * 12f) * 8f; } // 우다다
                     else if (state == CatState.Fight) { roll = Mathf.Sin(t * 25f) * 12f; tailSwing = Mathf.Sin(t * 20f) * 50f; } // 몸싸움 — 부르르
                     else if (state == CatState.Patrol && _brain.Alert.Value) tailSwing = Mathf.Sin(t * 7f) * 22f; // 예민 — 꼬리가 빠르다
                     else if (state == CatState.Blunder)

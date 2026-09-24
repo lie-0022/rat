@@ -41,8 +41,33 @@ namespace RatGame.UI
         private float _nextPoll;
 
         private void Awake() => _toastTemplate.SetActive(false);
-        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; }
-        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; }
+        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; }
+        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; }
+
+        [SerializeField] private BalanceConfigSO _balance; // 예고 들리는 거리
+        private string _lastCue;
+
+        // 고양이 루틴 예고 (design/cat-ideas/02) — 소리 대신 자막. 고양이 가까이 있는 쥐만 듣는다, 같은 문구 연속 금지
+        private void OnCatCue(CatCueKind kind, Vector3 catPos)
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
+            float range = _balance != null ? _balance.CatCueHearRange : 18f;
+            if (Vector3.Distance(nm.LocalClient.PlayerObject.transform.position, catPos) > range) return;
+            string text = kind switch
+            {
+                CatCueKind.Food => "(배 꼬르륵 — 고양이가 밥 먹으러)",
+                CatCueKind.Litter => "(모래 긁는 소리… 곧 우다다!)",
+                CatCueKind.Sun => "(창가 쪽 기지개 — 햇볕 쬐러)",
+                CatCueKind.Bed => "(쩌억 하품 — 자러 간다)",
+                CatCueKind.Water => "(할짝할짝 — 물 마시러)",
+                _ => null
+            };
+            if (text == null || text == _lastCue) return;
+            _lastCue = text;
+            Log.Dev($"고양이 예고: {text}");
+            Show(text, UiColorRole.Secondary);
+        }
 
         // 집주인 이벤트 (design/cat-ideas/10) — 인간은 안 보인다, 소리·말로만
         private void OnHouseEvent(HouseEventKind kind, HouseEventPhase phase)

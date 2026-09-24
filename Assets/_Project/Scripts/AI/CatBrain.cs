@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */, Away /* 집주인이 불러 나감 (2026-09-24, CatBrain.House.cs) */, Fight /* 앙숙 싸움 (2026-09-24, CatBrain.Fight.cs) */, Zoomies /* 화장실 뒤 우다다 (2026-09-24, CatBrain.Routine.cs) */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -178,6 +178,7 @@ namespace RatGame.AI
                 case CatState.Blunder: TickBlunder(); break;
                 case CatState.Away: TickAway(); break;
                 case CatState.Fight: TickFight(); break;
+                case CatState.Zoomies: TickZoomies(); break;
             }
         }
 
@@ -249,6 +250,9 @@ namespace RatGame.AI
                     break;
                 case CatState.Fight:
                     EnterFightState();
+                    break;
+                case CatState.Zoomies:
+                    EnterZoomiesState();
                     break;
             }
         }
@@ -342,6 +346,7 @@ namespace RatGame.AI
                 _dwelling = false;
                 _senses.SensitivityMultiplier = 1f;
                 if (CurrentSpotType == CatSpotType.Groom && TryHairball()) return; // 그루밍 끝 — 가끔 헤어볼 (design/cat-ideas/11)
+                if (TryStartZoomies()) return; // 화장실 끝 — 우다다 (design/cat-ideas/02)
                 GoToNextSpot();
                 return;
             }
@@ -373,6 +378,7 @@ namespace RatGame.AI
             _spotIndex = pick;
             _recentSpots.Add(pick);
             _movement.MoveTo(_spots[pick].Pos, _balance.CatPatrolSpeed);
+            AnnounceNextSpot(_spots[pick].Type); // 루틴 예고 — 소리로 읽힌다 (design/cat-ideas/02)
         }
 
         // 성격이 잠자리·관찰점 선호를 바꾼다 (design/cat-ideas/01)
@@ -407,6 +413,11 @@ namespace RatGame.AI
                     Dwell(_balance.CatSpotSunSeconds * DirRoutineDwellMul, _balance.CatSpotSunSense); return;
                 case CatSpotType.Groom:
                     Dwell(_balance.CatSpotGroomSeconds * DirRoutineDwellMul, _balance.CatSpotGroomSense); return;
+                case CatSpotType.Litter:
+                    _litterDone = true; // 볼일 끝나면 우다다
+                    Dwell(_balance.CatLitterSeconds, _balance.CatLitterSense); return;
+                case CatSpotType.Water:
+                    Dwell(_balance.CatWaterSeconds, 1f); return;
                 default:
                     Dwell(Random.Range(_balance.CatPatrolWaitRange.x, _balance.CatPatrolWaitRange.y) * LookDwellMul * DirLookDwellMul, 1f); return;
             }

@@ -16,7 +16,7 @@ Cat (NetworkObject, NavMeshAgent, CapsuleCollider)
 ## FSM
 
 ```csharp
-public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder, Away, Fight }
+public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search, Curious, Track, Toy, Blunder, Away, Fight, Zoomies }
 ```
 
 ```
@@ -31,12 +31,14 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 |---|---|---|
 | Sleep | 잠자리(Bed 스팟)에서 60s. **얕은 잠 12~20s(감각 0.5) → 예고 3s → 깊은 잠 10~18s(0.15) → 예고 3s(꼬리 씰룩 = "나가" 신호) → 얕은 잠…** 파동 (2026-09-24, design/cat-ideas/08). 얕은 잠 중 게이지 ≥30 또는 깨짐·함정·찍찍 소음 → HalfAwake 3s(감각 0.5): 그 사이 목격·새 자극이면 Suspicious, 없으면 다시 잔다. 깊은 잠은 게이지 ≥60 또는 깨짐류만. 작은 자극은 자는 동안 잊는다(깬 뒤 엉뚱한 조사 방지). 잠은 얕은 잠에서만 끝난다 | 0 |
 | Patrol | **스팟 그래프** 순회 (2026-09-24, `AI/CatSpot`): 가중치 랜덤·최근 2개 제외 → 도착 후 종류별 머무름 — Look 2~5s / Food 25s(감각 0.5) / Sun 40s(0.5) / Groom 20s(0.6) / Bed → Sleep 45s 뒤 깸(다음 스팟으로). CatSpot이 없으면 `CatWaypoint*`를 Look으로. design/cat-design/02 카탈로그 | 2.0 |
+| (Patrol 추가, 2026-09-24) | Litter 12s(감각 0.3) → Zoomies / Water 8s(감각 1). **루틴 예고**: 루틴 스팟(Food·Litter·Sun·Bed·Water)으로 출발할 때 `CatCueClientRpc` → `EventBus.CatCue` → 고양이 18m 안 쥐에게 자막 토스트("배 꼬르륵"·"모래 긁는 소리… 곧 우다다!"·"창가 쪽 기지개"·"쩌억 하품"·"할짝할짝") — 시야 밖에서 상태를 소리로 읽는다(필러 2). 데모 레이아웃 Litter(-15,-15)·Water(11,16) | — |
 | Suspicious | 마지막 자극 지점으로 이동, 주변 3m 배회 6s | 3.0 |
 | Chase | **예측 추격** (2026-09-24): 타깃 속도(위치 차분)로 1s 앞 지점을 노림(NavMesh 샘플, 최대 5.5m). 시야 상실 시 마지막 진행 방향으로 **3m 오버슛** 뒤 마지막 목격점, 3s 후 Suspicious. **코너 감속**: 몸 방향과 경로 방향이 어긋나면 속도 ×0.55까지 — 직선은 최고 속도, 지그재그는 실제로 도움. Agent angularSpeed 240·acceleration 8 | 5.5 (직선) |
 | Search | **숨을 곳 수색** (2026-09-24, `AI/CatBrain.Search.cs`, design/cat-ideas/14): Chase 시야 상실 3s 뒤 마지막 목격점 반경 6m에 HideSpot이 있으면 진입(없으면 Suspicious). 타깃이 Hidden이 되면 Return이 아니라 시야 상실로 처리. 가까운 순 최대 3곳 → 출구 앞 킁킁 2s(여럿 숨었으면 × 인원 × 1.5) → 30% 건드림 → 안의 쥐 발각(출구로 튀어나옴) → Pounce 창 0.5s → Chase. 25s 또는 스팟 소진 → Return. 목격·소음·미끼가 끊는다 | 3.0 |
 | Track | **냄새 추적** (2026-09-24, `AI/CatBrain.Track.cs`, design/cat-ideas/06): Patrol·Return 중(우선순위 Suspicious 아래·Curious 위) 반경 3m 안 강도 ≥8 자국을 맡으면 진입 — 시야 불필요. 그 자국 → 같은 쥐의 다음 자국 순으로 따라가며 자국마다 킁킁 0.5s. 목격·자극이면 끊김. 자국이 끊기면 끝점 3m 안 HideSpot이 있으면 Search, 없으면 Return. 따라간 자국(쥐별 순번)은 다시 안 쫓음 | 3.0 |
 | Curious | **호기심 앞발** (2026-09-24, `AI/CatBrain.Curious.cs`, design/cat-ideas/03): Patrol·Return 중 시야에 속도 ≥1.5 m/s로 움직이는 풀린 물건(안 들림·주머니 아님·대형 아님)이 보이면 진입 — 의심·추격·잠 중엔 안 속음. 물건을 따라가 수평 0.9m 안에서 앞발 3~5회(0.6s 간격, 정면 ±60° 수평 + 위, 속도 변화 1.2 m/s — 호스트 물리) → 하품 5s → Return. 그 물건은 10s 무시, 같은 물건 누적 30s면 질려서 60s 무시. 8s 안에 못 닿으면 포기, 쥐가 집으면 즉시 Return. 자기가 친 물건의 충돌 소음은 무시(깨짐은 예외) | 4.0 |
 | Capture | 앞발 스윙 애니 0.4s → 범위 내 플레이어 Downed 처리. **움직일 수 있는 동료(Active·Hidden·Stunned)가 있으면 Downed 대신 Pinned + Toy** (2026-09-24) | — |
+| Zoomies | **우다다** (2026-09-24, `AI/CatBrain.Routine.cs`, design/cat-ideas/02): Litter 스팟 볼일 12s(감각 0.3) 뒤 10s 동안 속도 6.5(추격보다 빠름)로 반경 8m 랜덤 지점을 1.2s마다 — 목적 없음, 복도는 도박. 코앞 목격은 추격, 비누 밟으면 미끄러짐 | 6.5 |
 | Fight | **앙숙 싸움** (2026-09-24, `AI/CatBrain.Fight.cs` + `AI/CatRelation`, design/cat-ideas/07): 고양이 2마리 이상일 때 호스트 중재자가 0.25s마다 판정 — 둘 다 Patrol·Return·Suspicious·Curious·Track·Search, 4m 안, 가림 없음 → 70% 싸움 15s / 30% 째려보고 지나감(10s 재판정 금지). 싸움 뒤 30s 재발 금지. 싸우는 동안 가운데 1.2m를 1s마다 빙글(3.0), 청각 차단(`CatSenses.Deaf`)·시야 ×0.2. 2m 안 쥐 목격이면 싸움 깨고 Chase, 상대가 빠지면 같이 끝. 관계는 지금 앙숙 고정(엄마·아기·짝꿍은 다음) | 3.0 |
 | Away | **집주인이 부름** (2026-09-24, `AI/CatBrain.House.cs`, design/cat-ideas/10): 하던 일을 멈추고(추격도 끊음 — 간식이 더 중요, 놀이·포획 중이면 끝난 뒤) 가까운 Door 스팟으로(3.0) → 도착하면 `AwayHidden` NV(렌더러 끔)·감각 0 → 20~40s 뒤 **랜덤 문**으로 Warp → Return. 문이 없으면 쥐들에게서 가장 먼 스팟. **밥 시간**은 Away가 아니라 Patrol에서 Food 스팟 강제·머무름 = 남은 밥 시간(25s, 감각 0.5) | 3.0 |
 | Blunder | **댕청한 실패** (2026-09-24, `AI/CatBrain.Blunder.cs`, design/cat-ideas/11 — 쥐가 만든 상황에서만): `BlunderKind` NV. **Slip** — 속도 ≥4로 달리다 바닥의 풀린 Slippery 물건(비누·접시·수박) 0.7m 안을 밟으면 진행 방향 3m를 0.6s에(NavMeshAgent.Move — NavMesh 밖 안 나감, 밟은 물건도 튕김) → 도중에 막히면 **쿵 → 기절 2s**, 아니면 추스르기 0.8s → Return. 쿨다운 4s. **Startle** — 호기심 중 2.5m 안 깨짐·찍찍·함정 → 뒤로 1.2m 펄쩍 1.5s → 소리 난 곳 Suspicious. **Wobble** — 캣닢 놀이 끝나면 10s 비틀비틀(1s마다 주변 2m, 순찰 속도 ×0.5, 감각 ×0.3, 코앞 목격은 추격). **Hairball** — Patrol에서 Groom 스팟 머무름이 끝날 때 20% → 웩웩 3s(몸 들썩) → 정면 0.6m에 `loot_hairball`(가치 5·Slippery — 깔면 고양이가 미끄러짐) 스폰(Cat 프리팹 `_hairballItem`). 실패는 앙심 안 올림 | 0~1.0 |

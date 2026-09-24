@@ -189,6 +189,14 @@ MonoBehaviour:
   _catWobbleSpeedMul: 0.5
   _catHairballChance: 0.2
   _catHairballSeconds: 3
+  _catLitterSeconds: 12
+  _catLitterSense: 0.3
+  _catZoomiesSeconds: 10
+  _catZoomiesSpeed: 6.5
+  _catZoomiesRadius: 8
+  _catZoomiesStep: 1.2
+  _catWaterSeconds: 8
+  _catCueHearRange: 18
   _directorTickSeconds: 10
   _tensionSuspicious: 10
   _tensionChase: 25

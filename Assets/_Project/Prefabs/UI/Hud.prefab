@@ -5941,6 +5941,7 @@ MonoBehaviour:
   _toastTemplate: {fileID: 7874914937008563411}
   _seconds: 3.5
   _maxToasts: 3
+  _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
 --- !u!1 &4761342764959080558
 GameObject:
   m_ObjectHideFlags: 0
