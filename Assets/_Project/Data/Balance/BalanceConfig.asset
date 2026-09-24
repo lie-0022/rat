@@ -165,6 +165,11 @@ MonoBehaviour:
   _catScentMinStrength: 8
   _catTrackSpeed: 3
   _catTrackSniffSeconds: 0.5
+  _puddleRadius: 2.5
+  _puddleSeconds: 60
+  _wetSeconds: 20
+  _scentWet: 40
+  _waterBowlSpillNoise: 30
   _catToySeconds: 30
   _catToyInterest: 100
   _catToyLoopDrain: 35

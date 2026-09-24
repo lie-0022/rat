@@ -74,6 +74,13 @@ namespace RatGame.AI
                 _nextSlipScan = Time.time + 2f;
                 _slipItems = FindObjectsByType<CarryableItem>(FindObjectsSortMode.None);
             }
+            // 엎은 물그릇 웅덩이 — 바닥 자체가 미끄럽다 (design/cat-ideas/06 2단계)
+            foreach (var puddle in WaterBowl.ActivePuddles)
+            {
+                if (puddle == null || !puddle.PuddleActive.Value || !puddle.Contains(transform.position)) continue;
+                StartSlip(v, null);
+                return;
+            }
             float r2 = _balance.CatSlipDetectRadius * _balance.CatSlipDetectRadius;
             foreach (var item in _slipItems)
             {
@@ -92,9 +99,9 @@ namespace RatGame.AI
             _slipDir = velocity.normalized;
             _slipSpeed = _balance.CatSlipDistance / Mathf.Max(0.1f, _balance.CatSlipSeconds) * 2f; // 선형 감속 — 평균 속도 = 거리/시간
             _slipTraveled = 0f;
-            var rb = item.GetComponent<Rigidbody>();
+            var rb = item != null ? item.GetComponent<Rigidbody>() : null;
             if (rb != null) { rb.WakeUp(); rb.AddForce(_slipDir * 3f + Vector3.up * 0.5f, ForceMode.VelocityChange); } // 밟은 비누도 튕겨 나간다
-            Log.Dev($"고양이 [{name}]: 미끄러짐! {item.name} 밟음 (속도 {velocity.magnitude:0.0})");
+            Log.Dev($"고양이 [{name}]: 미끄러짐! {(item != null ? item.name + " 밟음" : "젖은 바닥")} (속도 {velocity.magnitude:0.0})");
             EnterBlunder(CatBlunderKind.Slip, _balance.CatSlipSeconds);
         }
 

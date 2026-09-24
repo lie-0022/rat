@@ -11,7 +11,7 @@ namespace RatGame.Player
 {
     /// <summary>
     /// 냄새 자국 남기기 (design/cat-ideas/06, 2026-09-24).
-    /// 호스트: 손이나 주머니에 Edible(치즈류)이 있으면 강도 60, 없어도 고양이에게 찍혔으면(05) 20 — 1.5m 걸을 때마다 ScentSystem에 자국.
+    /// 호스트: 손이나 주머니에 Edible(치즈류)이 있으면 강도 60, 웅덩이를 지나 젖었으면 40, 고양이에게 찍혔으면(05) 20 — 1.5m 걸을 때마다 ScentSystem에 자국.
     /// 웅크리면 간격 2배(덜 남김). 소유 클라에게만 자국 위치를 알려 바닥에 노란 점으로 보여 준다 — 남의 자국은 안 보인다.
     /// </summary>
     public class PlayerScent : NetworkBehaviour
@@ -23,6 +23,11 @@ namespace RatGame.Player
         private bool _hasLast;
         private float _nextCatPoll;
         private bool _grudged;
+        private float _wetUntil;
+
+        /// <summary>호스트: 웅덩이를 지났다 — 이 시간 동안 젖은 발자국 (design/cat-ideas/06 2단계).</summary>
+        public void ServerMarkWet(float seconds) => _wetUntil = Mathf.Max(_wetUntil, Time.time + seconds);
+        public bool IsWet => Time.time < _wetUntil;
 
         // 소유 클라 표시용 풀
         private readonly List<(Transform t, float bornAt, float life)> _dots = new();
@@ -61,6 +66,7 @@ namespace RatGame.Player
         private float ComputeStrength()
         {
             if (CarriesEdible()) return _balance.ScentEdible;
+            if (IsWet) return _balance.ScentWet; // 젖은 발자국 — 치즈 없이도
             if (Time.time >= _nextCatPoll)
             {
                 _nextCatPoll = Time.time + 0.5f;

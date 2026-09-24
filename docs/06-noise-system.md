@@ -67,6 +67,7 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 | 원인 | 강도 | 간격 |
 |---|---|---|
 | 치즈류(Edible) 들기·주머니 | 60 | 1.5m (웅크리면 3m) |
+| 웅덩이를 지나 젖음(20s) | 40 | 동일 — 치즈 없이도 (2026-09-24) |
 | 고양이에게 찍힘(앙심) | 20 | 동일 |
 
 리스너는 고양이 Track 상태(docs/07). 쥐 본인에게만 노란 점 표시.
@@ -77,3 +78,6 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 - `NoiseSystem.Emit(pos, loudness, type, ulong? source)`: 플레이어 소리(발소리·찍찍·착지·헐떡임·숨기)는 소유자 귀속, 환경음은 null.
 - 물건 충돌·깨짐: `CarryableItem.AttributedClient` — 들고 있으면 첫 캐리어, 놓은·던진 지 `noiseAttributionSeconds`(3s) 안이면 마지막 캐리어, 그 밖 null.
 - 쓰는 곳: 고양이 앙심(docs/07), 찍힌 쥐 청각 배율.
+
+### 물그릇·웅덩이 (2026-09-24, `World/WaterBowl`)
+- 쥐가 E 1s로 엎음(1회, 소음 30·엎은 쥐 귀속) → 반경 2.5m 웅덩이 60s. 웅덩이 안 쥐는 20s 젖음(자국 40), 웅덩이 안 냄새 자국은 매 프레임 지워진다(`ScentSystem.EraseInRadius`) — 양날의 도구.

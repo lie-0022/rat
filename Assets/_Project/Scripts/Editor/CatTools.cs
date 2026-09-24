@@ -170,6 +170,19 @@ namespace RatGame.Editor
                 hs.EditorSetup(hideBalance, label, cap);
             }
 
+            // 물그릇 (design/cat-ideas/06 2단계) — 물 스팟 옆, 엎으면 웅덩이
+            if (GameObject.Find("WaterBowl") == null)
+            {
+                var bowl = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                bowl.name = "WaterBowl"; bowl.transform.SetParent(root.transform);
+                bowl.transform.position = new Vector3(11.8f, 0.1f, 16f);
+                bowl.transform.localScale = new Vector3(0.6f, 0.1f, 0.6f);
+                var wr = bowl.GetComponent<Renderer>();
+                wr.sharedMaterial = new Material(wr.sharedMaterial) { color = new Color(0.4f, 0.6f, 0.95f) };
+                bowl.AddComponent<Unity.Netcode.NetworkObject>();
+                bowl.AddComponent<WaterBowl>().EditorSetup(hideBalance);
+            }
+
             // 초인종 (design/cat-ideas/13) — 서쪽 문 옆, 런당 1회
             if (GameObject.Find("Doorbell") == null)
             {

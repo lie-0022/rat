@@ -76,6 +76,20 @@ namespace RatGame.Noise
             return ok;
         }
 
+        /// <summary>반경 안 자국을 지운다 (웅덩이·후추 등). 지운 개수 반환.</summary>
+        public static int EraseInRadius(Vector3 pos, float radius)
+        {
+            int n = 0; float r2 = radius * radius;
+            for (int i = 0; i < _marks.Length; i++)
+            {
+                if (!_marks[i].Valid) continue;
+                Vector3 d = _marks[i].Pos - pos; d.y = 0f;
+                if (d.sqrMagnitude > r2) continue;
+                _marks[i].Valid = false; n++;
+            }
+            return n;
+        }
+
         /// <summary>같은 쥐가 afterSeq 다음에 남긴 자국(가장 이른 것).</summary>
         public static bool NextInTrail(ulong source, int afterSeq, float minStrength, out ScentMark found)
         {
