@@ -82,6 +82,7 @@ namespace RatGame.Run
                 ZonePopulator.Spawn(_zone.ShopCounterPrefab, at, Quaternion.LookRotation(at - depot.position));
             }
 
+            AddPipeAmbushSpots(); // 고양이 스폰(채우기) 전에 — 고양이가 스폰 때 스팟을 모은다
             var rooms = new List<RoomModule>();
             foreach (var r in Layout.Rooms) rooms.Add(r.GetComponent<RoomModule>());
             if (pop != null)

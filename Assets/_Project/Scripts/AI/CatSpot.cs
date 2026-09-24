@@ -17,6 +17,9 @@ namespace RatGame.AI
         public CatSpotType Type => _type;
         public float Weight => _weight;
 
+        /// <summary>호스트: 런타임에 만든 스팟 (벽 속 배관 입구 매복 — 고양이 115). 고양이가 스팟을 모으기 전에 불러야 한다.</summary>
+        public void ServerSetup(CatSpotType type, float weight) { _type = type; _weight = weight; }
+
 #if UNITY_EDITOR
         public void EditorSetup(CatSpotType type, float weight) { _type = type; _weight = weight; }
 

@@ -19,6 +19,34 @@ namespace RatGame.Run
             if (kitten.ServerMakeKitten()) Log.Dev($"벽 속: 스테이지 {stage} — {kitten.name}를 아기로 (엄마·아기)");
         }
 
+        // 배관 입구 옆 매복 (고양이 115): 쥐 구멍 옆 벽에 붙어 기다리는 고양이 — 기존 매복(꼬리만 보임) 그대로.
+        // 입구 바로 앞은 막지 않게 옆으로 1m, 입구를 본다
+        private void AddPipeAmbushSpots()
+        {
+            if (_zone.PipeAmbushWeight <= 0f) return;
+            int made = 0;
+            foreach (var c in Layout.Corridors)
+            {
+                var pipe = c.GetComponent<World.PipeEcho>();
+                if (pipe == null) continue;
+                pipe.Mouths(out var a, out var b);
+                Vector3 along = (b - a); along.y = 0f; along.Normalize();
+                Vector3 side = Vector3.Cross(Vector3.up, along);
+                foreach (var (mouth, outward) in new[] { (a, -along), (b, along) })
+                {
+                    Vector3 p = mouth + outward * 0.6f + side * 1.0f;
+                    if (!UnityEngine.AI.NavMesh.SamplePosition(p, out var hit, 0.8f, UnityEngine.AI.NavMesh.AllAreas)) continue;
+                    var spot = new GameObject("PipeAmbush").transform;
+                    Vector3 look = mouth - hit.position; look.y = 0f;
+                    spot.SetPositionAndRotation(hit.position, Quaternion.LookRotation(look.sqrMagnitude > 0.01f ? look : outward));
+                    spot.SetParent(c.transform, true);
+                    spot.gameObject.AddComponent<AI.CatSpot>().ServerSetup(AI.CatSpotType.Ambush, _zone.PipeAmbushWeight);
+                    made++;
+                }
+            }
+            if (made > 0) Log.Dev($"벽 속: 배관 입구 매복 자리 {made}");
+        }
+
         // 오늘의 집 — 맵 모양과 따로 굴린다(같은 시드면 같은 맵, 조건만 스테이지 확률) (고양이 106)
         /// <summary>테스트용 — 설정하면 다음 맵 한 번 이 조건 (F4 메뉴·테스트 스크립트).</summary>
         public static StageModifier? DevForceModifier;

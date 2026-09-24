@@ -43,6 +43,7 @@ namespace RatGame.Data
         public float TrapSaleBonus = 0.2f;       // 덫 대방출 — 함정 비율 더하기
         public float TreatsCatSpeed = 0.85f;     // 고양이 간식 날 — 고양이 이동 배율
         public int BusyExtraEvents = 2;          // 분주한 집 — 집주인 사건 더하기
+        public float PipeAmbushWeight = 0.5f;    // 배관 입구 옆 매복 스팟 가중 (고양이 115) — 0이면 안 만듦
         public bool TreasureRoom = true;        // 가장 먼 막다른 방 = 보물방 (전리품 전부·대형 ×3·함정 전부, 고양이 84)
         public float TreasureTrapRatio = 1f;
         public float TreasureBigWeight = 8f;    // 보물방 대형·특수 가중 (v1 보너스방 3보다 세게 — 작은 방도 비싸 보이게)
