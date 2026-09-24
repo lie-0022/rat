@@ -66,6 +66,7 @@ foreach player(Active만):
 ```
 
 - 어둠: 방의 LightZone 볼륨(트리거) 안이면 viewDistance 50% — "어두운 곳이 안전"을 시스템으로.
+  - 구현 (2026-09-24, `World/LightZone`): 판정은 **쥐 위치** 기준(고양이는 밝은 곳에 있어도 된다). 배율 `catDarkViewMultiplier` 0.5, 웅크림과 곱 — 어둠+웅크림 = 8m × 0.25 = 2m(사냥꾼 ×1.3 → 2.6m). `Lit` NV가 켜지면 어둠이 아니다(불 켜짐 이벤트). 바닥의 어두운 판이 곧 표시(Lit이면 숨김). 데모 레이아웃: 동쪽 (13,0,-2) 8×8.
 - 게이지는 자극 없을 때 -20/s. NetworkVariable로 복제 → 타깃 플레이어 HUD에 "?"/"!" 표시.
   - HUD 구현 (2026-09-16, `UI/SuspicionIndicatorWidget`): **나를 쫓는 고양이**(Chase && TargetClientId == 나) → 빨간 "!", 없으면 **가장 가까운 Suspicious 고양이** → 주황 "?" + 게이지(Gauge/chaseThreshold). 의심은 "지점"에 대한 것이라 타깃이 없어 누구에게나 보인다. 남을 쫓는 고양이는 표시 안 함. 주의: TargetClientId 기본값 0 = 호스트 Id — Chase가 아닐 때만 0이 쓰이므로 State와 함께 읽어야 한다.
 

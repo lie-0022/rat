@@ -35,6 +35,7 @@
 | 장소 기억·앙심 | 들킨 자리 킁킁, 놓침·찍찍·깨뜨림·유인 속음 → 찍힘("!!"·팀 칩), 치즈 뇌물로 풀기 | CatBrain.Memory·Bribe |
 | 소음 귀속 | 누가 낸 소리인지(`HasSource`) — 호스트 id 0과 환경음 구분 | NoiseSystem, CarryableItem.AttributedClient |
 | 냄새 | 치즈 60·젖음 40·찍힘 20 자국, 본인만 노란 점, 물웅덩이·고양이 침대로 지우기/덮기 | ScentSystem, PlayerScent, WaterBowl |
+| 어둠 구역 | 꺼진 LightZone 속 쥐는 고양이 시야 절반(웅크리면 1/4) — 바닥 어두운 판 | LightZone |
 | 숨을 곳 | 장화·빈 상자, 나올 때 소리, 고양이가 입구 막기 | HideSpot |
 | 경계도 디렉터 | 잘 풀리면 예민(Build-up)·몰리면 숨 돌리기(Relief)·귀환 땐 쥐구멍 경계(Finale) — 감각 수치는 안 건드림 | RunDirector, CatBrain.Director |
 | 집주인 이벤트 | 부르기·밥 시간·초인종(쥐가 유발)·로봇청소기(소리 마스킹·물건 밀기·고양이 피신)·TV(고양이가 TV만 봄 — 등 뒤 통과) | HouseEventDirector, Doorbell, RobotVacuum, TvSet |

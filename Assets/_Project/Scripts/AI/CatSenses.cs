@@ -10,7 +10,7 @@ namespace RatGame.AI
     /// <summary>
     /// 고양이 감각 (docs/07, 호스트 전용). 시야 0.2s 틱 + NoiseSystem 청각 구독 → 의심 게이지.
     /// 게이지는 NetworkVariable — 타깃 HUD "?"/"!" 표시는 UI 태스크(2-6).
-    /// LightZone(어둠 50%)은 방 모듈 생기는 2-1에서.
+    /// 어둠: 쥐가 꺼진 LightZone 안이면 시야 거리 × catDarkViewMultiplier (2026-09-24, 고양이 31).
     /// 세 번째 감각 — 움직임(2026-09-24, design/cat-ideas/03): 시야 안에서 굴러가는 풀린 물건 → CuriosityTarget.
     /// </summary>
     public class CatSenses : NetworkBehaviour
@@ -117,6 +117,7 @@ namespace RatGame.AI
                 // 웅크림(동기화 스케일)이면 시야 거리 절반 (docs/07)
                 bool crouching = playerObj.transform.localScale.y < Player.PlayerController.BaseScaleY * 0.75f;
                 float viewDist = (ViewDistanceOverride ?? _balance.CatViewDistance) * (crouching ? _balance.CatCrouchViewMultiplier : 1f)
+                                 * (World.LightZone.IsDark(playerObj.transform.position) ? _balance.CatDarkViewMultiplier : 1f)
                                  * SensitivityMultiplier * ViewMultiplier;
                 if (dist > viewDist) continue;
                 if (Vector3.Angle(transform.forward, toPlayer) > (ViewHalfAngleOverride ?? _balance.CatViewHalfAngle)) continue;

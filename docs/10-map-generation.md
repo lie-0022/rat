@@ -19,7 +19,7 @@ public class RoomModule : MonoBehaviour
     public HideSpot[] HideSpots;        // 1~2개 — 장화·빈 상자·커튼 등 쥐가 숨는 곳(정원 1~2). 없으면 추격의 탈출구가 달리기뿐 (2026-09-24, docs/07 Search)
     public Transform CatSpawn;          // 없으면 이 방엔 고양이 배정 안 함
     public Transform[] TrapSpawns;      // 2~4개
-    public LightZone[] DarkZones;       // 어두운 영역 (07 시야 감쇠)
+    public LightZone[] DarkZones;       // 어두운 영역 (07 시야 감쇠) — World/LightZone (2026-09-24): BoxCollider 트리거 + NetworkObject, 바닥 판 렌더러
     public NavMeshModifier[] navMods;   // 베이크 대상
 }
 ```

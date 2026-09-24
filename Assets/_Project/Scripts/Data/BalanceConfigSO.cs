@@ -94,6 +94,7 @@ namespace RatGame.Data
         [SerializeField] private float _catReturnSpeed = 2f;
         [SerializeField] private float _catViewDistance = 8f;
         [SerializeField, Range(0f, 1f)] private float _catCrouchViewMultiplier = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float _catDarkViewMultiplier = 0.5f; // 어둠 구역(LightZone) 속 쥐 (docs/07)
         [SerializeField] private float _catViewHalfAngle = 35f; // 시야각 70°
         [SerializeField] private float _catGazeGainPerSec = 60f;
         [SerializeField] private float _catGaugeDecayPerSec = 20f;
@@ -404,6 +405,7 @@ namespace RatGame.Data
         public float CatReturnSpeed => _catReturnSpeed;
         public float CatViewDistance => _catViewDistance;
         public float CatCrouchViewMultiplier => _catCrouchViewMultiplier;
+        public float CatDarkViewMultiplier => _catDarkViewMultiplier;
         public float CatViewHalfAngle => _catViewHalfAngle;
         public float CatGazeGainPerSec => _catGazeGainPerSec;
         public float CatGaugeDecayPerSec => _catGaugeDecayPerSec;

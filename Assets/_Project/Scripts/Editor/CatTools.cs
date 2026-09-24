@@ -170,6 +170,28 @@ namespace RatGame.Editor
                 hs.EditorSetup(hideBalance, label, cap);
             }
 
+            // 어둠 구역 (docs/07, 고양이 31) — 동쪽 8×8. 바닥의 어두운 판이 표시
+            if (GameObject.Find("DarkZone_East") == null)
+            {
+                var dz = new GameObject("DarkZone_East");
+                dz.transform.SetParent(root.transform);
+                dz.transform.position = new Vector3(13f, 0f, -2f);
+                dz.layer = LayerMask.NameToLayer("Ignore Raycast");
+                var box = dz.AddComponent<BoxCollider>();
+                box.isTrigger = true; box.center = new Vector3(0f, 1.5f, 0f); box.size = new Vector3(8f, 3f, 8f);
+                var mark = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                mark.name = "DarkFloor"; mark.transform.SetParent(dz.transform, false);
+                mark.transform.localPosition = new Vector3(0f, 0.02f, 0f);
+                mark.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+                mark.transform.localScale = new Vector3(8f, 8f, 1f);
+                Object.DestroyImmediate(mark.GetComponent<Collider>());
+                var mr = mark.GetComponent<Renderer>();
+                mr.sharedMaterial = new Material(mr.sharedMaterial) { color = new Color(0.04f, 0.04f, 0.1f) };
+                mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                dz.AddComponent<Unity.Netcode.NetworkObject>();
+                dz.AddComponent<LightZone>().EditorSetup(mr);
+            }
+
             // TV (design/cat-ideas/10) — 남쪽 벽 앞, 화면은 북쪽(+z)을 본다
             if (GameObject.Find("TvSet") == null)
             {
