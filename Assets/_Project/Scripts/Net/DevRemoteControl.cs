@@ -13,6 +13,8 @@ namespace RatGame.Net
     ///   walk:x,z        : 월드 방향으로 계속 걷기 (DevForcedInput)
     ///   stop            : 걷기 중지
     ///   crouch / stand  : 웅크리기 켜기·끄기 (DevForcedCrouch, 쥐덫 미끼 검증 — 고양이 129)
+    ///   report          : 이 클라에서 보이는 모든 쥐의 위치·키(스케일) 로그 (고양이 137)
+    ///   trace:초        : 이 클라에서 호스트 쥐 움직임을 매 프레임 재서 요약 — 프레임 간 최대 이동·튐 횟수 (보간 확인, 고양이 137)
     ///   tp:x,y,z        : 소유 클라에서 순간이동 (InvariantCulture 소수점)
     /// 협동 운반처럼 두 플레이어가 동시에 움직여야 하는 검증에 쓴다. 릴리즈엔 영향 없음(호출부 없음).
     /// </summary>
@@ -59,6 +61,15 @@ namespace RatGame.Net
             {
                 PlayerController.DevForcedCrouch = command == "crouch";
             }
+            else if (command == "report")
+            {
+                foreach (var p in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None))
+                    Log.Dev($"[DevRC] report: client {p.OwnerClientId} 위치 {p.transform.position:F2} 키 {p.transform.localScale.y:F2} 상태 {p.State.Value}");
+            }
+            else if (command.StartsWith("trace:") && float.TryParse(command.Substring(6), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float secs))
+            {
+                StartCoroutine(TraceHost(secs));
+            }
             else if (command.StartsWith("tp:"))
             {
                 // 소유 클라에서 직접 이동 — 호스트가 원격 플레이어를 옮기면 소유자 위치가 곧 덮어써서 테스트가 거짓이 된다
@@ -74,6 +85,27 @@ namespace RatGame.Net
                     transform.position = pos;
                 }
             }
+        }
+
+        // 원격(호스트) 쥐가 이 화면에서 끊겨 보이는지 — 매 프레임 이동량. 튐 = 한 프레임에 0.5m 넘게
+        private System.Collections.IEnumerator TraceHost(float seconds)
+        {
+            Transform host = null;
+            foreach (var p in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None)) if (p.OwnerClientId == 0) host = p.transform;
+            if (host == null) { Log.Dev("[DevRC] trace: 호스트 쥐 없음"); yield break; }
+            Vector3 last = host.position; float maxStep = 0f, total = 0f, maxY = last.y; int frames = 0, pops = 0, still = 0;
+            float end = Time.time + seconds;
+            while (Time.time < end)
+            {
+                yield return null;
+                float step = Vector3.Distance(host.position, last);
+                maxStep = Mathf.Max(maxStep, step); total += step; frames++;
+                if (step > 0.5f) pops++;
+                if (step < 0.0001f) still++;
+                maxY = Mathf.Max(maxY, host.position.y);
+                last = host.position;
+            }
+            Log.Dev($"[DevRC] trace: {frames}프레임, 이동 {total:F2}m, 프레임 최대 {maxStep:F3}m, 튐 {pops}, 멈춘 프레임 {still}, 최고 y {maxY:F2}");
         }
     }
 }
