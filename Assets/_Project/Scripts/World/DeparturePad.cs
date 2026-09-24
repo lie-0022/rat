@@ -17,7 +17,9 @@ namespace RatGame.World
     public class DeparturePad : NetworkBehaviour
     {
         [SerializeField] private BalanceConfigSO _balance;
-        [SerializeField] private string _stageScene = "Stage_Warehouse01";
+        // 목적지 목록 (고양이 59) — 0번이 기본. 기지 목적지 게시판(StageBoard)으로 돌린다
+        [SerializeField] private string[] _stageScenes = { "Stage_Warehouse01", "Stage_Generated" };
+        [SerializeField] private string[] _stageNames = { "창고", "부엌(생성)" };
 
         public NetworkVariable<int> ReadyCount = new(0);
         public NetworkVariable<int> NeededCount = new(0);
@@ -25,6 +27,10 @@ namespace RatGame.World
         public NetworkVariable<double> DepartAt = new(0);   // 카운트다운 끝 (ServerTime)
         /// <summary>기지 화면 누계 표시용 — 저장값은 호스트에만 있어 클라가 읽도록 복제.</summary>
         public NetworkVariable<int> TotalValue = new(0);
+        /// <summary>출발할 스테이지 (_stageScenes 인덱스). 클라도 게시판·RunBar에 이름을 띄운다.</summary>
+        public NetworkVariable<int> Destination = new(0);
+
+        public string DestinationName => _stageNames != null && Destination.Value >= 0 && Destination.Value < _stageNames.Length ? _stageNames[Destination.Value] : "?";
 
         private BoxCollider _box;
         private bool _departing;
@@ -34,6 +40,7 @@ namespace RatGame.World
             _box = GetComponent<BoxCollider>();
             if (!IsServer) { enabled = false; return; } // 클라는 NetworkVariable만 읽는다
             TotalValue.Value = RunSession.TotalValue;
+            Destination.Value = Mathf.Clamp(RunSession.StageChoice, 0, _stageScenes.Length - 1);
             NetworkManager.SceneManager.OnLoadEventCompleted += OnBaseLoaded;
         }
 
@@ -81,6 +88,16 @@ namespace RatGame.World
             }
         }
 
+        /// <summary>호스트: 목적지를 다음 것으로. 카운트다운 중엔 안 바뀐다 (발판 위 동료가 모르는 곳으로 가지 않게).</summary>
+        public bool ServerCycleDestination()
+        {
+            if (!IsServer || Counting.Value || _departing || _stageScenes.Length < 2) return false;
+            Destination.Value = (Destination.Value + 1) % _stageScenes.Length;
+            RunSession.StageChoice = Destination.Value;
+            Log.Dev($"목적지: {DestinationName} ({_stageScenes[Destination.Value]})");
+            return true;
+        }
+
         private void Depart()
         {
             _departing = true;
@@ -91,8 +108,9 @@ namespace RatGame.World
                 if (carry != null) carry.ServerForceDrop(); // 기지 연습용 물건이 스테이지로 따라가지 않게
             }
             RunSession.DepartPending = true;
-            Log.Dev($"출발 → {_stageScene} (누계 {RunSession.TotalValue})");
-            NetworkManager.SceneManager.LoadScene(_stageScene, LoadSceneMode.Single);
+            string scene = _stageScenes[Mathf.Clamp(Destination.Value, 0, _stageScenes.Length - 1)];
+            Log.Dev($"출발 → {scene} (누계 {RunSession.TotalValue})");
+            NetworkManager.SceneManager.LoadScene(scene, LoadSceneMode.Single);
         }
     }
 }

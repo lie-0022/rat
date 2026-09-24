@@ -32,6 +32,8 @@ namespace RatGame.Data
         [SerializeField] private float _coyoteTime = 0.1f;
         [SerializeField] private float _jumpBuffer = 0.1f;
         [SerializeField] private float _rotationSlerp = 12f;
+        [SerializeField] private float _teleportGroundWaitSeconds = 5f; // 텔레포트 지점에 바닥이 아직 없으면(생성 스테이지 방 스폰 전) 이만큼 제자리 대기 (고양이 59)
+        [SerializeField] private float _fallRescueY = -10f;             // 이보다 떨어지면 가까운 시작 위치로 (맵 밖 낙하 안전망)
 
         [Header("운반 (docs/05)")]
         [SerializeField] private float _grabSpring = 600f;
@@ -408,6 +410,8 @@ namespace RatGame.Data
         public float CoyoteTime => _coyoteTime;
         public float JumpBuffer => _jumpBuffer;
         public float RotationSlerp => _rotationSlerp;
+        public float TeleportGroundWaitSeconds => _teleportGroundWaitSeconds;
+        public float FallRescueY => _fallRescueY;
 
         public float GrabSpring => _grabSpring;
         public float GrabDamper => _grabDamper;

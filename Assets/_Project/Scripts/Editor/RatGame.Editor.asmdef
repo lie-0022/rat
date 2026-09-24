@@ -4,7 +4,8 @@
     "references": [
         "RatGame.Runtime",
         "Unity.Netcode.Runtime",
-        "Unity.AI.Navigation"
+        "Unity.AI.Navigation",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"

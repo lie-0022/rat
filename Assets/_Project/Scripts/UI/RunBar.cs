@@ -103,7 +103,7 @@ namespace RatGame.UI
             else
                 SetText(_mainText, $"출발 발판에 모이면 출발   {_pad.ReadyCount.Value}/{_pad.NeededCount.Value}");
 
-            ShowSub($"누계 {_pad.TotalValue.Value}", false);
+            ShowSub($"누계 {_pad.TotalValue.Value}   목적지 {_pad.DestinationName}", false);
             SetVisible(true, false, true);
         }
 

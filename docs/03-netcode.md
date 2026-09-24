@@ -102,7 +102,7 @@ public class SteamLobbyService
 | CarryableItem | CarrierIds (최대4), Durability | NetworkList<ulong>, float |
 | CatBrain | State, TargetClientId | enum, ulong |
 | CatSenses | SuspicionGauge (0~catChaseThreshold — HUD 의심 표시 게이지, docs/07·12) | float |
-| DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue | int, int, bool, double, int |
+| DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue, Destination (목적지 인덱스, 고양이 59) | int, int, bool, double, int, int |
 
 - RPC만 쓰는 것 (NetworkVariable 없음): `PlayerPing` 핑 — 소유 클라 `PingServerRpc(pos)` → 서버 쿨다운 확인 → `PingClientRpc(pos)` 전원 (표시용, 위치 검증 없음, docs/04).
 
@@ -110,6 +110,7 @@ public class SteamLobbyService
 
 - 호스트: `NetworkManager.SceneManager.LoadScene("Stage_Warehouse01", Single)` → 클라 자동 로드.
 - 방 모듈 스폰(10 문서)은 씬 로드 완료 이벤트(OnLoadEventCompleted) 후 호스트가 NetworkObject.Spawn.
+  - **실측 (2026-09-24 고양이 59)**: 씬 로드 중(씬 오브젝트의 OnNetworkSpawn)에 스폰한 오브젝트는 로딩 중인 클라에 가지 않는다 — 클라 로그에 `[Deferred OnSpawn] ... NetworkObject was not received within the timeout` 경고, 방이 없어 쥐가 허공 낙하. 그래서 `ZoneBuilder`는 기지에서 출발한 경우(RunSession.DepartPending) 로드 완료 뒤에 짓는다. 씬 직접 플레이는 로드 이벤트가 없어 바로 짓는다.
 - 시드는 RunManager NetworkVariable로 전달 → 클라는 스폰 결과를 받기만 함 (직접 생성 안 함).
 
 ## 접속 해제 처리 (v1 최소 사양)

@@ -15,6 +15,9 @@ namespace RatGame.Run
         /// <summary>기지 발판으로 스테이지 씬을 연 경우 — 전원 로드 완료 시 자동 출발.</summary>
         public static bool DepartPending { get; set; }
 
+        /// <summary>기지 목적지 게시판에서 고른 스테이지 (DeparturePad 인덱스). 기지 씬은 귀환 때마다 새로 로드돼서 여기 둔다.</summary>
+        public static int StageChoice { get; set; }
+
         /// <summary>귀환 정산분을 누계에 더하고 바로 저장.</summary>
         public static void AddHaul(int haul)
         {
@@ -23,6 +26,6 @@ namespace RatGame.Run
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetOnPlay() => DepartPending = false;
+        private static void ResetOnPlay() { DepartPending = false; StageChoice = 0; }
     }
 }

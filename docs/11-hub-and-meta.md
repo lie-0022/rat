@@ -12,6 +12,12 @@
 2. 스테이지 씬 `Stage_Warehouse01` (맵 1개, 구역 3개는 6단계)
 3. 기지 출발 발판(`World/DeparturePad`, 호스트 권한): 다운 안 된 전원이 발판 위 → departCountdownSeconds 카운트다운(이탈 시 취소) → 스테이지 씬 로드 → RunManager가 전원 로드 완료(OnLoadEventCompleted) 후 PlayerSpawn으로 순간이동(소유 클라 RPC) + 자동 출발. 집합 판정은 쥐구멍 귀환과 공용(`World/GatherCheck`) / 4. 귀환·전멸 → 결과 화면 뒤 기지 로드 (전원 드랍·상태 초기화, 기지 도착 시 PlayerSpawn으로 이동 — `Player/PlayerPlacement` 공용) / 5. 기지 누계 표시 (`DeparturePad.TotalValue` 복제 — 저장값, 스테이지 번호 없음)
 
+### 목적지 게시판 (2026-09-24, 고양이 59)
+
+- `World/StageBoard` (동쪽 벽 앞 (5.2, 0, 3.5), `Tools/RatGame/Hub/Add Stage Board`): E로 출발 발판의 목적지를 돌린다. **창고**(Stage_Warehouse01, 손으로 만든 데모 맵 — 고양이 기능 전시) ↔ **부엌(생성)**(Stage_Generated, 존 생성기 docs/10). 기본은 창고.
+- `DeparturePad.Destination` NV + `_stageScenes`/`_stageNames` 목록. 카운트다운 중엔 안 바뀐다(발판 위 동료가 모르는 곳으로 가지 않게). 고른 값은 `RunSession.StageChoice`에 남아 귀환 뒤 기지에서도 유지.
+- 표시: 게시판 글씨(각자 NV를 읽어 그림) + RunBar 보조 줄 `누계 N   목적지 X`.
+
 ## 상점 = 자판기 (2026-09-14 구현 — 스탯 업그레이드)
 
 - `World/VendingMachine` (NetworkObject, IInteractable "상점", 홀드 0) — 기지 서쪽 벽 앞. E로 열면 그 클라에만 `UI/ShopPanel`(uGUI) 표시. 열면 커서 해제(시선·클릭은 lockState로 자동 정지), Esc/닫기로 잠금.

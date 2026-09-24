@@ -33,8 +33,26 @@ namespace RatGame.Run
         public override void OnNetworkSpawn()
         {
             if (!IsServer || _zone == null) return;
-            Build(_fixedSeed != 0 ? _fixedSeed : Random.Range(1, int.MaxValue), 0);
+            // 기지에서 출발해 씬을 로드하는 중이면 클라가 아직 로딩 중 — 이때 스폰한 오브젝트는 클라에 안 간다
+            // (NGO가 버림: 방·전리품 없이 허공에 섬, 고양이 59). 전원 로드 완료 뒤에 만든다. 씬 직접 플레이는 바로.
+            if (RunSession.DepartPending) NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
+            else BuildNow();
         }
+
+        public override void OnNetworkDespawn()
+        {
+            if (IsServer && NetworkManager != null && NetworkManager.SceneManager != null)
+                NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(string sceneName, UnityEngine.SceneManagement.LoadSceneMode mode, List<ulong> completed, List<ulong> timedOut)
+        {
+            if (sceneName != gameObject.scene.name) return;
+            NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
+            BuildNow();
+        }
+
+        private void BuildNow() => Build(_fixedSeed != 0 ? _fixedSeed : Random.Range(1, int.MaxValue), 0);
 
         private void Build(int seed, int zoneIndex)
         {
