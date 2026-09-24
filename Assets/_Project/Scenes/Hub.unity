@@ -2138,9 +2138,11 @@ MonoBehaviour:
   _stageScenes:
   - Stage_Warehouse01
   - Stage_Generated
+  - Stage_Walls
   _stageNames:
   - "\uCC3D\uACE0"
   - "\uBD80\uC5CC(\uC0DD\uC131)"
+  - "\uBCBD \uC18D(\uC0DD\uC131)"
   ReadyCount:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0

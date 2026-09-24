@@ -23,6 +23,9 @@ namespace RatGame.Player
         /// <summary>카메라 수평 회전 — 몸 방향의 원천 (PlayerController가 매 FixedUpdate 맞춤).</summary>
         public float Yaw => _yaw;
 
+        /// <summary>시선을 이 방향으로 (스테이지 시작 자리·개발 메뉴 이동). 소유 클라만.</summary>
+        public void SnapYaw(float yaw) { _yaw = yaw; _pitch = 0f; }
+
         private const float EyeHeight = 0.45f;     // 캡슐 중심 기준 (월드) — 머리 꼭대기 바로 아래
         private const float EyeForward = 0.12f;    // 캡슐 앞면 근처 — 자기 콜라이더 안쪽에서 렌더 안 되게
         private const float Sensitivity = 0.15f;

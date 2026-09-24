@@ -25,10 +25,9 @@ namespace RatGame.Player
                 if (controller == null) continue;
                 var point = points[i++ % points.Length].transform;
                 // 이동은 소유 클라 권한 — 소유자에게만 보내 직접 옮기게 한다
-                controller.TeleportClientRpc(point.position, point.rotation, new ClientRpcParams
-                {
-                    Send = new ClientRpcSendParams { TargetClientIds = new[] { client.ClientId } }
-                });
+                var target = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { client.ClientId } } };
+                controller.TeleportClientRpc(point.position, point.rotation, target);
+                controller.FaceClientRpc(point.rotation.eulerAngles.y, target); // 시작 자리 방향을 보게 (벽 속 출발방은 문 쪽)
             }
         }
     }

@@ -115,6 +115,15 @@ namespace RatGame.Player
             if (!ground) Log.Dev($"텔레포트 → {position:F1} 바닥 없음 — 생길 때까지 기다림"); // 다운 몸·물고 가기는 매 프레임 부르니 평소엔 조용히
         }
 
+        /// <summary>시선 돌리기 — 1인칭 시선이 몸 방향을 정해서 텔레포트 회전만으론 안 돈다. 배치할 때만 (매 프레임 텔레포트엔 안 씀).</summary>
+        [Unity.Netcode.ClientRpc]
+        public void FaceClientRpc(float yaw, ClientRpcParams rpcParams = default)
+        {
+            if (!IsOwner) return;
+            var rig = GetComponent<PlayerCameraRig>();
+            if (rig != null) rig.SnapYaw(yaw);
+        }
+
         private void Place(Vector3 position, Quaternion rotation)
         {
             _rb.linearVelocity = Vector3.zero;

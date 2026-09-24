@@ -31,6 +31,9 @@ namespace RatGame.Run
         public int CatsSpawned { get; private set; }
         public int HidesSpawned { get; private set; }
         public int DarkSpawned { get; private set; }
+        public ZonePopulator Populator { get; private set; }
+        public Vector3? RingPos => Populator?.RingPos;
+        public Vector3 RingAnchor => Populator != null ? Populator.RingAnchor : default;
 
         public override void OnNetworkSpawn()
         {
@@ -74,166 +77,16 @@ namespace RatGame.Run
 
             var first = Layout.Rooms[0];
             if (_zone.RatHolePrefab != null && first.RatHole != null)
-                Spawn(_zone.RatHolePrefab, first.RatHole.position + Vector3.up * 0.15f, first.RatHole.rotation);
+                ZonePopulator.Spawn(_zone.RatHolePrefab, first.RatHole.position + Vector3.up * 0.15f, first.RatHole.rotation);
 
-            SpawnLoot(rooms, rng, zoneIndex);
-            if (_zone.LootTable != null && _zone.LootTable.Entries != null) SpawnRing(rooms, rng);
-            SpawnTraps(rooms, rng);
-            SpawnHidesAndDark(rooms, rng); // 고양이보다 먼저 — 고양이가 스폰 때 상자 입구 스팟을 모은다
-            SpawnCats(rooms, rng);
+            Populator = new ZonePopulator(_zone, rooms, Layout.Rooms[0], Layout.BonusRoom);
+            Populator.PopulateAll(rng, zoneIndex);
+            LootSpawned = Populator.LootSpawned; LootValue = Populator.LootValue; TrapsSpawned = Populator.TrapsSpawned;
+            CatsSpawned = Populator.CatsSpawned; HidesSpawned = Populator.HidesSpawned; DarkSpawned = Populator.DarkSpawned;
             PlayerPlacement.TeleportAllToSpawns(); // 직접 플레이(기지를 안 거침)에서도 쥐구멍방에 서게
             Log.Dev($"존 스폰: 시드 {seed} — 방 {rooms.Count}, 전리품 {LootSpawned}개(가치 {LootValue}), 함정 {TrapsSpawned}, 숨을 곳 {HidesSpawned}, 어둠 {DarkSpawned}, 고양이 {CatsSpawned}");
         }
 
-        private void SpawnLoot(List<RoomModule> rooms, System.Random rng, int zoneIndex)
-        {
-            var table = _zone.LootTable;
-            if (table == null || table.Entries == null) return;
-            var counts = new Dictionary<LootItemSO, int>();
-            foreach (var room in rooms)
-            {
-                bool bonus = room == Layout.BonusRoom;
-                var points = new List<Transform>(room.LootSpawns);
-                Shuffle(points, rng);
-                int use = Mathf.CeilToInt(points.Count * (bonus ? 1f : table.UseRatio));
-                for (int i = 0; i < use; i++)
-                {
-                    var p = points[i];
-                    bool high = p.position.y > 1f; // 선반 위엔 대형 금지 (docs/10)
-                    var item = PickLoot(table, rng, zoneIndex, bonus, high, counts);
-                    if (item == null || item.Prefab == null) continue;
-                    counts[item] = (counts.TryGetValue(item, out int c) ? c : 0) + 1;
-                    Spawn(item.Prefab, p.position + Vector3.up * (item.Tier == LootTier.Large ? 0.4f : 0.1f), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
-                    LootSpawned++;
-                    LootValue += item.BaseValue;
-                }
-            }
-        }
-
-        // docs/10: 반지는 고양이 잠자리(Bed 스팟) 2m 안 고정 — 고위험 고수익의 상징. Special 전용 규칙이라 ID 하드코딩 허용
-        private const string RingId = "loot_ring";
-
-        /// <summary>이번 존 반지 위치·기준 스팟 (테스트용). 반지 없으면 null.</summary>
-        public Vector3? RingPos { get; private set; }
-        public Vector3 RingAnchor { get; private set; }
-
-        private void SpawnRing(List<RoomModule> rooms, System.Random rng)
-        {
-            LootItemSO ring = null;
-            foreach (var e in _zone.LootTable.Entries) if (e.Item != null && e.Item.Id == RingId && e.Weight > 0) ring = e.Item;
-            if (ring == null || ring.Prefab == null) return;
-            var beds = new List<Vector3>();
-            foreach (var room in rooms)
-                foreach (var spot in room.GetComponentsInChildren<CatSpot>())
-                    if (spot.Type == CatSpotType.Bed) beds.Add(spot.transform.position);
-            // 침대가 없는 존(체인이 짧게 끊긴 경우)은 고양이 시작 자리 옆 — "항상 고양이 옆"
-            if (beds.Count == 0) foreach (var room in rooms) if (room.CatSpawn != null) beds.Add(room.CatSpawn.position);
-            if (beds.Count == 0) { Log.Dev("반지: 침대·고양이 자리 없음 — 이번 존엔 반지 없음"); return; }
-
-            Vector3 anchor = beds[rng.Next(beds.Count)];
-            Vector3 at = anchor;
-            for (int i = 0; i < 8; i++)
-            {
-                float a = (float)rng.NextDouble() * Mathf.PI * 2f, r = 0.8f + (float)rng.NextDouble() * 1.0f;
-                Vector3 p = anchor + new Vector3(Mathf.Cos(a) * r, 0f, Mathf.Sin(a) * r);
-                if (NavMesh.SamplePosition(p, out var hit, 0.4f, NavMesh.AllAreas) && Vector3.Distance(hit.position, anchor) <= 2f) { at = hit.position; break; }
-            }
-            Spawn(ring.Prefab, at + Vector3.up * 0.1f, Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
-            LootSpawned++; LootValue += ring.BaseValue;
-            RingPos = at; RingAnchor = anchor;
-            Log.Dev($"반지: 침대 {anchor:F1} 옆 {Vector3.Distance(at, anchor):0.0}m");
-        }
-
-        private static LootItemSO PickLoot(SpawnTableSO table, System.Random rng, int zoneIndex, bool bonus, bool high, Dictionary<LootItemSO, int> counts)
-        {
-            float total = 0f;
-            var weights = new float[table.Entries.Length];
-            for (int i = 0; i < table.Entries.Length; i++)
-            {
-                var e = table.Entries[i];
-                if (e.Item == null || e.Weight <= 0) continue;
-                if (e.Item.Id == RingId) continue; // 반지는 따로 — 고양이 침대 옆 고정 (SpawnRing)
-                if (e.Max > 0 && counts.TryGetValue(e.Item, out int c) && c >= e.Max) continue;
-                bool big = e.Item.Tier == LootTier.Large || e.Item.Tier == LootTier.Special;
-                if (high && e.Item.Tier == LootTier.Large) continue;
-                float w = e.Weight;
-                if (big) w *= (1f + table.DeepZoneBonusPerIndex * zoneIndex) * (bonus ? 3f : 1f); // 보너스방 = 고가치
-                weights[i] = w; total += w;
-            }
-            if (total <= 0f) return null;
-            float roll = (float)rng.NextDouble() * total;
-            for (int i = 0; i < weights.Length; i++) { roll -= weights[i]; if (roll <= 0f && weights[i] > 0f) return table.Entries[i].Item; }
-            return null;
-        }
-
-        private void SpawnTraps(List<RoomModule> rooms, System.Random rng)
-        {
-            var table = _zone.TrapTable;
-            if (table == null || table.Entries == null || table.Entries.Length == 0) return;
-            int total = 0; foreach (var e in table.Entries) total += Mathf.Max(0, e.Weight);
-            foreach (var room in rooms)
-            {
-                if (room == Layout.Rooms[0]) continue; // 쥐구멍방엔 함정 없음 — 시작하자마자 걸리지 않게
-                foreach (var p in room.TrapSpawns)
-                {
-                    if (rng.NextDouble() >= table.UseRatio || total <= 0) continue;
-                    int roll = rng.Next(total); GameObject prefab = null;
-                    foreach (var e in table.Entries) { roll -= e.Weight; if (roll < 0) { prefab = e.Prefab; break; } }
-                    if (prefab == null) continue;
-                    Spawn(prefab, p.position + Vector3.up * prefab.transform.position.y, Quaternion.Euler(0f, rng.Next(4) * 90f, 0f));
-                    TrapsSpawned++;
-                }
-            }
-        }
-
-        private void SpawnHidesAndDark(List<RoomModule> rooms, System.Random rng)
-        {
-            int hides = 0, dark = 0;
-            foreach (var room in rooms)
-            {
-                if (_zone.HideSpotPrefabs != null && _zone.HideSpotPrefabs.Length > 0 && room.HideSpawns != null)
-                    foreach (var p in room.HideSpawns)
-                    {
-                        var prefab = _zone.HideSpotPrefabs[rng.Next(_zone.HideSpotPrefabs.Length)];
-                        if (prefab == null) continue;
-                        Spawn(prefab, p.position + Vector3.up * prefab.transform.position.y, p.rotation);
-                        hides++;
-                    }
-                if (_zone.DarkZonePrefab != null && room.DarkZone != null && rng.NextDouble() < _zone.DarkZoneChance)
-                {
-                    Spawn(_zone.DarkZonePrefab, room.DarkZone.position, room.DarkZone.rotation);
-                    dark++;
-                }
-            }
-            HidesSpawned = hides; DarkSpawned = dark;
-        }
-
-        private void SpawnCats(List<RoomModule> rooms, System.Random rng)
-        {
-            if (_zone.CatPrefab == null) return;
-            var candidates = new List<RoomModule>();
-            foreach (var r in rooms) if (r.CatSpawn != null) candidates.Add(r);
-            Shuffle(candidates, rng);
-            int n = Mathf.Min(_zone.CatCount, candidates.Count);
-            for (int i = 0; i < n; i++)
-            {
-                Vector3 at = candidates[i].CatSpawn.position;
-                if (NavMesh.SamplePosition(at, out var hit, 2f, NavMesh.AllAreas)) at = hit.position;
-                Spawn(_zone.CatPrefab, at, candidates[i].CatSpawn.rotation);
-                CatsSpawned++;
-            }
-        }
-
-        private static void Spawn(GameObject prefab, Vector3 pos, Quaternion rot)
-        {
-            var go = Instantiate(prefab, pos, rot);
-            go.GetComponent<NetworkObject>().Spawn(true);
-        }
-
-        private static void Shuffle<T>(List<T> list, System.Random rng)
-        {
-            for (int i = list.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); (list[i], list[j]) = (list[j], list[i]); }
-        }
 
 #if UNITY_EDITOR
         public void EditorSetup(ZoneDefinitionSO zone, BalanceConfigSO balance) { _zone = zone; _balance = balance; }

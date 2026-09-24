@@ -141,10 +141,10 @@ namespace RatGame.UI
             Vector3 pos = target.position + away.normalized * 1.6f;
             pos.y = 0.7f; // 바닥 위 (맵이 전부 y=0 바닥)
             Vector3 look = target.position - pos; look.y = 0f;
-            me.GetComponent<PlayerController>().TeleportClientRpc(pos, Quaternion.LookRotation(look.normalized), new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams { TargetClientIds = new[] { me.OwnerClientId } }
-            });
+            var rpc = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { me.OwnerClientId } } };
+            var pc = me.GetComponent<PlayerController>();
+            pc.TeleportClientRpc(pos, Quaternion.LookRotation(look.normalized), rpc);
+            pc.FaceClientRpc(Quaternion.LookRotation(look.normalized).eulerAngles.y, rpc); // 대상을 보고 서게
         }
 
         private static void CatToMe(CatBrain cat)
