@@ -82,6 +82,8 @@ namespace RatGame.UI
                 CatCueKind.Water => "(할짝할짝 — 물 마시러)",
                 CatCueKind.Ambush => "(츄릅… 어디선가)",
                 CatCueKind.KittenCall => "(냐앙! — 아기 고양이가 엄마를 부른다)",
+                CatCueKind.GuardNap => "(쿨쿨… 문지기가 졸고 있다 — 지금!)",
+                CatCueKind.PatrolNap => "(꾸벅꾸벅… 순찰꾼이 잠들었다 — 큰길이 빈다)",
                 _ => null
             };
             if (text == null || text == _lastCue) return;

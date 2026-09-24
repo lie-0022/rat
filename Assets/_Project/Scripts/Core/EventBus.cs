@@ -10,7 +10,7 @@ namespace RatGame.Core
     public enum WorldPanelKind : byte { Shop, Mirror, Codex, StageShop /* 새 루프 목적지 상점 (고양이 65) */ }
     public enum HouseEventPhase : byte { Warn, Start, End }
     /// <summary>고양이 루틴 예고 소리 (design/cat-ideas/02). append-only — RPC로 byte 전송.</summary>
-    public enum CatCueKind : byte { Food, Litter, Sun, Bed, Water, Ambush, KittenCall }
+    public enum CatCueKind : byte { Food, Litter, Sun, Bed, Water, Ambush, KittenCall, GuardNap /* 문지기가 졺 (고양이 101) */, PatrolNap /* 순찰꾼이 졺 */ }
 
     /// <summary>
     /// 로컬 알림 전용 정적 이벤트 버스 (docs/02). 네트워크 동기화는 NGO 담당 — 여기 실으면 안 된다.

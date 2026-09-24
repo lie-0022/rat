@@ -229,6 +229,7 @@ namespace RatGame.AI
                     _movement.Stop();
                     _sleepUntil = Time.time + _balance.CatBedSleepSeconds * SleepDurMul * DirSleepMul * BuddySleepMul(); // 디렉터 Build-up이면 짧게, 짝꿍과 같이면 길게
                     EnterSleepPhase(CatSleepPhase.Light);
+                    RoleNapCue(); // 문지기·순찰꾼이 졸면 근처 쥐에게 — 지나갈 틈 (고양이 101)
                     break;
                 case CatState.Patrol: _waitUntil = 0f; _dwelling = false; break;
                 case CatState.Suspicious:

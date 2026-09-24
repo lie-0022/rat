@@ -44,6 +44,13 @@ namespace RatGame.AI
             return d.sqrMagnitude < 0.25f ? w * _balance.CatGuardPostWeight : w;
         }
 
+        // 역할 고양이가 잠들 때 예고처럼 알린다 — 근처 쥐만 자막으로 (CatCue 거리 규칙)
+        private void RoleNapCue()
+        {
+            if (_isGuard) CatCueClientRpc((byte)CatCueKind.GuardNap, transform.position);
+            else if (_isPatroller) CatCueClientRpc((byte)CatCueKind.PatrolNap, transform.position);
+        }
+
         private int GuardEligibleCount()
         {
             int n = 0;
