@@ -412,6 +412,8 @@ namespace RatGame.AI
         private void ArriveAtSpot()
         {
             var spot = _spots[_spotIndex];
+            // 복귀(NearestSpot)로 도착한 스팟도 "방금 쓴 스팟"으로 — 안 그러면 복귀 → 같은 매복 스팟 → 또 매복이 반복된다 (고양이 21 소크)
+            if (!_recentSpots.Contains(_spotIndex)) _recentSpots.Add(_spotIndex);
             Log.Dev($"고양이 [{name}]: 스팟 도착 {spot.Name} ({spot.Type})");
             switch (spot.Type)
             {
