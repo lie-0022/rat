@@ -33,14 +33,22 @@ namespace RatGame.World
         {
             if (id == ulong.MaxValue || _renderer == null) return;
             // 주인 털빛(팔레트·스킨 포함)을 칙칙하게 — 누가 쓰러졌는지 보인다
-            var owner = NetworkManager.SpawnManager != null ? NetworkManager.SpawnManager.GetPlayerNetworkObject(id) : null;
-            var visual = owner != null ? owner.GetComponent<PlayerVisual>() : null;
+            var visual = FindVisual(id);
             Color fur = visual != null ? visual.CurrentBodyColor : PlayerVisual.ColorFor(id);
             if (fur.a <= 0f) fur = PlayerVisual.ColorFor(id);
             if (_furMaterialIndex >= 0) _renderer.GetPropertyBlock(_block, _furMaterialIndex); else _renderer.GetPropertyBlock(_block);
             _block.SetColor("_BaseColor", Color.Lerp(fur, Color.gray, 0.4f));
             if (_furMaterialIndex >= 0) _renderer.SetPropertyBlock(_block, _furMaterialIndex); else _renderer.SetPropertyBlock(_block);
             Log.Dev($"다운 몸 연출: client {id}"); // 2인 검증용
+        }
+
+        // GetPlayerNetworkObject는 클라에서 남의 쥐를 못 찾고 Netcode 오류를 찍는다(고양이 127) — 스폰 목록에서 직접
+        private PlayerVisual FindVisual(ulong id)
+        {
+            if (NetworkManager.SpawnManager == null) return null;
+            foreach (var obj in NetworkManager.SpawnManager.SpawnedObjectsList)
+                if (obj.IsPlayerObject && obj.OwnerClientId == id) return obj.GetComponent<PlayerVisual>();
+            return null;
         }
 
 #if UNITY_EDITOR

@@ -82,6 +82,7 @@ namespace RatGame.AI
                 _movement.SetEnabled(false);
                 return;
             }
+            _movement.SetEnabled(true); // 프리팹은 꺼 둠 — 클라에서 NavMesh 없이 켜지며 오류가 나서 (고양이 127)
             CollectSpots();
             CollectHideSpots();
             _senses.CuriosityFilter = IsCuriosityAllowed;

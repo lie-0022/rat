@@ -27,7 +27,8 @@ namespace RatGame.World
         /// <summary>호스트: 스폰 전에 부른다. NavMesh를 굽기 전에 막음벽 상태가 맞아야 해서 바로 적용도 한다.</summary>
         public void ServerSetOpenSides(byte sides)
         {
-            OpenSides.Value = sides;
+            // 스폰 전엔 새 NV의 초기값으로 — 스폰 전 .Value 쓰기는 방마다 NGO 경고를 찍는다 (고양이 127). 스폰 때 이 값이 클라로 간다
+            if (IsSpawned) OpenSides.Value = sides; else OpenSides = new NetworkVariable<byte>(sides);
             Apply(sides);
         }
 

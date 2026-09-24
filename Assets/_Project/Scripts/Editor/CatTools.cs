@@ -38,6 +38,7 @@ namespace RatGame.Editor
                 agent.height = 1f;
                 agent.angularSpeed = 360f;
                 agent.acceleration = 12f;
+                agent.enabled = false; // 호스트가 스폰 때 켠다 — 클라엔 NavMesh가 없어 켜진 채 생기면 오류 (고양이 127)
 
                 var visual = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                 Object.DestroyImmediate(visual.GetComponent<CapsuleCollider>());
