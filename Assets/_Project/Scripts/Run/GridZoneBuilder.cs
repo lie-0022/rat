@@ -90,6 +90,7 @@ namespace RatGame.Run
                     BonusBigWeight = _zone.TreasureBigWeight,
                 };
                 Populator.PopulateAll(rng, stage - 1);
+                MaybeBaitTraps(rng);
                 if (Treasure >= 0 && _zone.TreasureGlow != null) // 문틈으로 금빛이 새어 보이게 (고양이 88)
                     ZonePopulator.Spawn(_zone.TreasureGlow, Layout.Rooms[Treasure].transform.position, Quaternion.identity);
                 MaybeKitten(stage, rng);

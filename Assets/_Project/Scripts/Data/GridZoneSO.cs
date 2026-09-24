@@ -46,6 +46,8 @@ namespace RatGame.Data
         public float PipeAmbushWeight = 0.5f;    // 배관 입구 옆 매복 스팟 가중 (고양이 115) — 0이면 안 만듦
         public bool TreasureRoom = true;        // 가장 먼 막다른 방 = 보물방 (전리품 전부·대형 ×3·함정 전부, 고양이 84)
         public float TreasureTrapRatio = 1f;
+        public float TrapBaitChance = 0.5f;     // 쥐덫마다 같은 방 작은 음식을 미끼로 옮겨 얹을 확률 (고양이 129) — 맵 총량은 그대로
+        public float TrapBaitSearchMeters = 6f;
         public float TreasureBigWeight = 8f;    // 보물방 대형·특수 가중 (v1 보너스방 3보다 세게 — 작은 방도 비싸 보이게)
 
         public int CatCountFor(int stage) => CatCountByStage == null || CatCountByStage.Length == 0 ? -1 : CatCountByStage[Mathf.Clamp(stage - 1, 0, CatCountByStage.Length - 1)];

@@ -12,6 +12,7 @@ namespace RatGame.Net
     ///   sniff           : 킁킁 (목적지 냄새 줄기)
     ///   walk:x,z        : 월드 방향으로 계속 걷기 (DevForcedInput)
     ///   stop            : 걷기 중지
+    ///   crouch / stand  : 웅크리기 켜기·끄기 (DevForcedCrouch, 쥐덫 미끼 검증 — 고양이 129)
     ///   tp:x,y,z        : 소유 클라에서 순간이동 (InvariantCulture 소수점)
     /// 협동 운반처럼 두 플레이어가 동시에 움직여야 하는 검증에 쓴다. 릴리즈엔 영향 없음(호출부 없음).
     /// </summary>
@@ -53,6 +54,10 @@ namespace RatGame.Net
             else if (command == "stop")
             {
                 PlayerController.DevForcedInput = Vector2.zero;
+            }
+            else if (command == "crouch" || command == "stand")
+            {
+                PlayerController.DevForcedCrouch = command == "crouch";
             }
             else if (command.StartsWith("tp:"))
             {
