@@ -82,7 +82,12 @@ namespace RatGame.UI
             var cats = FindObjectsByType<CatBrain>(FindObjectsSortMode.None);
             if (cats.Length == 0) GUILayout.Label("이 씬엔 고양이 없음");
             foreach (var cat in cats)
+            {
+                GUILayout.BeginHorizontal();
                 if (GUILayout.Button($"{cat.name} ({cat.State.Value}) → 내 앞 4m")) CatToMe(cat);
+                if (!cat.Belled.Value && GUILayout.Button("방울", GUILayout.Width(48))) cat.ServerAttachBell(); // 던지기 없이 목 방울·지도 확인 (고양이 140)
+                GUILayout.EndHorizontal();
+            }
 
             GUILayout.Space(6);
             GUILayout.Label("<b>나</b>", Rich());

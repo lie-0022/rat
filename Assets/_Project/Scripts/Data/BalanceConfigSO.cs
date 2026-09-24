@@ -98,6 +98,7 @@ namespace RatGame.Data
         [SerializeField] private float _wireZapLoudness = 30f;
         [SerializeField] private float _trapBaitStunSeconds = 2.5f; // 쥐덫 미끼를 서서 집으면 (고양이 129)
         [SerializeField] private float _trapBaitHintMeters = 3f;    // 이 안에 처음 들어오면 미끼 규칙 안내 (고양이 132)
+        [SerializeField] private float _catBellHitMeters = 1f;      // 던진 방울이 떨어진 자리 이 안 고양이에 달림 (고양이 140)
 
         [Header("핑 (docs/04)")]
         [SerializeField] private float _pingItemSnapMeters = 0.6f; // 핑 지점에서 이 안의 물건이면 이름·가치 표시 (고양이 139)
@@ -751,6 +752,7 @@ namespace RatGame.Data
         public float WireZapLoudness => _wireZapLoudness;
         public float TrapBaitStunSeconds => _trapBaitStunSeconds;
         public float TrapBaitHintMeters => _trapBaitHintMeters;
+        public float CatBellHitMeters => _catBellHitMeters;
         public float StaminaMax => _staminaMax;
         public float EatSeconds => _eatSeconds;
         public float EatStamina => _eatStamina;

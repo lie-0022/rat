@@ -73,7 +73,7 @@ namespace RatGame.Editor
             var dim = NewRect("Dim", (RectTransform)root.transform); Fill(dim);
             dim.gameObject.AddComponent<UnityEngine.UI.Image>();
             dim.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.Dim, UiTextRole.None);
-            var window = NewRect("Window", dim); window.sizeDelta = new Vector2(680, 540);
+            var window = NewRect("Window", dim); window.sizeDelta = new Vector2(680, 620); // 물건 4줄 (방울 추가, 고양이 140)
             window.gameObject.AddComponent<UnityEngine.UI.Image>();
             window.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.Panel, UiTextRole.None);
             var vlg = window.gameObject.AddComponent<UnityEngine.UI.VerticalLayoutGroup>();
@@ -83,7 +83,7 @@ namespace RatGame.Editor
             var wallet = Tmp("WalletText", window, "쓸 수 있는 식량 0", theme, UiColorRole.Text, UiTextRole.Body, 30);
             var rows = NewRect("Rows", window);
             var rv = rows.gameObject.AddComponent<UnityEngine.UI.VerticalLayoutGroup>(); rv.spacing = 8; rv.childControlWidth = true; rv.childControlHeight = true; rv.childForceExpandHeight = false;
-            Le(rows, -1, 3 * 72 + 2 * 8);
+            Le(rows, -1, 4 * 72 + 3 * 8);
             var pending = Tmp("PendingText", window, "다음 맵에서 받을 것: 없음", theme, UiColorRole.TextMuted, UiTextRole.Small, 26);
             var message = Tmp("MessageText", window, "", theme, UiColorRole.None, UiTextRole.Body, 28);
             var close = NewRect("CloseButton", window);

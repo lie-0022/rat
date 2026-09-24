@@ -32,6 +32,7 @@ namespace RatGame.UI
         [SerializeField] private Color _treasureColor = new(1f, 0.85f, 0.25f, 0.95f); // 가 본 보물방 (고양이 103)
         [SerializeField] private Color _helpColor = new(1f, 0.2f, 0.2f, 1f); // 쓰러짐·덫·잡힘 — 구하러 갈 동료 (고양이 126)
         [SerializeField] private float _helpBlinkHz = 3f;
+        [SerializeField] private Color _bellCatColor = new(1f, 0.55f, 0.1f, 1f); // 방울 단 고양이 (고양이 140)
 
         private GridRoom[] _rooms = new GridRoom[0];
         private GridRoom _destination;
@@ -42,6 +43,7 @@ namespace RatGame.UI
         private readonly Dictionary<ulong, (Vector3 pos, float until)> _pings = new();
         private readonly Dictionary<ulong, UnityEngine.UI.Image> _pingMarks = new();
         private readonly Dictionary<ulong, bool> _needsHelp = new();
+        private readonly Dictionary<AI.CatBrain, UnityEngine.UI.Image> _catDots = new();
         private Vector2 _center;
         private float _scale;
         private float _nextCheck;
@@ -71,7 +73,29 @@ namespace RatGame.UI
             if (!show) return;
             foreach (var pair in _roomViews) pair.Value.SetActive(_visited.Contains(pair.Key) || pair.Key == _destination);
             UpdateDots();
+            UpdateBellCats();
             UpdatePings();
+        }
+
+        // 방울 단 고양이 — 주황 점 (고양이 140). Belled NV는 모두에게 있어 추가 동기화 없음
+        private void UpdateBellCats()
+        {
+            foreach (var cat in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None))
+            {
+                bool show = cat.IsSpawned && cat.Belled.Value;
+                _catDots.TryGetValue(cat, out var dot);
+                if (!show) { if (dot != null && dot.gameObject.activeSelf) dot.gameObject.SetActive(false); continue; }
+                if (dot == null)
+                {
+                    dot = Instantiate(_dotTemplate, _content);
+                    dot.color = _bellCatColor;
+                    dot.rectTransform.sizeDelta = Vector2.one * 16f;
+                    _catDots[cat] = dot;
+                    Log.Dev($"지도 방울 고양이 연출: {cat.name}"); // 2인 검증용
+                }
+                if (!dot.gameObject.activeSelf) dot.gameObject.SetActive(true);
+                dot.rectTransform.anchoredPosition = (Flat(cat.transform.position) - _center) * _scale;
+            }
         }
 
         // 동료 핑 — 팀색 마름모 (핑 마커와 같은 모양), 10초
@@ -104,6 +128,8 @@ namespace RatGame.UI
             _pingMarks.Clear();
             _pings.Clear();
             _needsHelp.Clear();
+            foreach (var d in _catDots.Values) if (d != null) Destroy(d.gameObject);
+            _catDots.Clear();
             _visited.Clear();
             _rooms = FindObjectsByType<GridRoom>(FindObjectsSortMode.None);
             if (_rooms.Length == 0) return;

@@ -30,3 +30,9 @@ MonoBehaviour:
     Price: 80
     Description: "\uB4E4\uACE0 \uC788\uC73C\uBA74 \uBE68\uAC04 \uC810 \u2014 \uD55C\uAC00\uD55C
       \uACE0\uC591\uC774\uAC00 \uCAD3\uC544\uC694"
+  - Id: bell
+    DisplayName: "\uBC29\uC6B8"
+    Prefab: {fileID: 5651697466601559855, guid: 1c3a3c6dcf5ce466d99032849c337457, type: 3}
+    Price: 60
+    Description: "\uACE0\uC591\uC774\uC5D0 \uB358\uC838 \uB9DE\uD788\uBA74 \uC9C0\uB3C4(Tab)\uC5D0
+      \uBCF4\uC5EC\uC694"

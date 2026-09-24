@@ -76,6 +76,7 @@ namespace RatGame.AI
 
         public override void OnNetworkSpawn()
         {
+            InitBellView(); // 모든 클라 — 방울 (고양이 140)
             if (!IsServer)
             {
                 enabled = false;
