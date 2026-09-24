@@ -77,6 +77,7 @@ namespace RatGame.Run
                 Spawn(_zone.RatHolePrefab, first.RatHole.position + Vector3.up * 0.15f, first.RatHole.rotation);
 
             SpawnLoot(rooms, rng, zoneIndex);
+            if (_zone.LootTable != null && _zone.LootTable.Entries != null) SpawnRing(rooms, rng);
             SpawnTraps(rooms, rng);
             SpawnHidesAndDark(rooms, rng); // 고양이보다 먼저 — 고양이가 스폰 때 상자 입구 스팟을 모은다
             SpawnCats(rooms, rng);
@@ -109,6 +110,40 @@ namespace RatGame.Run
             }
         }
 
+        // docs/10: 반지는 고양이 잠자리(Bed 스팟) 2m 안 고정 — 고위험 고수익의 상징. Special 전용 규칙이라 ID 하드코딩 허용
+        private const string RingId = "loot_ring";
+
+        /// <summary>이번 존 반지 위치·기준 스팟 (테스트용). 반지 없으면 null.</summary>
+        public Vector3? RingPos { get; private set; }
+        public Vector3 RingAnchor { get; private set; }
+
+        private void SpawnRing(List<RoomModule> rooms, System.Random rng)
+        {
+            LootItemSO ring = null;
+            foreach (var e in _zone.LootTable.Entries) if (e.Item != null && e.Item.Id == RingId && e.Weight > 0) ring = e.Item;
+            if (ring == null || ring.Prefab == null) return;
+            var beds = new List<Vector3>();
+            foreach (var room in rooms)
+                foreach (var spot in room.GetComponentsInChildren<CatSpot>())
+                    if (spot.Type == CatSpotType.Bed) beds.Add(spot.transform.position);
+            // 침대가 없는 존(체인이 짧게 끊긴 경우)은 고양이 시작 자리 옆 — "항상 고양이 옆"
+            if (beds.Count == 0) foreach (var room in rooms) if (room.CatSpawn != null) beds.Add(room.CatSpawn.position);
+            if (beds.Count == 0) { Log.Dev("반지: 침대·고양이 자리 없음 — 이번 존엔 반지 없음"); return; }
+
+            Vector3 anchor = beds[rng.Next(beds.Count)];
+            Vector3 at = anchor;
+            for (int i = 0; i < 8; i++)
+            {
+                float a = (float)rng.NextDouble() * Mathf.PI * 2f, r = 0.8f + (float)rng.NextDouble() * 1.0f;
+                Vector3 p = anchor + new Vector3(Mathf.Cos(a) * r, 0f, Mathf.Sin(a) * r);
+                if (NavMesh.SamplePosition(p, out var hit, 0.4f, NavMesh.AllAreas) && Vector3.Distance(hit.position, anchor) <= 2f) { at = hit.position; break; }
+            }
+            Spawn(ring.Prefab, at + Vector3.up * 0.1f, Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
+            LootSpawned++; LootValue += ring.BaseValue;
+            RingPos = at; RingAnchor = anchor;
+            Log.Dev($"반지: 침대 {anchor:F1} 옆 {Vector3.Distance(at, anchor):0.0}m");
+        }
+
         private static LootItemSO PickLoot(SpawnTableSO table, System.Random rng, int zoneIndex, bool bonus, bool high, Dictionary<LootItemSO, int> counts)
         {
             float total = 0f;
@@ -117,6 +152,7 @@ namespace RatGame.Run
             {
                 var e = table.Entries[i];
                 if (e.Item == null || e.Weight <= 0) continue;
+                if (e.Item.Id == RingId) continue; // 반지는 따로 — 고양이 침대 옆 고정 (SpawnRing)
                 if (e.Max > 0 && counts.TryGetValue(e.Item, out int c) && c >= e.Max) continue;
                 bool big = e.Item.Tier == LootTier.Large || e.Item.Tier == LootTier.Special;
                 if (high && e.Item.Tier == LootTier.Large) continue;

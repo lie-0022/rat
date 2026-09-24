@@ -87,8 +87,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1109633201747319386}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.000000004258886, z: -0, w: 1}
-  m_LocalPosition: {x: 0.000000029812202, y: 0, z: -3.5}
+  m_LocalRotation: {x: 0, y: 0.7071067, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -2.5, y: 0, z: -0.0000003059797}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -478,8 +478,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2959228102930615877}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0.00000001561121}
-  m_LocalPosition: {x: -0.000000109278474, y: 0, z: 3.5}
+  m_LocalRotation: {x: 0, y: 0.9809367, z: -0, w: -0.19432774}
+  m_LocalPosition: {x: 1.2499999, y: 0, z: 3.031089}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -757,6 +757,7 @@ Transform:
   - {fileID: 4855133570032534157}
   - {fileID: 1727648629252432528}
   - {fileID: 3312078988060898117}
+  - {fileID: 7055222499043664617}
   - {fileID: 4702223801911381208}
   - {fileID: 5882111294306518446}
   - {fileID: 8312480736432644284}
@@ -827,7 +828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 280624099
+  GlobalObjectIdHash: 139956765
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -1414,6 +1415,52 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8282559019410837541
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7055222499043664617}
+  - component: {fileID: 7828429260359757478}
+  m_Layer: 0
+  m_Name: Spot_Bed_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7055222499043664617
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282559019410837541}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.19432773, z: -0, w: 0.9809367}
+  m_LocalPosition: {x: 1.2499998, y: 0, z: -3.031089}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3334364618054530121}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7828429260359757478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8282559019410837541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa9921e6a6489494197c09f62896586c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.AI.CatSpot
+  _type: 1
+  _weight: 1
 --- !u!1 &8452627809633961523
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,7 +36,7 @@ namespace RatGame.Editor
             var specs = new[]
             {
                 new RoomSpec { Name = "Room_RatHole",  W = 8,  D = 8,  HasEntry = false, Exits = new[] { (Side.North, 0f) }, RatHole = true, Loot = 3, Traps = 0 },
-                new RoomSpec { Name = "Room_Straight", W = 8,  D = 10, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Cat = true, Loot = 7, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Food }, Hides = new[] { new Vector2(-2.7f, 3.7f) }, Dark = new Vector2(0f, 2.8f) },
+                new RoomSpec { Name = "Room_Straight", W = 8,  D = 10, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Cat = true, Loot = 7, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Food, CatSpotType.Bed }, Hides = new[] { new Vector2(-2.7f, 3.7f) }, Dark = new Vector2(0f, 2.8f) },
                 new RoomSpec { Name = "Room_Corner",   W = 8,  D = 8,  HasEntry = true,  Exits = new[] { (Side.East, 0f) }, Loot = 6, Traps = 2, Spots = new[] { CatSpotType.Look, CatSpotType.Sun }, Hides = new[] { new Vector2(-2.5f, 2.5f) }, Dark = new Vector2(1.9f, -1.9f) },
                 new RoomSpec { Name = "Room_Hall",     W = 12, D = 10, HasEntry = true,  Exits = new[] { (Side.North, -3f), (Side.West, 2f) }, Cat = true, Loot = 9, Traps = 2, Spots = new[] { CatSpotType.Bed, CatSpotType.Look, CatSpotType.Groom }, Hides = new[] { new Vector2(4.7f, 3.7f), new Vector2(4.7f, -3.7f) }, Dark = new Vector2(-3.5f, -2.5f) },
                 new RoomSpec { Name = "Room_Corridor", W = 4,  D = 12, HasEntry = true,  Exits = new[] { (Side.North, 0f) }, Loot = 4, Traps = 2, Spots = new[] { CatSpotType.Look } },
