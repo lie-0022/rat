@@ -46,7 +46,7 @@ namespace RatGame.Editor
                 title.anchorMin = new Vector2(0f, 1f); title.anchorMax = new Vector2(1f, 1f); title.pivot = new Vector2(0.5f, 1f);
                 title.offsetMin = new Vector2(20f, -60f); title.offsetMax = new Vector2(-20f, -12f);
                 var tmp = title.gameObject.AddComponent<TextMeshProUGUI>();
-                tmp.text = "벽 속 지도  <size=70%>(가 본 방만 · 주황 = 목적지 · 회색 선 = 배관)</size>";
+                tmp.text = "벽 속 지도  <size=70%>(가 본 방만 · 주황 = 목적지 · 금색 = 보물방 · 파란 선 = 배관)</size>";
                 tmp.alignment = TextAlignmentOptions.Center; tmp.raycastTarget = false;
                 title.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.AccentText, UiTextRole.Heading);
 

@@ -10,7 +10,7 @@ namespace RatGame.UI
 {
     /// <summary>
     /// 벽 속 지도 (docs/12 WallsMap, 고양이 102). Tab을 누르고 있는 동안 가운데 지도 — 내가 들어가 본 방만(안개) + 목적지는 항상,
-    /// 가 본 방의 열린 면마다 짧은 선이라 안 가 본 출구가 보인다(배관 면은 회색). 나·동료 점.
+    /// 가 본 방의 열린 면마다 짧은 선이라 안 가 본 출구가 보인다(배관 면은 파랑). 나·동료 점.
     /// 클라에도 있는 GridRoom 위치·크기·OpenSides만 읽는 로컬 기록 — 동기화 없음, 맵(씬)이 바뀌면 새로.
     /// </summary>
     public class WallsMapWidget : MonoBehaviour
@@ -26,11 +26,13 @@ namespace RatGame.UI
         [SerializeField] private UnityEngine.UI.Image _dotTemplate;
         [SerializeField] private Color _roomColor = new(0.86f, 0.83f, 0.76f, 0.95f);
         [SerializeField] private Color _destColor = new(0.95f, 0.6f, 0.25f, 0.95f);
-        [SerializeField] private Color _exitColor = new(0.86f, 0.83f, 0.76f, 0.6f);
-        [SerializeField] private Color _pipeColor = new(0.55f, 0.58f, 0.62f, 0.8f);
+        [SerializeField] private Color _exitColor = new(0.86f, 0.83f, 0.76f, 1f);
+        [SerializeField] private Color _pipeColor = new(0.35f, 0.6f, 0.95f, 1f); // 문 선과 확 구분되게 파랑 (어두운 바탕에서 회색끼리 안 갈려서)
+        [SerializeField] private Color _treasureColor = new(1f, 0.85f, 0.25f, 0.95f); // 가 본 보물방 (고양이 103)
 
         private GridRoom[] _rooms = new GridRoom[0];
         private GridRoom _destination;
+        private GridRoom _treasure;
         private readonly HashSet<GridRoom> _visited = new();
         private readonly Dictionary<GridRoom, GameObject> _roomViews = new();
         private readonly Dictionary<ulong, UnityEngine.UI.Image> _dots = new();
@@ -72,13 +74,15 @@ namespace RatGame.UI
             if (_rooms.Length == 0) return;
 
             var depot = FindAnyObjectByType<DepositZone>();
-            _destination = null;
+            var glint = FindAnyObjectByType<TreasureGlint>(); // 보물방 불빛(고양이 88) — 클라에도 스폰돼 있어 위치로 방을 찾는다
+            _destination = null; _treasure = null;
             Vector2 min = new(float.MaxValue, float.MaxValue), max = new(float.MinValue, float.MinValue);
             foreach (var r in _rooms)
             {
                 Vector2 c = Flat(r.transform.position), half = r.Size * 0.5f;
                 min = Vector2.Min(min, c - half); max = Vector2.Max(max, c + half);
                 if (depot != null && Inside(r, depot.transform.position)) _destination = r;
+                if (glint != null && Inside(r, glint.transform.position)) _treasure = r;
             }
             _center = (min + max) * 0.5f;
             _scale = MapPixels / Mathf.Max(max.x - min.x, max.y - min.y, 1f);
@@ -89,7 +93,7 @@ namespace RatGame.UI
                 var rt = img.rectTransform;
                 rt.anchoredPosition = (Flat(r.transform.position) - _center) * _scale;
                 rt.sizeDelta = r.Size * _scale;
-                img.color = r == _destination ? _destColor : _roomColor;
+                img.color = r == _destination ? _destColor : r == _treasure ? _treasureColor : _roomColor;
                 byte sides = r.OpenSides.Value;
                 for (int s = 0; s < 4; s++)
                 {
