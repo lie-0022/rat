@@ -62,11 +62,33 @@ namespace RatGame.UI
             if (!show) return;
 
             bool returned = run.Phase.Value == RunPhase.Returned;
-            RefreshTitle(returned);
+            var quota = run.GetComponent<StageQuota>(); // 새 루프(벽 속) — 클리어·엔딩·굶음 문구
+            if (quota != null) RefreshQuotaTitle(quota, returned); else RefreshTitle(returned);
             RefreshHarvest(run, returned);
             RefreshRows(run, returned);
             RefreshChips(run);
-            RefreshCountdown(run);
+            RefreshCountdown(run, quota != null && returned && !quota.Finished.Value ? "다음 맵으로" : "기지로");
+        }
+
+        private void RefreshQuotaTitle(StageQuota quota, bool cleared)
+        {
+            SetColor(_titleBand, cleared ? UiColorRole.Positive : UiColorRole.Danger);
+            if (!cleared)
+            {
+                SetText(_title, "굶었다...");
+                SetText(_subtitle, $"스테이지 {quota.StageNumber.Value}에서 전원 쓰러짐 — 처음부터 다시");
+            }
+            else if (quota.Finished.Value)
+            {
+                // 엔딩 (docs/09 새 루프 — 짧은 이야기, 스토리는 기획이 채운다)
+                SetText(_title, "배불리 겨울을 났다!");
+                SetText(_subtitle, $"스테이지 {quota.StagesPerRun.Value}개를 모두 넘어 가족이 굶지 않았어요 — 엔딩");
+            }
+            else
+            {
+                SetText(_title, $"스테이지 {quota.StageNumber.Value} 클리어!");
+                SetText(_subtitle, $"가족이 {quota.Quota.Value}만큼 먹었어요 — 남은 식량 {quota.Pantry.Value}");
+            }
         }
 
         private void RefreshTitle(bool returned)
@@ -139,10 +161,10 @@ namespace RatGame.UI
             _noChipsText.gameObject.SetActive(ids.Count == 0);
         }
 
-        private void RefreshCountdown(RunManager run)
+        private void RefreshCountdown(RunManager run, string where)
         {
             double remain = System.Math.Max(0.0, run.ResultEndsAt.Value - NetworkManager.Singleton.ServerTime.Time);
-            SetText(_countdownText, $"{System.Math.Ceiling(remain):0}초 뒤 기지로");
+            SetText(_countdownText, $"{System.Math.Ceiling(remain):0}초 뒤 {where}");
             float duration = _balance != null ? _balance.ResultScreenSeconds : 8f;
             float t = Mathf.Clamp01((float)(remain / duration));
             if (!Mathf.Approximately(_countdownFill.anchorMax.x, t)) _countdownFill.anchorMax = new Vector2(t, 1f);

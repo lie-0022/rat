@@ -18,6 +18,8 @@ namespace RatGame.Run
         public NetworkVariable<int> StagesPerRun = new(1);
         public NetworkVariable<int> Quota = new(0);
         public NetworkVariable<int> Pantry = new(0);
+        /// <summary>이번 클리어가 마지막 스테이지였다 — 결과 화면이 엔딩을 띄운다.</summary>
+        public NetworkVariable<bool> Finished = new(false);
 
         public override void OnNetworkSpawn()
         {
@@ -44,9 +46,13 @@ namespace RatGame.Run
             Pantry.Value = RunSession.Pantry;
             bool finished = StageNumber.Value >= StagesPerRun.Value;
             Log.Dev($"스테이지 {StageNumber.Value} 클리어 — 식량 {haul} 중 {Quota.Value} 먹음, 남은 식량 +{leftover} = {RunSession.Pantry}{(finished ? " — 마지막 스테이지 (엔딩)" : "")}");
-            if (finished) RunSession.ResetRun();       // 엔딩 화면은 다음 단계 (docs/09 단계 5)
+            Finished.Value = finished;
+            if (finished) RunSession.ResetRun();       // 엔딩 → 기지, 다음 런은 처음부터
             else RunSession.StageNumber++;
         }
+
+        /// <summary>호스트: 결과 화면 뒤 갈 씬. 클리어했고 마지막이 아니면 바로 다음 맵(같은 씬을 새로 — 새 시드), 아니면 null = 기지.</summary>
+        public string NextSceneAfterResult(bool cleared) => cleared && !Finished.Value ? gameObject.scene.name : null;
 
         /// <summary>호스트: 전멸 = 굶음 — 런 처음부터.</summary>
         public void ServerOnWiped()

@@ -288,9 +288,10 @@ namespace RatGame.Run
                 if (condition != null) condition.ServerSetState(ConditionState.Active);
             }
             GameStateMachine.Instance.TransitionTo(GameState.Lobby);
-            RunSession.DepartPending = false;
-            Log.Dev($"결과 화면 종료 — 기지({_baseScene})로 (누계 {RunSession.TotalValue})");
-            NetworkManager.SceneManager.LoadScene(_baseScene, LoadSceneMode.Single);
+            string next = _quota != null ? _quota.NextSceneAfterResult(Phase.Value == RunPhase.Returned) : null; // 새 루프: 기지 대신 다음 맵
+            RunSession.DepartPending = next != null; // 다음 맵도 전원 로드 뒤 자동 출발·맵 생성 (고양이 59와 같은 이유)
+            Log.Dev(next != null ? $"결과 화면 종료 — 다음 스테이지 {RunSession.StageNumber}({next})로" : $"결과 화면 종료 — 기지({_baseScene})로 (누계 {RunSession.TotalValue})");
+            NetworkManager.SceneManager.LoadScene(next ?? _baseScene, LoadSceneMode.Single);
         }
 
         private void SetPhase(RunPhase next)
