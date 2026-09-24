@@ -9,10 +9,11 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 50 — 문서 수용 기준 검증 계속 (docs/09·08·12·11·10·03·01)
-상태: 고양이 49 커밋 후
+## 현재 작업: 고양이 51 — 문서 수용 기준 검증 계속 (docs/08·12·11·03·10·01)
+상태: 고양이 50 커밋 후
 
 ## 완료 기록
+- 고양이 50 docs/09 라운드 흐름 수용 기준 — 커밋됨 (plan cat-50). 6/7 체크(4인만 남음). save.json 백업·복구 요령.
 - 고양이 49 함정 3종 — 커밋됨 (plan cat-49). docs/04 상태이상·구출 수용 기준 체크.
 - 고양이 48 치즈 먹기 — 커밋됨 (plan cat-48). 검증하다 미구현 발견 → EdibleItem.
 - 고양이 47 docs/05 운반 수용 기준 — 커밋됨 (plan cat-47). 다운 몸 튕김 버그 수정. 사용자 판단 2건(대형 1인 끌기·계란 던지기).
@@ -85,4 +86,5 @@
 - 고양이를 특정 스팟으로 보낼 땐 State==Patrol을 기다린 뒤 _dwelling=false·_spotIndex 설정·MoveTo (아니면 Return이 덮는다). 쥐가 Downed인지 먼저 확인(시야는 Active만).
 - 순찰 고양이를 의심으로 바꾸려면 실제 자극(소리·목격)이 필요 — RaiseGaugeTo만으론 안 된다. 추격 시나리오(쥐를 고양이 앞 3.8m)가 가장 확실.
 - 4인: 빌드 클라 3개를 `-logFile <경로>`로 로그 분리해 띄운다(같은 Player.log를 덮어쓰므로). `-catsync`면 고양이 위치 동기화 로그.
+- 런 흐름 테스트는 사용자 save.json(~/Library/Application Support/DefaultCompany/Rat/save.json)을 바꾼다 — 스크래치패드에 백업하고 끝나면 되돌린다.
 - 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.
