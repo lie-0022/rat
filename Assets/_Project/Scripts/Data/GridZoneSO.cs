@@ -26,6 +26,7 @@ namespace RatGame.Data
         public ZoneDefinitionSO Population;
         public StageShopSO Shop;              // 목적지방 상점 (새 루프, 고양이 65)
         public GameObject ShopCounterPrefab;  // 목적지방 판매대
+        public GameObject TreasureGlow;       // 보물방 금빛 표시 (고양이 88)
 
         [Header("스테이지 깊이별 난이도 (고양이 66, 잠정) — 배열 끝을 넘으면 마지막 값")]
         public int[] CatCountByStage = { 1, 1, 2, 2, 3 };
