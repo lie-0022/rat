@@ -11,6 +11,13 @@ namespace RatGame.World
     {
         private const float OutsideMouth = 0.4f; // 입구 판 바깥(방 쪽) — 소리가 판에 또 막히지 않게
 
+        /// <summary>이 자리(쥐 캡슐 가운데)가 배관 안인가 — 발 위 짧은 거리에 배관 천장. 방은 천장이 없어서 선반 밑 말고는 배관뿐, 표시 컴포넌트로 확정.</summary>
+        public static PipeEcho Above(Vector3 pos)
+        {
+            return Physics.Raycast(pos, Vector3.up, out var hit, 1.2f, ~LayerMask.GetMask("Player", "Ragdoll"), QueryTriggerInteraction.Ignore)
+                ? hit.collider.GetComponentInParent<PipeEcho>() : null;
+        }
+
         public void Mouths(out Vector3 a, out Vector3 b)
         {
             Vector3 f = transform.forward; f.y = 0f; f.Normalize();

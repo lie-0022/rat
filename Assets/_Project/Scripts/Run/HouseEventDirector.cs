@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using RatGame.AI;
 using RatGame.Core;
 using RatGame.Data;
+using RatGame.Noise;
 using RatGame.World;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ namespace RatGame.Run
         private HouseEventKind? _pending;
         private float _pendingStartAt;
         private bool _scheduled;
+        private float _flushUntil;      // 배관 물 (고양이 97) — 끝날 때 마스크를 풀고 끝 알림
+        private float _nextWetTick;
+        private static readonly object FlushMask = new();
 
         public int Remaining => _remaining;
         public float NextAt => _nextAt;
@@ -45,6 +49,7 @@ namespace RatGame.Run
         private void Update()
         {
             if (_balance == null || _run == null) return;
+            if (_flushUntil > 0f) TickFlush();
 
             if (_pending.HasValue && Time.time >= _pendingStartAt)
             {
@@ -79,6 +84,26 @@ namespace RatGame.Run
             return dark.Count == 0 ? null : dark[Random.Range(0, dark.Count)];
         }
 
+        // 배관 물: 그동안 배관 안 쥐는 젖는다(젖은 발자국 — 고양이가 따라옴), 물소리가 작은 소리를 묻는다
+        private void TickFlush()
+        {
+            if (Time.time >= _flushUntil)
+            {
+                _flushUntil = 0f;
+                NoiseSystem.SetMask(FlushMask, 0f);
+                _run.ServerHouseEvent(HouseEventKind.Flush, HouseEventPhase.End);
+                return;
+            }
+            if (Time.time < _nextWetTick) return;
+            _nextWetTick = Time.time + 0.5f;
+            foreach (var scent in FindObjectsByType<Player.PlayerScent>(FindObjectsSortMode.None))
+            {
+                if (PipeEcho.Above(scent.transform.position) == null) continue;
+                if (!scent.IsWet) Log.Dev($"배관 물: client {scent.OwnerClientId} 흠뻑 젖음");
+                scent.ServerMarkWet(_balance.WetSeconds);
+            }
+        }
+
         private HouseEventKind Pick()
         {
             // 같은 사건 연속 금지 — 부르기·밥·청소기 중 직전 것 빼고 무작위
@@ -87,6 +112,7 @@ namespace RatGame.Run
             if (FindAnyObjectByType<TvSet>() != null) pool.Add(HouseEventKind.TV);
             if (LightZone.All.Count > 0) pool.Add(HouseEventKind.LightOn);
             if (FindAnyObjectByType<WindowWind>() != null) pool.Add(HouseEventKind.Window);
+            if (FindAnyObjectByType<PipeEcho>() != null) pool.Add(HouseEventKind.Flush); // 배관이 있는 맵만 (고양이 97)
             var walls = FindAnyObjectByType<GridZoneBuilder>();
             if (walls != null && walls.CanAddTraps) pool.Add(HouseEventKind.NewTraps); // 벽 속만 — 집주인이 벽 너머에 덫 (고양이 89)
             if (_last.HasValue) pool.Remove(_last.Value);
@@ -139,6 +165,10 @@ namespace RatGame.Run
                     if (zone == null) break;
                     zone.ServerLightFor(_balance.LightOnSeconds);
                     foreach (var cat in cats) cat.ServerGreetOwner(zone.Center, _balance.LightOnSeconds);
+                    break;
+                case HouseEventKind.Flush:
+                    _flushUntil = Time.time + _balance.FlushSeconds;
+                    NoiseSystem.SetMask(FlushMask, _balance.FlushMaskLoudness);
                     break;
                 case HouseEventKind.NewTraps:
                     var builder = FindAnyObjectByType<GridZoneBuilder>();
