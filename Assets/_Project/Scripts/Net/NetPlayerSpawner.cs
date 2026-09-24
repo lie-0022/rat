@@ -15,6 +15,12 @@ namespace RatGame.Net
     public class NetPlayerSpawner : MonoBehaviour
     {
         [SerializeField] private NetworkObject _playerPrefab;
+        // 플레이어 없이 이만큼 남은 연결은 끊는다 — 접속 승인 중 끊긴 "유령 연결"이 목록에 남으면
+        // 씬 로드 완료 이벤트가 안 와서 스테이지 출발·맵 생성이 멈춘다 (2026-09-24 고양이 67). 느린 로딩은 보통 수 초라 넉넉히
+        [SerializeField] private float _ghostSeconds = 20f;
+
+        private readonly System.Collections.Generic.Dictionary<ulong, float> _noPlayerSince = new();
+        private float _nextGhostCheck;
 
         private void Start()
         {
@@ -33,6 +39,25 @@ namespace RatGame.Net
             nm.OnClientDisconnectCallback -= OnClientDisconnected;
             if (nm.SceneManager != null)
                 nm.SceneManager.OnLoadComplete -= OnClientSceneLoadComplete;
+        }
+
+        private void Update()
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null || !nm.IsServer || Time.unscaledTime < _nextGhostCheck) return;
+            _nextGhostCheck = Time.unscaledTime + 1f;
+            if (!IsGameplayScene(SceneManager.GetActiveScene().name)) { _noPlayerSince.Clear(); return; }
+            foreach (var client in nm.ConnectedClientsList)
+            {
+                ulong id = client.ClientId;
+                if (id == NetworkManager.ServerClientId || client.PlayerObject != null) { _noPlayerSince.Remove(id); continue; }
+                if (!_noPlayerSince.TryGetValue(id, out float since)) { _noPlayerSince[id] = Time.unscaledTime; continue; }
+                if (Time.unscaledTime - since < _ghostSeconds) continue;
+                _noPlayerSince.Remove(id);
+                Log.Dev($"유령 연결 정리: client {id} — {_ghostSeconds:0}s 동안 플레이어 없음, 끊음");
+                nm.DisconnectClient(id, "플레이어 없이 멈춘 연결 정리");
+                break; // 목록이 바뀌었으니 다음 검사에서 계속
+            }
         }
 
         private void OnServerStarted()
