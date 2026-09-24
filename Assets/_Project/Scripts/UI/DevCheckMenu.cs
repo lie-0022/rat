@@ -122,11 +122,17 @@ namespace RatGame.UI
                          ("흔들리는 끈", typeof(DanglingString)), ("후추통", typeof(PepperShaker)), ("레이저 포인터", typeof(LaserPointer)),
                          ("창고방 문", typeof(RoomDoor)), ("초인종", typeof(Doorbell)), ("물그릇", typeof(WaterBowl)), ("치즈(먹기)", typeof(EdibleItem)),
                          ("숨을 곳", typeof(HideSpot)), ("함정", typeof(TrapBase)), ("목적지 게시판", typeof(StageBoard)), ("거울", typeof(Mirror)),
+                         ("보물방 (벽 속)", typeof(TreasureGlint)), ("배관 (벽 속)", typeof(PipeEcho)), ("목적지 판매대 (벽 속)", typeof(StageShopCounter)),
                      })
             {
                 var found = FindAnyObjectByType(t) as Component;
                 if (found != null) yield return (label, found.transform);
             }
+            // 벽 속 역할 고양이 자리 (고양이 80·92) — 이름으로 찾는다(GridZoneBuilder가 만든 관찰점)
+            var post = GameObject.Find("GuardPost");
+            if (post != null) yield return ("문지기 초소 (벽 속)", post.transform);
+            var patrol = GameObject.Find("PatrolPoint_0");
+            if (patrol != null) yield return ("순찰꾼 길 시작 (벽 속)", patrol.transform);
             foreach (var spot in FindObjectsByType<CatSpot>(FindObjectsSortMode.None))
                 if (spot.Type == CatSpotType.Perch || spot.Type == CatSpotType.Bed)
                     yield return ((spot.Type == CatSpotType.Perch ? "선반(고양이 관찰대) " : "고양이 침대 ") + spot.name, spot.transform);
@@ -140,6 +146,8 @@ namespace RatGame.UI
             Vector3 away = me.transform.position - target.position; away.y = 0f;
             if (away.sqrMagnitude < 0.01f) away = Vector3.back;
             Vector3 pos = target.position + away.normalized * 1.6f;
+            var pipe = target.GetComponent<PipeEcho>();
+            if (pipe != null) { pipe.Mouths(out pos, out _); pos -= (target.position - pos).normalized * 0.8f; } // 관 옆은 허공 — 입구 앞 방 쪽에
             pos.y = 0.7f; // 바닥 위 (맵이 전부 y=0 바닥)
             Vector3 look = target.position - pos; look.y = 0f;
             var rpc = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { me.OwnerClientId } } };
