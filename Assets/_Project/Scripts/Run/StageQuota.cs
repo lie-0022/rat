@@ -37,6 +37,10 @@ namespace RatGame.Run
 
         public bool Met(int stashed) => stashed >= Quota.Value;
 
+        /// <summary>호스트: 밸런스에서 바로 읽는 값 — NV가 아직 안 채워졌을 수 있는 스폰 순서에서도 맞게 (스테이지 안내, 고양이 81).</summary>
+        public int QuotaFor(int stage) => _balance.StageQuota(stage);
+        public int StagesTotal => _balance.StagesPerRun;
+
         /// <summary>호스트: 클리어 정산. haul = 창고 적립 + 들고 온 것.</summary>
         public void ServerOnCleared(int haul)
         {

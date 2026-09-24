@@ -41,8 +41,19 @@ namespace RatGame.UI
         private float _nextPoll;
 
         private void Awake() => _toastTemplate.SetActive(false);
-        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; }
-        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; }
+        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; }
+        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; }
+
+        private const float BriefingSeconds = 6f; // 읽을 게 많아서 평소 토스트보다 길게
+
+        // 벽 속 스테이지 안내 (고양이 81) — 토스트가 최대 3개라 한 번에 3줄까지
+        private void OnStageBriefing(int stage, int stages, int quota, byte flags)
+        {
+            Show($"스테이지 {stage}/{stages} — 식량 {quota} 모아 목적지(주황 방)로", UiColorRole.Accent, BriefingSeconds);
+            if ((flags & Run.GridZoneBuilder.BriefGuard) != 0) Show("문지기 고양이가 목적지 앞을 지켜요 — 털실·레이저로 끌어내기", UiColorRole.Warning, BriefingSeconds);
+            if ((flags & Run.GridZoneBuilder.BriefKitten) != 0) Show("아기 고양이 — 들키면 냐앙! 엄마가 달려와요", UiColorRole.Warning, BriefingSeconds);
+            if (stage == 1 && (flags & Run.GridZoneBuilder.BriefPipe) != 0) Show("회색 배관은 쥐만 지나가요 · R 킁킁 = 목적지 냄새", UiColorRole.Secondary, BriefingSeconds);
+        }
 
         private void OnCheeseEaten(float amount) => Show($"냠냠 — 스태미나 +{amount:0}", UiColorRole.Positive);
 
@@ -110,7 +121,9 @@ namespace RatGame.UI
             Show($"도감 등록!  {(item != null ? item.DisplayName : itemId)}", UiColorRole.Accent);
         }
 
-        public void Show(string text, UiColorRole stripe)
+        public void Show(string text, UiColorRole stripe) => Show(text, stripe, _seconds);
+
+        public void Show(string text, UiColorRole stripe, float seconds)
         {
             if (_live.Count >= _maxToasts) Remove(0);
             var go = Instantiate(_toastTemplate, _stack);
@@ -118,7 +131,7 @@ namespace RatGame.UI
             var strip = go.transform.Find("Stripe");
             if (strip != null && _theme != null) strip.GetComponent<UnityEngine.UI.Image>().color = _theme.GetColor(stripe);
             go.SetActive(true);
-            _live.Add(new Live { Go = go, Group = go.GetComponent<CanvasGroup>(), EndsAt = Time.unscaledTime + _seconds });
+            _live.Add(new Live { Go = go, Group = go.GetComponent<CanvasGroup>(), EndsAt = Time.unscaledTime + seconds });
         }
 
         private void Update()

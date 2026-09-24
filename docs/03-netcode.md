@@ -109,6 +109,7 @@ public class SteamLobbyService
 | DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue, Destination (목적지 인덱스, 고양이 59), BestStage, Endings (새 루프 최고 기록, 고양이 74) | int, int, bool, double, int, int, int, int |
 
 - RPC만 쓰는 것 (NetworkVariable 없음): `PlayerPing` 핑 — 소유 클라 `PingServerRpc(pos)` → 서버 쿨다운 확인 → `PingClientRpc(pos)` 전원 (표시용, 위치 검증 없음, docs/04).
+- RPC만: `GridZoneBuilder.StageBriefingClientRpc(stage, stages, quota, flags)` — 벽 속 맵을 다 지은 뒤 한 번, 전원에게 스테이지 안내(표시용, 고양이 81). flags: 1 아기 고양이, 2 문지기, 4 배관 고리. 늦게 들어온 클라는 못 받음(표시일 뿐).
 
 ## 씬 동기화
 

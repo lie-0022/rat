@@ -93,8 +93,33 @@ namespace RatGame.Run
             FaceSpawnsToDoor(Layout.Start, Layout.Sides[0]);
             DeliverPurchases(Layout.Start, rng);
             PlayerPlacement.TeleportAllToSpawns();
+            SendBriefing();
             Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed} — 방 {rooms.Count}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
                     $"전리품 {Populator?.LootSpawned}개(가치 {Populator?.LootValue}), 함정 {Populator?.TrapsSpawned}, 숨을 곳 {Populator?.HidesSpawned}, 어둠 {Populator?.DarkSpawned}, 고양이 {Populator?.CatsSpawned}");
+        }
+
+        public const byte BriefKitten = 1, BriefGuard = 2, BriefPipe = 4;
+
+        // 스테이지 특징을 전원 화면에 (고양이 81) — 표시일 뿐이라 늦게 들어온 클라는 못 받아도 된다
+        private void SendBriefing()
+        {
+            byte flags = 0;
+            foreach (var c in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None))
+            {
+                if (c.IsKitten) flags |= BriefKitten;
+                if (c.IsGuard) flags |= BriefGuard;
+            }
+            foreach (var e in Plan.Edges) if (e.IsPipe) { flags |= BriefPipe; break; }
+            var quota = GetComponent<StageQuota>() ?? FindAnyObjectByType<StageQuota>();
+            int stage = RunSession.StageNumber;
+            StageBriefingClientRpc(stage, quota != null ? quota.StagesTotal : 0, quota != null ? quota.QuotaFor(stage) : 0, flags);
+        }
+
+        [ClientRpc]
+        private void StageBriefingClientRpc(int stage, int stages, int quota, byte flags)
+        {
+            Log.Dev($"스테이지 안내 연출: {stage}/{stages} 식량 {quota} 특징 {flags}"); // 2인 검증용
+            EventBus.RaiseStageBriefing(stage, stages, quota, flags);
         }
 
         // 깊은 스테이지에서 2마리 이상이면 확률로 한 마리를 아기로 — 엄마·아기 관계(부르면 엄마가 달려옴)는 CatRelation이 붙인다 (고양이 75)
