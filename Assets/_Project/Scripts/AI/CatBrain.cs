@@ -204,7 +204,7 @@ namespace RatGame.AI
             State.Value = next;
             RaiseStateChanged(prevState, next); // 경계도 디렉터 긴장 입력
             _senses.SensitivityMultiplier = next == CatState.Sleep ? _balance.CatSleepSenseMultiplier : 1f;
-            if (next != CatState.Patrol) { _dwelling = false; _watchingTv = false; }
+            if (next != CatState.Patrol) { _dwelling = false; _goSit = false; }
             if (next != CatState.Sleep) SleepPhase.Value = CatSleepPhase.None;
             if (next != CatState.Curious) ExitCurious();
             if (next != CatState.Patrol) CancelMemoryVisit();
@@ -365,9 +365,9 @@ namespace RatGame.AI
             if (_spots.Length == 0) { _movement.Stop(); return; }
             if (_dwelling)
             {
-                if (_watchingTv) FaceTv(); // TV만 본다 — 등 뒤는 안 보임
+                if (_goSit) FaceGoSit();
                 if (Time.time < _waitUntil) return;
-                _watchingTv = false;
+                _goSit = false;
                 _dwelling = false;
                 _senses.SensitivityMultiplier = 1f;
                 if (CurrentSpotType == CatSpotType.Groom && TryHairball()) return; // 그루밍 끝 — 가끔 헤어볼 (design/cat-ideas/11)
@@ -375,7 +375,7 @@ namespace RatGame.AI
                 GoToNextSpot();
                 return;
             }
-            if (_watchingTv) { TickWalkToTv(); return; } // 스팟이 아닌 TV 앞으로 — 아래 "멈췄으면 스팟으로 다시"가 목적지를 덮지 않게
+            if (_goSit) { TickGoSit(); return; } // 스팟이 아닌 곳으로(TV·불 켜진 방) — 아래 "멈췄으면 스팟으로 다시"가 목적지를 덮지 않게
             if (_spotIndex < 0) { GoToNextSpot(); return; }
             if (_movement.Arrived) ArriveAtSpot();
             else if (_movement.Velocity.sqrMagnitude < 0.01f) _movement.MoveTo(_spots[_spotIndex].Pos, _balance.CatPatrolSpeed);

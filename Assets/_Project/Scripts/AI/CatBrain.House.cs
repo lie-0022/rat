@@ -74,49 +74,64 @@ namespace RatGame.AI
 
         private float _avoidVacuumUntil;
 
-        private bool _watchingTv;
-        private float _watchTvUntil;
-        private Vector3 _tvPos;
-        private Vector3 _tvWatchPoint;
+        // "가서 앉기" — 집주인 이벤트가 고양이를 스팟이 아닌 곳에 앉힌다 (TV 시청·불 켜진 방에서 다리 부비기)
+        private bool _goSit;
+        private Vector3 _goSitPoint;
+        private Vector3? _goSitFace;
+        private float _goSitGiveUpAt;
+        private float _goSitDwell;
+        private float _goSitSense;
 
         /// <summary>호스트: TV가 켜졌다 — TV 앞 시청 지점으로 가서 끝날 때까지 화면만 본다.</summary>
-        public void ServerWatchTv(Vector3 tvPos, Vector3 watchPoint, float seconds)
+        public void ServerWatchTv(Vector3 tvPos, Vector3 watchPoint, float seconds) =>
+            ServerGoSit(watchPoint, tvPos, seconds, float.MaxValue, 1f, "TV 보러");
+
+        /// <summary>호스트: 불 켜진 방으로 — 집주인 다리에 부빈다.</summary>
+        public void ServerGreetOwner(Vector3 point, float giveUpSeconds) =>
+            ServerGoSit(point, null, giveUpSeconds, _balance.LightOnGreetSeconds, _balance.LightOnGreetSense, "집주인한테 부비러");
+
+        private void ServerGoSit(Vector3 point, Vector3? face, float giveUpSeconds, float dwell, float sense, string label)
         {
             if (!IsServer) return;
             var st = State.Value;
             if (st is CatState.Chase or CatState.Capture or CatState.Toy or CatState.Away or CatState.Fight) return;
-            _tvPos = tvPos;
-            _watchTvUntil = Time.time + seconds;
+            _goSitFace = face;
+            _goSitGiveUpAt = Time.time + giveUpSeconds;
+            _goSitDwell = dwell;
+            _goSitSense = sense;
             SetState(CatState.Patrol);
             CancelMemoryVisit();
             _dwelling = false;
-            _watchingTv = true;
-            _tvWatchPoint = CatMovement.Sample(watchPoint, 1.5f, watchPoint);
-            _movement.MoveTo(_tvWatchPoint, _balance.CatPatrolSpeed);
-            Log.Dev($"고양이 [{name}]: TV 보러 ({seconds}s)");
+            _goSit = true;
+            _goSitPoint = CatMovement.Sample(point, 1.5f, point);
+            _movement.MoveTo(_goSitPoint, _balance.CatPatrolSpeed);
+            Log.Dev($"고양이 [{name}]: {label} ({giveUpSeconds:0}s)");
         }
 
-        // TickPatrol에서 (TV 보러 가는 중, 아직 안 앉음)
-        private void TickWalkToTv()
+        // TickPatrol에서 (가는 중, 아직 안 앉음)
+        private void TickGoSit()
         {
-            if (Time.time >= _watchTvUntil) { _watchingTv = false; GoToNextSpot(); return; }
-            if (Vector3.Distance(transform.position, _tvWatchPoint) <= 0.6f)
+            if (Time.time >= _goSitGiveUpAt) { _goSit = false; GoToNextSpot(); return; }
+            if (Vector3.Distance(transform.position, _goSitPoint) <= 0.6f)
             {
                 _movement.Stop();
-                Dwell(_watchTvUntil - Time.time, 1f); // TV 앞에 앉아 본다 — 감각은 그대로, 방향만 TV에 고정
+                Dwell(Mathf.Min(_goSitDwell, _goSitGiveUpAt - Time.time), _goSitSense);
                 return;
             }
-            if (_movement.Arrived || _movement.Velocity.sqrMagnitude < 0.01f) _movement.MoveTo(_tvWatchPoint, _balance.CatPatrolSpeed);
+            if (_movement.Arrived || _movement.Velocity.sqrMagnitude < 0.01f) _movement.MoveTo(_goSitPoint, _balance.CatPatrolSpeed);
         }
 
-        private void FaceTv()
+        // 앉아 있는 동안 매 프레임 (TV만 본다 — 등 뒤는 안 보임)
+        private void FaceGoSit()
         {
-            Vector3 d = _tvPos - transform.position; d.y = 0f;
+            if (!_goSitFace.HasValue) return;
+            Vector3 d = _goSitFace.Value - transform.position; d.y = 0f;
             if (d.sqrMagnitude > 0.01f) transform.rotation = Quaternion.LookRotation(d);
         }
 
-        /// <summary>TV를 보는 중 (테스트·디버그).</summary>
-        public bool IsWatchingTv => _watchingTv && _dwelling;
+        /// <summary>이벤트 자리에 앉아 있는 중 (테스트·디버그).</summary>
+        public bool IsSittingForHouse => _goSit && _dwelling;
+        public bool IsWatchingTv => IsSittingForHouse && _goSitFace.HasValue;
         private bool AvoidingVacuum => Time.time < _avoidVacuumUntil;
 
         private int FindSpot(CatSpotType type)

@@ -19,6 +19,7 @@ namespace RatGame.World
 
         private static readonly List<LightZone> _all = new();
         private BoxCollider _box;
+        private float _litUntil = -1f;
 
         public static IReadOnlyList<LightZone> All => _all;
 
@@ -64,6 +65,25 @@ namespace RatGame.World
             foreach (var z in _all)
                 if (!z.Lit.Value && z.Contains(pos)) return true;
             return false;
+        }
+
+        /// <summary>구역 바닥 중심 (고양이가 오는 곳).</summary>
+        public Vector3 Center { get { var c = transform.TransformPoint(_box.center); c.y = transform.position.y; return c; } }
+
+        /// <summary>호스트: 집주인이 불을 켰다 — seconds 뒤 다시 어둠 + End 알림 (고양이 32).</summary>
+        public void ServerLightFor(float seconds)
+        {
+            if (!IsServer) return;
+            _litUntil = Time.time + seconds;
+            ServerSetLit(true);
+        }
+
+        private void Update()
+        {
+            if (!IsServer || _litUntil < 0f || Time.time < _litUntil) return;
+            _litUntil = -1f;
+            ServerSetLit(false);
+            if (Run.RunManager.Instance != null) Run.RunManager.Instance.ServerHouseEvent(HouseEventKind.LightOn, HouseEventPhase.End);
         }
 
         /// <summary>호스트: 불 켜기·끄기 (고양이 32 집주인 이벤트).</summary>

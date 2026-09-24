@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RatGame.AI;
 using RatGame.Core;
 using RatGame.Data;
@@ -70,12 +71,21 @@ namespace RatGame.Run
             if (Time.time >= _nextAt) Queue(Pick());
         }
 
+        // 불 켜짐: 지금 어두운 구역 중 무작위 하나
+        private static LightZone PickDarkZone()
+        {
+            var dark = new List<LightZone>();
+            foreach (var z in LightZone.All) if (z.IsSpawned && !z.Lit.Value) dark.Add(z);
+            return dark.Count == 0 ? null : dark[Random.Range(0, dark.Count)];
+        }
+
         private HouseEventKind Pick()
         {
             // 같은 사건 연속 금지 — 부르기·밥·청소기 중 직전 것 빼고 무작위
             var pool = new System.Collections.Generic.List<HouseEventKind> { HouseEventKind.CallAway, HouseEventKind.Feeding };
             if (FindAnyObjectByType<RobotVacuum>() != null) pool.Add(HouseEventKind.Vacuum);
             if (FindAnyObjectByType<TvSet>() != null) pool.Add(HouseEventKind.TV);
+            if (LightZone.All.Count > 0) pool.Add(HouseEventKind.LightOn);
             if (_last.HasValue) pool.Remove(_last.Value);
             return pool[Random.Range(0, pool.Count)];
         }
@@ -116,6 +126,12 @@ namespace RatGame.Run
                     if (tv == null) break;
                     tv.ServerStart(_balance.TvSeconds);
                     foreach (var cat in cats) cat.ServerWatchTv(tv.transform.position, tv.WatchPoint, _balance.TvSeconds);
+                    break;
+                case HouseEventKind.LightOn:
+                    var zone = PickDarkZone();
+                    if (zone == null) break;
+                    zone.ServerLightFor(_balance.LightOnSeconds);
+                    foreach (var cat in cats) cat.ServerGreetOwner(zone.Center, _balance.LightOnSeconds);
                     break;
                 case HouseEventKind.Vacuum:
                     var vac = FindAnyObjectByType<RobotVacuum>();
