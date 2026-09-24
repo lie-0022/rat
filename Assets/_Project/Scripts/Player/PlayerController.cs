@@ -236,6 +236,8 @@ namespace RatGame.Player
             Vector3 wishDir = (forward.normalized * input.y + right.normalized * input.x);
             if (DevForcedInput.sqrMagnitude > 0.0001f && !IsIncapacitated())
                 wishDir = new Vector3(DevForcedInput.x, 0f, DevForcedInput.y); // 테스트: 월드 방향 직접
+            else if (DevAutoWander && !IsIncapacitated() && DevWallsWander.TryDirection(OwnerClientId, transform.position, out var wander))
+                wishDir = wander; // 벽 속이면 방에서 방으로 (고양이 123)
             if (wishDir.sqrMagnitude > 1f) wishDir.Normalize();
 
             bool sprinting = !_isCrouching && _sprintAction.IsPressed() && !BlockSprint && !BlockSprintStamina;

@@ -23,13 +23,27 @@ namespace RatGame.Run
 
             int goal = RoomAt(rooms, depot.transform.position, 0.5f);
             if (goal < 0) return false;
-            var dist = DistancesTo(rooms, goal);
+            return HintTo(rooms, goal, depot.transform.position, from, out target, out roomsLeft);
+        }
 
+        /// <summary>from에서 방 goal로 가는 다음 목표점 (도착하면 그 방 가운데). 개발용 배회(고양이 123)도 쓴다.</summary>
+        public static bool TryNextHintTo(Vector3 from, GridRoom goalRoom, out Vector3 target, out int roomsLeft)
+        {
+            target = default; roomsLeft = -1;
+            var rooms = Object.FindObjectsByType<GridRoom>(FindObjectsSortMode.None);
+            int goal = System.Array.IndexOf(rooms, goalRoom);
+            return goal >= 0 && HintTo(rooms, goal, goalRoom.transform.position, from, out target, out roomsLeft);
+        }
+
+        private static bool HintTo(GridRoom[] rooms, int goal, Vector3 goalPoint, Vector3 from, out Vector3 target, out int roomsLeft)
+        {
+            target = default; roomsLeft = -1;
+            var dist = DistancesTo(rooms, goal);
             int here = RoomAt(rooms, from, 0.3f);
             if (here < 0) return CorridorHint(rooms, dist, from, out target, out roomsLeft);
             if (dist[here] < 0) return false;
             roomsLeft = dist[here];
-            if (here == goal) { target = depot.transform.position; return true; }
+            if (here == goal) { target = goalPoint; return true; }
             for (int s = 0; s < 4; s++)
             {
                 int n = Neighbor(rooms, here, s);
