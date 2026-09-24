@@ -22,3 +22,11 @@ MonoBehaviour:
   _lookWeightMultiplier: 1
   _lookDwellMultiplier: 1
   _chaseGiveUpSeconds: 8
+  _curiositySpeedMultiplier: 1
+  _curiousWhileSuspicious: 0
+  _fleeLoudness: 0
+  _fleeSeconds: 3
+  _isKitten: 0
+  _moveSpeedMultiplier: 1
+  _bodyScale: 1
+  _wakeStretchSeconds: 1.5

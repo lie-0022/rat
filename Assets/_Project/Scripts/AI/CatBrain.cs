@@ -165,6 +165,7 @@ namespace RatGame.AI
             CheckSlip(); // 달리다 비누를 밟으면 어떤 상태든 미끄러진다 (design/cat-ideas/11)
             TickDirectorHints();
             TickHousePending();
+            TickBedCover();
             switch (State.Value)
             {
                 case CatState.Sleep: TickSleep(); break;
@@ -288,7 +289,13 @@ namespace RatGame.AI
             if (phase == CatSleepPhase.HalfAwake)
             {
                 // 눈을 뜬 사이 보거나 새 자극 → 깸
-                if (_senses.VisibleTarget != null || stimulated) { EnterSuspicious(); return; }
+                if (_senses.VisibleTarget != null || stimulated)
+                {
+                    // 게으름뱅이는 바로 못 일어난다 — 기지개 1.5s(텔레그래프) 뒤 조사 (design/cat-ideas/01)
+                    float stretch = Personality != null ? Personality.WakeStretchSeconds : 0f;
+                    if (stretch > 0f) { _investigatePos = _senses.LastStimulusPos; _senses.ConsumeStimulus(); Log.Dev($"고양이 [{name}]: 으쌰… 기지개 ({stretch}s)"); EnterBlunder(CatBlunderKind.Stretch, stretch); return; }
+                    EnterSuspicious(); return;
+                }
                 if (Time.time >= _phaseUntil) EnterSleepPhase(_phaseAfterHalfAwake);
                 return;
             }

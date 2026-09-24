@@ -170,6 +170,8 @@ MonoBehaviour:
   _wetSeconds: 20
   _scentWet: 40
   _waterBowlSpillNoise: 30
+  _bedCoverRadius: 1.5
+  _bedCoverSeconds: 30
   _catToySeconds: 30
   _catToyInterest: 100
   _catToyLoopDrain: 35

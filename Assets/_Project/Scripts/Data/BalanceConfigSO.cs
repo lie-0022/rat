@@ -201,6 +201,8 @@ namespace RatGame.Data
         [SerializeField] private float _wetSeconds = 20f;                // 웅덩이를 지난 쥐가 젖어 있는 시간
         [SerializeField] private float _scentWet = 40f;                  // 젖은 발자국 강도
         [SerializeField] private float _waterBowlSpillNoise = 30f;
+        [SerializeField] private float _bedCoverRadius = 1.5f;           // 고양이 잠자리 이 안에 들어간 쥐는
+        [SerializeField] private float _bedCoverSeconds = 30f;           // 이만큼 냄새 자국 없음 (고양이 냄새로 덮임)
 
         [Header("가지고 놀기 (design/cat-ideas/04)")]
         [SerializeField] private float _catToySeconds = 30f;             // 이 안에 못 벗어나면 진짜 다운
@@ -488,6 +490,8 @@ namespace RatGame.Data
         public float WetSeconds => _wetSeconds;
         public float ScentWet => _scentWet;
         public float WaterBowlSpillNoise => _waterBowlSpillNoise;
+        public float BedCoverRadius => _bedCoverRadius;
+        public float BedCoverSeconds => _bedCoverSeconds;
         public float CatToySeconds => _catToySeconds;
         public float CatToyInterest => _catToyInterest;
         public float CatToyLoopDrain => _catToyLoopDrain;

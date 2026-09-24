@@ -76,6 +76,7 @@ foreach player(Active만):
 ### 냄새 (2026-09-24, `Noise/ScentSystem`·`Player/PlayerScent`)
 - 치즈류(Edible)를 손이나 주머니에 든 쥐 = 강도 60, 웅덩이를 지나 젖은 쥐 = 40(20s), 고양이에게 찍힌 쥐(앙심) = 빈손이어도 20. 웅덩이는 그 안의 자국을 지운다. 1.5m마다 자국(웅크리면 3m), 초당 -3 감쇠(60 → 20s), 버퍼 32개.
 - 고양이는 Patrol·Return 중 3m 안 자국을 맡으면 Track. 수색(Search) 후보 중 2m 안에 자국이 있는 스팟을 먼저 뒤진다.
+- **고양이 침대로 냄새 덮기** (2026-09-24): Bed 스팟 1.5m 안에 들어간 쥐는 30s 동안 자국 없음(치즈를 들어도) — 대신 침대는 고양이가 돌아오는 곳.
 - 자국은 **남긴 쥐 본인 화면에만** 노란 점으로 보인다(소유 클라 ClientRpc). 2단계: 젖은 발자국, 물·바람·후추로 지우기, 고양이 침대로 덮기.
 
 ### 청각
@@ -128,6 +129,9 @@ FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에�
 
 - `CatPersonalitySO` 필드: curiositySpeedMultiplier · curiousWhileSuspicious · fleeLoudness · fleeSeconds. Flee는 `CatBlunderKind.Flee`(`AI/CatBrain.Personality.cs`).
 - Cat 프리팹 성격 4종 — 스폰 시 랜덤.
+
+### 게으름뱅이 기지개 (2026-09-24, 고양이 26)
+- 성격 필드 `wakeStretchSeconds`(게으름뱅이 1.5, 나머지 0): HalfAwake에서 깨어 의심으로 넘어갈 때 바로 움직이지 않고 `CatBlunderKind.Stretch`(몸 늘어짐) → 게이지를 의심 임계로 올려 Suspicious. 잠에서 깨는 순간이 읽히는 텔레그래프 — 도망칠 틈.
 
 ### 아기 고양이 (2026-09-24, 고양이 23)
 - 시야 0.5(≈4m)·청각 1·추격 0.6·**모든 이동 ×0.75**(`CatMovement.SpeedMultiplier`)·수면 ×1.5·몸 크기 0.6(CatVisual). 흰 회색.

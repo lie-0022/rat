@@ -28,6 +28,10 @@ namespace RatGame.Player
         /// <summary>호스트: 웅덩이를 지났다 — 이 시간 동안 젖은 발자국 (design/cat-ideas/06 2단계).</summary>
         public void ServerMarkWet(float seconds) => _wetUntil = Mathf.Max(_wetUntil, Time.time + seconds);
         public bool IsWet => Time.time < _wetUntil;
+        private float _coveredUntil;
+        /// <summary>호스트: 고양이 침대에 올라가 고양이 냄새로 덮였다 — 이 시간 동안 자국 없음 (design/cat-ideas/06).</summary>
+        public void ServerCoverScent(float seconds) => _coveredUntil = Mathf.Max(_coveredUntil, Time.time + seconds);
+        public bool IsCovered => Time.time < _coveredUntil;
 
         // 소유 클라 표시용 풀
         private readonly List<(Transform t, float bornAt, float life)> _dots = new();
@@ -65,6 +69,7 @@ namespace RatGame.Player
 
         private float ComputeStrength()
         {
+            if (IsCovered) return 0f; // 고양이 냄새로 덮임 — 치즈를 들어도 자국 없음
             if (CarriesEdible()) return _balance.ScentEdible;
             if (IsWet) return _balance.ScentWet; // 젖은 발자국 — 치즈 없이도
             if (Time.time >= _nextCatPoll)

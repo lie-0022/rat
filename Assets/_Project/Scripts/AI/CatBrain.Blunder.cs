@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble, Hairball /* 그루밍 뒤 웩웩 (2026-09-24) */, Flee /* 겁쟁이 — 큰 소리에 도망 */ }
+    public enum CatBlunderKind : byte { None, Slip, Stun, Startle, Wobble, Hairball /* 그루밍 뒤 웩웩 (2026-09-24) */, Flee /* 겁쟁이 — 큰 소리에 도망 */, Stretch /* 게으름뱅이 기지개 */ }
 
     /// <summary>
     /// 댕청한 실패 (design/cat-ideas/11, 2026-09-24). 쥐가 만든 상황에서만 확실히 — 무작위 실패는 억울하지도 웃기지도 않다.
@@ -178,6 +178,12 @@ namespace RatGame.AI
                     SetState(CatState.Suspicious); // 뭐였지? 소리 난 곳 조사
                     return;
                 }
+                case CatBlunderKind.Stretch:
+                    if (Time.time < _blunderUntil) return;
+                    _senses.RaiseGaugeTo(_balance.CatSuspicionThreshold, _investigatePos); // 기지개 동안 식은 게이지 — 조사는 한다
+                    SetState(CatState.Suspicious);
+                    return;
+
                 case CatBlunderKind.Flee:
                     if (Time.time < _blunderUntil) return;
                     Log.Dev($"고양이 [{name}]: 뭐였지… 조사");

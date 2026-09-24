@@ -20,6 +20,29 @@ namespace RatGame.AI
         /// <summary>이번 추적에서 맡은 자국 수 (테스트·로그용).</summary>
         public int TrackMarksFollowed => _trackFollowed;
 
+        private float _nextBedCoverCheck;
+
+        // Update에서 (호스트, 0.25s마다): 잠자리에 올라간 쥐는 고양이 냄새로 덮인다
+        private void TickBedCover()
+        {
+            if (Time.time < _nextBedCoverCheck || _spots == null) return;
+            _nextBedCoverCheck = Time.time + 0.25f;
+            float r2 = _balance.BedCoverRadius * _balance.BedCoverRadius;
+            foreach (var s in _spots)
+            {
+                if (s.Type != CatSpotType.Bed) continue;
+                foreach (var client in NetworkManager.ConnectedClientsList)
+                {
+                    var po = client.PlayerObject; if (po == null) continue;
+                    Vector3 d = po.transform.position - s.Pos; d.y = 0f;
+                    if (d.sqrMagnitude > r2) continue;
+                    var scent = po.GetComponent<RatGame.Player.PlayerScent>();
+                    if (scent != null && !scent.IsCovered) Log.Dev($"냄새 덮기: client {client.ClientId} 고양이 침대");
+                    if (scent != null) scent.ServerCoverScent(_balance.BedCoverSeconds);
+                }
+            }
+        }
+
         private bool TrackFilter(ulong source, int seq) => !_trackedUpTo.TryGetValue(source, out int upTo) || seq > upTo;
 
         private bool CheckScent()
