@@ -93,6 +93,7 @@ MonoBehaviour:
   _catCaptureRadius: 1.2
   _catGroomSeconds: 3
   _catSuspiciousWanderSeconds: 6
+  _catSuspiciousTravelSeconds: 10
   _catSleepSenseMultiplier: 0.3
   _catPatrolWaitRange: {x: 2, y: 5}
   _catDistractedSpeed: 4

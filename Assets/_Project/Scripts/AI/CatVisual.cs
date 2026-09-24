@@ -80,6 +80,22 @@ namespace RatGame.AI
             if (_earR != null) _earR.localRotation = _earRBase * rot;
         }
 
+        // 동기화 측정 (고양이 44 수용 기준 "4인 동기화") — 실행 인자 -catsync일 때만, 0.5s마다 서버 시각·위치·상태를 남긴다
+        public static bool DevSyncLog;
+        private float _nextSyncLog;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void ReadSyncArg() => DevSyncLog = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-catsync") >= 0;
+
+        private void TickSyncLog()
+        {
+            if (!DevSyncLog || Time.unscaledTime < _nextSyncLog) return;
+            _nextSyncLog = Time.unscaledTime + 0.5f;
+            var nm = Unity.Netcode.NetworkManager.Singleton;
+            if (nm == null || !nm.IsListening) return;
+            RatGame.Core.Log.Dev($"[CATSYNC] {nm.ServerTime.Time:F2} {transform.position.x:F2} {transform.position.z:F2} {_brain.State.Value}");
+        }
+
         /// <summary>테스트용 — 지금 귀 yaw(도).</summary>
         public float EarYaw => _earYaw;
 
@@ -177,6 +193,7 @@ namespace RatGame.AI
                 RatGame.Core.Log.Dev($"고양이 예민: {_lastAlert}"); // 2인 검증용
             }
             TickEars();
+            TickSyncLog();
             bool high = transform.position.y > 1f; // 선반 위 (고양이 39) — NetworkTransform 높이 복제 확인용
             if (high != _wasHigh)
             {

@@ -55,6 +55,7 @@ namespace RatGame.AI
         public string CurrentSpotName => _spotIndex >= 0 && _spots != null ? _spots[_spotIndex].Name : "";
         private Vector3 _investigatePos;
         private float _suspiciousUntil;
+        private bool _suspiciousArrived; // 조사 지점에 닿았나 — 배회 6s는 닿은 뒤부터 (docs/07)
         private PlayerCondition _chaseTarget;
         private Vector3 _lastKnownTargetPos; // 시야 있을 때만 갱신 — 월핵 추적 금지 (docs/07)
         private Vector3 _targetVelocity;     // 위치 차분 (원격 플레이어는 kinematic이라 Rigidbody 속도가 0)
@@ -222,7 +223,8 @@ namespace RatGame.AI
                     break;
                 case CatState.Patrol: _waitUntil = 0f; _dwelling = false; break;
                 case CatState.Suspicious:
-                    _suspiciousUntil = Time.time + _balance.CatSuspiciousWanderSeconds;
+                    _suspiciousArrived = false;
+                    _suspiciousUntil = Time.time + _balance.CatSuspiciousTravelSeconds; // 가는 길 상한 — 배회 시간은 도착해서
                     _movement.MoveTo(_investigatePos, _balance.CatSuspiciousSpeed);
                     break;
                 case CatState.Chase:
@@ -483,14 +485,23 @@ namespace RatGame.AI
             if (_senses.HasNewStimulus)
             {
                 _investigatePos = _senses.LastStimulusPos;
-                _suspiciousUntil = Time.time + _balance.CatSuspiciousWanderSeconds;
+                _suspiciousArrived = false;
+                _suspiciousUntil = Time.time + _balance.CatSuspiciousTravelSeconds;
                 _movement.MoveTo(_investigatePos, _balance.CatSuspiciousSpeed);
                 _senses.ConsumeStimulus();
             }
             if (_movement.Arrived) // 주변 3m 배회 (docs/07)
+            {
+                if (!_suspiciousArrived)
+                {
+                    _suspiciousArrived = true;
+                    _suspiciousUntil = Time.time + _balance.CatSuspiciousWanderSeconds;
+                }
                 _movement.MoveTo(_movement.RandomPointAround(_investigatePos, 3f), _balance.CatSuspiciousSpeed);
+            }
 
-            if (_senses.SuspicionGauge.Value <= 0f || Time.time >= _suspiciousUntil)
+            // 게이지가 식어도 조사는 끝까지 — 먼 곳의 깨짐은 게이지가 조금만 올라 도착 전에 식어 버렸다 (고양이 44 수용 기준)
+            if (Time.time >= _suspiciousUntil)
                 SetState(CatState.Return);
         }
 

@@ -110,6 +110,7 @@ namespace RatGame.Data
         [SerializeField] private float _catCaptureRadius = 1.2f;
         [SerializeField] private float _catGroomSeconds = 3f;
         [SerializeField] private float _catSuspiciousWanderSeconds = 6f;
+        [SerializeField] private float _catSuspiciousTravelSeconds = 10f; // 조사 지점까지 가는 길 상한 (배회 6s는 도착 뒤부터)
         [SerializeField, Range(0f, 1f)] private float _catSleepSenseMultiplier = 0.3f;
         [SerializeField] private Vector2 _catPatrolWaitRange = new(2f, 5f);
         [SerializeField] private float _catDistractedSpeed = 4f;
@@ -471,6 +472,7 @@ namespace RatGame.Data
         public float CatCaptureRadius => _catCaptureRadius;
         public float CatGroomSeconds => _catGroomSeconds;
         public float CatSuspiciousWanderSeconds => _catSuspiciousWanderSeconds;
+        public float CatSuspiciousTravelSeconds => _catSuspiciousTravelSeconds;
         public float CatSleepSenseMultiplier => _catSleepSenseMultiplier;
         public Vector2 CatPatrolWaitRange => _catPatrolWaitRange;
         public float CatDistractedSpeed => _catDistractedSpeed;
