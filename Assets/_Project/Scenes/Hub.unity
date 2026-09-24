@@ -730,6 +730,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: VendingMachine
       objectReference: {fileID: 0}
+    - target: {fileID: 6501082566716403295, guid: a0f5dcd2cbab246eb85276d3d0423184, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 6566642155827699870, guid: a0f5dcd2cbab246eb85276d3d0423184, type: 3}
       propertyPath: m_InScenePlaced
       value: 1
@@ -943,6 +947,10 @@ PrefabInstance:
     - target: {fileID: 2409209027385406661, guid: f0b3585b0450148f9ac6370a89276820, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 493972911
+      objectReference: {fileID: 0}
+    - target: {fileID: 4214196798067537997, guid: f0b3585b0450148f9ac6370a89276820, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1290,6 +1298,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4157997614419617950, guid: 000a63d1528b448b7b29c1d42f8a6535, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 5039522661639345865, guid: 000a63d1528b448b7b29c1d42f8a6535, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.5
@@ -1496,7 +1508,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
