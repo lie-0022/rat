@@ -114,6 +114,15 @@ MonoBehaviour:
   _catChaseLeadSeconds: 1
   _catChaseOvershootMeters: 3
   _catChaseCornerSpeedMul: 0.55
+  _hideExitNoise: 35
+  _catSearchRadius: 6
+  _catSearchSeconds: 25
+  _catSearchMaxSpots: 3
+  _catSniffSeconds: 2
+  _catDisturbChance: 0.3
+  _catPounceWindowSeconds: 0.5
+  _catMultiHideSniffMul: 1.5
+  _hideEnterSeconds: 0.3
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

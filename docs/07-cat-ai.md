@@ -16,7 +16,7 @@ Cat (NetworkObject, NavMeshAgent, CapsuleCollider)
 ## FSM
 
 ```csharp
-public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return }
+public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search }
 ```
 
 ```
@@ -33,6 +33,7 @@ Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
 | Patrol | **스팟 그래프** 순회 (2026-09-24, `AI/CatSpot`): 가중치 랜덤·최근 2개 제외 → 도착 후 종류별 머무름 — Look 2~5s / Food 25s(감각 0.5) / Sun 40s(0.5) / Groom 20s(0.6) / Bed → Sleep 45s 뒤 깸(다음 스팟으로). CatSpot이 없으면 `CatWaypoint*`를 Look으로. design/cat-design/02 카탈로그 | 2.0 |
 | Suspicious | 마지막 자극 지점으로 이동, 주변 3m 배회 6s | 3.0 |
 | Chase | **예측 추격** (2026-09-24): 타깃 속도(위치 차분)로 1s 앞 지점을 노림(NavMesh 샘플, 최대 5.5m). 시야 상실 시 마지막 진행 방향으로 **3m 오버슛** 뒤 마지막 목격점, 3s 후 Suspicious. **코너 감속**: 몸 방향과 경로 방향이 어긋나면 속도 ×0.55까지 — 직선은 최고 속도, 지그재그는 실제로 도움. Agent angularSpeed 240·acceleration 8 | 5.5 (직선) |
+| Search | **숨을 곳 수색** (2026-09-24, `AI/CatBrain.Search.cs`, design/cat-ideas/14): Chase 시야 상실 3s 뒤 마지막 목격점 반경 6m에 HideSpot이 있으면 진입(없으면 Suspicious). 타깃이 Hidden이 되면 Return이 아니라 시야 상실로 처리. 가까운 순 최대 3곳 → 출구 앞 킁킁 2s(여럿 숨었으면 × 인원 × 1.5) → 30% 건드림 → 안의 쥐 발각(출구로 튀어나옴) → Pounce 창 0.5s → Chase. 25s 또는 스팟 소진 → Return. 목격·소음·미끼가 끊는다 | 3.0 |
 | Capture | 앞발 스윙 애니 0.4s → 범위 내 플레이어 Downed 처리 | — |
 | Distracted | 유인 아이템 위치에서 놀기 | 4.0 |
 | Return | 순찰 경로 복귀 | 2.0 |

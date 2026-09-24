@@ -57,13 +57,14 @@ Rigidbody 기반 (CharacterController 아님 — 물리 상호작용 필수).
 ## PlayerCondition — 상태이상 (호스트 권한, NetworkVariable)
 
 ```csharp
-public enum ConditionState { Active, Stunned, Trapped, Downed }
+public enum ConditionState { Active, Stunned, Trapped, Downed, Hidden }
 ```
 
 | 상태 | 진입 | 효과 | 해제 |
 |---|---|---|---|
 | Stunned | 감전 전선, 높은 낙하(>6m) | 2s 조작 불가 | 시간 경과 |
 | Trapped | 끈끈이 | 이동 불가, 잡기 불가 | 동료가 Interact 1.5s 홀드 |
+| Hidden | HideSpot에 E 홀드 0.3s (2026-09-24, `World/HideSpot`) | 이동·잡기 불가, 고양이 시야 판정 제외. 대형을 끌고는 못 들어감 | E 즉시 나오기(소음 35) 또는 고양이가 건드려 발각 |
 | Downed | 고양이 포획, 쥐덫 | 조작 불가 + 래그돌 + **CarryableItem화** | 동료가 쥐구멍까지 운반 (09 문서) |
 
 - Downed 시: 들고 있던 아이템 전부 드랍(호스트가 조인트 해제), 본인 시점은 관전 카메라(동료 시점 순환).

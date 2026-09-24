@@ -145,8 +145,8 @@ namespace RatGame.Editor
             var hideBalance = AssetDatabase.LoadAssetAtPath<BalanceConfigSO>("Assets/_Project/Data/Balance/BalanceConfig.asset");
             var hides = new (string name, string label, int cap, Vector3 pos, Vector3 size, Vector3 look)[]
             {
-                ("Hide_Shoe", "신발", 1, new(3f, 0.3f, -8f),  new(0.9f, 0.6f, 2.2f), new(-1f, 0f, 0f)),
-                ("Hide_Box",  "빈 상자", 2, new(-3.5f, 0.6f, 7f), new(1.6f, 1.2f, 1.6f), new(1f, 0f, 0f)),
+                ("Hide_Shoe", "장화", 1, new(3f, 0.7f, -8f),  new(1.1f, 1.4f, 2.2f), new(-1f, 0f, 0f)),
+                ("Hide_Box",  "빈 상자", 2, new(-3.5f, 0.75f, 7f), new(1.8f, 1.5f, 1.8f), new(1f, 0f, 0f)),
             };
             foreach (var (name, label, cap, pos, size, look) in hides)
             {

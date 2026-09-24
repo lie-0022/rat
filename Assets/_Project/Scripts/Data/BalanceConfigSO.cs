@@ -139,7 +139,7 @@ namespace RatGame.Data
         [SerializeField, Range(0.2f, 1f)] private float _catChaseCornerSpeedMul = 0.55f; // 방향을 크게 틀 때 속도 배율 (지그재그가 통하게)
 
         [Header("숨을 곳·수색 (design/cat-ideas/14)")]
-        [SerializeField] private float _hideExitNoise = 10f;             // 숨은 곳에서 나올 때 소음
+        [SerializeField] private float _hideExitNoise = 35f;             // 숨은 곳에서 나올 때 부스럭 — 반경 ≈4.9m (걷기 8·달리기 22 기준, docs/06)
         [SerializeField] private float _catSearchRadius = 6f;            // 마지막 목격점 주변 수색 반경
         [SerializeField] private float _catSearchSeconds = 25f;          // 수색 최대 시간
         [SerializeField] private int _catSearchMaxSpots = 3;

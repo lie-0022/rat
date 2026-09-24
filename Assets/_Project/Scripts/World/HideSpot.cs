@@ -30,8 +30,13 @@ namespace RatGame.World
 
         public string DisplayName => _displayName;
         public int Capacity => _capacity;
-        public Vector3 InsidePosition => _insideAnchor != null ? _insideAnchor.position : transform.position;
-        public Vector3 ExitPosition => _exitAnchor != null ? _exitAnchor.position : transform.position + transform.forward * 0.7f;
+        // 앵커가 없으면 박스 크기로 계산 (그레이박스 = 단위 큐브 스케일): 안 = 바닥 중앙, 출구 = 앞면 0.5m 밖 바닥
+        public Vector3 InsidePosition => _insideAnchor != null ? _insideAnchor.position : FloorPoint(transform.position);
+        public Vector3 ExitPosition => _exitAnchor != null ? _exitAnchor.position
+            : FloorPoint(transform.position + transform.forward * (Mathf.Abs(transform.lossyScale.z) * 0.5f + 0.5f));
+
+        private Vector3 FloorPoint(Vector3 p) { p.y = transform.position.y - Mathf.Abs(transform.lossyScale.y) * 0.5f + RatHalfHeight; return p; }
+        private const float RatHalfHeight = 0.65f; // 쥐 캡슐(높이 2 × 스케일 0.6) 절반 + 여유 — 피벗이 몸 중앙
 
         public string PromptText => IsOccupant(LocalClientIdSafe()) ? $"{_displayName}에서 나오기" : $"{_displayName}에 숨기";
         // 들어가기는 짧은 홀드(급하게), 나오기는 즉시
@@ -91,7 +96,7 @@ namespace RatGame.World
             if (condition != null && condition.State.Value == ConditionState.Hidden) condition.ServerSetState(ConditionState.Active);
             Teleport(player, ExitPosition);
             // 나올 때 소음 — 고양이가 아직 근처면 다시 의심 (docs/06 채널)
-            NoiseSystem.Emit(ExitPosition, _balance != null ? _balance.HideExitNoise : 10f, NoiseType.Footstep, clientId);
+            NoiseSystem.Emit(ExitPosition, _balance != null ? _balance.HideExitNoise : 35f, NoiseType.Impact, clientId);
             Log.Dev($"{(byCat ? "발각" : "나오기")}: client {clientId} ← {_displayName}");
         }
 
