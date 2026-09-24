@@ -7,6 +7,7 @@
 | [01-movement-logic.md](01-movement-logic.md) | 순찰 모델 · 감각 모델 · 추격/추적 모델 · 이동 실행 방식 · 텔레그래프 계약 · 속도와 체력 · 난이도 손잡이 |
 | [02-mapping.md](02-mapping.md) | 스팟 카탈로그 · 배치 모델 · 통로 문법(쥐/고양이/공용, 높이) · 안전지대 언어 · 스폰 규칙 · 데모 스테이지 배치안 · 검증 |
 | [03-recommendation.md](03-recommendation.md) | 축별 추천 조합 3세트(가벼움/기본/풍성)와 구현 순서 초안 |
+| [04-implemented-summary.md](04-implemented-summary.md) | **실제로 구현된 것 한눈에** (2026-09-24 자율 루프 고양이 1~26) — 상태 19개 표·시스템·검증 방식·남은 것 |
 
 ## 현재 상태 (기준점)
 - 코드: `CatBrain` 7상태 FSM, `CatSenses` 시야(원뿔·Linecast·웅크림 절반·어둠 절반)+청각(NoiseSystem), `CatMovement` = NavMeshAgent 래퍼(MoveTo/Stop/RandomPointAround). 순찰 = 씬의 `CatWaypoint*` 이름 검색 → 배열 순회 + 2~5s 대기.
