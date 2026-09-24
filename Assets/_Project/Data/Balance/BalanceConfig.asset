@@ -134,6 +134,20 @@ MonoBehaviour:
   _catBoredomSeconds: 30
   _catBoredIgnoreSeconds: 60
   _catCuriousReachTimeout: 8
+  _catMemoryCellSize: 2
+  _catMemorySightPerSec: 1
+  _catMemoryNoiseMin: 40
+  _catMemoryDecayPerSec: 0.1
+  _catMemoryPatrolChance: 0.3
+  _catMemoryMinHeat: 3
+  _catMemorySniffSeconds: 1.5
+  _catGrudgeEscape: 40
+  _catGrudgeSqueak: 15
+  _catGrudgeDecayPerSec: 0.2
+  _catGrudgeThreshold: 50
+  _catGrudgeSightMul: 1.5
+  _catGrudgeHearingMul: 1.3
+  _catGrudgeGiveUpBonus: 2
   _lureYarnSeconds: 8
   _lureYarnRadius: 10
   _lureCatnipSeconds: 15

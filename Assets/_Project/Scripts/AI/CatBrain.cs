@@ -84,6 +84,7 @@ namespace RatGame.AI
             CollectSpots();
             CollectHideSpots();
             _senses.CuriosityFilter = IsCuriosityAllowed;
+            InitMemory();
             if (PersonalityIndex.Value < 0 && _personalities != null && _personalities.Length > 0)
                 ServerSetPersonality(Random.Range(0, _personalities.Length));
             else ApplyPersonality();
@@ -151,6 +152,7 @@ namespace RatGame.AI
         private void Update()
         {
             if (!IsSpawned || _spots == null) return; // 자동 부트 등 스폰 전 프레임 가드
+            TickMemory();
             switch (State.Value)
             {
                 case CatState.Sleep: TickSleep(); break;
@@ -174,6 +176,7 @@ namespace RatGame.AI
             if (next != CatState.Patrol) _dwelling = false;
             if (next != CatState.Sleep) SleepPhase.Value = CatSleepPhase.None;
             if (next != CatState.Curious) ExitCurious();
+            if (next != CatState.Patrol) CancelMemoryVisit();
 
             switch (next)
             {
@@ -297,6 +300,7 @@ namespace RatGame.AI
                 return;
             }
 
+            if (_memoryVisit) { TickMemoryVisit(); return; }
             if (_spots.Length == 0) { _movement.Stop(); return; }
             if (_dwelling)
             {
@@ -314,6 +318,7 @@ namespace RatGame.AI
         // 다음 스팟: 가중치 랜덤, 최근 n개 제외 (스팟이 적으면 제외 목록을 줄인다)
         private void GoToNextSpot()
         {
+            if (TryGoToMemorySpot()) return; // 가끔 기억 칸에 들른다 (design/cat-ideas/05)
             int avoid = Mathf.Min(_balance.CatSpotAvoidRecent, _spots.Length - 1);
             while (_recentSpots.Count > avoid) _recentSpots.RemoveAt(0);
             float total = 0f;
@@ -404,9 +409,11 @@ namespace RatGame.AI
             }
 
             // 게으름뱅이: 오래 쫓으면 하품하고 포기 (design/cat-ideas/01)
-            if (ChaseGiveUp > 0f && Time.time - _chaseStartedAt >= ChaseGiveUp)
+            float giveUp = ChaseGiveUp > 0f && IsGrudged(_chaseTarget.OwnerClientId) ? ChaseGiveUp + _balance.CatGrudgeGiveUpBonus : ChaseGiveUp;
+            if (giveUp > 0f && Time.time - _chaseStartedAt >= giveUp)
             {
-                Log.Dev($"고양이 [{name}]: 추격 포기 (성격 {Personality.DisplayName}, {ChaseGiveUp}s)");
+                Log.Dev($"고양이 [{name}]: 추격 포기 (성격 {Personality.DisplayName}, {giveUp}s)");
+                ServerAddGrudge(_chaseTarget.OwnerClientId, _balance.CatGrudgeEscape, "놓침");
                 _chaseTarget = null;
                 _senses.ConsumeStimulus();
                 SetState(CatState.Return);
@@ -453,6 +460,7 @@ namespace RatGame.AI
                 if (Time.time - _lostSightSince >= _balance.CatLoseSightSeconds)
                 {
                     _investigatePos = _lastKnownTargetPos;
+                    ServerAddGrudge(_chaseTarget.OwnerClientId, _balance.CatGrudgeEscape, "놓침");
                     _chaseTarget = null;
                     _senses.ConsumeStimulus();
                     // 마지막 목격점 근처에 숨을 곳이 있으면 수색, 없으면 조사 (docs/07)

@@ -35,6 +35,7 @@ namespace RatGame.UI
         private RectTransform _canvasRect;
         private CatBrain _cat;
         private bool _chasingMe;
+        private bool _grudgedMe; // 앙심 대상이면 "!!" (design/cat-ideas/05)
         private float _nextPoll;
         private string _lastLogged = "";
 
@@ -71,6 +72,7 @@ namespace RatGame.UI
         {
             _cat = null;
             _chasingMe = false;
+            _grudgedMe = false;
             var nm = NetworkManager.Singleton;
             if (nm == null || !nm.IsListening || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
             if (RunManager.Instance != null && RunManager.Instance.IsShowingResult) return;
@@ -85,6 +87,7 @@ namespace RatGame.UI
                 {
                     _cat = cat;
                     _chasingMe = true;
+                    _grudgedMe = cat.HasGrudge.Value && cat.GrudgeClientId.Value == me;
                     return; // 나를 쫓는 고양이가 최우선
                 }
                 if (state != CatState.Suspicious) continue;
@@ -114,7 +117,7 @@ namespace RatGame.UI
                 _arrow.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 45f);
             }
 
-            string symbol = _chasingMe ? "!" : "?";
+            string symbol = _chasingMe ? (_grudgedMe ? "!!" : "!") : "?";
             if (_lastLogged != symbol) { _lastLogged = symbol; Log.Dev($"의심 표시: {symbol} ({_cat.name} {_cat.State.Value})"); }
             if (_symbol.text != symbol) _symbol.text = symbol;
             if (_theme != null)

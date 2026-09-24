@@ -39,6 +39,11 @@ namespace RatGame.AI
         /// <summary>이 물건 근처(1.5m)의 충돌 소음은 못 들은 척 — 자기가 친 물건에 매번 놀라지 않게. 깨짐은 예외.</summary>
         public Transform IgnoreImpactNear { get; set; }
         private CarryableItem[] _items;
+
+        /// <summary>쥐별 감각 배율 (앙심 — CatBrain이 준다). 시야 게인·타깃 우선·발소리/찍찍 청각에 곱한다.</summary>
+        public System.Func<ulong, float> TargetGainMultiplier { get; set; }
+        /// <summary>문턱을 넘어 들린 소음 (기억·앙심 입력). heard = 배율 적용 후 크기.</summary>
+        public event System.Action<NoiseEvent, float> Heard;
         private float _nextItemScan;
 
         private float _nextVisionTick;
@@ -75,6 +80,8 @@ namespace RatGame.AI
         {
             PlayerCondition seen = null;
             float bestDist = float.MaxValue;
+            float bestCmp = float.MaxValue; // 찍힌 쥐는 가까이 있는 것처럼 비교 (우선 추적)
+            float seenGain = 1f;
 
             foreach (var client in NetworkManager.ConnectedClientsList)
             {
@@ -97,7 +104,9 @@ namespace RatGame.AI
                 if (Physics.Linecast(transform.position + Vector3.up * 0.5f,
                         playerObj.transform.position, blockMask, QueryTriggerInteraction.Ignore)) continue;
 
-                if (dist < bestDist) { bestDist = dist; seen = condition; }
+                float gm = TargetGainMultiplier != null ? TargetGainMultiplier(condition.OwnerClientId) : 1f;
+                float cmp = gm > 1f ? dist * 0.6f : dist;
+                if (cmp < bestCmp) { bestCmp = cmp; bestDist = dist; seen = condition; seenGain = gm; }
             }
 
             if (seen != null)
@@ -108,7 +117,7 @@ namespace RatGame.AI
                 CloseSight = bestDist <= _balance.CatCloseSightDistance;
                 // 거리보정: 가까울수록 큼 (1~2배)
                 float distFactor = Mathf.Lerp(2f, 1f, bestDist / _balance.CatViewDistance);
-                AddSuspicion(_balance.CatGazeGainPerSec * dt * distFactor, seen.transform.position);
+                AddSuspicion(_balance.CatGazeGainPerSec * dt * distFactor * seenGain, seen.transform.position);
             }
             else
             {
@@ -157,6 +166,12 @@ namespace RatGame.AI
             if (e.Type == NoiseType.Impact && IgnoreImpactNear != null
                 && Vector3.Distance(e.Pos, IgnoreImpactNear.position) < 1.5f) return;
             float heard = NoiseSystem.GetLoudnessAt(e, transform.position) * SensitivityMultiplier * HearingMultiplier;
+            // 찍힌 쥐의 발소리·찍찍은 더 잘 들린다 (충돌·파손은 Source가 비어 귀속 불가 — 제외)
+            if ((e.Type == NoiseType.Footstep || e.Type == NoiseType.Squeak) && TargetGainMultiplier != null)
+            {
+                float gm = TargetGainMultiplier(e.Source);
+                if (gm > 1f) heard *= _balance.CatGrudgeHearingMul;
+            }
             if (heard < _balance.CatHearThreshold) return;
 
             // 거리감쇠 (docs/07): 반경 대비 멀수록 약하게
@@ -164,6 +179,7 @@ namespace RatGame.AI
             float dist = Vector3.Distance(e.Pos, transform.position);
             float distFactor = Mathf.Clamp(1f - dist / Mathf.Max(radius, 0.01f), 0.2f, 1f);
             AddSuspicion(heard * distFactor * _balance.CatHearingGain, e.Pos);
+            Heard?.Invoke(e, heard);
 
             if (e.Type == NoiseType.Break || e.Type == NoiseType.Trap || e.Type == NoiseType.Squeak)
                 ImmediateInvestigate = true; // 즉시 조사 트리거 (docs/06·07)

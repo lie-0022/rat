@@ -61,8 +61,16 @@ namespace RatGame.UI
                 if (!active) continue;
                 var p = _players[i];
                 string name = PlayerVisual.ColorNameFor(p.OwnerClientId) + (p.IsOwner ? " (나)" : "");
-                _rows[i].Show(PlayerVisual.ColorFor(p.OwnerClientId), name, p.State.Value);
+                _rows[i].Show(PlayerVisual.ColorFor(p.OwnerClientId), name, p.State.Value, IsGrudged(p.OwnerClientId));
             }
+        }
+
+        // 어느 고양이든 이 쥐를 찍었으면 (CatBrain NV 읽기만 — 규칙 3). 0.25s 폴링 안에서만 호출
+        private static bool IsGrudged(ulong clientId)
+        {
+            foreach (var cat in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None))
+                if (cat.IsSpawned && cat.HasGrudge.Value && cat.GrudgeClientId.Value == clientId) return true;
+            return false;
         }
 
         private static void SetText(TMP_Text label, string text)

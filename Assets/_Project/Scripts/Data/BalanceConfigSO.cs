@@ -162,6 +162,22 @@ namespace RatGame.Data
         [SerializeField] private float _catBoredIgnoreSeconds = 60f;     // 질린 물건 무시 시간
         [SerializeField] private float _catCuriousReachTimeout = 8f;     // 못 닿으면(선반 위 등) 포기
 
+        [Header("기억·앙심 (design/cat-ideas/05)")]
+        [SerializeField] private float _catMemoryCellSize = 2f;          // 장소 기억 격자 (m)
+        [SerializeField] private float _catMemorySightPerSec = 1f;       // 쥐를 보는 동안 그 칸 열 +/s
+        [SerializeField] private float _catMemoryNoiseMin = 40f;         // 이 이상 들린 소음만 기억 (+loudness/40)
+        [SerializeField] private float _catMemoryDecayPerSec = 0.1f;
+        [SerializeField, Range(0f, 1f)] private float _catMemoryPatrolChance = 0.3f; // 순찰 목적지 고를 때 기억 칸으로 갈 확률
+        [SerializeField] private float _catMemoryMinHeat = 3f;           // 이 열 이상인 칸만 찾아감
+        [SerializeField] private float _catMemorySniffSeconds = 1.5f;
+        [SerializeField] private float _catGrudgeEscape = 40f;           // 추격에서 놓치면 그 쥐 앙심 +
+        [SerializeField] private float _catGrudgeSqueak = 15f;           // 들리는 곳에서 찍찍(도발) +
+        [SerializeField] private float _catGrudgeDecayPerSec = 0.2f;
+        [SerializeField] private float _catGrudgeThreshold = 50f;        // 이상이면 "찍힘"
+        [SerializeField] private float _catGrudgeSightMul = 1.5f;        // 찍힌 쥐 시야 게인 배율
+        [SerializeField] private float _catGrudgeHearingMul = 1.3f;      // 찍힌 쥐 발소리·찍찍 청각 배율
+        [SerializeField] private float _catGrudgeGiveUpBonus = 2f;       // 성격 추격 포기 시간 + (찍힌 쥐)
+
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
         [SerializeField] private float _lureYarnRadius = 10f;   // 낙하지점 기준 유인 범위
@@ -315,6 +331,20 @@ namespace RatGame.Data
         public float CatBoredomSeconds => _catBoredomSeconds;
         public float CatBoredIgnoreSeconds => _catBoredIgnoreSeconds;
         public float CatCuriousReachTimeout => _catCuriousReachTimeout;
+        public float CatMemoryCellSize => _catMemoryCellSize;
+        public float CatMemorySightPerSec => _catMemorySightPerSec;
+        public float CatMemoryNoiseMin => _catMemoryNoiseMin;
+        public float CatMemoryDecayPerSec => _catMemoryDecayPerSec;
+        public float CatMemoryPatrolChance => _catMemoryPatrolChance;
+        public float CatMemoryMinHeat => _catMemoryMinHeat;
+        public float CatMemorySniffSeconds => _catMemorySniffSeconds;
+        public float CatGrudgeEscape => _catGrudgeEscape;
+        public float CatGrudgeSqueak => _catGrudgeSqueak;
+        public float CatGrudgeDecayPerSec => _catGrudgeDecayPerSec;
+        public float CatGrudgeThreshold => _catGrudgeThreshold;
+        public float CatGrudgeSightMul => _catGrudgeSightMul;
+        public float CatGrudgeHearingMul => _catGrudgeHearingMul;
+        public float CatGrudgeGiveUpBonus => _catGrudgeGiveUpBonus;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

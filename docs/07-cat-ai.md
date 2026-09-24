@@ -67,6 +67,16 @@ foreach player(Active만):
 - NoiseSystem.OnNoise 구독 (06 계약): `게이지 += loudness × 거리감쇠 × 0.8`
 - Break/Trap/Squeak 타입은 즉시 Suspicious(해당 지점).
 
+## 장소 기억·앙심 (2026-09-24, `AI/CatBrain.Memory.cs`, design/cat-ideas/05)
+
+런 안에서만 쌓인다(고양이 재스폰 = 초기화). 학습은 보여야 한다 — 킁킁·"!!"·"찍힘".
+
+- **장소 기억**: 2m 격자 열 지도. 쥐를 보는 동안 +1/s, 들린 소음 ≥40이면 +loudness/40, -0.1/s 감쇠. 순찰 목적지를 고를 때 30%(연속 금지)로 열 ≥3인 가장 뜨거운 칸에 가서 킁킁 1.5s(`Sniffing` NV) → 그 칸 열 절반.
+- **앙심**: 쥐별 0~100. 추격에서 놓침 +40(시야 상실 3s·성격 포기), 들리는 곳 찍찍 +15, -0.2/s 감쇠. 50 이상 중 최고 1명 = `GrudgeClientId`·`HasGrudge` NV.
+  - 효과: 그 쥐 시야 게인 ×1.5, 여럿 보이면 그 쥐 우선(거리 ×0.6로 비교), 그 쥐 발소리·찍찍 청각 ×1.3, 성격 추격 포기 +2s.
+  - 표시: 나를 쫓는 고양이가 나를 찍었으면 SuspicionIndicator "!!", 팀 상태 "찍힘" 칩(Danger).
+- 귀속: 충돌·파손 소음은 `NoiseEvent.Source`가 비어 있고(0 = 환경) 호스트 id도 0이라 앙심에서 제외. 유인 속음 +20·뇌물 -50은 다음 단계.
+
 ## 성격 프로필 (2026-09-24, `Data/CatPersonalitySO`, design/cat-ideas/01)
 
 FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에서 랜덤(`PersonalityIndex` NV, `ServerSetPersonality`로 지정 가능). 몸 색이 그레이박스 표현.
