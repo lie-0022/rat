@@ -63,8 +63,9 @@ namespace RatGame.Net
                 yield return new WaitUntil(() => task.IsCompleted);
                 if (task.Result)
                 {
-                    // 접속 확정(스폰)까지 잠시 관찰 — 실패하면 NGO가 Shutdown하므로 IsListening으로 판별
-                    yield return new WaitForSeconds(3f);
+                    // 접속 확정(스폰)까지 잠시 관찰 — 실패하면 NGO가 Shutdown하므로 IsListening으로 판별.
+                    // 새로 빌드한 앱의 첫 실행은 느려서(맥 첫 실행 검사) 3초로는 핸드셰이크 도중 끊고 다시 시도했다 → 6초
+                    yield return new WaitForSeconds(6f);
                     if (NetworkManager.Singleton.IsConnectedClient) yield break;
                 }
                 Log.DevWarn($"[AutoConnect] 접속 재시도 {attempt}/5");
