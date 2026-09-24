@@ -66,6 +66,17 @@ namespace RatGame.UI
                 foreach (HouseEventKind kind in Enum.GetValues(typeof(HouseEventKind)))
                     if (GUILayout.Button(KindName(kind))) house.ServerTrigger(kind);
 
+            // 오늘의 집 강제 (고양이 109) — 벽 속에서만, 같은 스테이지를 이 조건으로 다시 연다
+            if (FindAnyObjectByType<GridZoneBuilder>() != null)
+            {
+                GUILayout.Space(6);
+                GUILayout.Label($"<b>오늘의 집</b> — 지금 {FindAnyObjectByType<GridZoneBuilder>().Modifier}, 누르면 이 스테이지를 그 조건으로 다시", Rich());
+                GUILayout.BeginHorizontal();
+                foreach (StageModifier m in Enum.GetValues(typeof(StageModifier)))
+                    if (GUILayout.Button(ModifierName(m))) ReloadWith(m);
+                GUILayout.EndHorizontal();
+            }
+
             GUILayout.Space(6);
             GUILayout.Label("<b>고양이</b>", Rich());
             var cats = FindObjectsByType<CatBrain>(FindObjectsSortMode.None);
@@ -92,6 +103,21 @@ namespace RatGame.UI
 
             GUILayout.EndScrollView();
             GUILayout.EndArea();
+        }
+
+        private static string ModifierName(StageModifier m) => m switch
+        {
+            StageModifier.None => "없음", StageModifier.Blackout => "정전", StageModifier.TrapSale => "덫",
+            StageModifier.CatTreats => "간식", StageModifier.OwnerOut => "외출", StageModifier.Busy => "분주", _ => m.ToString(),
+        };
+
+        // 같은 스테이지 번호로 벽 속 씬을 다시 — 기지 발판 출발과 같은 길(로드 뒤 자동 출발·맵 생성)
+        private void ReloadWith(StageModifier m)
+        {
+            GridZoneBuilder.DevForceModifier = m;
+            RunSession.DepartPending = true;
+            SetOpen(false);
+            NetworkManager.Singleton.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
 
         private GUIStyle Rich()

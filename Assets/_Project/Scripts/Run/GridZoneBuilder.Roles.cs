@@ -20,7 +20,7 @@ namespace RatGame.Run
         }
 
         // 오늘의 집 — 맵 모양과 따로 굴린다(같은 시드면 같은 맵, 조건만 스테이지 확률) (고양이 106)
-        /// <summary>테스트용 — 설정하면 다음 맵부터 이 조건 (PlayerController.DevForcedInput과 같은 방식).</summary>
+        /// <summary>테스트용 — 설정하면 다음 맵 한 번 이 조건 (F4 메뉴·테스트 스크립트).</summary>
         public static StageModifier? DevForceModifier;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -28,7 +28,7 @@ namespace RatGame.Run
 
         private StageModifier PickModifier(int seed, int stage)
         {
-            if (DevForceModifier.HasValue) return DevForceModifier.Value;
+            if (DevForceModifier.HasValue) { var forced = DevForceModifier.Value; DevForceModifier = null; return forced; } // 한 번만 — 다음 맵부터는 원래대로
             var rng = new System.Random(seed * 31 + stage);
             if (rng.NextDouble() >= _zone.ModifierChanceFor(stage)) return StageModifier.None;
             return (StageModifier)(1 + rng.Next(5)); // None 뺀 다섯 가지 같은 비중
