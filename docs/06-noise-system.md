@@ -31,7 +31,7 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 |---|---|---|
 | 걷기 | 8 (재질 하드플로어 ×1.5) | PlayerNoiseEmitter, 0.35s 간격 |
 | 달리기 | 22 | 동일, 0.25s 간격 |
-| 배관 안 달리기 (고양이 87) | 22 × `pipeEchoMultiplier` 1.6 = 35 | 동일 — 발 위 1.2m 안이 배관 천장이면(`World/PipeEcho`) 쇠관이 울림. 걷기·웅크림은 그대로 |
+| 배관 안 달리기 (고양이 87) | 발밑 22 + **양쪽 입구 밖** 각 22 × `pipeEchoMultiplier` 1.6 = 35 | 동일 — 발 위 1.2m 안이 배관 천장이면(`World/PipeEcho`). 관 속 소리는 벽(−40%/장)에 막혀 거의 안 새서, 소리가 관을 타고 끝으로 나오는 것으로 침 → 입구 4.9m 안 고양이가 듣는다. 걷기·웅크림은 그대로 |
 | 웅크려 이동 | 0 | — |
 | 착지 (낙하 1m+) | 15 + 높이×5 | PlayerController |
 | 스태미나 헐떡임 | 18 | PlayerStamina |
