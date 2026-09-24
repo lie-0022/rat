@@ -5,7 +5,7 @@ using RatGame.Run;
 namespace RatGame.Core
 {
     /// <summary>집주인 이벤트 종류 (design/cat-ideas/10). append-only — RPC로 byte 전송.</summary>
-    public enum HouseEventKind : byte { CallAway, Feeding, Doorbell /* 쥐가 누른 초인종 — 부르기와 같은 부재 */, Vacuum /* 로봇청소기 */, TV /* TV 켜짐 */, LightOn /* 불 켜짐 */, Window /* 창문 바람 */ }
+    public enum HouseEventKind : byte { CallAway, Feeding, Doorbell /* 쥐가 누른 초인종 — 부르기와 같은 부재 */, Vacuum /* 로봇청소기 */, TV /* TV 켜짐 */, LightOn /* 불 켜짐 */, Window /* 창문 바람 */, NewTraps /* 집주인이 덫을 놓음 — 벽 속 (고양이 89) */ }
     /// <summary>기지 오브젝트가 여는 패널 종류 (규칙 3 — World는 UI 타입을 모른다).</summary>
     public enum WorldPanelKind : byte { Shop, Mirror, Codex, StageShop /* 새 루프 목적지 상점 (고양이 65) */ }
     public enum HouseEventPhase : byte { Warn, Start, End }

@@ -154,6 +154,19 @@ namespace RatGame.Run
             EventBus.RaiseStageBriefing(stage, stages, quota, flags);
         }
 
+        /// <summary>호스트: 집주인 덫 놓기 (고양이 89) — 쥐 근처는 피해서. 놓은 수.</summary>
+        public int ServerAddTraps(int count, float avoidRadius)
+        {
+            if (!IsServer || Populator == null) return 0;
+            var rats = new List<Vector3>();
+            foreach (var c in NetworkManager.ConnectedClientsList) if (c.PlayerObject != null) rats.Add(c.PlayerObject.transform.position);
+            int placed = Populator.AddTraps(new System.Random(Random.Range(1, int.MaxValue)), count, rats, avoidRadius);
+            Log.Dev($"집주인 덫: {placed}개 놓음 (쥐 {avoidRadius}m 밖)");
+            return placed;
+        }
+
+        public bool CanAddTraps => Populator != null && Populator.HasFreeTrapSpot();
+
         // 깊은 스테이지에서 2마리 이상이면 확률로 한 마리를 아기로 — 엄마·아기 관계(부르면 엄마가 달려옴)는 CatRelation이 붙인다 (고양이 75)
         private void MaybeKitten(int stage, System.Random rng)
         {

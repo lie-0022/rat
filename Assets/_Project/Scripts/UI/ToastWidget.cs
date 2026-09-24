@@ -110,6 +110,8 @@ namespace RatGame.UI
                 (HouseEventKind.Vacuum, HouseEventPhase.Warn) => "삐— 로봇청소기가 켜졌다",
                 (HouseEventKind.Vacuum, HouseEventPhase.Start) => "청소기 소리에 발소리가 묻힌다 — 지금 뛰어!",
                 (HouseEventKind.Vacuum, HouseEventPhase.End) => "청소기 멈춤 — 다시 조용히",
+                (HouseEventKind.NewTraps, HouseEventPhase.Warn) => "벽 너머 딸깍딸깍 — 집주인이 덫을 놓는다",
+                (HouseEventKind.NewTraps, HouseEventPhase.Start) => "새 덫이 생겼다 — 지나온 길도 조심",
                 (HouseEventKind.Feeding, HouseEventPhase.Warn) => "부엌에서 그릇 달그락 — 밥 시간",
                 (HouseEventKind.Feeding, HouseEventPhase.Start) => "고양이가 밥 먹는 중 — 부엌만 피해",
                 _ => null

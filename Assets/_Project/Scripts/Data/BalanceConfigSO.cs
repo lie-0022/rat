@@ -378,6 +378,8 @@ namespace RatGame.Data
         [SerializeField] private float _catKittenCallCooldown = 10f;     // 아기 냐앙 → 엄마 호출 재사용 대기
         [SerializeField] private float _catGuardRadius = 8f;             // 문지기가 순찰하는 초소 둘레 (m, 고양이 80)
         [SerializeField] private float _catGuardPostWeight = 4f;         // 초소 관찰점 가중 배율
+        [SerializeField] private int _houseNewTrapsCount = 2;            // 집주인 덫 놓기 — 한 번에 새 함정 수 (고양이 89)
+        [SerializeField] private float _houseNewTrapsAvoid = 5f;         // 쥐에서 이만큼(m) 넘게 떨어진 자리에만
 
         [Header("유인 아이템 (docs/07·08)")]
         [SerializeField] private float _lureYarnSeconds = 8f;
@@ -717,6 +719,8 @@ namespace RatGame.Data
         public float CatKittenCallCooldown => _catKittenCallCooldown;
         public float CatGuardRadius => _catGuardRadius;
         public float CatGuardPostWeight => _catGuardPostWeight;
+        public int HouseNewTrapsCount => _houseNewTrapsCount;
+        public float HouseNewTrapsAvoid => _houseNewTrapsAvoid;
         public float LureYarnSeconds => _lureYarnSeconds;
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;

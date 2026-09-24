@@ -23,6 +23,7 @@ namespace RatGame.Run
         public int LootSpawned { get; private set; }
         public int LootValue { get; private set; }
         public int TrapsSpawned { get; private set; }
+        private readonly HashSet<Transform> _usedTrapSpots = new(); // 나중에 덫을 더 놓을 때 겹치지 않게 (고양이 89)
         public int CatsSpawned { get; private set; }
         public int HidesSpawned { get; private set; }
         public int DarkSpawned { get; private set; }
@@ -150,9 +151,51 @@ namespace RatGame.Run
                     foreach (var e in table.Entries) { roll -= e.Weight; if (roll < 0) { prefab = e.Prefab; break; } }
                     if (prefab == null) continue;
                     Spawn(prefab, p.position + Vector3.up * prefab.transform.position.y, Quaternion.Euler(0f, rng.Next(4) * 90f, 0f));
+                    _usedTrapSpots.Add(p);
                     TrapsSpawned++;
                 }
             }
+        }
+
+        /// <summary>호스트: 빈 함정 자리 중 avoid 모두에서 avoidRadius 넘게 떨어진 곳에 count개 더 (집주인 덫 놓기, 고양이 89). 놓은 수.</summary>
+        public int AddTraps(System.Random rng, int count, List<Vector3> avoid, float avoidRadius)
+        {
+            var table = Pop.TrapTable;
+            if (table == null || table.Entries == null || table.Entries.Length == 0 || count <= 0) return 0;
+            int total = 0; foreach (var e in table.Entries) total += Mathf.Max(0, e.Weight);
+            if (total <= 0) return 0;
+            var free = new List<Transform>();
+            foreach (var room in Rooms)
+            {
+                if (room == SafeRoom) continue;
+                foreach (var p in room.TrapSpawns)
+                {
+                    if (p == null || _usedTrapSpots.Contains(p)) continue;
+                    bool near = false;
+                    foreach (var a in avoid) if ((a - p.position).sqrMagnitude < avoidRadius * avoidRadius) { near = true; break; }
+                    if (!near) free.Add(p);
+                }
+            }
+            Shuffle(free, rng);
+            int placed = 0;
+            for (int i = 0; i < free.Count && placed < count; i++)
+            {
+                int roll = rng.Next(total); GameObject prefab = null;
+                foreach (var e in table.Entries) { roll -= e.Weight; if (roll < 0) { prefab = e.Prefab; break; } }
+                if (prefab == null) continue;
+                Spawn(prefab, free[i].position + Vector3.up * prefab.transform.position.y, Quaternion.Euler(0f, rng.Next(4) * 90f, 0f));
+                _usedTrapSpots.Add(free[i]);
+                TrapsSpawned++; placed++;
+            }
+            return placed;
+        }
+
+        public bool HasFreeTrapSpot()
+        {
+            foreach (var room in Rooms)
+                if (room != SafeRoom)
+                    foreach (var p in room.TrapSpawns) if (p != null && !_usedTrapSpots.Contains(p)) return true;
+            return false;
         }
 
         public void HidesAndDark(System.Random rng)

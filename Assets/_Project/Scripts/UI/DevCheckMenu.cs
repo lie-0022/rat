@@ -109,6 +109,7 @@ namespace RatGame.UI
             HouseEventKind.TV => "TV 켜기",
             HouseEventKind.LightOn => "불 켜기 (어둠 구역)",
             HouseEventKind.Window => "창문 바람",
+            HouseEventKind.NewTraps => "덫 놓기 (벽 속)",
             _ => kind.ToString(),
         };
 

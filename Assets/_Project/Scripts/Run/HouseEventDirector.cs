@@ -87,6 +87,8 @@ namespace RatGame.Run
             if (FindAnyObjectByType<TvSet>() != null) pool.Add(HouseEventKind.TV);
             if (LightZone.All.Count > 0) pool.Add(HouseEventKind.LightOn);
             if (FindAnyObjectByType<WindowWind>() != null) pool.Add(HouseEventKind.Window);
+            var walls = FindAnyObjectByType<GridZoneBuilder>();
+            if (walls != null && walls.CanAddTraps) pool.Add(HouseEventKind.NewTraps); // 벽 속만 — 집주인이 벽 너머에 덫 (고양이 89)
             if (_last.HasValue) pool.Remove(_last.Value);
             return pool[Random.Range(0, pool.Count)];
         }
@@ -137,6 +139,10 @@ namespace RatGame.Run
                     if (zone == null) break;
                     zone.ServerLightFor(_balance.LightOnSeconds);
                     foreach (var cat in cats) cat.ServerGreetOwner(zone.Center, _balance.LightOnSeconds);
+                    break;
+                case HouseEventKind.NewTraps:
+                    var builder = FindAnyObjectByType<GridZoneBuilder>();
+                    if (builder != null) builder.ServerAddTraps(_balance.HouseNewTrapsCount, _balance.HouseNewTrapsAvoid);
                     break;
                 case HouseEventKind.Vacuum:
                     var vac = FindAnyObjectByType<RobotVacuum>();
