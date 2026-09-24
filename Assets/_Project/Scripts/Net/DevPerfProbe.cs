@@ -40,7 +40,9 @@ namespace RatGame.Net
 
         private void Update()
         {
-            _samples.Add(Time.unscaledDeltaTime * 1000f);
+            float dt = Time.unscaledDeltaTime;
+            if (dt <= 1f) _samples.Add(dt * 1000f); // 1초 넘는 프레임은 로딩·에디터 멈춤 — 게임 프레임이 아님 (DEV 패널에 "FPS 0"이 뜨던 것)
+            if (_samples.Count == 0) { _windowStart = Time.unscaledTime; return; }
             if (Time.unscaledTime - _windowStart < WindowSeconds) return;
             _windowStart = Time.unscaledTime;
 
