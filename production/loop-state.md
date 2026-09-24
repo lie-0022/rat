@@ -9,9 +9,10 @@
 - 틱 규칙: ① 이 파일 읽기 → ② `git status`로 미완 작업 확인 → ③ 한 단계 진행 → ④ 이 파일 갱신 → ⑤ 기능 하나가 검증되면 커밋.
 - 멈춤: 사용자가 "그만"이라고 하면 `CronDelete`.
 
-## 현재 작업: 고양이 27 — 기획 단계 (다음 후보에서 골라 plan 작성부터)
+## 현재 작업: 고양이 29 — 기획 단계 (다음 후보에서 골라 plan 작성부터)
 
 ## 완료 기록
+- 고양이 28 미검증 모음 검증 — 커밋됨 (plan cat-28). 6개 확인, 웅크림 간격만 남음.
 - 고양이 27 구현 요약 문서(design/cat-design/04-implemented-summary.md) — 커밋됨.
 - 고양이 26 기지개 + 침대 냄새 덮기 — 커밋됨 (plan cat-26).
 - 고양이 25 디버그 오버레이 F3 — 커밋됨 (plan cat-25).
@@ -47,6 +48,7 @@
 - 게으름뱅이 시야 6.4m — 감각 테스트는 3m 안에서.
 - 쥐가 쥐구멍 근처에서 다운↔부활 루프에 빠지면 고양이가 Chase/Capture라 ServerWake가 무시된다 → 쥐를 먼저 멀리, 고양이 진정 후 셋업.
 - 고양이 배치 시 ResetPath만 하면 순찰이 "도착"으로 보고 스팟 행동(잠자리면 잠)을 한다 → SetDestination을 준다.
+- 게이지 배율 비교는 시간 창 말고 시야 틱 1회 상승폭으로(0.5s 창은 틱 2~3회 차이로 흔들림).
 - 상태 통계는 샘플링 말고 `CatBrain.ServerStateChanged` 이벤트 구독으로 센다.
 - 한 플레이 세션에 테스트를 여러 개 이으면 앞 단계에서 쥐가 다운돼 다음 셋업이 깨진다 → 셋업마다 플레이 모드 새로 시작, 또는 쥐 상태 확인 후 진행.
 - 2인: manage_build osx → `open -n Builds/macOS/Rat.app --args -unitytransport -autojoin`, 클라 로그 ~/Library/Logs/DefaultCompany/Rat/Player.log.
