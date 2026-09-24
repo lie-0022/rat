@@ -21,6 +21,7 @@ namespace RatGame.AI
         private static readonly Color Search = new(1f, 0.95f, 0.55f);
         private static readonly Color Curious = new(0.6f, 0.9f, 0.4f);
         private static readonly Color Track = new(1f, 0.7f, 0.45f);
+        private static readonly Color Stunned = new(0.5f, 0.6f, 0.8f);
         private static readonly Color Chase = new(0.9f, 0.15f, 0.1f);
         private static readonly Color Capture = new(0.6f, 0.05f, 0.05f);
         private static readonly Color Distracted = new(0.4f, 0.75f, 1f);
@@ -29,14 +30,16 @@ namespace RatGame.AI
         private MaterialPropertyBlock _block;
         private Vector3 _visualBaseScale;
         private Vector3 _visualBasePos;
+        private Quaternion _visualBaseRot = Quaternion.identity;
         private byte _lastPawTick;
+        private CatBlunderKind _lastBlunder;
         private float _pawKickUntil; // 앞발 칠 때 몸이 앞으로 튀는 순간
 
         private void Awake()
         {
             if (_brain == null) _brain = GetComponent<CatBrain>();
             _block = new MaterialPropertyBlock();
-            if (_visual != null) { _visualBaseScale = _visual.localScale; _visualBasePos = _visual.localPosition; }
+            if (_visual != null) { _visualBaseScale = _visual.localScale; _visualBasePos = _visual.localPosition; _visualBaseRot = _visual.localRotation; }
         }
 
         private void Update()
@@ -56,6 +59,7 @@ namespace RatGame.AI
                 CatState.Chase => Chase,
                 CatState.Capture => Capture,
                 CatState.Toy => Capture,
+                CatState.Blunder => _brain.BlunderKind.Value == CatBlunderKind.Stun ? Stunned : baseColor,
                 CatState.Distracted => Distracted,
                 _ => baseColor
             };
@@ -66,7 +70,7 @@ namespace RatGame.AI
             }
 
             float t = Time.time;
-            float tailSwing = 0f, pulse = 0f, sink = 0f;
+            float tailSwing = 0f, pulse = 0f, sink = 0f, roll = 0f;
             switch (phase)
             {
                 case CatSleepPhase.Light: tailSwing = Mathf.Sin(t * 1.5f) * 25f; break;              // 천천히 흔들림
@@ -77,6 +81,16 @@ namespace RatGame.AI
                 default:
                     if (state == CatState.Chase) tailSwing = Mathf.Sin(t * 10f) * 15f;
                     else if (state == CatState.Suspicious) tailSwing = Mathf.Sin(t * 5f) * 30f;
+                    else if (state == CatState.Blunder)
+                    {
+                        switch (_brain.BlunderKind.Value)
+                        {
+                            case CatBlunderKind.Slip: roll = 35f; break;                                  // 옆으로 기울어 쭉
+                            case CatBlunderKind.Stun: roll = Mathf.Sin(t * 9f) * 15f; tailSwing = Mathf.Sin(t * 4f) * 60f; break; // 빙글
+                            case CatBlunderKind.Startle: sink = -0.25f; break;                           // 펄쩍
+                            case CatBlunderKind.Wobble: roll = Mathf.Sin(t * 2.5f) * 20f; break;          // 휘청
+                        }
+                    }
                     else if (state == CatState.Toy) tailSwing = Mathf.Sin(t * 2f) * 45f; // 놀이 — 꼬리 느리고 크게
                     else if (_brain.Sniffing.Value || state == CatState.Track) { tailSwing = Mathf.Sin(t * 3f) * 20f; sink = 0.06f + 0.03f * Mathf.Sin(t * 8f); } // 기억 칸 킁킁
                     else if (state == CatState.Curious) tailSwing = Mathf.Sin(t * 18f) * 10f; // 꼬리 곧추 파르르
@@ -84,6 +98,11 @@ namespace RatGame.AI
                     break;
             }
             if (_tail != null) _tail.localRotation = Quaternion.Euler(0f, tailSwing, 20f);
+            if (_brain.BlunderKind.Value != _lastBlunder)
+            {
+                _lastBlunder = _brain.BlunderKind.Value;
+                if (_lastBlunder != CatBlunderKind.None) RatGame.Core.Log.Dev($"고양이 실패 연출: {_lastBlunder}"); // 2인 검증용
+            }
             if (_brain.PawTick.Value != _lastPawTick)
             {
                 _lastPawTick = _brain.PawTick.Value;
@@ -95,6 +114,7 @@ namespace RatGame.AI
             {
                 _visual.localScale = _visualBaseScale + new Vector3(pulse, 0f, pulse);
                 _visual.localPosition = _visualBasePos + Vector3.down * sink + Vector3.forward * kick;
+                _visual.localRotation = _visualBaseRot * Quaternion.Euler(0f, 0f, roll);
             }
         }
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RatGame.AI
 {
-    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */ }
+    public enum CatState { Sleep, Patrol, Suspicious, Chase, Capture, Distracted, Return, Search /* 숨을 곳 수색 (2026-09-24, CatBrain.Search.cs) */, Curious /* 호기심 앞발 (2026-09-24, CatBrain.Curious.cs) */, Track /* 냄새 추적 (2026-09-24, CatBrain.Track.cs) */, Toy /* 가지고 놀기 (2026-09-24, CatBrain.Toy.cs) */, Blunder /* 댕청한 실패 (2026-09-24, CatBrain.Blunder.cs) */ }
 
     /// <summary>잠의 단계 (design/cat-ideas/08). 클라 연출용으로 복제 — 꼬리·숨소리로 읽힌다.</summary>
     public enum CatSleepPhase : byte { None, Light, ToDeep, Deep, ToLight, HalfAwake }
@@ -142,10 +142,11 @@ namespace RatGame.AI
         }
 
         /// <summary>유인 아이템 진입점 (docs/07 — Chase보다 우선순위 낮음). 태스크 1-6에서 호출.</summary>
-        public void ServerDistract(Vector3 pos, float seconds)
+        public void ServerDistract(Vector3 pos, float seconds, bool wobbleAfter = false)
         {
             if (!IsServer || State.Value == CatState.Chase || State.Value == CatState.Capture || State.Value == CatState.Toy) return;
             _distractPos = pos;
+            _wobbleAfterDistract = wobbleAfter; // 캣닢 — 끝나면 비틀거림 (design/cat-ideas/11)
             _distractUntil = Time.time + seconds;
             _stateBeforeDistract = State.Value == CatState.Distracted ? _stateBeforeDistract : State.Value;
             SetState(CatState.Distracted);
@@ -155,6 +156,7 @@ namespace RatGame.AI
         {
             if (!IsSpawned || _spots == null) return; // 자동 부트 등 스폰 전 프레임 가드
             TickMemory();
+            CheckSlip(); // 달리다 비누를 밟으면 어떤 상태든 미끄러진다 (design/cat-ideas/11)
             switch (State.Value)
             {
                 case CatState.Sleep: TickSleep(); break;
@@ -168,6 +170,7 @@ namespace RatGame.AI
                 case CatState.Curious: TickCurious(); break;
                 case CatState.Track: TickTrack(); break;
                 case CatState.Toy: TickToy(); break;
+                case CatState.Blunder: TickBlunder(); break;
             }
         }
 
@@ -176,6 +179,7 @@ namespace RatGame.AI
             if (State.Value == next) return;
             Log.Dev($"고양이 [{name}]: {State.Value} → {next}");
             if (State.Value == CatState.Toy) ExitToy(); // 잡힌 쥐를 Pinned로 남기지 않게
+            if (State.Value == CatState.Blunder) ExitBlunder();
             State.Value = next;
             _senses.SensitivityMultiplier = next == CatState.Sleep ? _balance.CatSleepSenseMultiplier : 1f;
             if (next != CatState.Patrol) _dwelling = false;
@@ -516,6 +520,13 @@ namespace RatGame.AI
         {
             if (Time.time >= _distractUntil)
             {
+                if (_wobbleAfterDistract)
+                {
+                    _wobbleAfterDistract = false;
+                    Log.Dev($"고양이 [{name}]: 캣닢 끝 — 비틀비틀");
+                    EnterBlunder(CatBlunderKind.Wobble, _balance.CatWobbleSeconds);
+                    return;
+                }
                 SetState(_stateBeforeDistract == CatState.Distracted ? CatState.Return : _stateBeforeDistract);
                 return;
             }

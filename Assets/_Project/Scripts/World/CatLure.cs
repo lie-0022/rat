@@ -42,7 +42,7 @@ namespace RatGame.World
             foreach (var brain in FindCats())
             {
                 if (Vector3.Distance(brain.transform.position, transform.position) > _balance.LureCatnipRadius) continue;
-                brain.ServerDistract(transform.position, _balance.LureCatnipSeconds);
+                brain.ServerDistract(transform.position, _balance.LureCatnipSeconds, wobbleAfter: true); // 취한 뒤 비틀거림
                 Log.Dev($"캣닢 발동: {brain.name}");
                 Consume();
                 return;

@@ -47,6 +47,20 @@ namespace RatGame.AI
             if (_agent.enabled && _agent.isOnNavMesh) _agent.isStopped = true;
         }
 
+        /// <summary>
+        /// 경로 없이 직접 밀기 (미끄러짐 — design/cat-ideas/11). NavMesh 밖으로는 안 나가고 경계·장애물 모서리에서 멈춘다.
+        /// 실제로 움직인 수평 거리를 돌려준다 — 요청보다 훨씬 작으면 벽에 박은 것.
+        /// </summary>
+        public float Shove(Vector3 delta)
+        {
+            if (!_agent.enabled || !_agent.isOnNavMesh) return 0f;
+            if (_agent.hasPath) _agent.ResetPath();
+            Vector3 before = _agent.nextPosition;
+            _agent.Move(delta);
+            Vector3 moved = _agent.nextPosition - before; moved.y = 0f;
+            return moved.magnitude;
+        }
+
         /// <summary>중심 주변 반경 내 랜덤 NavMesh 지점 (Suspicious 배회용).</summary>
         public Vector3 RandomPointAround(Vector3 center, float radius)
         {

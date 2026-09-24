@@ -81,6 +81,7 @@ namespace RatGame.AI
 
         private void TickCurious()
         {
+            if (CheckStartle()) return;    // 바로 옆 깨짐·찍찍 → 펄쩍 (design/cat-ideas/11)
             if (CheckEscalation()) return; // 쥐 목격·의심 자극이 호기심보다 먼저
             var item = _curiousItem;
             if (item == null || !item.IsSpawned || _curiousRb == null || item.CarrierIds.Count > 0 || item.Pocketed.Value)
