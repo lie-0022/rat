@@ -61,6 +61,7 @@ GameObject:
   - component: {fileID: 924106503004296761}
   - component: {fileID: 4037069532230684886}
   - component: {fileID: 7695932962435947828}
+  - component: {fileID: 4876377713607954583}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -83,7 +84,7 @@ Transform:
   m_Children:
   - {fileID: 8440011706181767751}
   - {fileID: 3627633545784389319}
-  - {fileID: 4407942189425405715}
+  - {fileID: 8547801614864310238}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &4213038543083044905
@@ -330,7 +331,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerVisual
   ShowTopMostFoldoutHeaderGroup: 1
-  _bodyRenderer: {fileID: 7630121916261420415}
+  _bodyRenderer: {fileID: 2472598387732037042}
   _bodyMaterialIndex: 0
 --- !u!114 &4396278490931489414
 MonoBehaviour:
@@ -531,6 +532,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerDownedBody
   ShowTopMostFoldoutHeaderGroup: 1
   _bodyPrefab: {fileID: 2135170725760439959, guid: 9a2249ae60c1d49ae8d0b386fe88ac98, type: 3}
+--- !u!114 &4876377713607954583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84a11d9221b6b4f3a8c25e83d3d0848b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.RatModelWobble
+  _model: {fileID: 8547801614864310238}
+  _stepsPerMeter: 1.6
+  _bobHeight: 0.06
+  _waddleDegrees: 9
+  _leanPerSpeed: 2.2
+  _maxLean: 14
+  _breathe: 0.015
 --- !u!1 &5417322158775654346
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,7 +582,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8323521634697084393}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &6995049491665237057
+--- !u!1001 &3071635426829419660
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -619,13 +639,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
---- !u!4 &4407942189425405715 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6647102367622962002, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
-  m_PrefabInstance: {fileID: 6995049491665237057}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &7630121916261420415 stripped
+--- !u!23 &2472598387732037042 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 644237979305703742, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
-  m_PrefabInstance: {fileID: 6995049491665237057}
+  m_PrefabInstance: {fileID: 3071635426829419660}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8547801614864310238 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6647102367622962002, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
+  m_PrefabInstance: {fileID: 3071635426829419660}
   m_PrefabAsset: {fileID: 0}

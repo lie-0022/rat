@@ -67,6 +67,10 @@ namespace RatGame.Editor
             var furRenderer = inst.GetComponentInChildren<MeshRenderer>(false);
             foreach (var r in inst.GetComponentsInChildren<MeshRenderer>(false)) if (r.name == BodyPart) furRenderer = r;
             player.GetComponent<PlayerVisual>().EditorSetup(furRenderer, furIndex);
+            // 뼈대 없이 걷는 느낌 — 모델 자식만 흔든다 (고양이 71)
+            var wobble = player.GetComponent<RatModelWobble>();
+            if (wobble == null) wobble = player.AddComponent<RatModelWobble>();
+            wobble.EditorSetup(inst.transform);
 
             PrefabUtility.SaveAsPrefabAsset(player, PlayerPrefab);
             PrefabUtility.UnloadPrefabContents(player);

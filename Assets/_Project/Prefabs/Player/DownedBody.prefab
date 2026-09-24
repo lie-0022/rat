@@ -36,7 +36,7 @@ Transform:
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 593190826731443685}
+  - {fileID: 6241431526543529858}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &536121590365751608
@@ -227,9 +227,9 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 18446744073709551615
-  _furRenderer: {fileID: 6698229836623574921}
+  _furRenderer: {fileID: 167072451460265454}
   _furMaterialIndex: 0
---- !u!1001 &6054016074490973879
+--- !u!1001 &765968749824969936
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -286,13 +286,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
---- !u!4 &593190826731443685 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6647102367622962002, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
-  m_PrefabInstance: {fileID: 6054016074490973879}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &6698229836623574921 stripped
+--- !u!23 &167072451460265454 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 644237979305703742, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
-  m_PrefabInstance: {fileID: 6054016074490973879}
+  m_PrefabInstance: {fileID: 765968749824969936}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6241431526543529858 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6647102367622962002, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
+  m_PrefabInstance: {fileID: 765968749824969936}
   m_PrefabAsset: {fileID: 0}

@@ -21,7 +21,8 @@ Player (Rigidbody, CapsuleCollider, NetworkObject)
 - `Tools/RatGame/Player/Apply Rat Model`: `Prefabs/Player/RatModel.prefab`(완성 몸 `Cylinder` + 수염만 켬, 작업용 조각 `Cube` 블록 머리·`Cylinder.001` 몸 껍데기는 끔)을 캡슐 높이(1.2m)에 맞추고 발을 캡슐 바닥에 → Player 프리팹의 그레이박스 캡슐 렌더러·귀·코·꼬리를 지우고 자식으로. 얼굴 = +Z. 콜라이더·물리 그대로.
 - 1인칭: 자기 모델은 그림자만(PlayerCameraRig.HideOwnBody가 MeshRenderer 전부 처리). 웅크리면 루트 스케일이라 모델도 같이 눌린다.
 - 쓰러진 몸(DownedBody, 고양이 69): 같은 도구가 캡슐 렌더러·메시를 **지우고**(끄기만 하면 CarryableItem 주머니 표시가 다시 켠다) 쥐 모델을 자식으로 → 캡슐이 옆으로 누워 있어 모델도 옆으로 누운 쥐. 콜라이더·질량·운반 물리는 그대로. 털 = 주인의 실제 털 색(팔레트·스킨)을 회색 쪽으로 40%.
-- 남은 것: 뼈대·걷기 애니 없음(T자세로 미끄러짐).
+- **걷는 흔들림 (고양이 71)**: `Player/RatModelWobble` — 뼈대 없이 RatModel 자식만: 보이는 이동 속도로 통통 튀기(6cm)·좌우 뒤뚱(±9°)·앞 기울기(속도당 2.2°, 최대 14°), 멈추면 숨쉬기(±1.5%). 원격 사본도 보간 위치로 똑같이 계산 — 동기화 없음. 텔레포트(한 프레임 2m 넘게)는 걸음으로 안 침.
+- 남은 것: 뼈대·진짜 걷기 애니 (모델링 쪽).
 
 ## PlayerController — 이동 사양
 
