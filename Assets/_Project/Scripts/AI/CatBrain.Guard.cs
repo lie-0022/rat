@@ -21,6 +21,10 @@ namespace RatGame.AI
             if (!IsServer) return;
             _isGuard = true;
             _guardPost = post;
+            // 문지기 성격(러시안 블루)으로 — 성격은 이미 동기화되니 클라도 색·이름으로 알아본다
+            if (_personalities != null)
+                for (int i = 0; i < _personalities.Length; i++)
+                    if (_personalities[i] != null && _personalities[i].IsGuard) { ServerSetPersonality(i); break; }
             CollectSpots();
             _recentSpots.Clear();
             _spotIndex = -1;

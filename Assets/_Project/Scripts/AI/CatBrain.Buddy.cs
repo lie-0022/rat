@@ -23,7 +23,7 @@ namespace RatGame.AI
         private int PickRandomPersonality()
         {
             var pool = new System.Collections.Generic.List<int>();
-            for (int i = 0; i < _personalities.Length; i++) if (_personalities[i] != null && !_personalities[i].IsKitten) pool.Add(i);
+            for (int i = 0; i < _personalities.Length; i++) if (_personalities[i] != null && !_personalities[i].RoleOnly) pool.Add(i);
             return pool.Count > 0 ? pool[Random.Range(0, pool.Count)] : 0;
         }
 

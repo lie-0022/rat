@@ -34,6 +34,7 @@ namespace RatGame.Data
         [SerializeField] private float _moveSpeedMultiplier = 1f;       // 모든 이동 속도 × (아기 0.75)
         [SerializeField] private float _bodyScale = 1f;                 // 몸 크기 (연출)
         [SerializeField] private float _wakeStretchSeconds = 0f;        // 깨서 움직이기 전 기지개 (게으름뱅이 1.5 — 텔레그래프)
+        [SerializeField] private bool _isGuard;                         // 문지기 역할 전용 — 무작위 추첨 제외, 존 생성기가 줌 (고양이 82)
 
         public string DisplayName => _displayName;
         public Color BodyColor => _bodyColor;
@@ -54,6 +55,9 @@ namespace RatGame.Data
         public float MoveSpeedMultiplier => _moveSpeedMultiplier;
         public float BodyScale => _bodyScale;
         public float WakeStretchSeconds => _wakeStretchSeconds;
+        public bool IsGuard => _isGuard;
+        /// <summary>무작위 성격 추첨에서 뺀다 (아기·문지기는 존 생성기가 역할로 준다).</summary>
+        public bool RoleOnly => _isKitten || _isGuard;
 
 #if UNITY_EDITOR
         public void EditorSetupPerch(float perchWeight) => _perchWeightMultiplier = perchWeight;
@@ -77,6 +81,7 @@ namespace RatGame.Data
         }
 
         public void EditorSetupWakeStretch(float seconds) => _wakeStretchSeconds = seconds;
+        public void EditorSetupGuard(bool isGuard) => _isGuard = isGuard;
 #endif
     }
 }
