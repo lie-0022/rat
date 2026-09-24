@@ -52,14 +52,38 @@ namespace RatGame.UI
             var marker = _markers.Find(m => m.Owner == owner) ?? CreateMarker(owner);
             marker.World = world;
             marker.EndsAt = Time.unscaledTime + (_balance != null ? _balance.PingMarkerSeconds : 3f);
+            marker.Name.text = WhoText(owner) + ItemText(world);
             marker.Rect.gameObject.SetActive(true);
+        }
+
+        private static string WhoText(ulong owner)
+        {
+            var nm = NetworkManager.Singleton;
+            return PlayerVisual.ColorNameFor(owner) + (nm != null && owner == nm.LocalClientId ? " (나)" : "");
+        }
+
+        // 음식을 찍으면 이름·가치까지 (고양이 139) — 물건 위치·가치는 모두에게 이미 있어 각자 계산, 동기화 없음
+        private string ItemText(Vector3 world)
+        {
+            float reach = _balance != null ? _balance.PingItemSnapMeters : 0.6f;
+            World.CarryableItem best = null; float bestD = reach * reach;
+            foreach (var item in FindObjectsByType<World.CarryableItem>(FindObjectsSortMode.None))
+            {
+                if (item.Data == null || item.Pocketed.Value) continue;
+                var col = item.GetComponentInChildren<Collider>();
+                Vector3 near = col != null ? col.ClosestPoint(world) : item.transform.position; // 큰 물건은 중심이 멀다 — 표면 기준
+                float d = (near - world).sqrMagnitude;
+                if (d < bestD) { bestD = d; best = item; }
+            }
+            if (best == null) return "";
+            int value = best.EffectiveValue;
+            Log.Dev($"핑 물건 연출: {best.Data.DisplayName} {value}"); // 2인 검증용
+            return value > 0 ? $" · {best.Data.DisplayName} {value}" : $" · {best.Data.DisplayName}";
         }
 
         private Marker CreateMarker(ulong owner)
         {
             var rect = Instantiate(_template, _template.parent);
-            var nm = NetworkManager.Singleton;
-            bool me = nm != null && owner == nm.LocalClientId;
             var marker = new Marker
             {
                 Owner = owner,
@@ -70,7 +94,6 @@ namespace RatGame.UI
                 Distance = rect.Find("DistanceBox/Distance").GetComponent<TMP_Text>()
             };
             marker.Icon.color = PlayerVisual.ColorFor(owner);
-            marker.Name.text = PlayerVisual.ColorNameFor(owner) + (me ? " (나)" : "");
             _markers.Add(marker);
             return marker;
         }

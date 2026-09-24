@@ -100,6 +100,7 @@ namespace RatGame.Data
         [SerializeField] private float _trapBaitHintMeters = 3f;    // 이 안에 처음 들어오면 미끼 규칙 안내 (고양이 132)
 
         [Header("핑 (docs/04)")]
+        [SerializeField] private float _pingItemSnapMeters = 0.6f; // 핑 지점에서 이 안의 물건이면 이름·가치 표시 (고양이 139)
         [SerializeField] private float _pingCooldownSeconds = 1f; // 같은 쥐의 다음 핑까지 (서버도 검사)
         [SerializeField] private float _pingMarkerSeconds = 3f;   // 마커 표시 시간
         [SerializeField] private float _pingMaxDistance = 30f;    // 조준 레이 최대 거리 (m) — 아무것도 안 맞으면 이 거리 지점
@@ -476,6 +477,7 @@ namespace RatGame.Data
 
         public float PingCooldownSeconds => _pingCooldownSeconds;
         public float PingMarkerSeconds => _pingMarkerSeconds;
+        public float PingItemSnapMeters => _pingItemSnapMeters;
         public float PingMaxDistance => _pingMaxDistance;
         public float SniffCooldownSeconds => _sniffCooldownSeconds;
         public float SniffTrailSeconds => _sniffTrailSeconds;
