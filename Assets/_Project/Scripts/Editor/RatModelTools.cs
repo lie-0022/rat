@@ -16,6 +16,7 @@ namespace RatGame.Editor
         private const string Fbx = "Assets/_Project/Art/Models/Rat/mouse.fbx";
         private const string ModelPrefab = "Assets/_Project/Prefabs/Player/RatModel.prefab";
         private const string PlayerPrefab = "Assets/_Project/Prefabs/Player/Player.prefab";
+        private const string DownedBodyPrefab = "Assets/_Project/Prefabs/Player/DownedBody.prefab";
         private static readonly string[] Leftovers = { "Cube", "Cylinder.001" };
         private const string BodyPart = "Cylinder";
 
@@ -69,6 +70,24 @@ namespace RatGame.Editor
 
             PrefabUtility.SaveAsPrefabAsset(player, PlayerPrefab);
             PrefabUtility.UnloadPrefabContents(player);
+
+            // ③ 쓰러진 몸(대리 몸 — 캡슐이 옆으로 누워 있다): 캡슐 렌더러만 끄고 같은 모델을 자식으로 → 옆으로 누운 쥐. 물리는 그대로
+            var downed = PrefabUtility.LoadPrefabContents(DownedBodyPrefab);
+            var oldModel = downed.transform.Find("RatModel");
+            if (oldModel != null) Object.DestroyImmediate(oldModel.gameObject);
+            // 끄기만 하면 CarryableItem(주머니 표시)이 렌더러를 전부 다시 켠다 → 캡슐 렌더러·메시는 지운다 (콜라이더·물리는 그대로)
+            var capsuleVisual = downed.GetComponent<MeshRenderer>();
+            if (capsuleVisual != null) Object.DestroyImmediate(capsuleVisual);
+            var capsuleMesh = downed.GetComponent<MeshFilter>();
+            if (capsuleMesh != null) Object.DestroyImmediate(capsuleMesh);
+            var bodyModel = (GameObject)PrefabUtility.InstantiatePrefab(modelPrefab, downed.transform);
+            bodyModel.name = "RatModel";
+            bodyModel.transform.localPosition = Vector3.zero; bodyModel.transform.localRotation = Quaternion.identity; bodyModel.transform.localScale = Vector3.one;
+            MeshRenderer bodyFur = null;
+            foreach (var r in bodyModel.GetComponentsInChildren<MeshRenderer>(false)) if (r.name == BodyPart) bodyFur = r;
+            downed.GetComponent<RatGame.World.DownedBody>().EditorSetupModel(bodyFur, furIndex);
+            PrefabUtility.SaveAsPrefabAsset(downed, DownedBodyPrefab);
+            PrefabUtility.UnloadPrefabContents(downed);
             Debug.Log($"[RatModel] 적용 — 배율 {s:0.000}, 털 칸 {furIndex}({furName}), Player 프리팹 갱신");
         }
     }

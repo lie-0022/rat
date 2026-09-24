@@ -83,7 +83,7 @@ Transform:
   m_Children:
   - {fileID: 8440011706181767751}
   - {fileID: 3627633545784389319}
-  - {fileID: 4343346922948194681}
+  - {fileID: 4407942189425405715}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &4213038543083044905
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.PlayerVisual
   ShowTopMostFoldoutHeaderGroup: 1
-  _bodyRenderer: {fileID: 7532587475858559765}
+  _bodyRenderer: {fileID: 7630121916261420415}
   _bodyMaterialIndex: 0
 --- !u!114 &4396278490931489414
 MonoBehaviour:
@@ -453,6 +453,13 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
+  CustomColor:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue:
+      serializedVersion: 2
+      rgba: 0
 --- !u!114 &8749629657434418913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -555,7 +562,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8323521634697084393}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &6951846301689440811
+--- !u!1001 &6995049491665237057
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -612,13 +619,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
---- !u!4 &4343346922948194681 stripped
+--- !u!4 &4407942189425405715 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6647102367622962002, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
-  m_PrefabInstance: {fileID: 6951846301689440811}
+  m_PrefabInstance: {fileID: 6995049491665237057}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &7532587475858559765 stripped
+--- !u!23 &7630121916261420415 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 644237979305703742, guid: 11291fb73c11c4c29ac737ac1d81d27c, type: 3}
-  m_PrefabInstance: {fileID: 6951846301689440811}
+  m_PrefabInstance: {fileID: 6995049491665237057}
   m_PrefabAsset: {fileID: 0}

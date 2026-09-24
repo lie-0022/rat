@@ -15,10 +15,13 @@ namespace RatGame.World
     {
         public NetworkVariable<ulong> Owner = new NetworkVariable<ulong>(ulong.MaxValue);
 
+        [SerializeField] private Renderer _furRenderer;        // 쥐 모델 털 (없으면 첫 렌더러 — 예전 캡슐)
+        [SerializeField] private int _furMaterialIndex = -1;   // 털 머티리얼 칸, -1 = 렌더러 전체
+
         private Renderer _renderer;
         private MaterialPropertyBlock _block;
 
-        private void Awake() { _renderer = GetComponentInChildren<Renderer>(); _block = new MaterialPropertyBlock(); }
+        private void Awake() { _renderer = _furRenderer != null ? _furRenderer : GetComponentInChildren<Renderer>(); _block = new MaterialPropertyBlock(); }
 
         public override void OnNetworkSpawn()
         {
@@ -29,10 +32,19 @@ namespace RatGame.World
         private void ApplyColor(ulong id)
         {
             if (id == ulong.MaxValue || _renderer == null) return;
-            // 주인 털빛을 칙칙하게 — 누가 쓰러졌는지 보인다
-            _block.SetColor("_BaseColor", Color.Lerp(PlayerVisual.ColorFor(id), Color.gray, 0.4f));
-            _renderer.SetPropertyBlock(_block);
+            // 주인 털빛(팔레트·스킨 포함)을 칙칙하게 — 누가 쓰러졌는지 보인다
+            var owner = NetworkManager.SpawnManager != null ? NetworkManager.SpawnManager.GetPlayerNetworkObject(id) : null;
+            var visual = owner != null ? owner.GetComponent<PlayerVisual>() : null;
+            Color fur = visual != null ? visual.CurrentBodyColor : PlayerVisual.ColorFor(id);
+            if (fur.a <= 0f) fur = PlayerVisual.ColorFor(id);
+            if (_furMaterialIndex >= 0) _renderer.GetPropertyBlock(_block, _furMaterialIndex); else _renderer.GetPropertyBlock(_block);
+            _block.SetColor("_BaseColor", Color.Lerp(fur, Color.gray, 0.4f));
+            if (_furMaterialIndex >= 0) _renderer.SetPropertyBlock(_block, _furMaterialIndex); else _renderer.SetPropertyBlock(_block);
             Log.Dev($"다운 몸 연출: client {id}"); // 2인 검증용
         }
+
+#if UNITY_EDITOR
+        public void EditorSetupModel(Renderer fur, int index) { _furRenderer = fur; _furMaterialIndex = index; }
+#endif
     }
 }
