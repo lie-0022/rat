@@ -69,6 +69,7 @@ namespace RatGame.Data
         [SerializeField] private float _footstepRunLoudness = 22f;
         [SerializeField] private float _footstepWalkInterval = 0.35f;
         [SerializeField] private float _footstepRunInterval = 0.25f;
+        [SerializeField] private float _pipeEchoMultiplier = 1.6f;   // 배관 안 달리기 발소리 배율 (쇠관 울림, 고양이 87)
         [SerializeField] private float _landingBaseLoudness = 15f;   // + 낙하높이 × 5, 1m 이상만
         [SerializeField] private float _landingPerMeter = 5f;
         [SerializeField] private float _squeakLoudness = 30f;
@@ -444,6 +445,7 @@ namespace RatGame.Data
         public float MaxNoiseRadius => _maxNoiseRadius;
         public float WallAttenuation => _wallAttenuation;
         public float FootstepWalkLoudness => _footstepWalkLoudness;
+        public float PipeEchoMultiplier => _pipeEchoMultiplier;
         public float FootstepRunLoudness => _footstepRunLoudness;
         public float FootstepWalkInterval => _footstepWalkInterval;
         public float FootstepRunInterval => _footstepRunInterval;

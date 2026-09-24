@@ -36,6 +36,7 @@ namespace RatGame.Editor
             Box(root.transform, "Floor", new Vector3(0f, -0.05f, 0f), new Vector3(PipeW + 2f * WallT, 0.1f, 1f), floorLayer, FloorColor);
             Box(root.transform, "Wall_L", new Vector3(-(PipeW + WallT) * 0.5f, PipeH * 0.5f, 0f), new Vector3(WallT, PipeH, 1f), wallLayer, PipeColor);
             Box(root.transform, "Wall_R", new Vector3((PipeW + WallT) * 0.5f, PipeH * 0.5f, 0f), new Vector3(WallT, PipeH, 1f), wallLayer, PipeColor);
+            root.AddComponent<World.PipeEcho>(); // 안에서 뛰면 울림 (고양이 87)
             Box(root.transform, "Ceiling", new Vector3(0f, PipeH + WallT * 0.5f, 0f), new Vector3(PipeW + 2f * WallT, WallT, 1f), wallLayer, PipeColor);
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, $"{RoomDir}/{name}.prefab");
             Object.DestroyImmediate(root);

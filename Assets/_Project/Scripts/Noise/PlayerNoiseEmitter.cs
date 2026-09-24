@@ -93,8 +93,16 @@ namespace RatGame.Noise
 
             bool running = horizontalSpeed > (_balance.WalkSpeed + _balance.SprintSpeed) * 0.5f;
             float loudness = running ? _balance.FootstepRunLoudness : _balance.FootstepWalkLoudness;
+            if (running && InPipe(pos)) loudness *= _balance.PipeEchoMultiplier; // 쇠관 속을 뛰면 울린다 (고양이 87)
             _nextFootstepTime = Time.time + (running ? _balance.FootstepRunInterval : _balance.FootstepWalkInterval);
             NoiseSystem.Emit(pos, loudness, NoiseType.Footstep, OwnerClientId);
+        }
+
+        // 발 위 짧은 거리에 배관 천장 — 방은 천장이 없어서 선반 밑만 아니면 배관뿐, 표시 컴포넌트로 확정
+        private static bool InPipe(Vector3 pos)
+        {
+            return Physics.Raycast(pos, Vector3.up, out var hit, 1.2f, ~LayerMask.GetMask("Player", "Ragdoll"), QueryTriggerInteraction.Ignore)
+                   && hit.collider.GetComponentInParent<World.PipeEcho>() != null;
         }
 
 #if UNITY_EDITOR

@@ -51,3 +51,12 @@ MonoBehaviour:
   - 0.5
   - 0.5
   - 0.6
+  GuardChanceByStage:
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  TreasureRoom: 1
+  TreasureTrapRatio: 1
+  TreasureBigWeight: 8

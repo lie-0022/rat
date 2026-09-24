@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6603316266724689518}
   - component: {fileID: 8630436957130480101}
+  - component: {fileID: 4146395122360445206}
   m_Layer: 0
   m_Name: Wall_Pipe
   m_TagString: Untagged
@@ -48,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2266925773
+  GlobalObjectIdHash: 4051199315
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -63,6 +64,18 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &4146395122360445206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4075131089715974587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46a301bee491b49418de1489e382836a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.World.PipeEcho
 --- !u!1 &5056185846270704787
 GameObject:
   m_ObjectHideFlags: 0
