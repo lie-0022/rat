@@ -20,6 +20,8 @@ namespace RatGame.World
         // 목적지 목록 (고양이 59) — 0번이 기본. 기지 목적지 게시판(StageBoard)으로 돌린다
         [SerializeField] private string[] _stageScenes = { "Stage_Warehouse01", "Stage_Generated" };
         [SerializeField] private string[] _stageNames = { "창고", "부엌(생성)" };
+        // 게시판 설명 한 줄 (고양이 111) — 이름과 같은 순서
+        [SerializeField] private string[] _stageBlurbs = { "고양이 기능 모음 — 한 판", "무작위 부엌 — 한 판", "새 루프 · 5스테이지 · 식량 할당량 · 목적지 상점 · 엔딩" };
 
         public NetworkVariable<int> ReadyCount = new(0);
         public NetworkVariable<int> NeededCount = new(0);
@@ -33,6 +35,7 @@ namespace RatGame.World
         public NetworkVariable<int> BestStage = new(0);
         public NetworkVariable<int> Endings = new(0);
 
+        public string DestinationBlurb => _stageBlurbs != null && Destination.Value >= 0 && Destination.Value < _stageBlurbs.Length ? _stageBlurbs[Destination.Value] : "";
         public string DestinationName => _stageNames != null && Destination.Value >= 0 && Destination.Value < _stageNames.Length ? _stageNames[Destination.Value] : "?";
 
         private BoxCollider _box;
