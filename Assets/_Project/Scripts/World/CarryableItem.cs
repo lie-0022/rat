@@ -31,6 +31,13 @@ namespace RatGame.World
         public bool IsHeavy => _data != null && (_data.Tier == LootTier.Large || _data.Tier == LootTier.Special);
         /// <summary>마지막으로 놓은 클라 (호스트 전용 값) — 내려놓은 뒤 납품 판정 시 기여자.</summary>
         public ulong LastCarrierId { get; private set; }
+        private float _lastReleaseTime = -99f;
+        /// <summary>마지막으로 쥐 손을 떠난 시각 (뇌물 판정 — 방금 내려놓은 치즈).</summary>
+        public float LastReleaseTime => _lastReleaseTime;
+        /// <summary>소음 귀속 (2026-09-24): 들고 있으면 첫 캐리어, 놓은·던진 지 3s 안이면 마지막 캐리어, 그 밖은 환경(null).</summary>
+        public ulong? AttributedClient =>
+            CarrierIds.Count > 0 ? CarrierIds[0]
+            : Time.time - _lastReleaseTime <= _balance.NoiseAttributionSeconds ? LastCarrierId : (ulong?)null;
         public float Mass => _data != null ? _data.Mass : GetComponent<Rigidbody>().mass;
 
         /// <summary>동시에 잡을 수 있는 인원 (대형 = 자동 슬롯 수). 클라에서도 계산 가능 — HUD용.</summary>
@@ -206,6 +213,7 @@ namespace RatGame.World
             }
             CarrierIds.Remove(clientId);
             LastCarrierId = clientId; // 내려놓고 납품될 때 기여자 집계용
+            _lastReleaseTime = Time.time;
 
             if (thrown)
             {
@@ -274,7 +282,7 @@ namespace RatGame.World
         {
             Log.Dev($"파괴: {name}");
             ServerReleaseAll();
-            Noise.NoiseSystem.Emit(transform.position, _balance.BreakLoudness, Noise.NoiseType.Break);
+            Noise.NoiseSystem.Emit(transform.position, _balance.BreakLoudness, Noise.NoiseType.Break, AttributedClient);
             EventBus.RaiseLootBroken(_data);
             NetworkObject.Despawn();
         }
@@ -292,7 +300,7 @@ namespace RatGame.World
                 _nextImpactNoiseTime = Time.time + 0.2f;
                 float loudness = _balance.GetImpactLoudness(impact, _rb.mass);
                 if (Has(ItemTrait.Alarming)) loudness = Mathf.Max(loudness, _balance.AlarmingLoudness);
-                Noise.NoiseSystem.Emit(transform.position, loudness, Noise.NoiseType.Impact);
+                Noise.NoiseSystem.Emit(transform.position, loudness, Noise.NoiseType.Impact, AttributedClient);
             }
 
             // Fragile 파손 (docs/05): 문턱 초과 충돌 → 내구도 감소 → 0이면 파괴

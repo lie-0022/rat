@@ -83,7 +83,10 @@ foreach player(Active만):
 - **앙심**: 쥐별 0~100. 추격에서 놓침 +40(시야 상실 3s·성격 포기), 들리는 곳 찍찍 +15, -0.2/s 감쇠. 50 이상 중 최고 1명 = `GrudgeClientId`·`HasGrudge` NV.
   - 효과: 그 쥐 시야 게인 ×1.5, 여럿 보이면 그 쥐 우선(거리 ×0.6로 비교), 그 쥐 발소리·찍찍 청각 ×1.3, 성격 추격 포기 +2s.
   - 표시: 나를 쫓는 고양이가 나를 찍었으면 SuspicionIndicator "!!", 팀 상태 "찍힘" 칩(Danger).
-- 귀속: 충돌·파손 소음은 `NoiseEvent.Source`가 비어 있고(0 = 환경) 호스트 id도 0이라 앙심에서 제외. 유인 속음 +20·뇌물 -50은 다음 단계.
+- 귀속 (2026-09-24 고양이 12): `NoiseEvent.HasSource` — 귀속된 소리만 앙심 대상. 물건 충돌·깨짐은 `CarryableItem.AttributedClient`(들고 있으면 첫 캐리어, 놓은·던진 지 3s 안이면 마지막 캐리어, 그 밖 환경)로 귀속.
+  - **깨뜨림 +30**: 귀속된 Break를 들으면.
+  - **털실 속음 +20**: 털실을 던진 쥐에게, 놀이가 끝날 때. 이미 찍힌 쥐가 던진 유인엔 안 속는다.
+  - **뇌물 -50**: Patrol·Return·Suspicious·Search 중(추격 아님) 정면 60° 1.5m 안에 쥐가 10s 안에 내려놓은 치즈류 → 그 자리에서 먹음(Distracted 4s) → 물건 사라짐 → 놓은 쥐 앙심 -50. 먹는 도중 쥐가 도로 집으면 무효.
 
 ## 경계도 디렉터 손잡이 (2026-09-24, `Run/RunDirector` + `AI/CatBrain.Director.cs`, design/cat-ideas/12)
 

@@ -58,7 +58,7 @@ namespace RatGame.World
             foreach (var brain in FindCats())
             {
                 if (Vector3.Distance(brain.transform.position, transform.position) > _balance.LureYarnRadius) continue;
-                brain.ServerDistract(transform.position, _balance.LureYarnSeconds);
+                brain.ServerDistract(transform.position, _balance.LureYarnSeconds, fooledBy: _carryable.AttributedClient); // 속은 걸 알면 던진 쥐를 찍는다
                 any = true;
             }
             if (any)

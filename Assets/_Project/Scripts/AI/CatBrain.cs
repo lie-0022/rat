@@ -142,9 +142,12 @@ namespace RatGame.AI
         }
 
         /// <summary>유인 아이템 진입점 (docs/07 — Chase보다 우선순위 낮음). 태스크 1-6에서 호출.</summary>
-        public void ServerDistract(Vector3 pos, float seconds, bool wobbleAfter = false)
+        public void ServerDistract(Vector3 pos, float seconds, bool wobbleAfter = false, ulong? fooledBy = null)
         {
             if (!IsServer || State.Value == CatState.Chase || State.Value == CatState.Capture || State.Value == CatState.Toy) return;
+            // 찍힌 쥐가 던진 유인엔 안 속는다 — "네가 던진 거잖아" (design/cat-ideas/05)
+            if (fooledBy.HasValue && IsGrudged(fooledBy.Value)) { Log.Dev($"고양이 [{name}]: client {fooledBy.Value}의 유인엔 안 속음"); return; }
+            _fooledBy = fooledBy;
             _distractPos = pos;
             _wobbleAfterDistract = wobbleAfter; // 캣닢 — 끝나면 비틀거림 (design/cat-ideas/11)
             _distractUntil = Time.time + seconds;
@@ -304,6 +307,7 @@ namespace RatGame.AI
         private void TickPatrol()
         {
             if (CheckEscalation()) return;
+            if (TryEatBribe()) return;    // 쥐가 바친 치즈 (design/cat-ideas/05)
             if (CheckScent()) return;     // 냄새 자국 (의심 아래, 호기심 위 — design/cat-ideas/06)
             if (CheckCuriosity()) return; // 순찰 중엔 굴러가는 물건에 속는다 (의심·추격 중엔 안 속음)
 
@@ -403,6 +407,7 @@ namespace RatGame.AI
         private void TickSuspicious()
         {
             if (CheckEscalation()) return;
+            if (TryEatBribe()) return;
 
             // 새 자극이 오면 조사 지점 갱신 + 시간 연장
             if (_senses.HasNewStimulus)
@@ -524,6 +529,7 @@ namespace RatGame.AI
         {
             if (Time.time >= _distractUntil)
             {
+                FinishDistractExtras(); // 뇌물 먹기 끝·속았음 깨닫기
                 if (_wobbleAfterDistract)
                 {
                     _wobbleAfterDistract = false;
@@ -534,6 +540,7 @@ namespace RatGame.AI
                 SetState(_stateBeforeDistract == CatState.Distracted ? CatState.Return : _stateBeforeDistract);
                 return;
             }
+            if (TickBribe()) return; // 뇌물은 그 자리에서 먹는다
             if (_movement.Arrived)
                 _movement.MoveTo(_movement.RandomPointAround(_distractPos, 1.5f), _balance.CatDistractedSpeed);
         }
@@ -541,6 +548,7 @@ namespace RatGame.AI
         private void TickReturn()
         {
             if (CheckEscalation()) return;
+            if (TryEatBribe()) return;
             if (CheckScent()) return;
             if (CheckCuriosity()) return;
             if (_spots.Length == 0 || _movement.Arrived) SetState(CatState.Patrol);

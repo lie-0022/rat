@@ -177,6 +177,13 @@ namespace RatGame.Data
         [SerializeField] private float _catGrudgeSightMul = 1.5f;        // 찍힌 쥐 시야 게인 배율
         [SerializeField] private float _catGrudgeHearingMul = 1.3f;      // 찍힌 쥐 발소리·찍찍 청각 배율
         [SerializeField] private float _catGrudgeGiveUpBonus = 2f;       // 성격 추격 포기 시간 + (찍힌 쥐)
+        [SerializeField] private float _noiseAttributionSeconds = 3f;    // 놓은·던진 물건의 충돌·깨짐을 그 쥐 소리로 보는 시간
+        [SerializeField] private float _catGrudgeBreak = 30f;            // 쥐 탓으로 깨진 소리 +
+        [SerializeField] private float _catGrudgeFooled = 20f;           // 털실에 속은 뒤 던진 쥐 +
+        [SerializeField] private float _catGrudgeBribe = 50f;            // 치즈 뇌물 -
+        [SerializeField] private float _catBribeRadius = 1.5f;           // 고양이 정면 이 안에 내려놓은 치즈
+        [SerializeField] private float _catBribeRecentSeconds = 10f;     // 이 안에 쥐가 내려놓은 것만 뇌물
+        [SerializeField] private float _catBribeEatSeconds = 4f;
 
         [Header("냄새 (design/cat-ideas/06)")]
         [SerializeField] private float _scentIntervalMeters = 1.5f;      // 이만큼 걸을 때마다 자국 1개
@@ -405,6 +412,13 @@ namespace RatGame.Data
         public float CatGrudgeSightMul => _catGrudgeSightMul;
         public float CatGrudgeHearingMul => _catGrudgeHearingMul;
         public float CatGrudgeGiveUpBonus => _catGrudgeGiveUpBonus;
+        public float NoiseAttributionSeconds => _noiseAttributionSeconds;
+        public float CatGrudgeBreak => _catGrudgeBreak;
+        public float CatGrudgeFooled => _catGrudgeFooled;
+        public float CatGrudgeBribe => _catGrudgeBribe;
+        public float CatBribeRadius => _catBribeRadius;
+        public float CatBribeRecentSeconds => _catBribeRecentSeconds;
+        public float CatBribeEatSeconds => _catBribeEatSeconds;
         public float ScentIntervalMeters => _scentIntervalMeters;
         public float ScentEdible => _scentEdible;
         public float ScentGrudge => _scentGrudge;

@@ -11,7 +11,8 @@ namespace RatGame.Noise
         public Vector3 Pos;
         public float Loudness;   // 0~100
         public NoiseType Type;
-        public ulong Source;     // 발생시킨 클라 (환경음이면 0)
+        public ulong Source;     // 발생시킨 클라 (HasSource일 때만 의미 — 호스트 id도 0이라 0만으로는 환경음과 구분 못 함)
+        public bool HasSource;   // 누가 낸 소리인지 분명함 (2026-09-24, 앙심 귀속)
         public float Time;
     }
 
@@ -32,7 +33,7 @@ namespace RatGame.Noise
         public static void Configure(BalanceConfigSO balance) => _balance = balance;
 
         /// <summary>호스트에서만 호출할 것 (정적이라 강제 불가 — 호출부 책임).</summary>
-        public static void Emit(Vector3 pos, float loudness, NoiseType type, ulong sourceClientId = 0)
+        public static void Emit(Vector3 pos, float loudness, NoiseType type, ulong? sourceClientId = null)
         {
             if (loudness <= 0f) return;
             var e = new NoiseEvent
@@ -40,7 +41,8 @@ namespace RatGame.Noise
                 Pos = pos,
                 Loudness = Mathf.Clamp(loudness, 0f, 100f),
                 Type = type,
-                Source = sourceClientId,
+                Source = sourceClientId ?? 0,
+                HasSource = sourceClientId.HasValue,
                 Time = UnityEngine.Time.time
             };
             Recent[_recentIndex] = e;

@@ -70,3 +70,10 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 | 고양이에게 찍힘(앙심) | 20 | 동일 |
 
 리스너는 고양이 Track 상태(docs/07). 쥐 본인에게만 노란 점 표시.
+
+## 소음 귀속 (2026-09-24)
+
+`NoiseEvent.HasSource` 추가 — `Source`가 의미 있는지. 호스트 클라 id가 0이라 `Source == 0`만으로는 환경음과 구분이 안 됐다.
+- `NoiseSystem.Emit(pos, loudness, type, ulong? source)`: 플레이어 소리(발소리·찍찍·착지·헐떡임·숨기)는 소유자 귀속, 환경음은 null.
+- 물건 충돌·깨짐: `CarryableItem.AttributedClient` — 들고 있으면 첫 캐리어, 놓은·던진 지 `noiseAttributionSeconds`(3s) 안이면 마지막 캐리어, 그 밖 null.
+- 쓰는 곳: 고양이 앙심(docs/07), 찍힌 쥐 청각 배율.

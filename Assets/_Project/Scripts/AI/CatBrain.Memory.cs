@@ -68,14 +68,17 @@ namespace RatGame.AI
             _grudge.TryGetValue(clientId, out float g);
             g = Mathf.Clamp(g + amount, 0f, 100f);
             _grudge[clientId] = g;
-            Log.Dev($"고양이 [{name}]: 앙심 client {clientId} {g:0} ({why} +{amount:0})");
+            Log.Dev($"고양이 [{name}]: 앙심 client {clientId} {g:0} ({why} {amount:+0;-0})");
         }
 
         private void OnHeardForMemory(NoiseEvent e, float heard)
         {
             if (heard >= _balance.CatMemoryNoiseMin) AddHeat(e.Pos, heard / _balance.CatMemoryNoiseMin);
+            if (!e.HasSource) return; // 누가 냈는지 모르는 소리는 앙심 대상 없음
             if (e.Type == NoiseType.Squeak && State.Value != CatState.Sleep)
                 ServerAddGrudge(e.Source, _balance.CatGrudgeSqueak, "찍찍 도발");
+            else if (e.Type == NoiseType.Break)
+                ServerAddGrudge(e.Source, _balance.CatGrudgeBreak, "깨뜨림");
         }
 
         // Update 맨 앞에서 매 프레임 (호스트)

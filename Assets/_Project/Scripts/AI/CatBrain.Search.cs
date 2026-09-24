@@ -88,6 +88,7 @@ namespace RatGame.AI
                 return;
             }
             if (CheckEscalation()) return; // 미끼·소음·목격이 수색을 끊는다
+            if (TryEatBribe()) return;
             if (Time.time >= _searchUntil || _searchTarget == null)
             {
                 Log.Dev($"고양이 [{name}]: 수색 끝 (하품)");

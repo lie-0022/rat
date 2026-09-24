@@ -148,6 +148,13 @@ MonoBehaviour:
   _catGrudgeSightMul: 1.5
   _catGrudgeHearingMul: 1.3
   _catGrudgeGiveUpBonus: 2
+  _noiseAttributionSeconds: 3
+  _catGrudgeBreak: 30
+  _catGrudgeFooled: 20
+  _catGrudgeBribe: 50
+  _catBribeRadius: 1.5
+  _catBribeRecentSeconds: 10
+  _catBribeEatSeconds: 4
   _scentIntervalMeters: 1.5
   _scentEdible: 60
   _scentGrudge: 20

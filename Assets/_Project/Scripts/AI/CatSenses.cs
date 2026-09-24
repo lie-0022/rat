@@ -173,7 +173,7 @@ namespace RatGame.AI
                 && Vector3.Distance(e.Pos, IgnoreImpactNear.position) < 1.5f) return;
             float heard = NoiseSystem.GetLoudnessAt(e, transform.position) * SensitivityMultiplier * HearingMultiplier;
             // 찍힌 쥐의 발소리·찍찍은 더 잘 들린다 (충돌·파손은 Source가 비어 귀속 불가 — 제외)
-            if ((e.Type == NoiseType.Footstep || e.Type == NoiseType.Squeak) && TargetGainMultiplier != null)
+            if (e.HasSource && (e.Type == NoiseType.Footstep || e.Type == NoiseType.Squeak) && TargetGainMultiplier != null)
             {
                 float gm = TargetGainMultiplier(e.Source);
                 if (gm > 1f) heard *= _balance.CatGrudgeHearingMul;
