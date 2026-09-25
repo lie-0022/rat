@@ -95,6 +95,7 @@
 - **유니티 MCP 세션 끊김** — 에디터 로그 "Server no longer running; ending orphaned session." 파이썬 서버(8080)는 살아 있지만 플러그인은 에디터 시작 때만 자동 연결 → **사용자가 MCP for Unity 창에서 Start Session**을 눌러야 함. 에디터는 스테이지 5 플레이 중인 채로 멈춰 있음(연결되면 먼저 isPlaying=false).
 - 준비된 다음 작업: 고양이 160(킁킁 음식 김 값어치) — plan `production/plans/cat-160-sniff-food-value.md`, 코드 패치 스크래치패드 `patch160.py`(플레이 멈춘 뒤 `python3 patch160.py` → 컴파일 → 1인 확인).
 - 준비된 정리: `ToastWidget.cs` 307줄(300 규칙 넘음 — 149·153·155·158에서 늘어남) → 소리 자막 부분을 `ToastWidget.Sound.cs`(partial)로. 패치 `patch_toast_split.py`, 복사본 시험 OK(234 + 89줄). 적용 순서: 160 패치 먼저 → 분리 패치 → 컴파일 → 자막 한 번 확인.
+- 준비된 다음: 고양이 161(위기 표시 가까이서 옅게) — plan `cat-161-help-marker-fade.md`, 패치 `patch161.py`.
 
 ## 3번째 루프 다음 후보 (2026-09-26)
 - 판단 필요라 안 함: 장비 4종(docs/11 — 코인·보상 규칙 미정), 창고·부엌 맵 실제 비율(1번째 루프 확인 뒤), 소모품.
