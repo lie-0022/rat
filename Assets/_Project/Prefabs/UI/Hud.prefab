@@ -1086,9 +1086,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 17
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 4096
@@ -1100,7 +1100,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -12150,6 +12150,9 @@ MonoBehaviour:
   _exitColor: {r: 0.86, g: 0.83, b: 0.76, a: 1}
   _pipeColor: {r: 0.35, g: 0.6, b: 0.95, a: 1}
   _treasureColor: {r: 1, g: 0.85, b: 0.25, a: 0.95}
+  _helpColor: {r: 1, g: 0.2, b: 0.2, a: 1}
+  _helpBlinkHz: 3
+  _bellCatColor: {r: 1, g: 0.55, b: 0.1, a: 1}
 --- !u!1 &8040874467130802524
 GameObject:
   m_ObjectHideFlags: 0

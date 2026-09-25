@@ -107,8 +107,24 @@ namespace RatGame.UI
             };
             if (text == null || text == _lastCue) return;
             _lastCue = text;
+            if (kind != CatCueKind.Ambush) text += " · " + DirectionFrom(catPos); // 매복은 어디서인지 모르는 게 핵심 (고양이 153)
             Log.Dev($"고양이 예고: {text}");
             Show(text, UiColorRole.Secondary);
+        }
+
+        private static readonly string[] Directions = { "앞", "오른쪽 앞", "오른쪽", "오른쪽 뒤", "뒤", "왼쪽 뒤", "왼쪽", "왼쪽 앞" };
+
+        // 소리 자막의 방향 — 진짜 소리처럼 어느 쪽인지 (고양이 153). 내 카메라 기준 8방향, 들은 순간 한 번
+        private static string DirectionFrom(Vector3 source)
+        {
+            var cam = Camera.main;
+            if (cam == null) return Directions[0];
+            Vector3 to = source - cam.transform.position; to.y = 0f;
+            Vector3 fwd = cam.transform.forward; fwd.y = 0f;
+            if (to.sqrMagnitude < 0.01f || fwd.sqrMagnitude < 0.0001f) return Directions[0];
+            float angle = Vector3.SignedAngle(fwd, to, Vector3.up); // 오른쪽이 +
+            int i = Mathf.RoundToInt(Mathf.Repeat(angle, 360f) / 45f) % 8;
+            return Directions[i];
         }
 
         // 집주인 이벤트 (design/cat-ideas/10) — 인간은 안 보인다, 소리·말로만
