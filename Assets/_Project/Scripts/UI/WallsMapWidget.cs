@@ -18,6 +18,8 @@ namespace RatGame.UI
         private const float MapPixels = 620f;   // 지도 긴 변(캔버스 px)
         private const float StubPx = 14f;       // 출구 선 길이 — 화면 px 고정: m로 두면 맵이 2배가 된 뒤(고양이 141) 1~2px로 줄어 안 보였다 (고양이 151)
         private const float StubWidthPx = 9f;
+        private const float HeadingLengthPx = 14f; // 내가 보는 방향 막대 (고양이 157)
+        private const float HeadingWidthPx = 6f;
         private const float VisitCheckSeconds = 0.25f;
         private const float PingMapSeconds = 10f; // 핑은 지도에 조금 더 오래 (고양이 118)
 
@@ -46,6 +48,7 @@ namespace RatGame.UI
         private readonly Dictionary<AI.CatBrain, UnityEngine.UI.Image> _catDots = new();
         private Vector2 _center;
         private float _scale;
+        private UnityEngine.UI.Image _heading;
         private float _nextCheck;
 
         private void OnEnable() => EventBus.PingReceived += OnPing;
@@ -222,7 +225,33 @@ namespace RatGame.UI
                     dot.rectTransform.sizeDelta = Vector2.one * (me ? 18f : 14f);
                     if (me) dot.transform.SetAsLastSibling(); // 내 점이 맨 위
                 }
+                if (me) UpdateHeading(dot.rectTransform.anchoredPosition);
             }
+        }
+
+        // 내 점 앞 짧은 막대 = 카메라가 보는 쪽 (고양이 157). 지도는 월드 +z가 위라 그대로 나침반
+        private void UpdateHeading(Vector2 myPos)
+        {
+            var cam = Camera.main;
+            if (cam == null) return;
+            Vector2 d = new(cam.transform.forward.x, cam.transform.forward.z);
+            if (d.sqrMagnitude < 1e-4f) return;
+            d.Normalize();
+            if (_heading == null) // 스테이지마다 지도를 새로 그리면 같이 사라진다
+            {
+                _heading = Instantiate(_roomTemplate, _content);
+                _heading.gameObject.SetActive(true);
+                _heading.color = Color.white;
+                _heading.raycastTarget = false;
+                var edge = _heading.gameObject.AddComponent<UnityEngine.UI.Outline>(); // 베이지 방 위에서도 보이게 (흰 막대만이면 방 색에 묻혔다)
+                edge.effectColor = new Color(0f, 0f, 0f, 0.85f);
+                edge.effectDistance = new Vector2(1.5f, -1.5f);
+            }
+            var rt = _heading.rectTransform;
+            rt.sizeDelta = new Vector2(HeadingWidthPx, HeadingLengthPx);
+            rt.anchoredPosition = myPos + d * (HeadingLengthPx * 0.5f + 8f);
+            rt.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg - 90f);
+            _heading.transform.SetAsLastSibling();
         }
 
         private static bool Inside(GridRoom r, Vector3 p)
