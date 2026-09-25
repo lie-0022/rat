@@ -46,7 +46,7 @@ namespace RatGame.Core
         /// <summary>집주인 이벤트 알림 (각 클라 로컬 — RunManager.HouseEventClientRpc가 발행, 2026-09-24).</summary>
         public static event Action<HouseEventKind, HouseEventPhase> HouseEvent;
         /// <summary>고양이가 루틴 스팟으로 출발 (각 클라 로컬 — CatBrain.CatCueClientRpc가 발행).</summary>
-        public static event Action<CatCueKind, UnityEngine.Vector3> CatCue;
+        public static event Action<CatCueKind, UnityEngine.Vector3, float> CatCue; // 마지막 = 들리는 거리 배율(큰 고양이 몸, 고양이 149)
         /// <summary>큰 소음 파문 (docs/06 클라 시각화) — 모든 클라.</summary>
         public static event Action<UnityEngine.Vector3, float /*loudness*/> NoiseRipple;
         /// <summary>기지 오브젝트가 "이 클라에 패널을 열어 달라" (자판기·거울·도감 — 규칙 3, 2026-09-24 고양이 52). source = 그 오브젝트.</summary>
@@ -87,6 +87,6 @@ namespace RatGame.Core
         public static void RaiseWorldPanelRequested(WorldPanelKind kind, UnityEngine.Object source) => WorldPanelRequested?.Invoke(kind, source);
         public static void RaiseWorldPanelSourceGone(UnityEngine.Object source) => WorldPanelSourceGone?.Invoke(source);
         public static void RaiseShopPurchaseResult(bool ok, string message) => ShopPurchaseResult?.Invoke(ok, message);
-        public static void RaiseCatCue(CatCueKind kind, UnityEngine.Vector3 catPos) => CatCue?.Invoke(kind, catPos);
+        public static void RaiseCatCue(CatCueKind kind, UnityEngine.Vector3 catPos, float hearScale = 1f) => CatCue?.Invoke(kind, catPos, hearScale);
     }
 }

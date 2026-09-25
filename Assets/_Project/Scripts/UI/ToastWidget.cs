@@ -84,11 +84,11 @@ namespace RatGame.UI
         private string _lastCue;
 
         // 고양이 루틴 예고 (design/cat-ideas/02) — 소리 대신 자막. 고양이 가까이 있는 쥐만 듣는다, 같은 문구 연속 금지
-        private void OnCatCue(CatCueKind kind, Vector3 catPos)
+        private void OnCatCue(CatCueKind kind, Vector3 catPos, float hearScale)
         {
             var nm = NetworkManager.Singleton;
             if (nm == null || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
-            float range = _balance != null ? _balance.CatCueHearRange : 18f;
+            float range = (_balance != null ? _balance.CatCueHearRange : 18f) * Mathf.Max(1f, hearScale); // 벽 속 큰 고양이 18 → 34m — 방이 2배라 예전처럼 방 두 개쯤
             if (Vector3.Distance(nm.LocalClient.PlayerObject.transform.position, catPos) > range) return;
             string text = kind switch
             {

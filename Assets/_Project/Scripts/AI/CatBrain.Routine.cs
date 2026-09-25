@@ -34,7 +34,7 @@ namespace RatGame.AI
         public void ServerKittenCallCue() => CatCueClientRpc((byte)CatCueKind.KittenCall, transform.position);
 
         [ClientRpc]
-        private void CatCueClientRpc(byte kind, Vector3 catPos) => EventBus.RaiseCatCue((CatCueKind)kind, catPos);
+        private void CatCueClientRpc(byte kind, Vector3 catPos) => EventBus.RaiseCatCue((CatCueKind)kind, catPos, BodyScale.Value); // 큰 몸 = 더 멀리 들림 (고양이 149)
 
         // ArriveAtSpot 머무름이 끝났을 때 (TickPatrol): 화장실 뒤면 우다다
         private bool TryStartZoomies()
