@@ -17,7 +17,7 @@ namespace RatGame.UI
         {
             ("Move", "이동"), ("Sprint", "달리기"), ("Crouch", "웅크리기"), ("Jump", "점프"),
             ("Grab", "잡기 · 놓기"), ("Throw", "던지기 (누르고 있다 떼기)"), ("Interact", "상호작용"),
-            ("Squeak", "찍찍 (소리 남)"), ("Ping", "핑"), ("Sniff", "킁킁 — 목적지 쪽 냄새"),
+            ("Squeak", "찍찍 (소리 남)"), ("Ping", "핑"), ("Sniff", "킁킁 — 목적지·음식 냄새"),
         };
 
         [SerializeField] private InputActionAsset _inputAsset;
