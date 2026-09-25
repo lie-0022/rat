@@ -16,8 +16,8 @@ namespace RatGame.UI
     public class WallsMapWidget : MonoBehaviour
     {
         private const float MapPixels = 620f;   // 지도 긴 변(캔버스 px)
-        private const float StubMeters = 1.6f;  // 출구 선 길이
-        private const float StubWidthMeters = 0.9f;
+        private const float StubPx = 14f;       // 출구 선 길이 — 화면 px 고정: m로 두면 맵이 2배가 된 뒤(고양이 141) 1~2px로 줄어 안 보였다 (고양이 151)
+        private const float StubWidthPx = 9f;
         private const float VisitCheckSeconds = 0.25f;
         private const float PingMapSeconds = 10f; // 핑은 지도에 조금 더 오래 (고양이 118)
 
@@ -165,8 +165,8 @@ namespace RatGame.UI
                     stub.color = pipe ? _pipeColor : _exitColor;
                     Vector2 dir = s switch { 0 => Vector2.up, 1 => Vector2.right, 2 => Vector2.down, _ => Vector2.left };
                     Vector2 edge = new(dir.x * r.Size.x * 0.5f, dir.y * r.Size.y * 0.5f);
-                    stub.rectTransform.anchoredPosition = (edge + dir * StubMeters * 0.5f) * _scale;
-                    stub.rectTransform.sizeDelta = (dir.x != 0 ? new Vector2(StubMeters, StubWidthMeters) : new Vector2(StubWidthMeters, StubMeters)) * _scale;
+                    stub.rectTransform.anchoredPosition = edge * _scale + dir * (StubPx * 0.5f);
+                    stub.rectTransform.sizeDelta = dir.x != 0 ? new Vector2(StubPx, StubWidthPx) : new Vector2(StubWidthPx, StubPx);
                 }
                 img.gameObject.SetActive(false);
                 _roomViews[r] = img.gameObject;
