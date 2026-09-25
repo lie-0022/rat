@@ -33,6 +33,7 @@ namespace RatGame.Run
         public float TrapRatioOverride = -1f;
         public float BonusTrapRatio = -1f; // >=0이면 보너스방 함정 비율 (벽 속 보물방 — 고양이 84)
         public float DarkChanceOverride = -1f; // >=0이면 어둠 구역 확률 (오늘의 집 정전 — 고양이 106)
+        public float DarkZoneScale = 1f;       // 어둠 구역 가로·세로 배율 — 벽 속은 방이 넓어진 만큼 (고양이 147)
         public float BonusBigWeight = 3f;  // 보너스방 대형·특수 가중 배율 (v1 3, 벽 속 보물방은 테마 에셋에서)
         public float CatSizeScale = 1f;    // 벽 속 큰 고양이 (고양이 141)
         public int CatAgentTypeId = -1;    // 큰 고양이용 NavMesh 에이전트 타입 (-1이면 프리팹 그대로)
@@ -216,7 +217,9 @@ namespace RatGame.Run
                     }
                 if (Pop.DarkZonePrefab != null && room.DarkZone != null && rng.NextDouble() < (DarkChanceOverride >= 0f ? DarkChanceOverride : Pop.DarkZoneChance))
                 {
-                    Spawn(Pop.DarkZonePrefab, room.DarkZone.position, room.DarkZone.rotation);
+                    var dz = Object.Instantiate(Pop.DarkZonePrefab, room.DarkZone.position, room.DarkZone.rotation);
+                    if (!Mathf.Approximately(DarkZoneScale, 1f)) dz.transform.localScale = Vector3.Scale(dz.transform.localScale, new Vector3(DarkZoneScale, 1f, DarkZoneScale)); // 스폰 전 — 크기가 스폰과 함께 클라로
+                    dz.GetComponent<NetworkObject>().Spawn(true);
                     dark++;
                 }
             }

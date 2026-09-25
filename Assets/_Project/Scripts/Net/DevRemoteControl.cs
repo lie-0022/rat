@@ -67,6 +67,8 @@ namespace RatGame.Net
                     Log.Dev($"[DevRC] report: client {p.OwnerClientId} 위치 {p.transform.position:F2} 키 {p.transform.localScale.y:F2} 상태 {p.State.Value}");
                 foreach (var cat in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None)) // 큰 고양이 크기가 클라에도 갔나 (고양이 141)
                     Log.Dev($"[DevRC] report: 고양이 {cat.name} 위치 {cat.transform.position:F1} 배율 {cat.transform.localScale.x:F2}");
+                var zones = FindObjectsByType<World.LightZone>(FindObjectsSortMode.None); // 어둠 구역 크기가 클라에도 갔나 (고양이 147)
+                if (zones.Length > 0) Log.Dev($"[DevRC] report: 어둠 구역 {zones.Length}개, 첫 배율 {zones[0].transform.localScale.x:F2}");
             }
             else if (command.StartsWith("trace:") && float.TryParse(command.Substring(6), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float secs))
             {

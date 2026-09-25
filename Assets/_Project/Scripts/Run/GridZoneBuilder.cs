@@ -91,6 +91,7 @@ namespace RatGame.Run
                     BonusTrapRatio = _zone.TreasureTrapRatio,
                     BonusBigWeight = _zone.TreasureBigWeight,
                     CatSizeScale = _zone.CatSizeScale,
+                    DarkZoneScale = _zone.RoomScale, // 방이 넓어진 만큼 어둠 구역도 (고양이 147)
                     CatAgentTypeId = catAgent,
                 };
                 Populator.PopulateAll(rng, stage - 1);
