@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: Zone_Walls
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.GridZoneSO
   ThemeId: walls
-  CellSize: 14
+  CellSize: 28
+  RoomScale: 2
+  WallHeight: 6
+  DoorWidth: 4
   MainPathMin: 5
   MainPathMax: 7
   BranchChance: 0.6
@@ -58,6 +61,25 @@ MonoBehaviour:
   - 1
   - 1
   - 1
+  PatrolChanceByStage:
+  - 0
+  - 0
+  - 0
+  - 0.5
+  - 1
+  ModifierChanceByStage:
+  - 0
+  - 0.5
+  - 0.6
+  - 0.7
+  - 0.8
+  BlackoutDarkChance: 0.9
+  TrapSaleBonus: 0.2
+  TreatsCatSpeed: 0.85
+  BusyExtraEvents: 2
+  PipeAmbushWeight: 0.5
   TreasureRoom: 1
   TreasureTrapRatio: 1
+  TrapBaitChance: 0.5
+  TrapBaitSearchMeters: 12
   TreasureBigWeight: 8

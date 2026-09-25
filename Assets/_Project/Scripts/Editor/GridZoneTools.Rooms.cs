@@ -8,14 +8,17 @@ using UnityEngine;
 namespace RatGame.Editor
 {
     /// <summary>
-    /// "벽 속" 방 킷 (docs/10 생성기 v2, 고양이 62): 네 면 가운데 문틈(1.8m)+막음벽, 크기별 방 7종, 통로·파이프, 테마 에셋.
+    /// "벽 속" 방 킷 (docs/10 생성기 v2, 고양이 62): 네 면 가운데 문틈+막음벽, 크기별 방 7종, 통로·파이프, 테마 에셋.
+    /// 크기(방 배율·벽 높이·문 폭)는 테마 SO — 고양이 141에서 실제 비율(고양이 = 쥐 3배)로 2배.
     /// 방은 RoomModule(스폰 표시) + GridRoom(막음벽·열린 면) + NetworkObject. 다시 실행하면 덮어쓴다.
     /// </summary>
     public static partial class GridZoneTools
     {
         private const string RoomDir = "Assets/_Project/Prefabs/Rooms/Walls";
         private const string ZonePath = "Assets/_Project/Data/Zones/Zone_Walls.asset";
-        private const float WallH = 2.5f, WallT = 0.2f, Door = 1.8f;
+        private const float WallT = 0.2f;
+        // 테마 SO에서 읽는다 (고양이 141 — 실제 비율). 도구 실행 때 채움, 기본값은 예전 크기
+        private static float WallH = 2.5f, Door = 1.8f, RoomScale = 1f;
 
         // 벽 속 색 — 나무 바닥·회반죽 벽·단열재 분홍 포인트
         private static readonly Color FloorColor = new(0.42f, 0.32f, 0.24f);
@@ -48,11 +51,15 @@ namespace RatGame.Editor
                 new Spec { Name = "Wall_Tall",   W = 7,  D = 12, Spots = new[] { CatSpotType.Look, CatSpotType.Groom }, Hides = 1, Dark = true, Cat = true },
                 new Spec { Name = "Wall_Big",    W = 12, D = 12, Spots = new[] { CatSpotType.Look, CatSpotType.Bed, CatSpotType.Food, CatSpotType.Door }, Hides = 2, Dark = true, Cat = true },
             };
+            var zone = AssetDatabase.LoadAssetAtPath<GridZoneSO>(ZonePath);
+            if (zone == null) { zone = ScriptableObject.CreateInstance<GridZoneSO>(); AssetDatabase.CreateAsset(zone, ZonePath); }
+            WallH = zone.WallHeight; Door = zone.DoorWidth; RoomScale = zone.RoomScale;
+            zone.CellSize = 14f * RoomScale; // 가장 큰 방 + 통로 여유
+            for (int i = 0; i < specs.Length; i++) { specs[i].W *= RoomScale; specs[i].D *= RoomScale; }
+
             var prefabs = new Dictionary<string, GameObject>();
             foreach (var s in specs) prefabs[s.Name] = BuildRoom(s);
 
-            var zone = AssetDatabase.LoadAssetAtPath<GridZoneSO>(ZonePath);
-            if (zone == null) { zone = ScriptableObject.CreateInstance<GridZoneSO>(); AssetDatabase.CreateAsset(zone, ZonePath); }
             zone.StartRoom = prefabs["Wall_Start"];
             zone.DestinationRoom = prefabs["Wall_Dest"];
             zone.MainRoomPool = new[] { prefabs["Wall_Medium"], prefabs["Wall_Wide"], prefabs["Wall_Tall"], prefabs["Wall_Big"] };
@@ -63,7 +70,7 @@ namespace RatGame.Editor
             zone.Population = AssetDatabase.LoadAssetAtPath<ZoneDefinitionSO>("Assets/_Project/Data/Zones/Zone_Kitchen_Greybox.asset");
             EditorUtility.SetDirty(zone);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[RatGame] 벽 속 방 킷 — 방 {specs.Length}종 + 통로·파이프 → {ZonePath}");
+            Debug.Log($"[RatGame] 벽 속 방 킷 — 방 {specs.Length}종 + 통로·파이프 (배율 {RoomScale}, 벽 {WallH}, 문 {Door}, 칸 {zone.CellSize}) → {ZonePath}");
         }
 
         private static GameObject BuildRoom(Spec s)
@@ -126,33 +133,34 @@ namespace RatGame.Editor
                 vol.center = new Vector3(0f, WallH * 0.5f, 0f); vol.size = new Vector3(s.W, WallH + 1f, s.D);
                 vol.area = 1; // Not Walkable
                 var lamp = new GameObject("WarmLight"); lamp.transform.SetParent(root.transform, false); lamp.transform.localPosition = new Vector3(0f, WallH - 0.3f, 0f);
-                var light = lamp.AddComponent<Light>(); light.type = LightType.Point; light.range = 8f; light.intensity = 2f; light.color = new Color(1f, 0.8f, 0.55f);
+                var light = lamp.AddComponent<Light>(); light.type = LightType.Point; light.range = 8f * RoomScale; light.intensity = 2f; light.color = new Color(1f, 0.8f, 0.55f);
             }
             else
             {
-                room.LootSpawns = Scatter(root.transform, "LootSpawn", Mathf.RoundToInt(s.W * s.D / 10f), s, rng);
-                room.TrapSpawns = Scatter(root.transform, "TrapSpawn", s.W * s.D >= 60 ? 2 : 1, s, rng);
-                // 숨을 곳: 모서리(대각선으로 놓여도 벽에 안 닿게 1.5m 안쪽), 방 가운데를 본다
+                float baseArea = s.W * s.D / (RoomScale * RoomScale); // 전리품·함정 수는 예전 넓이 기준 — 맵 식량 총량을 안 늘리게(판단 7)
+                room.LootSpawns = Scatter(root.transform, "LootSpawn", Mathf.RoundToInt(baseArea / 10f), s, rng);
+                room.TrapSpawns = Scatter(root.transform, "TrapSpawn", baseArea >= 60 ? 2 : 1, s, rng);
+                // 숨을 곳: 모서리(대각선으로 놓여도 벽에 안 닿게 안쪽), 방 가운데를 본다
                 var hides = new List<Transform>();
                 for (int i = 0; i < s.Hides; i++)
                 {
                     float sx = i == 0 ? -1f : 1f, sz = i == 0 ? 1f : -1f;
-                    var h = Marker(root.transform, "HideSpawn_" + i, new Vector3(sx * (s.W * 0.5f - 1.5f), 0f, sz * (s.D * 0.5f - 1.5f)), null);
+                    var h = Marker(root.transform, "HideSpawn_" + i, new Vector3(sx * (s.W * 0.5f - 1.5f * RoomScale), 0f, sz * (s.D * 0.5f - 1.5f * RoomScale)), null);
                     h.localRotation = Quaternion.LookRotation(-new Vector3(h.localPosition.x, 0f, h.localPosition.z).normalized);
                     hides.Add(h);
                 }
                 room.HideSpawns = hides.ToArray();
                 if (s.Dark) room.DarkZone = Marker(root.transform, "DarkZone", new Vector3(s.W * 0.25f, 0f, -s.D * 0.25f), null);
-                if (s.Cat) { room.CatSpawn = Marker(root.transform, "CatSpawn", new Vector3(0f, 0f, 0.5f), "CatSpawn"); }
-                if (Mathf.Min(s.W, s.D) >= 8f)
-                    Box(root.transform, "Crate", new Vector3(s.W * 0.15f, 0.6f, s.D * 0.15f), new Vector3(1.4f, 1.2f, 1.4f), floorLayer, CrateColor);
+                if (s.Cat) { room.CatSpawn = Marker(root.transform, "CatSpawn", new Vector3(0f, 0f, 0.5f * RoomScale), "CatSpawn"); }
+                if (Mathf.Min(s.W, s.D) >= 8f * RoomScale)
+                    Box(root.transform, "Crate", new Vector3(s.W * 0.15f, 0.6f * RoomScale, s.D * 0.15f), new Vector3(1.4f, 1.2f, 1.4f) * RoomScale, floorLayer, CrateColor);
             }
             Decorate(root.transform, s);
             if (s.Spots != null)
                 for (int i = 0; i < s.Spots.Length; i++)
                 {
                     float a = (i + 0.5f) / s.Spots.Length * Mathf.PI * 2f + 0.4f;
-                    var sp = Marker(root.transform, $"Spot_{s.Spots[i]}_{i}", new Vector3(Mathf.Cos(a) * (s.W * 0.5f - 1.5f), 0f, Mathf.Sin(a) * (s.D * 0.5f - 1.5f)), null);
+                    var sp = Marker(root.transform, $"Spot_{s.Spots[i]}_{i}", new Vector3(Mathf.Cos(a) * (s.W * 0.5f - 1.5f * RoomScale), 0f, Mathf.Sin(a) * (s.D * 0.5f - 1.5f * RoomScale)), null);
                     sp.localRotation = Quaternion.LookRotation(-sp.localPosition.normalized);
                     sp.gameObject.AddComponent<CatSpot>().EditorSetup(s.Spots[i], 1f);
                 }
@@ -178,21 +186,22 @@ namespace RatGame.Editor
                 float len = alongX ? s.W : s.D;
                 float inner = (alongX ? s.D : s.W) * 0.5f - WallT * 0.5f - 0.07f; // 벽 안쪽 면 바로 앞
                 float sign = side == 0 || side == 1 ? 1f : -1f;
-                // 샛기둥: 1.4m 간격, 문틈(가운데 ±1.1) 피함
-                for (float c = -len * 0.5f + 0.5f; c <= len * 0.5f - 0.5f; c += 1.4f)
+                // 샛기둥: 1.4m(× 배율) 간격, 문틈 피함
+                for (float c = -len * 0.5f + 0.5f * RoomScale; c <= len * 0.5f - 0.5f * RoomScale; c += 1.4f * RoomScale)
                 {
-                    if (Mathf.Abs(c) < 1.1f) continue;
+                    if (Mathf.Abs(c) < Door * 0.5f + 0.2f * RoomScale) continue;
                     Vector3 pos = alongX ? new Vector3(c, WallH * 0.5f, sign * inner) : new Vector3(sign * inner, WallH * 0.5f, c);
-                    Vector3 size = alongX ? new Vector3(0.12f, WallH, 0.1f) : new Vector3(0.1f, WallH, 0.12f);
+                    Vector3 size = alongX ? new Vector3(0.12f * RoomScale, WallH, 0.1f) : new Vector3(0.1f, WallH, 0.12f * RoomScale);
                     Deco(deco, "Stud", pos, size, StudColor, PrimitiveType.Cube, Quaternion.identity);
                 }
                 // 단열재: 면마다 반반 확률, 문틈 옆 한쪽 칸
-                if (rng.NextDouble() < 0.5 && len >= 6f)
+                if (rng.NextDouble() < 0.5 && len >= 6f * RoomScale)
                 {
-                    float c = (rng.NextDouble() < 0.5 ? -1f : 1f) * (1.1f + (len * 0.5f - 1.6f) * 0.5f);
-                    Vector3 pos = alongX ? new Vector3(c, 1.3f, sign * (inner - 0.03f)) : new Vector3(sign * (inner - 0.03f), 1.3f, c);
-                    float w = Mathf.Min(1.3f, len * 0.5f - 1.5f);
-                    Vector3 size = alongX ? new Vector3(w, 0.9f, 0.05f) : new Vector3(0.05f, 0.9f, w);
+                    float half = Door * 0.5f + 0.2f * RoomScale;
+                    float c = (rng.NextDouble() < 0.5 ? -1f : 1f) * (half + (len * 0.5f - half - 0.5f * RoomScale) * 0.5f);
+                    Vector3 pos = alongX ? new Vector3(c, 1.3f * RoomScale, sign * (inner - 0.03f)) : new Vector3(sign * (inner - 0.03f), 1.3f * RoomScale, c);
+                    float w = Mathf.Min(1.3f * RoomScale, len * 0.5f - half - 0.4f * RoomScale);
+                    Vector3 size = alongX ? new Vector3(w, 0.9f * RoomScale, 0.05f) : new Vector3(0.05f, 0.9f * RoomScale, w);
                     Deco(deco, "Insulation", pos, size, Insulation, PrimitiveType.Cube, Quaternion.identity);
                 }
             }
@@ -203,9 +212,10 @@ namespace RatGame.Editor
                 float len = (alongX ? s.W : s.D) - 0.4f;
                 float inner = (alongX ? s.D : s.W) * 0.5f - WallT * 0.5f - 0.2f;
                 float sign = side == 0 || side == 1 ? 1f : -1f;
-                Vector3 pos = alongX ? new Vector3(0f, 2.15f, sign * inner) : new Vector3(sign * inner, 2.15f, 0f);
+                float y = WallH - 0.35f * RoomScale;
+                Vector3 pos = alongX ? new Vector3(0f, y, sign * inner) : new Vector3(sign * inner, y, 0f);
                 var rot = alongX ? Quaternion.Euler(0f, 0f, 90f) : Quaternion.Euler(90f, 0f, 0f); // 실린더 Y축 → 벽을 따라
-                Deco(deco, "Pipe", pos, new Vector3(0.16f, len * 0.5f, 0.16f), PipeMetal, PrimitiveType.Cylinder, rot);
+                Deco(deco, "Pipe", pos, new Vector3(0.16f * RoomScale, len * 0.5f, 0.16f * RoomScale), PipeMetal, PrimitiveType.Cylinder, rot);
             }
         }
 
@@ -253,17 +263,18 @@ namespace RatGame.Editor
             return t;
         }
 
-        // 벽에서 1m 안쪽 무작위 (문 앞 1.2m·가운데 상자 자리는 피함) — 방마다 고정(이름 시드)
+        // 벽에서 1m(× 배율) 안쪽 무작위 (문 앞·가운데 상자 자리는 피함) — 방마다 고정(이름 시드)
         private static Transform[] Scatter(Transform parent, string name, int count, Spec s, System.Random rng)
         {
             var list = new List<Transform>();
             for (int tries = 0; list.Count < count && tries < count * 30; tries++)
             {
-                float x = (float)(rng.NextDouble() - 0.5) * (s.W - 2f), z = (float)(rng.NextDouble() - 0.5) * (s.D - 2f);
+                float x = (float)(rng.NextDouble() - 0.5) * (s.W - 2f * RoomScale), z = (float)(rng.NextDouble() - 0.5) * (s.D - 2f * RoomScale);
                 var p = new Vector3(x, 0f, z);
-                if (Mathf.Abs(x) < 1.2f && Mathf.Abs(z) > s.D * 0.5f - 2.2f) continue;  // 남북 문 앞
-                if (Mathf.Abs(z) < 1.2f && Mathf.Abs(x) > s.W * 0.5f - 2.2f) continue;  // 동서 문 앞
-                if (Vector3.Distance(p, new Vector3(s.W * 0.15f, 0f, s.D * 0.15f)) < 1.3f) continue; // 상자
+                float doorHalf = Door * 0.5f + 0.3f, doorDepth = 2.2f * RoomScale;
+                if (Mathf.Abs(x) < doorHalf && Mathf.Abs(z) > s.D * 0.5f - doorDepth) continue;  // 남북 문 앞
+                if (Mathf.Abs(z) < doorHalf && Mathf.Abs(x) > s.W * 0.5f - doorDepth) continue;  // 동서 문 앞
+                if (Vector3.Distance(p, new Vector3(s.W * 0.15f, 0f, s.D * 0.15f)) < 1.3f * RoomScale) continue; // 상자
                 list.Add(Marker(parent, $"{name}_{list.Count}", p, null));
             }
             return list.ToArray();

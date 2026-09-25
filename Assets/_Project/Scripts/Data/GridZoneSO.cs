@@ -10,7 +10,11 @@ namespace RatGame.Data
     public class GridZoneSO : ScriptableObject
     {
         public string ThemeId = "walls";
-        public float CellSize = 14f;
+        public float CellSize = 14f;          // 방 킷 도구가 14 × RoomScale로 맞춘다
+        [Header("실제 비율 (고양이 141 — 고양이 키 = 쥐 3배에 맞춘 방·문 크기, 방 킷 도구가 읽는다)")]
+        public float RoomScale = 2f;          // 방 넓이 배율 (예전 6~12m → 12~24m). 전리품·함정 수는 예전 넓이 기준 그대로
+        public float WallHeight = 6f;         // 예전 2.5
+        public float DoorWidth = 4f;          // 예전 1.8 — 큰 고양이가 지나가게
         public int MainPathMin = 5, MainPathMax = 7;
         [Range(0f, 1f)] public float BranchChance = 0.6f;
         public int BranchMaxDepth = 2;
