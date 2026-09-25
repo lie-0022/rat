@@ -107,6 +107,7 @@ public class SteamLobbyService
 | StageShopCounter (목적지방, 고양이 65) | Wallet, PendingText, Closed | int, FixedString128, bool |
 | GridRoom (벽 속 방, 고양이 62·79) | OpenSides — 아래 4비트 = 이어진 면(N·E·S·W), 위 4비트 = 그중 쥐 전용 배관 면. 호스트가 스폰 전에 정함 | byte |
 | CatBrain (고양이 140) | Belled — 목에 방울(이번 스테이지 끝까지). 호스트만 씀, 목 방울·지도 주황 점·토스트는 각 클라가 값 변화로 | bool |
+| CatBrain (고양이 145) | BodyScale — 몸 배율(벽 속 1.9, 창고 1). 스폰 전 초기값으로만, 클라가 큰 고양이 발걸음 흔들림에 씀 | float |
 | DeparturePad (기지) | ReadyCount, NeededCount, Counting, DepartAt, TotalValue, Destination (목적지 인덱스, 고양이 59), BestStage, Endings (새 루프 최고 기록, 고양이 74) | int, int, bool, double, int, int, int, int |
 
 - RPC만 쓰는 것 (NetworkVariable 없음): `PlayerPing` 핑 — 소유 클라 `PingServerRpc(pos)` → 서버 쿨다운 확인 → `PingClientRpc(pos)` 전원 (표시용, 위치 검증 없음, docs/04).
