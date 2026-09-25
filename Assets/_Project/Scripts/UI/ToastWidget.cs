@@ -113,6 +113,15 @@ namespace RatGame.UI
             Show(text, UiColorRole.Secondary);
         }
 
+        // 동료 위기 알림 둘째 줄 — "오른쪽 뒤 23m" (고양이 155)
+        private static string Where(Vector3 target)
+        {
+            var nm = NetworkManager.Singleton;
+            var me = nm != null && nm.LocalClient != null ? nm.LocalClient.PlayerObject : null;
+            if (me == null) return DirectionFrom(target);
+            return $"{DirectionFrom(target)} {Mathf.RoundToInt(Vector3.Distance(me.transform.position, target))}m";
+        }
+
         private static readonly string[] Directions = { "앞", "오른쪽 앞", "오른쪽", "오른쪽 뒤", "뒤", "왼쪽 뒤", "왼쪽", "왼쪽 앞" };
 
         // 소리 자막의 방향 — 진짜 소리처럼 어느 쪽인지 (고양이 153). 내 카메라 기준 8방향, 들은 순간 한 번
@@ -251,9 +260,11 @@ namespace RatGame.UI
                 }
                 else if (prev != state && !p.IsOwner)
                 {
-                    if (state == ConditionState.Pinned) Show($"{name}가 고양이에게 잡혔어요! 눈에 띄어 고양이를 떼어 내요", UiColorRole.Danger);
-                    if (state == ConditionState.Downed) Show($"{name}가 다운됐어요! {(IsWalls ? "창고(주황 방)" : "쥐구멍")}으로 옮겨 주세요", UiColorRole.Danger);
-                    else if (state == ConditionState.Trapped) Show($"{name}가 끈끈이에 붙었어요! [E] 길게 눌러 구출", UiColorRole.Warning);
+                    // 둘째 줄 = 어디 (고양이 155) — 넓어진 맵에서 지도를 안 열어도 첫 발을 뗄 수 있게
+                    if (state == ConditionState.Pinned) Show($"{name}가 고양이에게 잡혔어요! 눈에 띄어 고양이를 떼어 내요\n{Where(p.transform.position)}", UiColorRole.Danger);
+                    if (state == ConditionState.Downed) Show($"{name}가 다운됐어요! {(IsWalls ? "창고(주황 방)" : "쥐구멍")}으로 옮겨 주세요\n{Where(p.transform.position)}", UiColorRole.Danger);
+                    else if (state == ConditionState.Trapped) Show($"{name}가 끈끈이에 붙었어요! [E] 길게 눌러 구출\n{Where(p.transform.position)}", UiColorRole.Warning);
+                    if (state == ConditionState.Pinned || state == ConditionState.Downed || state == ConditionState.Trapped) Log.Dev($"동료 위기 알림: {name} {state} — {Where(p.transform.position)}"); // 2인 검증용
                 }
                 _known[id] = state;
             }
