@@ -16,6 +16,7 @@ namespace RatGame.Player
         [SerializeField] private InputActionAsset _inputAsset;
 
         private Camera _cam;
+        private CatStepShake _shake;
         private InputAction _lookAction;
         private float _yaw;
         private float _pitch;
@@ -41,6 +42,7 @@ namespace RatGame.Player
             _lookAction = _inputAsset.FindActionMap("Player", true).FindAction("Look", true);
             _yaw = transform.eulerAngles.y;
             _pitch = 0f;
+            _shake = gameObject.AddComponent<CatStepShake>(); // 큰 고양이 발걸음 (고양이 145) — 소유 클라만
             HideOwnBody();
             SetCursorLocked(true); // 플레이 중 커서 잠금 — Esc로 해제 (DEV HUD 클릭용)
         }
@@ -96,7 +98,7 @@ namespace RatGame.Player
             _pitch = Mathf.Clamp(_pitch - look.y * sensitivity, -PitchLimit, PitchLimit);
 
             Quaternion rot = Quaternion.Euler(_pitch, _yaw, 0f);
-            Vector3 eye = transform.position + Vector3.up * EyeHeight
+            Vector3 eye = transform.position + Vector3.up * (EyeHeight + (_shake != null ? _shake.Offset : 0f))
                           + Quaternion.Euler(0f, _yaw, 0f) * Vector3.forward * EyeForward;
             _cam.transform.SetPositionAndRotation(eye, rot);
         }

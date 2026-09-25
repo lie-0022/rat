@@ -18,6 +18,7 @@ namespace RatGame.Player
         /// <summary>무인 테스트용 고정 입력 (월드 XZ). 0이 아니면 사람 입력 대신 이 방향으로 걷는다.</summary>
         public static Vector2 DevForcedInput;
         public static bool DevForcedCrouch; // 테스트: 웅크림 고정 (DevRemoteControl)
+        public BalanceConfigSO Balance => _balance;
 
         /// <summary>프리팹 기준 스케일 (쥐 비율). 웅크림 판정(스케일 절반) 공유 기준 — CatSenses·이미터가 사용.</summary>
         public const float BaseScaleY = 0.6f;

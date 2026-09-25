@@ -99,6 +99,11 @@ namespace RatGame.Data
         [SerializeField] private float _trapBaitStunSeconds = 2.5f; // 쥐덫 미끼를 서서 집으면 (고양이 129)
         [SerializeField] private float _trapBaitHintMeters = 3f;    // 이 안에 처음 들어오면 미끼 규칙 안내 (고양이 132)
         [SerializeField] private float _catBellHitMeters = 1f;      // 던진 방울이 떨어진 자리 이 안 고양이에 달림 (고양이 140)
+        [Header("큰 고양이 발걸음 (고양이 145)")]
+        [SerializeField] private float _catStepShakeRadius = 10f;      // 이 안의 큰 고양이 걸음만 느낀다
+        [SerializeField] private float _catStepShakeAmplitude = 0.05f; // 바로 옆에서 시점이 내려앉는 최대 (m)
+        [SerializeField] private float _catStrideMeters = 1.4f;        // 큰 고양이 걸음 폭 (몸 배율 1.9 기준, 배율에 비례)
+        [SerializeField] private float _catStepShakeDecaySeconds = 0.12f;
 
         [Header("핑 (docs/04)")]
         [SerializeField] private float _pingItemSnapMeters = 0.6f; // 핑 지점에서 이 안의 물건이면 이름·가치 표시 (고양이 139)
@@ -753,6 +758,10 @@ namespace RatGame.Data
         public float TrapBaitStunSeconds => _trapBaitStunSeconds;
         public float TrapBaitHintMeters => _trapBaitHintMeters;
         public float CatBellHitMeters => _catBellHitMeters;
+        public float CatStepShakeRadius => _catStepShakeRadius;
+        public float CatStepShakeAmplitude => _catStepShakeAmplitude;
+        public float CatStrideMeters => _catStrideMeters;
+        public float CatStepShakeDecaySeconds => _catStepShakeDecaySeconds;
         public float StaminaMax => _staminaMax;
         public float EatSeconds => _eatSeconds;
         public float EatStamina => _eatStamina;

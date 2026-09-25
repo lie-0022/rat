@@ -14,6 +14,7 @@ namespace RatGame.UI
     public class SettingsPanel : MonoBehaviour
     {
         private static readonly string[] CrouchOptions = { "누르고 있기", "눌러서 전환" };
+        private static readonly string[] ShakeOptions = { "켬", "끔" }; // 큰 고양이 발걸음 등 (고양이 145)
         private static readonly string[] ScreenModeOptions = { "전체 화면", "테두리 없는 창", "창 모드" };
         private static readonly string[] LanguageOptions = { "한국어", "English" };
         private static readonly string[] LanguageCodes = { "ko", "en" };
@@ -22,6 +23,7 @@ namespace RatGame.UI
         [SerializeField] private GameObject _root;
         [SerializeField] private SettingsSliderRow _sensitivity;
         [SerializeField] private SettingsStepper _crouch;
+        [SerializeField] private SettingsStepper _cameraShake;
         [SerializeField] private SettingsStepper _screenMode;
         [SerializeField] private SettingsStepper _resolution;
         [SerializeField] private SettingsSliderRow _masterVolume;
@@ -57,6 +59,7 @@ namespace RatGame.UI
             _musicVolume.Changed += v => Edit(d => d.MusicVolume = v);
             _voiceVolume.Changed += v => Edit(d => d.VoiceVolume = v);
             _crouch.Changed += i => Edit(d => d.CrouchToggle = i == 1);
+            if (_cameraShake != null) _cameraShake.Changed += i => Edit(d => d.CameraShake = i == 0);
             _screenMode.Changed += i => Edit(d => d.ScreenMode = (ScreenModeOption)i);
             _resolution.Changed += i => Edit(d => { d.ResolutionWidth = _resolutions[i].x; d.ResolutionHeight = _resolutions[i].y; });
             _language.Changed += i => Edit(d => d.Language = LanguageCodes[i]);
@@ -125,6 +128,7 @@ namespace RatGame.UI
             _musicVolume.SetValue(_draft.MusicVolume);
             _voiceVolume.SetValue(_draft.VoiceVolume);
             _crouch.SetOptions(CrouchOptions, _draft.CrouchToggle ? 1 : 0);
+            if (_cameraShake != null) _cameraShake.SetOptions(ShakeOptions, _draft.CameraShake ? 0 : 1);
             _screenMode.SetOptions(ScreenModeOptions, (int)_draft.ScreenMode);
             _language.SetOptions(LanguageOptions, Mathf.Max(0, Array.IndexOf(LanguageCodes, _draft.Language)));
 

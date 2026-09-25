@@ -16,6 +16,8 @@ namespace RatGame.Core
         public float MouseSensitivity = 1f;
         /// <summary>웅크리기: false = 누르고 있기(docs/04 기본), true = 눌러서 전환.</summary>
         public bool CrouchToggle;
+        /// <summary>화면 흔들림(큰 고양이 발걸음 등) — 멀미 배려로 끌 수 있게 (고양이 145).</summary>
+        public bool CameraShake = true;
         public ScreenModeOption ScreenMode = ScreenModeOption.Borderless;
         /// <summary>0이면 모니터 해상도 그대로.</summary>
         public int ResolutionWidth;

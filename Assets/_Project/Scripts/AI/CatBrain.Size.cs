@@ -1,4 +1,5 @@
 using RatGame.Core;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace RatGame.AI
@@ -11,6 +12,8 @@ namespace RatGame.AI
     public partial class CatBrain
     {
         public float SizeScale { get; private set; } = 1f;
+        /// <summary>몸 배율 — 모든 클라가 읽는다(큰 고양이 발걸음 흔들림 등, 고양이 145). 스폰 전 초기값으로만 정한다.</summary>
+        public NetworkVariable<float> BodyScale = new(1f);
 
         /// <summary>호스트: 스폰 전에만.</summary>
         public void ServerPrepareSize(float scale, int agentTypeId)
@@ -18,6 +21,7 @@ namespace RatGame.AI
             if (scale > 0f && !Mathf.Approximately(scale, 1f))
             {
                 SizeScale = scale;
+                BodyScale = new NetworkVariable<float>(scale); // 스폰 전 .Value 쓰기는 NGO 경고 — 초기값으로 (고양이 127과 같은 방식)
                 transform.localScale *= scale;
                 _balance = _balance.ScaledForCat(scale);
                 GetComponent<CatSenses>()?.ServerSetBalance(_balance);
