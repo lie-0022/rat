@@ -27,7 +27,7 @@ public class NetworkLauncher : MonoBehaviour
 
 - NetworkManager는 Boot 씬 프리팹. Player Prefab 자동 스폰 **끄고** `NetPlayerSpawner`가 수동 스폰
   (허브에서는 허브용, 런에서는 런용 위치에 스폰하기 위해).
-- ConnectionApproval 사용: 최대 4명, 게임 진행 중(midgame) 참가는 거부(v1은 로비에서만 합류).
+- ConnectionApproval 사용: 최대 4명, 게임 진행 중(midgame) 참가는 거부(v1은 로비에서만 합류). 맵 이동 중(`RunSession.DepartPending` — 발판 출발·스테이지 사이 로드 동안 상태가 잠깐 Lobby)도 거부, 사유 "다음 맵으로 이동 중 — 기지로 돌아오면 참가할 수 있어요"(2026-09-25 고양이 142 — 그 틈에 들어오면 맵 로드와 겹쳐 물체 동기화가 10초 넘게 밀려 접속 실패했다). 클라는 끊긴 사유를 개발 로그 "끊긴 이유"로 남긴다.
 
 ## Net/SteamLobbyService.cs (Facepunch)
 

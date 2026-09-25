@@ -216,6 +216,7 @@ namespace RatGame.Net
         {
             var nm = NetworkManager.Singleton;
             if (nm == null || nm.IsServer || clientId != nm.LocalClientId) return;
+            if (!string.IsNullOrEmpty(nm.DisconnectReason)) Log.Dev($"끊긴 이유: {nm.DisconnectReason}"); // 승인 거절 사유 확인용 (고양이 142)
             if (SceneManager.GetActiveScene().name == MainMenuSceneName)
             {
                 _steam?.LeaveLobby(); // 참가 실패 — 들어갔던 로비에서도 나온다
@@ -286,6 +287,14 @@ namespace RatGame.Net
             {
                 response.Approved = false;
                 response.Reason = "게임 진행 중에는 참가할 수 없음 (로비에서만 합류)";
+                return;
+            }
+            // 다음 맵을 불러오는 동안(스테이지 사이·발판 출발 직후)은 상태가 잠깐 Lobby라 위 검사를 지나친다 —
+            // 그때 들어오면 맵 불러오기와 겹쳐 물체 동기화가 10초 넘게 밀려 접속이 실패했다 (고양이 142)
+            if (Run.RunSession.DepartPending)
+            {
+                response.Approved = false;
+                response.Reason = "다음 맵으로 이동 중 — 기지로 돌아오면 참가할 수 있어요";
                 return;
             }
             response.Approved = true;
