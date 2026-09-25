@@ -358,6 +358,9 @@ namespace RatGame.AI
             _senses.SensitivityMultiplier = sense;
             _phaseUntil = Time.time + duration;
             Log.Dev($"고양이 [{name}]: 잠 {phase} ({duration:0.0}s, 감각 {sense})");
+            // 깊은 잠 신호를 소리(자막)로도 — 꼬리 씰룩은 눈으로만 보여서 벽 너머에선 모른다 (고양이 152)
+            if (phase == CatSleepPhase.Deep) CatCueClientRpc((byte)CatCueKind.Snore, transform.position);
+            else if (phase == CatSleepPhase.ToLight) CatCueClientRpc((byte)CatCueKind.SnoreStop, transform.position);
         }
 
         private void TickPatrol()
