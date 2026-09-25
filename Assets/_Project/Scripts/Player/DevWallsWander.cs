@@ -13,8 +13,18 @@ namespace RatGame.Player
     {
         private const float RepickSeconds = 25f;   // 한 방을 이만큼 못 가면 포기하고 다른 방
         private const float HintSeconds = 0.4f;
+        // 큰 물건(통닭 등)이 길을 막으면 곧장 밀기만 했다(고양이 141 소크 — 300초에 38m) → 1.2초 동안 0.3m도 못 가면 1초 옆걸음 (고양이 143)
+        private const float StuckSeconds = 1.2f, StuckMeters = 0.3f, SidestepSeconds = 1f;
 
-        private sealed class State { public GridRoom Goal; public float PickedAt; public Vector3 Target; public float NextHint; public Vector3 LastDir; }
+        private sealed class State
+        {
+            public GridRoom Goal; public float PickedAt; public Vector3 Target; public float NextHint; public Vector3 LastDir;
+            public Vector3 CheckPos; public float CheckAt; public float SidestepUntil; public Vector3 SidestepDir; public int SidestepSign = 1;
+            public int Sidesteps;
+        }
+
+        /// <summary>시험용 집계 — 옆걸음 몇 번 했나.</summary>
+        public static int SidestepCount(ulong id) => States.TryGetValue(id, out var st) ? st.Sidesteps : 0;
         private static readonly Dictionary<ulong, State> States = new();
 
         public static bool TryDirection(ulong id, Vector3 pos, out Vector3 dir)
@@ -29,6 +39,22 @@ namespace RatGame.Player
                 st.Goal = rooms[Random.Range(0, rooms.Length)];
                 st.PickedAt = Time.time;
                 st.NextHint = 0f;
+            }
+            if (Time.time < st.SidestepUntil) { dir = st.SidestepDir; return true; }
+            if (Time.time - st.CheckAt > StuckSeconds)
+            {
+                bool stuck = st.CheckAt > 0f && (pos - st.CheckPos).sqrMagnitude < StuckMeters * StuckMeters && st.LastDir.sqrMagnitude > 0.01f;
+                st.CheckPos = pos; st.CheckAt = Time.time;
+                if (stuck)
+                {
+                    st.SidestepSign = -st.SidestepSign; // 번갈아 왼쪽·오른쪽
+                    st.SidestepDir = Vector3.Cross(Vector3.up, st.LastDir).normalized * st.SidestepSign;
+                    st.SidestepUntil = Time.time + SidestepSeconds;
+                    st.Sidesteps++;
+                    RatGame.Core.Log.Dev($"배회 옆걸음 #{st.Sidesteps} @ {pos:F1}");
+                    dir = st.SidestepDir;
+                    return true;
+                }
             }
             if (Time.time >= st.NextHint)
             {
