@@ -10,6 +10,7 @@ namespace RatGame.Net
     ///   grab            : 가장 가까운 물건 집기
     ///   ping            : 카메라 정면으로 핑
     ///   sniff           : 킁킁 (목적지 냄새 줄기)
+    ///   squeak          : 찍찍 (동료 자막, 고양이 158)
     ///   walk:x,z        : 월드 방향으로 계속 걷기 (DevForcedInput)
     ///   stop            : 걷기 중지
     ///   crouch / stand  : 웅크리기 켜기·끄기 (DevForcedCrouch, 쥐덫 미끼 검증 — 고양이 129)
@@ -46,6 +47,10 @@ namespace RatGame.Net
             else if (command == "sniff")
             {
                 GetComponent<PlayerSniff>()?.TrySniff();
+            }
+            else if (command == "squeak")
+            {
+                GetComponent<Noise.PlayerNoiseEmitter>()?.Squeak(); // 동료 찍찍 자막 검증 (고양이 158)
             }
             else if (command.StartsWith("walk:"))
             {

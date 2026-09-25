@@ -103,6 +103,7 @@ public interface IInteractable
 ## Squeak(찍찍) & Ping
 
 - Squeak: 애니+사운드 전 클라 재생(ClientRpc) + **소음 이벤트 발생** (loudness 30, 06 문서) — 소통에 리스크.
+- **찍찍 자막 (고양이 158, 오디오 전)**: `SqueakClientRpc` → `EventBus.RatSqueak(owner, pos)` → `ToastWidget` — 다른 쥐 `squeakHearMeters`(30m) 안이면 "(찍찍!) 파랑 쥐 · 왼쪽 26m"(방향·거리), 내 찍찍은 안 뜸, 같은 쥐 1.5초에 한 번(표시만 — 소음은 매번).
 - Ping: 카메라 레이캐스트 지점에 3초 마커(전 클라 표시). 소음 없음. 쿨다운 1s.
 - 구현 (2026-09-16, `Player/PlayerPing`): F 또는 휠클릭(패드 R3) → 카메라 정면 레이(트리거·내 몸·든 물건 제외, 안 맞으면 최대 거리 지점) → `PingServerRpc`(서버가 쿨다운만 확인, 여유 0.1s) → `PingClientRpc`(SendTo.Everyone) → 각 클라 로컬 `EventBus.PingReceived` → `UI/PingMarkerWidget`. 메뉴 패널이 열려 있으면 입력 무시.
 

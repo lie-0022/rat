@@ -44,6 +44,9 @@ namespace RatGame.Noise
 
         private void OnSqueak(InputAction.CallbackContext ctx) => SqueakServerRpc();
 
+        /// <summary>소유 클라: 찍찍 (DevRemoteControl "squeak" — 입력과 같은 경로).</summary>
+        public void Squeak() { if (IsOwner) SqueakServerRpc(); }
+
         [ServerRpc]
         private void SqueakServerRpc()
         {
@@ -52,7 +55,11 @@ namespace RatGame.Noise
         }
 
         [ClientRpc]
-        private void SqueakClientRpc() => Log.Dev($"찍찍! client {OwnerClientId}");
+        private void SqueakClientRpc()
+        {
+            Log.Dev($"찍찍! client {OwnerClientId}");
+            EventBus.RaiseRatSqueak(OwnerClientId, transform.position); // 소리 대신 자막 — 동료에게 (고양이 158)
+        }
 
         private void FixedUpdate()
         {

@@ -41,8 +41,8 @@ namespace RatGame.UI
         private float _nextPoll;
 
         private void Awake() => _toastTemplate.SetActive(false);
-        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; EventBus.TrapBait += OnTrapBait; EventBus.TrapBaitNear += OnTrapBaitNear; EventBus.CatBelled += OnCatBelled; }
-        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; EventBus.TrapBait -= OnTrapBait; EventBus.TrapBaitNear -= OnTrapBaitNear; EventBus.CatBelled -= OnCatBelled; }
+        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; EventBus.TrapBait += OnTrapBait; EventBus.TrapBaitNear += OnTrapBaitNear; EventBus.CatBelled += OnCatBelled; EventBus.RatSqueak += OnRatSqueak; }
+        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; EventBus.TrapBait -= OnTrapBait; EventBus.TrapBaitNear -= OnTrapBaitNear; EventBus.CatBelled -= OnCatBelled; EventBus.RatSqueak -= OnRatSqueak; }
 
         private const int OneLineMaxChars = 40;
         private const float BriefingSeconds = 6f; // 읽을 게 많아서 평소 토스트보다 길게
@@ -110,6 +110,23 @@ namespace RatGame.UI
             _lastCue = text;
             if (kind != CatCueKind.Ambush) text += " · " + DirectionFrom(catPos); // 매복은 어디서인지 모르는 게 핵심 (고양이 153)
             Log.Dev($"고양이 예고: {text}");
+            Show(text, UiColorRole.Secondary);
+        }
+
+        private readonly Dictionary<ulong, float> _lastSqueak = new();
+        private const float SqueakToastGap = 1.5f; // 연타 도배 방지 — 표시만
+
+        // 동료 찍찍 (고양이 158) — 오디오 전 자막. 소통 수단이라 어디서 났는지까지
+        private void OnRatSqueak(ulong owner, Vector3 pos)
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null || owner == nm.LocalClientId || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
+            float range = _balance != null ? _balance.SqueakHearMeters : 30f;
+            if (Vector3.Distance(nm.LocalClient.PlayerObject.transform.position, pos) > range) return;
+            if (_lastSqueak.TryGetValue(owner, out float last) && Time.unscaledTime - last < SqueakToastGap) return;
+            _lastSqueak[owner] = Time.unscaledTime;
+            string text = $"(찍찍!) {PlayerVisual.ColorNameFor(owner)} · {Where(pos)}";
+            Log.Dev($"동료 찍찍 자막: {text}"); // 2인 검증용
             Show(text, UiColorRole.Secondary);
         }
 

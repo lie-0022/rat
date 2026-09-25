@@ -73,6 +73,7 @@ namespace RatGame.Data
         [SerializeField] private float _landingBaseLoudness = 15f;   // + 낙하높이 × 5, 1m 이상만
         [SerializeField] private float _landingPerMeter = 5f;
         [SerializeField] private float _squeakLoudness = 30f;
+        [SerializeField] private float _squeakHearMeters = 30f;       // 동료가 찍찍 자막을 보는 거리 (고양이 158 — 오디오 전 자막)
         [SerializeField] private float _impactMaxLoudness = 70f;
         [SerializeField] private float _breakLoudness = 60f;
         [SerializeField] private float _alarmingLoudness = 50f;
@@ -465,6 +466,7 @@ namespace RatGame.Data
         public float FootstepWalkInterval => _footstepWalkInterval;
         public float FootstepRunInterval => _footstepRunInterval;
         public float SqueakLoudness => _squeakLoudness;
+        public float SqueakHearMeters => _squeakHearMeters;
         public float ImpactMaxLoudness => _impactMaxLoudness;
         public float BreakLoudness => _breakLoudness;
         public float AlarmingLoudness => _alarmingLoudness;
