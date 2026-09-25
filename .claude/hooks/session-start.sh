@@ -71,5 +71,15 @@ if [ -f "$STATE_FILE" ]; then
     echo "=== END SESSION STATE PREVIEW ==="
 fi
 
+# --- 자율 개발 루프 (2026-09-25: 세션이 다시 시작되면 크론이 사라져 루프가 멈췄다) ---
+LOOP_FILE="production/loop-state.md"
+if [ -f "$LOOP_FILE" ] && grep -q "진행 중" "$LOOP_FILE" 2>/dev/null && [ ! -f "production/loop-stopped" ]; then
+    echo ""
+    echo "=== 자율 개발 루프 진행 중 ==="
+    echo "크론은 세션 전용이라 새 세션엔 없다. 먼저 CronList로 확인하고, 없으면 CronCreate('2-59/5 * * * *')로 루프 틱을 다시 건다."
+    echo "틱 프롬프트·규칙은 $LOOP_FILE 과 메모리 rat-autonomous-loop 참고. 사용자가 '그만'이라 하면 CronDelete + production/loop-stopped 파일 생성."
+    pgrep -x caffeinate >/dev/null 2>&1 || echo "잠자기 방지(caffeinate)가 꺼져 있다 — 필요하면 'nohup caffeinate -i &' (사용자 요청 2026-09-25)."
+fi
+
 echo "==================================="
 exit 0
