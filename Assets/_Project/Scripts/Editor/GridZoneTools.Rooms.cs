@@ -140,11 +140,14 @@ namespace RatGame.Editor
                 float baseArea = s.W * s.D / (RoomScale * RoomScale); // 전리품·함정 수는 예전 넓이 기준 — 맵 식량 총량을 안 늘리게(판단 7)
                 room.LootSpawns = Scatter(root.transform, "LootSpawn", Mathf.RoundToInt(baseArea / 10f), s, rng);
                 room.TrapSpawns = Scatter(root.transform, "TrapSpawn", baseArea >= 60 ? 2 : 1, s, rng);
-                // 숨을 곳: 모서리(대각선으로 놓여도 벽에 안 닿게 안쪽), 방 가운데를 본다
+                // 숨을 곳: 모서리(대각선으로 놓여도 벽에 안 닿게 안쪽), 방 가운데를 본다.
+                // 방이 넓어진 만큼(배율) 수도 늘린다 — 넓이 4배에 1~2개면 가까이 숨을 데가 없다 (고양이 146). 식량이 아니라 할당량과 무관
                 var hides = new List<Transform>();
-                for (int i = 0; i < s.Hides; i++)
+                int hideCount = Mathf.Min(4, Mathf.RoundToInt(s.Hides * RoomScale));
+                float[] cx = { -1f, 1f, 1f, -1f }, cz = { 1f, -1f, 1f, -1f }; // 대각선 두 모서리 먼저, 그다음 나머지 둘
+                for (int i = 0; i < hideCount; i++)
                 {
-                    float sx = i == 0 ? -1f : 1f, sz = i == 0 ? 1f : -1f;
+                    float sx = cx[i], sz = cz[i];
                     var h = Marker(root.transform, "HideSpawn_" + i, new Vector3(sx * (s.W * 0.5f - 1.5f * RoomScale), 0f, sz * (s.D * 0.5f - 1.5f * RoomScale)), null);
                     h.localRotation = Quaternion.LookRotation(-new Vector3(h.localPosition.x, 0f, h.localPosition.z).normalized);
                     hides.Add(h);
