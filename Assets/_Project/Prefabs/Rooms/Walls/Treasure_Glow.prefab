@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1865155432
+  GlobalObjectIdHash: 3723753199
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -109,7 +109,7 @@ Transform:
   m_GameObject: {fileID: 3865770191101221186}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.56436414, y: 0.05, z: 0.9540625}
+  m_LocalPosition: {x: -1.1287283, y: 0.05, z: 1.908125}
   m_LocalScale: {x: 0.13187715, y: 0.13187715, z: 0.13187715}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -199,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 3878054126318661131}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.8258609, y: 0.05, z: 1.2809911}
+  m_LocalPosition: {x: -1.6517218, y: 0.05, z: 2.5619822}
   m_LocalScale: {x: 0.107713506, y: 0.107713506, z: 0.107713506}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -289,7 +289,7 @@ Transform:
   m_GameObject: {fileID: 4266606443722239026}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.48608077, y: 0.05, z: 0.50700104}
+  m_LocalPosition: {x: 0.97216153, y: 0.05, z: 1.0140021}
   m_LocalScale: {x: 0.11478052, y: 0.11478052, z: 0.11478052}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -379,7 +379,7 @@ Transform:
   m_GameObject: {fileID: 4551592784265445989}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.08996995, y: 0.05, z: -0.54160947}
+  m_LocalPosition: {x: -0.1799399, y: 0.05, z: -1.0832189}
   m_LocalScale: {x: 0.09021115, y: 0.09021115, z: 0.09021115}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -486,7 +486,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 0.9, b: 0.25, a: 1}
   m_Intensity: 6
-  m_Range: 9
+  m_Range: 18
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -566,7 +566,7 @@ Transform:
   m_GameObject: {fileID: 8539109839506104232}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.3625427, y: 0.05, z: -1.1079911}
+  m_LocalPosition: {x: -0.7250854, y: 0.05, z: -2.2159822}
   m_LocalScale: {x: 0.09673795, y: 0.09673795, z: 0.09673795}
   m_ConstrainProportionsScale: 0
   m_Children: []

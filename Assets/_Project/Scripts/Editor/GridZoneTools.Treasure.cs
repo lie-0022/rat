@@ -16,13 +16,15 @@ namespace RatGame.Editor
         [MenuItem("Tools/RatGame/Zone/Create Treasure Glow")]
         public static void CreateTreasureGlow()
         {
+            var zone = AssetDatabase.LoadAssetAtPath<GridZoneSO>(ZonePath);
+            float scale = zone.RoomScale; // 방이 커지면 문까지 닿게 (고양이 148)
             var root = new GameObject("Treasure_Glow");
             root.AddComponent<Unity.Netcode.NetworkObject>();
             var lightGo = new GameObject("Light");
             lightGo.transform.SetParent(root.transform, false);
-            lightGo.transform.localPosition = new Vector3(0f, 1.6f, 0f);
+            lightGo.transform.localPosition = new Vector3(0f, 1.6f, 0f); // 높이는 그대로 — 올리면 바닥 빛 웅덩이가 거리² 만큼 흐려진다(고양이 148 비교)
             var light = lightGo.AddComponent<Light>();
-            light.type = LightType.Point; light.color = GlowColor; light.range = 9f; light.intensity = 6f; // 낮 햇빛 아래서도 옆 방 문틈으로 보이게
+            light.type = LightType.Point; light.color = GlowColor; light.range = 9f * scale; light.intensity = 6f; // 낮 햇빛 아래서도 옆 방 문틈으로 보이게
             light.shadows = LightShadows.None; // 방마다 그림자 광원이 늘면 비싸다 — 빛 번짐만
             root.AddComponent<World.TreasureGlint>().EditorSetup(light); // 일렁임 — 목적지 불빛과 구분
             var rng = new System.Random(88);
@@ -32,7 +34,7 @@ namespace RatGame.Editor
                 Object.DestroyImmediate(crumb.GetComponent<Collider>());
                 crumb.name = $"Glint_{i}";
                 crumb.transform.SetParent(root.transform, false);
-                float a = (float)rng.NextDouble() * Mathf.PI * 2f, r = 0.4f + (float)rng.NextDouble() * 1.2f;
+                float a = (float)rng.NextDouble() * Mathf.PI * 2f, r = (0.4f + (float)rng.NextDouble() * 1.2f) * scale;
                 crumb.transform.localPosition = new Vector3(Mathf.Cos(a) * r, 0.05f, Mathf.Sin(a) * r);
                 crumb.transform.localScale = Vector3.one * (0.08f + (float)rng.NextDouble() * 0.06f);
                 ZoneTools.Tint(crumb, GlowColor);
@@ -41,11 +43,10 @@ namespace RatGame.Editor
             var prefab = PrefabUtility.SaveAsPrefabAsset(root, TreasureGlowPath);
             Object.DestroyImmediate(root);
 
-            var zone = AssetDatabase.LoadAssetAtPath<GridZoneSO>(ZonePath);
             zone.TreasureGlow = prefab;
             EditorUtility.SetDirty(zone);
             AssetDatabase.SaveAssets();
-            Debug.Log($"[RatGame] 보물방 표시 → {TreasureGlowPath}, Zone_Walls.TreasureGlow 연결");
+            Debug.Log($"[RatGame] 보물방 표시 → {TreasureGlowPath}, Zone_Walls.TreasureGlow 연결 (범위 {9f * scale})");
         }
     }
 }
