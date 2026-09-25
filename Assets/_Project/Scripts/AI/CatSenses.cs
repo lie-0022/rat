@@ -16,6 +16,7 @@ namespace RatGame.AI
     public class CatSenses : NetworkBehaviour
     {
         [SerializeField] private BalanceConfigSO _balance;
+        public void ServerSetBalance(BalanceConfigSO balance) => _balance = balance; // 큰 고양이 복사본 (고양이 141)
 
         public NetworkVariable<float> SuspicionGauge = new NetworkVariable<float>(0f);
 

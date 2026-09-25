@@ -17,6 +17,10 @@ MonoBehaviour:
   RoomScale: 2
   WallHeight: 6
   DoorWidth: 4
+  CatSizeScale: 1.9
+  CatNavRadius: 1.1
+  CatNavHeight: 3.4
+  CatAgentTypeId: -1372625422
   MainPathMin: 5
   MainPathMax: 7
   BranchChance: 0.6

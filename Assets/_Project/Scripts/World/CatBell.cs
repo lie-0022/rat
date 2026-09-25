@@ -24,14 +24,15 @@ namespace RatGame.World
         private void FixedUpdate()
         {
             if (!IsServer || _used || !_carryable.IsRecentlyThrown || _carryable.CarrierIds.Count > 0) return;
-            CatBrain best = null; float bestD = _balance.CatBellHitMeters;
+            CatBrain best = null; float bestD = float.MaxValue;
             Vector3 p = transform.position;
             foreach (var c in FindObjectsByType<CatBrain>(FindObjectsSortMode.None))
             {
                 Vector3 d = c.transform.position - p;
-                if (Mathf.Abs(d.y) > 1.5f) continue; // 선반 위·아래 고양이는 빼고
+                if (d.y > 1.5f * c.SizeScale || d.y < -1.5f) continue; // 선반 위·아래 고양이는 빼고 (큰 고양이는 키만큼)
                 d.y = 0f;
-                if (d.magnitude <= bestD) { bestD = d.magnitude; best = c; }
+                float reach = _balance.CatBellHitMeters * c.SizeScale; // 큰 고양이는 몸도 크다 (고양이 141)
+                if (d.magnitude <= reach && d.magnitude < bestD) { bestD = d.magnitude; best = c; }
             }
             if (best == null || !best.ServerAttachBell()) return;
             _used = true;

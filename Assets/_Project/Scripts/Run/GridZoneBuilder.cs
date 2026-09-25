@@ -58,6 +58,8 @@ namespace RatGame.Run
 
             Physics.SyncTransforms();
             var surface = GetComponent<NavMeshSurface>();
+            int catAgent = BigCatAgentType();
+            if (catAgent != -1) surface.agentTypeID = catAgent; // 큰 고양이가 벽에 파고들지 않게 그 크기로 굽는다 (고양이 141)
             surface.collectObjects = CollectObjects.All;
             surface.layerMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker");
             surface.BuildNavMesh();
@@ -88,6 +90,8 @@ namespace RatGame.Run
                     DarkChanceOverride = Modifier == StageModifier.Blackout ? _zone.BlackoutDarkChance : -1f,
                     BonusTrapRatio = _zone.TreasureTrapRatio,
                     BonusBigWeight = _zone.TreasureBigWeight,
+                    CatSizeScale = _zone.CatSizeScale,
+                    CatAgentTypeId = catAgent,
                 };
                 Populator.PopulateAll(rng, stage - 1);
                 MaybeBaitTraps(rng);
@@ -105,6 +109,13 @@ namespace RatGame.Run
             SendBriefing();
             Log.Dev($"벽 속 스폰: 스테이지 {RunSession.StageNumber}, 시드 {seed}, 오늘 {Modifier} — 방 {rooms.Count}{(Treasure >= 0 ? $" (보물방 {Layout.Rooms[Treasure].transform.position:F0})" : "")}, 통로 {Layout.Corridors.Count}, 고리 {(Plan.HasLoop ? "있음" : "없음")}, " +
                     $"전리품 {Populator?.LootSpawned}개(가치 {Populator?.LootValue}), 함정 {Populator?.TrapsSpawned}, 숨을 곳 {Populator?.HidesSpawned}, 어둠 {Populator?.DarkSpawned}, 고양이 {Populator?.CatsSpawned}");
+        }
+
+        // 테마의 큰 고양이 에이전트 타입이 프로젝트 설정에 실제로 있을 때만
+        private int BigCatAgentType()
+        {
+            int id = _zone.CatAgentTypeId;
+            return id != -1 && UnityEngine.AI.NavMesh.GetSettingsByID(id).agentTypeID == id ? id : -1; // 번호는 음수일 수 있다 — -1만 "없음"
         }
 
         public const byte BriefKitten = 1, BriefGuard = 2, BriefPipe = 4, BriefTreasure = 8, BriefPatroller = 16;

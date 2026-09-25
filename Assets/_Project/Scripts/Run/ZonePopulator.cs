@@ -34,6 +34,8 @@ namespace RatGame.Run
         public float BonusTrapRatio = -1f; // >=0이면 보너스방 함정 비율 (벽 속 보물방 — 고양이 84)
         public float DarkChanceOverride = -1f; // >=0이면 어둠 구역 확률 (오늘의 집 정전 — 고양이 106)
         public float BonusBigWeight = 3f;  // 보너스방 대형·특수 가중 배율 (v1 3, 벽 속 보물방은 테마 에셋에서)
+        public float CatSizeScale = 1f;    // 벽 속 큰 고양이 (고양이 141)
+        public int CatAgentTypeId = -1;    // 큰 고양이용 NavMesh 에이전트 타입 (-1이면 프리팹 그대로)
 
         public ZonePopulator(ZoneDefinitionSO pop, List<RoomModule> rooms, RoomModule safeRoom, RoomModule bonusRoom)
         {
@@ -232,7 +234,9 @@ namespace RatGame.Run
             {
                 Vector3 at = candidates[i].CatSpawn.position;
                 if (NavMesh.SamplePosition(at, out var hit, 2f, NavMesh.AllAreas)) at = hit.position;
-                Spawn(Pop.CatPrefab, at, candidates[i].CatSpawn.rotation);
+                var cat = Object.Instantiate(Pop.CatPrefab, at, candidates[i].CatSpawn.rotation);
+                if (CatSizeScale != 1f || CatAgentTypeId != -1) cat.GetComponent<AI.CatBrain>().ServerPrepareSize(CatSizeScale, CatAgentTypeId); // 스폰 전에 — 크기가 스폰과 함께 클라로 간다
+                cat.GetComponent<NetworkObject>().Spawn(true);
                 CatsSpawned++;
             }
         }

@@ -15,6 +15,10 @@ namespace RatGame.Data
         public float RoomScale = 2f;          // 방 넓이 배율 (예전 6~12m → 12~24m). 전리품·함정 수는 예전 넓이 기준 그대로
         public float WallHeight = 6f;         // 예전 2.5
         public float DoorWidth = 4f;          // 예전 1.8 — 큰 고양이가 지나가게
+        public float CatSizeScale = 1.9f;     // 이 맵의 고양이 몸 배율 (키 1.9 → 3.6 = 쥐 3배). 거리도 같은 배율(BalanceConfigSO.ScaledForCat)
+        public float CatNavRadius = 1.1f;     // 큰 고양이용 NavMesh 굽기 반지름·높이 (런타임 에이전트 타입)
+        public float CatNavHeight = 3.4f;
+        public int CatAgentTypeId = -1;       // 도구 "Create Big Cat Nav Agent"가 채움 — -1이면 기본 에이전트(예전 크기)
         public int MainPathMin = 5, MainPathMax = 7;
         [Range(0f, 1f)] public float BranchChance = 0.6f;
         public int BranchMaxDepth = 2;

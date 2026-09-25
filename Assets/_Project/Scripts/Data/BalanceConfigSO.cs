@@ -778,5 +778,21 @@ namespace RatGame.Data
 
         /// <summary>구역별 고양이 수: Zone1: 1, Zone3+: 2 (docs/00 표).</summary>
         public int GetCatCount(int zoneNumber) => zoneNumber >= 3 ? 2 : 1;
+
+        /// <summary>
+        /// 큰 고양이용 복사본 (고양이 141 — 실제 비율): 몸·공간에 묶인 거리만 배율을 곱한다(잡기·앞발·시야·수색·놀이 거리 등).
+        /// 속도는 그대로 — "추격 5.5 &lt; 쥐 달리기 7"이 밸런스의 축이라서. 호스트가 고양이를 스폰하기 전에 만들어 그 고양이에만 준다.
+        /// </summary>
+        public BalanceConfigSO ScaledForCat(float s)
+        {
+            var c = Instantiate(this);
+            c.name = $"{name} (고양이 ×{s:0.##})";
+            c._catCaptureRange *= s; c._catCaptureRadius *= s; c._catCloseSightDistance *= s; c._catPawReach *= s;
+            c._catBribeRadius *= s; c._catToyNudge *= s; c._catToyEscapeDistance *= s; c._catChaseOvershootMeters *= s;
+            c._catSearchRadius *= s; c._catMemoryCellSize *= s; c._catViewDistance *= s; c._catPerchViewDistance *= s;
+            c._catScentDetectRadius *= s; c._catToyCarryMinDistance *= s; c._catToyCarryMaxDistance *= s;
+            c._catAmbushPounceRange *= s; c._catFightDistance *= s; c._catGuardRadius *= s;
+            return c;
+        }
     }
 }
