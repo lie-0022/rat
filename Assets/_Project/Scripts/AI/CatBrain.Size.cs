@@ -23,7 +23,17 @@ namespace RatGame.AI
                 GetComponent<CatSenses>()?.ServerSetBalance(_balance);
             }
             var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
-            if (agent != null && agentTypeId != -1) agent.agentTypeID = agentTypeId; // 번호는 음수일 수 있다
+            if (agent != null && agentTypeId != -1)
+            {
+                agent.agentTypeID = agentTypeId; // 번호는 음수일 수 있다
+                // 에이전트 반지름·높이는 트랜스폼 배율이 곱해진다 — 그대로 두면 회피 반경이 몸(1.1)보다 큰 1.8이 되어 고양이끼리 밀치다
+                // 목적지 0.8m 앞에서 서로 막혀 섰다(시험 56초). 구운 크기에 맞추고, 도착 판정도 몸 반지름의 반만큼 넉넉히
+                var nav = UnityEngine.AI.NavMesh.GetSettingsByID(agentTypeId);
+                float sx = Mathf.Max(0.01f, transform.localScale.x);
+                agent.radius = nav.agentRadius / sx;
+                agent.height = nav.agentHeight / sx;
+                agent.stoppingDistance = nav.agentRadius * 0.5f;
+            }
             Log.Dev($"고양이 크기: ×{SizeScale:0.##}, 에이전트 {(agent != null ? agent.agentTypeID : -1)}");
         }
     }

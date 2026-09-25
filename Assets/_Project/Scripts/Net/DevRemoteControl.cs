@@ -13,7 +13,7 @@ namespace RatGame.Net
     ///   walk:x,z        : 월드 방향으로 계속 걷기 (DevForcedInput)
     ///   stop            : 걷기 중지
     ///   crouch / stand  : 웅크리기 켜기·끄기 (DevForcedCrouch, 쥐덫 미끼 검증 — 고양이 129)
-    ///   report          : 이 클라에서 보이는 모든 쥐의 위치·키(스케일) 로그 (고양이 137)
+    ///   report          : 이 클라에서 보이는 모든 쥐의 위치·키(스케일)·고양이 배율 로그 (고양이 137·141)
     ///   trace:초        : 이 클라에서 호스트 쥐 움직임을 매 프레임 재서 요약 — 프레임 간 최대 이동·튐 횟수 (보간 확인, 고양이 137)
     ///   tp:x,y,z        : 소유 클라에서 순간이동 (InvariantCulture 소수점)
     /// 협동 운반처럼 두 플레이어가 동시에 움직여야 하는 검증에 쓴다. 릴리즈엔 영향 없음(호출부 없음).
@@ -65,6 +65,8 @@ namespace RatGame.Net
             {
                 foreach (var p in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None))
                     Log.Dev($"[DevRC] report: client {p.OwnerClientId} 위치 {p.transform.position:F2} 키 {p.transform.localScale.y:F2} 상태 {p.State.Value}");
+                foreach (var cat in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None)) // 큰 고양이 크기가 클라에도 갔나 (고양이 141)
+                    Log.Dev($"[DevRC] report: 고양이 {cat.name} 위치 {cat.transform.position:F1} 배율 {cat.transform.localScale.x:F2}");
             }
             else if (command.StartsWith("trace:") && float.TryParse(command.Substring(6), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float secs))
             {

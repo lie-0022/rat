@@ -13,6 +13,10 @@ Cat (NetworkObject, NavMeshAgent, CapsuleCollider)
 
 클라에서는 Brain/Senses/NavMeshAgent 전부 disable — NetworkTransform 보간 + 상태 연출만.
 
+## 크기 — 실제 비율 (2026-09-25, 고양이 141, 사용자 결정)
+- **벽 속** 고양이는 쥐 키(1.2)의 3배 — 키 약 3.6·길이 약 5(`GridZoneSO.CatSizeScale` 1.9, 스폰 전에 `CatBrain.ServerPrepareSize`). 몸·공간에 묶인 거리(잡기·앞발·시야·수색·놀이·매복 덮침·문지기 둘레 등)는 고양이별 균형값 복사본에서 같은 배율(`BalanceConfigSO.ScaledForCat`), **속도는 그대로**(추격 5.5 < 쥐 달리기 7).
+- NavMesh 에이전트 타입 "BigCat"(반지름 1.1·높이 3.4 — 테마 SO, 도구 `Create Big Cat Nav Agent`). 창고 데모·부엌(생성) 고양이는 예전 크기.
+
 ## FSM
 
 ```csharp
