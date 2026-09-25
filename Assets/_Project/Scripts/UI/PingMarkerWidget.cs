@@ -22,6 +22,7 @@ namespace RatGame.UI
 
         [SerializeField] private BalanceConfigSO _balance;
         [SerializeField] private RectTransform _template;
+        [SerializeField] private Color _helpColor = new(1f, 0.35f, 0.3f, 1f); // 위기인 동료 표시 글자 (고양이 156)
 
         private sealed class Marker
         {
@@ -36,6 +37,11 @@ namespace RatGame.UI
         }
 
         private readonly List<Marker> _markers = new();
+        private readonly Dictionary<ulong, Marker> _help = new(); // 위기인 동료 표시 — 쥐마다 하나 (고양이 156)
+        private readonly HashSet<ulong> _helpSeen = new();
+        private float _nextHelpScan;
+        private const float HelpScanSeconds = 0.25f;
+        private const float HelpHeight = 1.2f;
         private RectTransform _canvasRect;
 
         private void Awake()
@@ -83,6 +89,13 @@ namespace RatGame.UI
 
         private Marker CreateMarker(ulong owner)
         {
+            var marker = BuildMarker(owner);
+            _markers.Add(marker);
+            return marker;
+        }
+
+        private Marker BuildMarker(ulong owner)
+        {
             var rect = Instantiate(_template, _template.parent);
             var marker = new Marker
             {
@@ -94,14 +107,62 @@ namespace RatGame.UI
                 Distance = rect.Find("DistanceBox/Distance").GetComponent<TMP_Text>()
             };
             marker.Icon.color = PlayerVisual.ColorFor(owner);
-            _markers.Add(marker);
             return marker;
+        }
+
+        // 위기인 동료 (고양이 156) — 잡힘·다운·끈끈이면 구해질 때까지 그 쥐 위에. 상태·위치는 이미 모두에게 있어 각자 계산
+        private void ScanHelp()
+        {
+            _helpSeen.Clear();
+            foreach (var p in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None))
+            {
+                if (p.IsOwner) continue;
+                string label = p.State.Value switch
+                {
+                    ConditionState.Downed => "다운",
+                    ConditionState.Trapped => "끈끈이",
+                    ConditionState.Pinned => "잡힘",
+                    _ => null
+                };
+                if (label == null) continue;
+                ulong id = p.OwnerClientId;
+                _helpSeen.Add(id);
+                if (!_help.TryGetValue(id, out var m))
+                {
+                    m = BuildMarker(id);
+                    _help[id] = m;
+                }
+                m.World = p.transform.position + Vector3.up * HelpHeight; // 다운이면 시점(플레이어)이 끌려가는 몸을 따라간다 — 같은 자리
+                string text = $"{PlayerVisual.ColorNameFor(id)} · {label}";
+                if (m.Name.text != text) { m.Name.text = text; Log.Dev($"동료 위기 표시: {text}"); } // 2인 검증용
+                if (!m.Rect.gameObject.activeSelf)
+                {
+                    m.Rect.gameObject.SetActive(true);
+                    m.Name.color = _helpColor; // 켠 뒤에 — 템플릿의 ThemedGraphic이 처음 켜질 때(Awake) 테마 색으로 덮는다
+                }
+            }
+            foreach (var kv in _help)
+                if (!_helpSeen.Contains(kv.Key) && kv.Value.Rect.gameObject.activeSelf)
+                {
+                    kv.Value.Rect.gameObject.SetActive(false);
+                    kv.Value.Name.text = "";
+                    Log.Dev($"동료 위기 표시 끝: {PlayerVisual.ColorNameFor(kv.Key)}");
+                }
         }
 
         private void Update()
         {
             var cam = Camera.main;
             float now = Time.unscaledTime;
+            if (now >= _nextHelpScan) { _nextHelpScan = now + HelpScanSeconds; ScanHelp(); }
+            foreach (var m in _help.Values)
+            {
+                if (!m.Rect.gameObject.activeSelf || cam == null) continue;
+                m.Rect.anchoredPosition = ScreenAnchor.ToCanvas(cam, _canvasRect, m.World, EdgeMargins, out bool onScreen);
+                m.Group.alpha = onScreen ? 1f : OffscreenAlpha;
+                string dist = $"{Mathf.RoundToInt(Vector3.Distance(cam.transform.position, m.World))}m";
+                if (m.Distance.text != dist) m.Distance.text = dist;
+            }
             foreach (var m in _markers)
             {
                 if (!m.Rect.gameObject.activeSelf) continue;
