@@ -112,6 +112,8 @@ namespace RatGame.Data
         [SerializeField] private float _pingMaxDistance = 30f;    // 조준 레이 최대 거리 (m) — 아무것도 안 맞으면 이 거리 지점
         [SerializeField] private float _sniffCooldownSeconds = 10f; // 킁킁 다음까지 (docs/04 Sniff, 고양이 76)
         [SerializeField] private float _sniffTrailSeconds = 3f;     // 냄새 줄기 보이는 시간
+        [SerializeField] private float _sniffFoodMeters = 14f;      // 킁킁 — 이 안의 음식에서 냄새 김 (고양이 150)
+        [SerializeField] private int _sniffFoodMax = 8;             // 가까운 순 최대 개수
 
         [Header("고양이 (docs/07)")]
         [SerializeField] private float _catPatrolSpeed = 2f;
@@ -487,6 +489,8 @@ namespace RatGame.Data
         public float PingMaxDistance => _pingMaxDistance;
         public float SniffCooldownSeconds => _sniffCooldownSeconds;
         public float SniffTrailSeconds => _sniffTrailSeconds;
+        public float SniffFoodMeters => _sniffFoodMeters;
+        public int SniffFoodMax => _sniffFoodMax;
 
         /// <summary>파손 데미지: 문턱 초과분 × 0.15 (docs/05).</summary>
         public float GetFragileDamage(float impactSpeed) =>

@@ -27,8 +27,30 @@ namespace RatGame.UI
         private void Awake() => _root = new GameObject("SniffPuffs").transform;
         private void OnDestroy() { if (_root != null) Destroy(_root.gameObject); }
 
-        private void OnEnable() => EventBus.SniffHint += OnSniff;
-        private void OnDisable() => EventBus.SniffHint -= OnSniff;
+        private void OnEnable() { EventBus.SniffHint += OnSniff; EventBus.SniffFood += OnSniffFood; }
+        private void OnDisable() { EventBus.SniffHint -= OnSniff; EventBus.SniffFood -= OnSniffFood; }
+
+        private const int WispPuffs = 4;       // 음식마다 김 알갱이
+        private const float WispRise = 0.35f;  // 알갱이 사이 높이
+
+        // 음식 냄새 김 (고양이 150) — 줄기와 같은 알갱이가 음식 위로 차례로 떠오른다
+        private void OnSniffFood(System.Collections.Generic.IReadOnlyList<Vector3> spots, float seconds)
+        {
+            if (_root == null) { _root = new GameObject("SniffPuffs").transform; _pool.Clear(); _live.Clear(); }
+            for (int s = 0; s < spots.Count; s++)
+                for (int i = 0; i < WispPuffs && _live.Count < MaxPuffs * 2; i++)
+                {
+                    var p = Take();
+                    p.Start = spots[s] + Vector3.up * (Height + i * WispRise);
+                    p.Dir = Vector3.up;
+                    p.Born = Time.time + 0.3f + s * 0.05f + i * 0.12f; // 줄기가 먼저 뻗고 나서
+                    p.Life = seconds;
+                    p.T.position = p.Start;
+                    p.T.localScale = Vector3.zero;
+                    p.T.gameObject.SetActive(true);
+                    _live.Add(p);
+                }
+        }
 
         private void OnSniff(Vector3 from, Vector3 to, float seconds)
         {

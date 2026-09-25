@@ -33,6 +33,8 @@ namespace RatGame.Core
         public static event Action<ulong /*clientId*/, UnityEngine.Vector3 /*worldPos*/> PingReceived;
         /// <summary>킁킁 (소유 클라 로컬 — 목적지 쪽 다음 문까지 냄새 줄기, 고양이 76).</summary>
         public static event Action<UnityEngine.Vector3 /*from*/, UnityEngine.Vector3 /*to*/, float /*seconds*/> SniffHint;
+        /// <summary>킁킁 — 가까운 음식 냄새 김 (소유 클라 로컬, 고양이 150).</summary>
+        public static event Action<System.Collections.Generic.IReadOnlyList<UnityEngine.Vector3>, float /*seconds*/> SniffFood;
 
         // Loot
         public static event Action<LootItemSO, int /*value*/> LootDeposited;
@@ -73,6 +75,7 @@ namespace RatGame.Core
         public static void RaisePlayerRevived(ulong clientId) => PlayerRevived?.Invoke(clientId);
         public static void RaisePingReceived(ulong clientId, UnityEngine.Vector3 worldPos) => PingReceived?.Invoke(clientId, worldPos);
         public static void RaiseSniffHint(UnityEngine.Vector3 from, UnityEngine.Vector3 to, float seconds) => SniffHint?.Invoke(from, to, seconds);
+        public static void RaiseSniffFood(System.Collections.Generic.IReadOnlyList<UnityEngine.Vector3> spots, float seconds) => SniffFood?.Invoke(spots, seconds);
         public static void RaiseLootDeposited(LootItemSO item, int value) => LootDeposited?.Invoke(item, value);
         public static void RaiseLootBroken(LootItemSO item) => LootBroken?.Invoke(item);
         public static void RaiseCheeseCoinChanged(int total) => CheeseCoinChanged?.Invoke(total);

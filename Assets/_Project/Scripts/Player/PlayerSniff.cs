@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RatGame.Core;
 using RatGame.Data;
 using RatGame.Run;
@@ -44,6 +45,29 @@ namespace RatGame.Player
             _lastSniff = Time.unscaledTime;
             EventBus.RaiseSniffHint(from, target, _balance.SniffTrailSeconds);
             Log.Dev($"킁킁: client {OwnerClientId} 다음 목표 {target:F1}까지 {Vector3.Distance(from, target):F1}m, 목적지까지 방 {roomsLeft}칸");
+            SniffFood(from);
+        }
+
+        private readonly List<(float d, Vector3 p)> _food = new();
+        private readonly List<Vector3> _spots = new();
+
+        // 넓어진 방에서 드문 음식 찾기 (고양이 150) — 가까운 음식 몇 개에서 김이 피어오른다. 표시일 뿐이라 로컬
+        private void SniffFood(Vector3 from)
+        {
+            _food.Clear();
+            float max = _balance.SniffFoodMeters * _balance.SniffFoodMeters;
+            foreach (var item in FindObjectsByType<World.CarryableItem>(FindObjectsSortMode.None))
+            {
+                if (!item.IsSpawned || item.Pocketed.Value || item.EffectiveValue <= 0) continue; // 쓰러진 몸(가치 0)·유인물·상점 물건 빼고
+                float d = (item.transform.position - from).sqrMagnitude;
+                if (d <= max) _food.Add((d, item.transform.position));
+            }
+            if (_food.Count == 0) { Log.Dev("킁킁 음식: 0개"); return; }
+            _food.Sort((a, b) => a.d.CompareTo(b.d));
+            _spots.Clear();
+            for (int i = 0; i < _food.Count && i < _balance.SniffFoodMax; i++) _spots.Add(_food[i].p);
+            EventBus.RaiseSniffFood(_spots, _balance.SniffTrailSeconds);
+            Log.Dev($"킁킁 음식: {_spots.Count}개 (가장 가까운 {Mathf.Sqrt(_food[0].d):F1}m)");
         }
     }
 }
