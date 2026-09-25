@@ -44,6 +44,7 @@ namespace RatGame.UI
         private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; EventBus.TrapBait += OnTrapBait; EventBus.TrapBaitNear += OnTrapBaitNear; EventBus.CatBelled += OnCatBelled; }
         private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; EventBus.TrapBait -= OnTrapBait; EventBus.TrapBaitNear -= OnTrapBaitNear; EventBus.CatBelled -= OnCatBelled; }
 
+        private const int OneLineMaxChars = 40;
         private const float BriefingSeconds = 6f; // 읽을 게 많아서 평소 토스트보다 길게
 
         // 벽 속 스테이지 안내 (고양이 81·84) — 토스트가 최대 3개라 머리줄 + 고양이 줄 + 지도 줄
@@ -175,7 +176,10 @@ namespace RatGame.UI
         {
             if (_live.Count >= _maxToasts) Remove(0);
             var go = Instantiate(_toastTemplate, _stack);
-            go.GetComponentInChildren<TMP_Text>().text = text;
+            var label = go.GetComponentInChildren<TMP_Text>();
+            label.text = text;
+            // 짧은 건 한 줄(자동 크기로 살짝 줄여서 — 방향 붙은 자막이 "뒤"만 꺾이던 것), 긴 안내(고양이 역할 셋)는 예전처럼 두 줄 (고양이 153·154)
+            label.textWrappingMode = text.Length > OneLineMaxChars ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
             var strip = go.transform.Find("Stripe");
             if (strip != null && _theme != null) strip.GetComponent<UnityEngine.UI.Image>().color = _theme.GetColor(stripe);
             go.SetActive(true);
