@@ -101,9 +101,11 @@ namespace RatGame.UI
             AI.CatBrain best = null; float bestD = CatPingSnap * CatPingSnap;
             foreach (var c in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None))
             {
-                var col = c.GetComponentInChildren<Collider>();
-                Vector3 near = col != null ? col.ClosestPoint(world) : c.transform.position;
-                float d = (near - world).sqrMagnitude;
+                // 충돌체는 세운 캡슐 하나라 길쭉한 머리·꼬리가 밖에 있다 — 보이는 몸(렌더러 경계)으로 본다 (고양이 166)
+                float d = float.MaxValue;
+                foreach (var r in c.GetComponentsInChildren<Renderer>())
+                    if (r.enabled && r.gameObject.activeInHierarchy) d = Mathf.Min(d, r.bounds.SqrDistance(world));
+                if (d == float.MaxValue) d = (c.transform.position - world).sqrMagnitude;
                 if (d < bestD) { bestD = d; best = c; }
             }
             return best;
