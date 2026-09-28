@@ -85,5 +85,17 @@ namespace RatGame.UI
             int i = Mathf.RoundToInt(Mathf.Repeat(angle, 360f) / 45f) % 8;
             return Directions[i];
         }
+
+        private float _lastSniffHintAt = -10f;
+
+        // 킁킁 쿨다운 중 누름 (고양이 162) — 1초에 한 번만
+        private void OnSniffCooldown(float secondsLeft)
+        {
+            if (Time.unscaledTime - _lastSniffHintAt < 1f) return;
+            _lastSniffHintAt = Time.unscaledTime;
+            string text = $"(킁킁… 코가 아직 얼얼 — {Mathf.CeilToInt(secondsLeft)}초)";
+            Log.Dev($"킁킁 쿨다운 안내: {text}");
+            Show(text, UiColorRole.Secondary, 1.5f);
+        }
     }
 }

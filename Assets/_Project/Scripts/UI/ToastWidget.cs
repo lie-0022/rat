@@ -41,8 +41,8 @@ namespace RatGame.UI
         private float _nextPoll;
 
         private void Awake() => _toastTemplate.SetActive(false);
-        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; EventBus.TrapBait += OnTrapBait; EventBus.TrapBaitNear += OnTrapBaitNear; EventBus.CatBelled += OnCatBelled; EventBus.RatSqueak += OnRatSqueak; }
-        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; EventBus.TrapBait -= OnTrapBait; EventBus.TrapBaitNear -= OnTrapBaitNear; EventBus.CatBelled -= OnCatBelled; EventBus.RatSqueak -= OnRatSqueak; }
+        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; EventBus.TrapBait += OnTrapBait; EventBus.TrapBaitNear += OnTrapBaitNear; EventBus.CatBelled += OnCatBelled; EventBus.RatSqueak += OnRatSqueak; EventBus.SniffCooldown += OnSniffCooldown; }
+        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; EventBus.TrapBait -= OnTrapBait; EventBus.TrapBaitNear -= OnTrapBaitNear; EventBus.CatBelled -= OnCatBelled; EventBus.RatSqueak -= OnRatSqueak; EventBus.SniffCooldown -= OnSniffCooldown; }
 
         private const int OneLineMaxChars = 40;
         private const float BriefingSeconds = 6f; // 읽을 게 많아서 평소 토스트보다 길게

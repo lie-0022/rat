@@ -35,7 +35,9 @@ namespace RatGame.Player
         /// <summary>소유 클라: 쿨다운이 지났으면 냄새 줄기. DevRemoteControl "sniff"도 이 경로.</summary>
         public void TrySniff()
         {
-            if (!IsOwner || Time.unscaledTime - _lastSniff < _balance.SniffCooldownSeconds) return;
+            if (!IsOwner) return;
+            float left = _balance.SniffCooldownSeconds - (Time.unscaledTime - _lastSniff);
+            if (left > 0f) { EventBus.RaiseSniffCooldown(left); return; } // 키가 안 먹은 것처럼 보이지 않게 (고양이 162)
             Vector3 from = transform.position;
             if (!GridRoute.TryNextHint(from, out var target, out int roomsLeft))
             {
