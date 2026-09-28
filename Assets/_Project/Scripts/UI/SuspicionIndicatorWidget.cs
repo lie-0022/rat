@@ -39,6 +39,7 @@ namespace RatGame.UI
         private CatBrain _cat;
         private bool _chasingMe;
         private bool _grudgedMe; // 앙심 대상이면 "!!" (design/cat-ideas/05)
+        private bool _trackingMe; // 내 냄새를 따라오는 중 — "? 냄새" (고양이 173)
         private bool _attending; // 놀고 있다 — 유인이 먹히는 중 "♪" (design/cat-ideas/13)
         private float _nextPoll;
         private string _lastLogged = "";
@@ -109,6 +110,7 @@ namespace RatGame.UI
             _chasingMe = false;
             _grudgedMe = false;
             _attending = false;
+            _trackingMe = false;
             var nm = NetworkManager.Singleton;
             if (nm == null || !nm.IsListening || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
             if (RunManager.Instance != null && RunManager.Instance.IsShowingResult) return;
@@ -116,6 +118,7 @@ namespace RatGame.UI
             ulong me = nm.LocalClientId;
             Vector3 myPos = nm.LocalClient.PlayerObject.transform.position;
             float nearest = float.PositiveInfinity;
+            CatBrain trackCat = null;
             foreach (var cat in FindObjectsByType<CatBrain>(FindObjectsSortMode.None))
             {
                 var state = cat.State.Value;
@@ -126,10 +129,12 @@ namespace RatGame.UI
                     _grudgedMe = cat.HasGrudge.Value && cat.GrudgeClientId.Value == me;
                     return; // 나를 쫓는 고양이가 최우선
                 }
+                if (state == CatState.Track && cat.TargetClientId.Value == me) { trackCat = cat; continue; } // 내 냄새를 따라오는 중 (고양이 173)
                 if (state != CatState.Suspicious) continue;
                 float d = (cat.transform.position - myPos).sqrMagnitude;
                 if (d < nearest) { nearest = d; _cat = cat; }
             }
+            if (trackCat != null) { _cat = trackCat; _trackingMe = true; return; } // 나를 노리는 쪽이 먼저
             if (_cat != null) return;
             // 의심하는 고양이가 없으면: 가까이서 노는(호기심·유인) 고양이 "♪" — 지금이 기회라는 신호
             float range = _balance != null ? _balance.AttentionIndicatorRange : 15f;
@@ -168,7 +173,7 @@ namespace RatGame.UI
             if (_lastLogged != symbol) { _lastLogged = symbol; Log.Dev($"의심 표시: {symbol} ({_cat.name} {_cat.State.Value})"); }
             if (_symbol.text != symbol) _symbol.text = symbol;
             var causeSenses = _cat.GetComponent<CatSenses>();
-            string cause = symbol == "?" && causeSenses != null ? CauseText((StimulusCause)causeSenses.LastCause.Value) : "";
+            string cause = symbol != "?" ? "" : _trackingMe ? "냄새" : causeSenses != null ? CauseText((StimulusCause)causeSenses.LastCause.Value) : "";
             if (!_causeStyled && cause.Length > 0)
             {
                 // 테두리는 켜진 뒤에 — 꺼진 표시 밑에서 막 만든 글자에 주면 재질이 없어 예외가 났다(클라 로그)

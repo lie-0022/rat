@@ -100,7 +100,7 @@ public class SteamLobbyService
 | PlayerCondition | State (Active/Stunned/Trapped/Downed) | enum |
 | PlayerCarryController | CarriedItemNetId (0=빈손) | ulong |
 | CarryableItem | CarrierIds (최대4), Durability | NetworkList<ulong>, float |
-| CatBrain | State, TargetClientId | enum, ulong |
+| CatBrain | State, TargetClientId (추격 대상, 냄새 추적 중이면 자국 주인 — 고양이 173, HUD "? 냄새") | enum, ulong |
 | CatSenses | SuspicionGauge (0~catChaseThreshold — HUD 의심 표시 게이지, docs/07·12) | float |
 | CatSenses (고양이 171) | LastCause — 게이지를 마지막으로 올린 자극(없음·봤다·발소리·물건 소리·찍찍·쨍그랑). 호스트만, 바뀔 때만 씀. HUD "?" 밑 이유 | byte |
 | PlayerSkin | SkinId(스킨 Id), CustomColor(팔레트 털 색, 알파 0 = 없음) — 둘 다 소유 클라 쓰기 (docs/11) | FixedString32, Color32 |

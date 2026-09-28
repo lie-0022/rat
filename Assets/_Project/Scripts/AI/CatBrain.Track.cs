@@ -59,6 +59,7 @@ namespace RatGame.AI
         {
             _trackFollowed = 0;
             _trackSniffUntil = -1f;
+            TargetClientId.Value = _trackMark.Source; // 누구 냄새를 따라가는지 — 그 쥐 HUD에 "? 냄새" (고양이 173)
             _movement.MoveTo(CatMovement.Sample(_trackMark.Pos, 1.5f, _trackMark.Pos), _balance.CatTrackSpeed);
             Log.Dev($"고양이 [{name}]: 냄새 추적 — client {_trackMark.Source} 자국 #{_trackMark.Seq} (강도 {ScentSystem.StrengthOf(_trackMark):0})");
         }
