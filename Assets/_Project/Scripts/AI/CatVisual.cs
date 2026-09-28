@@ -29,6 +29,9 @@ namespace RatGame.AI
 
         private MaterialPropertyBlock _block;
         private Vector3 _visualBaseScale;
+        private CapsuleCollider _body;          // 몸 충돌체 — 성격 몸 배율(아기 0.6)만큼 같이 줄인다 (고양이 167)
+        private float _bodyBaseRadius, _bodyBaseHeight, _appliedBody = 1f;
+        private Vector3 _bodyBaseCenter;
         private Vector3 _visualBasePos;
         private Quaternion _visualBaseRot = Quaternion.identity;
         private byte _lastPawTick;
@@ -53,6 +56,8 @@ namespace RatGame.AI
             if (_brain == null) _brain = GetComponent<CatBrain>();
             _block = new MaterialPropertyBlock();
             if (_visual != null) { _visualBaseScale = _visual.localScale; _visualBasePos = _visual.localPosition; _visualBaseRot = _visual.localRotation; }
+            _body = GetComponent<CapsuleCollider>();
+            if (_body != null) { _bodyBaseRadius = _body.radius; _bodyBaseHeight = _body.height; _bodyBaseCenter = _body.center; }
             foreach (var t in GetComponentsInChildren<Transform>(true))
             {
                 if (t.name == "Ear_L") { _earL = t; _earLBase = t.localRotation; }
@@ -215,6 +220,11 @@ namespace RatGame.AI
             if (_visual != null)
             {
                 float body = _brain.Personality != null ? _brain.Personality.BodyScale : 1f; // 아기는 작다
+                if (_body != null && !Mathf.Approximately(body, _appliedBody))
+                {
+                    _appliedBody = body; // 겉모습만 줄면 보이지 않는 벽이 남는다
+                    _body.radius = _bodyBaseRadius * body; _body.height = _bodyBaseHeight * body; _body.center = _bodyBaseCenter * body;
+                }
                 _visual.localScale = _visualBaseScale * body + new Vector3(pulse, 0f, pulse);
                 _visual.localPosition = _visualBasePos + Vector3.down * sink + Vector3.forward * kick;
                 _visual.localRotation = _visualBaseRot * Quaternion.Euler(0f, 0f, roll);

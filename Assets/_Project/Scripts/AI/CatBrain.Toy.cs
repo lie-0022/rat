@@ -220,7 +220,8 @@ namespace RatGame.AI
             if (Time.time >= _carryNextPush)
             {
                 _carryNextPush = Time.time + 0.1f;
-                PushVictim(victim, MouthPoint(victim));
+                // 걷는 동안엔 쥐 위치가 한 박자 늦게 도착해 몸 속으로 밀렸다 — 걸음만큼 앞당겨 준다 (고양이 167)
+                PushVictim(victim, MouthPoint(victim) + _movement.Velocity * CarryLeadSeconds);
             }
             if (Time.time >= _carryNextDropRoll)
             {
@@ -252,9 +253,15 @@ namespace RatGame.AI
             Log.Dev($"고양이 [{name}]: 버둥 {presses}회 — 관심 -{chunks * _balance.CatToyStruggleDrain:0} (남은 {_toyInterest:0})");
         }
 
+        private const float MouthClearance = 0.4f; // 쥐 반지름 0.3 + 여유
+        private const float CarryLeadSeconds = 0.2f;
+
         private Vector3 MouthPoint(PlayerCondition victim)
         {
-            Vector3 p = transform.position + transform.forward * 0.6f;
+            // 몸통 충돌체 바로 앞(쥐 반지름 + 여유) — 0.6 고정이면 큰 고양이·키운 충돌체 속에 놓여 튕겼다 (고양이 167)
+            var col = GetComponent<CapsuleCollider>();
+            float front = col != null ? col.radius * transform.localScale.x : 0.35f;
+            Vector3 p = transform.position + transform.forward * Mathf.Max(0.6f, front + MouthClearance);
             p = CatMovement.Sample(p, 0.8f, transform.position);
             p.y = victim.transform.position.y;
             return p;
