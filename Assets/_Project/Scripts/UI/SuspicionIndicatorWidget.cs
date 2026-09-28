@@ -46,11 +46,42 @@ namespace RatGame.UI
         public bool IsShowing => _marker.gameObject.activeSelf;
         public string Symbol => _symbol.text;
 
+        private TMP_Text _cause; // "?" 밑 이유 (고양이 171) — 기호 글꼴을 따라 코드에서 만든다
+
         private void Awake()
         {
             _canvasRect = (RectTransform)GetComponentInParent<Canvas>().rootCanvas.transform;
             _marker.gameObject.SetActive(false);
+            var go = new GameObject("Cause", typeof(RectTransform));
+            go.layer = _marker.gameObject.layer;
+            var rt = (RectTransform)go.transform;
+            rt.SetParent(_marker, false);
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
+            rt.pivot = new Vector2(0.5f, 1f);
+            rt.anchoredPosition = new Vector2(0f, -CauseGapPx);
+            rt.sizeDelta = new Vector2(160f, 30f);
+            _cause = go.AddComponent<TextMeshProUGUI>();
+            _cause.font = _symbol.font;
+            _cause.fontSize = CauseFontSize;
+            _cause.alignment = TextAlignmentOptions.Center;
+            _cause.textWrappingMode = TextWrappingModes.NoWrap;
+            _cause.raycastTarget = false;
         }
+
+        private bool _causeStyled;
+
+        private const float CauseGapPx = 4f;
+        private const float CauseFontSize = 20f;
+
+        private static string CauseText(StimulusCause c) => c switch
+        {
+            StimulusCause.Sight => "봤다",
+            StimulusCause.Footstep => "발소리",
+            StimulusCause.Item => "물건 소리",
+            StimulusCause.Squeak => "찍찍",
+            StimulusCause.Crash => "쨍그랑",
+            _ => "",
+        };
 
         private void Update()
         {
@@ -136,6 +167,16 @@ namespace RatGame.UI
             string symbol = _chasingMe ? (_grudgedMe ? "!!" : "!") : _attending ? AttentionGlyph : "?";
             if (_lastLogged != symbol) { _lastLogged = symbol; Log.Dev($"의심 표시: {symbol} ({_cat.name} {_cat.State.Value})"); }
             if (_symbol.text != symbol) _symbol.text = symbol;
+            var causeSenses = _cat.GetComponent<CatSenses>();
+            string cause = symbol == "?" && causeSenses != null ? CauseText((StimulusCause)causeSenses.LastCause.Value) : "";
+            if (!_causeStyled && cause.Length > 0)
+            {
+                // 테두리는 켜진 뒤에 — 꺼진 표시 밑에서 막 만든 글자에 주면 재질이 없어 예외가 났다(클라 로그)
+                _causeStyled = true;
+                _cause.outlineWidth = 0.2f; _cause.outlineColor = new Color32(0, 0, 0, 200); // 벽·바닥 위에서도 읽히게
+            }
+            if (_cause.text != cause) { _cause.text = cause; if (cause.Length > 0) Log.Dev($"의심 이유: ? {cause} ({_cat.name})"); } // 2인 검증용
+            if (_theme != null && _cause.color != _theme.GetColor(UiColorRole.Warning)) _cause.color = _theme.GetColor(UiColorRole.Warning);
             if (_theme != null)
             {
                 Color c = _theme.GetColor(_chasingMe ? UiColorRole.Danger : _attending ? UiColorRole.Positive : UiColorRole.Warning);

@@ -19,6 +19,8 @@ namespace RatGame.AI
         public void ServerSetBalance(BalanceConfigSO balance) => _balance = balance; // 큰 고양이 복사본 (고양이 141)
 
         public NetworkVariable<float> SuspicionGauge = new NetworkVariable<float>(0f);
+        /// <summary>게이지를 마지막으로 올린 자극 (고양이 171) — HUD "?" 밑 이유. 호스트만, 바뀔 때만 씀.</summary>
+        public NetworkVariable<byte> LastCause = new NetworkVariable<byte>((byte)StimulusCause.None);
 
         /// <summary>Sleep 상태 등에서 CatBrain이 조정 (docs/07 — 수면 민감도 30%).</summary>
         public float SensitivityMultiplier { get; set; } = 1f;
@@ -146,7 +148,7 @@ namespace RatGame.AI
                 CloseSight = bestDist <= _balance.CatCloseSightDistance;
                 // 거리보정: 가까울수록 큼 (1~2배)
                 float distFactor = Mathf.Lerp(2f, 1f, bestDist / _balance.CatViewDistance);
-                AddSuspicion(_balance.CatGazeGainPerSec * dt * distFactor * seenGain, seen.transform.position);
+                AddSuspicion(_balance.CatGazeGainPerSec * dt * distFactor * seenGain, seen.transform.position, StimulusCause.Sight);
             }
             else
             {
@@ -213,19 +215,29 @@ namespace RatGame.AI
             float radius = NoiseSystem.GetRadius(e);
             float dist = Vector3.Distance(e.Pos, transform.position);
             float distFactor = Mathf.Clamp(1f - dist / Mathf.Max(radius, 0.01f), 0.2f, 1f);
-            AddSuspicion(heard * distFactor * _balance.CatHearingGain, e.Pos);
+            AddSuspicion(heard * distFactor * _balance.CatHearingGain, e.Pos, e.Type switch
+            {
+                NoiseType.Squeak => StimulusCause.Squeak,
+                NoiseType.Break or NoiseType.Trap => StimulusCause.Crash,
+                NoiseType.Impact or NoiseType.Item => StimulusCause.Item,
+                _ => StimulusCause.Footstep,
+            });
             Heard?.Invoke(e, heard);
 
             if (e.Type == NoiseType.Break || e.Type == NoiseType.Trap || e.Type == NoiseType.Squeak)
                 ImmediateInvestigate = true; // 즉시 조사 트리거 (docs/06·07)
         }
 
-        private void AddSuspicion(float amount, Vector3 pos)
+        private void AddSuspicion(float amount, Vector3 pos, StimulusCause cause)
         {
+            if (LastCause.Value != (byte)cause) LastCause.Value = (byte)cause;
             SuspicionGauge.Value = Mathf.Min(_balance.CatChaseThreshold, SuspicionGauge.Value + amount);
             LastStimulusPos = pos;
             _lastStimulusTime = Time.time;
             HasNewStimulus = true;
         }
     }
+
+    /// <summary>의심을 올린 자극 종류 (고양이 171).</summary>
+    public enum StimulusCause : byte { None, Sight, Footstep, Item, Squeak, Crash }
 }

@@ -102,6 +102,7 @@ public class SteamLobbyService
 | CarryableItem | CarrierIds (최대4), Durability | NetworkList<ulong>, float |
 | CatBrain | State, TargetClientId | enum, ulong |
 | CatSenses | SuspicionGauge (0~catChaseThreshold — HUD 의심 표시 게이지, docs/07·12) | float |
+| CatSenses (고양이 171) | LastCause — 게이지를 마지막으로 올린 자극(없음·봤다·발소리·물건 소리·찍찍·쨍그랑). 호스트만, 바뀔 때만 씀. HUD "?" 밑 이유 | byte |
 | PlayerSkin | SkinId(스킨 Id), CustomColor(팔레트 털 색, 알파 0 = 없음) — 둘 다 소유 클라 쓰기 (docs/11) | FixedString32, Color32 |
 | StageQuota (벽 속 스테이지, 고양이 63·64·108) | StageNumber, StagesPerRun, Quota, Pantry, Finished (docs/09 새 루프), RunHaul, RunBuys (이번 런 누적 — 엔딩 요약), Modifier (오늘의 집 — 위 막대, 고양이 120) | int ×4, bool, int ×2, byte |
 | StageShopCounter (목적지방, 고양이 65) | Wallet, PendingText, Closed | int, FixedString128, bool |
