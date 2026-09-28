@@ -42,6 +42,8 @@ namespace RatGame.UI
         private float _nextHelpScan;
         private const float HelpScanSeconds = 0.25f;
         private const float HelpHeight = 1.2f;
+        private const float HelpNearMax = 4f, HelpNearMin = 1.5f, HelpNearAlpha = 0.25f; // 가까이 가면 옅게 (고양이 161)
+        private float _lastHelpAlpha = -1f;
         private RectTransform _canvasRect;
 
         private void Awake()
@@ -159,8 +161,12 @@ namespace RatGame.UI
             {
                 if (!m.Rect.gameObject.activeSelf || cam == null) continue;
                 m.Rect.anchoredPosition = ScreenAnchor.ToCanvas(cam, _canvasRect, m.World, EdgeMargins, out bool onScreen);
-                m.Group.alpha = onScreen ? 1f : OffscreenAlpha;
-                string dist = $"{Mathf.RoundToInt(Vector3.Distance(cam.transform.position, m.World))}m";
+                float meters = Vector3.Distance(cam.transform.position, m.World);
+                // 바로 옆이면 옅게 — 구출할 몸을 가리지 않게 (고양이 161). 이름은 남긴다
+                float near = Mathf.InverseLerp(HelpNearMin, HelpNearMax, meters);
+                m.Group.alpha = (onScreen ? 1f : OffscreenAlpha) * Mathf.Lerp(HelpNearAlpha, 1f, near);
+                if (Mathf.Abs(m.Group.alpha - _lastHelpAlpha) > 0.2f) { _lastHelpAlpha = m.Group.alpha; Log.Dev($"동료 위기 표시 알파: {m.Group.alpha:0.00} ({meters:0.0}m)"); } // 2인 검증용
+                string dist = $"{Mathf.RoundToInt(meters)}m";
                 if (m.Distance.text != dist) m.Distance.text = dist;
             }
             foreach (var m in _markers)
