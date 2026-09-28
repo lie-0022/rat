@@ -15,6 +15,14 @@ namespace RatGame.AI
         /// <summary>몸 배율 — 모든 클라가 읽는다(큰 고양이 발걸음 흔들림 등, 고양이 145). 스폰 전 초기값으로만 정한다.</summary>
         public NetworkVariable<float> BodyScale = new(1f);
 
+        /// <summary>몸 앞 표면에서 clearance만큼 앞 거리(수평) — 큰 고양이 몸 속에 물건·쥐를 두지 않게 (고양이 167·169). 최소 0.6(예전 고정값).</summary>
+        public float FrontDistance(float clearance)
+        {
+            var col = GetComponent<CapsuleCollider>();
+            float r = col != null ? col.radius * transform.localScale.x : 0.35f;
+            return Mathf.Max(0.6f, r + clearance);
+        }
+
         /// <summary>호스트: 스폰 전에만.</summary>
         public void ServerPrepareSize(float scale, int agentTypeId)
         {

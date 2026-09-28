@@ -72,9 +72,7 @@ namespace RatGame.AI
         private Vector3 MouthPoint(PlayerCondition victim)
         {
             // 몸통 충돌체 바로 앞(쥐 반지름 + 여유) — 0.6 고정이면 큰 고양이·키운 충돌체 속에 놓여 튕겼다 (고양이 167)
-            var col = GetComponent<CapsuleCollider>();
-            float front = col != null ? col.radius * transform.localScale.x : 0.35f;
-            Vector3 p = transform.position + transform.forward * Mathf.Max(0.6f, front + MouthClearance);
+            Vector3 p = transform.position + transform.forward * FrontDistance(MouthClearance);
             p = CatMovement.Sample(p, 0.8f, transform.position);
             p.y = victim.transform.position.y;
             return p;

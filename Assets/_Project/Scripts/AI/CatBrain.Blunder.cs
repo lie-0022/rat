@@ -48,7 +48,8 @@ namespace RatGame.AI
 
         private void SpawnHairball()
         {
-            Vector3 pos = transform.position + transform.forward * 0.6f + Vector3.up * 0.3f;
+            // 몸 앞에 뱉는다 — 0.6 고정이면 큰 고양이 몸 속에 생겨 튕겨 나갔다 (고양이 169)
+            Vector3 pos = transform.position + transform.forward * FrontDistance(0.3f) + Vector3.up * 0.3f;
             var go = Instantiate(_hairballItem.Prefab, pos, Quaternion.identity);
             go.GetComponent<NetworkObject>().Spawn(true); // 씬과 함께 사라지게
             HairballsSpawned++;
