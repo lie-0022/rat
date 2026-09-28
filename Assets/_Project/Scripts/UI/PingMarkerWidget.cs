@@ -34,6 +34,8 @@ namespace RatGame.UI
             public UnityEngine.UI.Image Icon;
             public TMP_Text Name;
             public TMP_Text Distance;
+            public Transform Follow;   // 고양이를 찍었으면 그 고양이 (고양이 165)
+            public Vector3 FollowOffset;
         }
 
         private readonly List<Marker> _markers = new();
@@ -42,6 +44,7 @@ namespace RatGame.UI
         private float _nextHelpScan;
         private const float HelpScanSeconds = 0.25f;
         private const float HelpHeight = 1.2f;
+        private const float CatPingSnap = 0.6f; // 핑이 고양이 몸 이만큼 안이면 고양이를 찍은 것 (고양이 165)
         private const float HelpNearMax = 4f, HelpNearMin = 1.5f, HelpNearAlpha = 0.25f; // 가까이 가면 옅게 (고양이 161)
         private float _lastHelpAlpha = -1f;
         private RectTransform _canvasRect;
@@ -60,7 +63,10 @@ namespace RatGame.UI
             var marker = _markers.Find(m => m.Owner == owner) ?? CreateMarker(owner);
             marker.World = world;
             marker.EndsAt = Time.unscaledTime + (_balance != null ? _balance.PingMarkerSeconds : 3f);
-            marker.Name.text = WhoText(owner) + ItemText(world);
+            var cat = CatAt(world);
+            marker.Follow = cat != null ? cat.transform : null; // 고양이는 움직이니 마커가 따라간다 (고양이 165)
+            marker.FollowOffset = cat != null ? world - cat.transform.position : Vector3.zero;
+            marker.Name.text = WhoText(owner) + (cat != null ? CatText(cat) : ItemText(world));
             marker.Rect.gameObject.SetActive(true);
         }
 
@@ -87,6 +93,28 @@ namespace RatGame.UI
             int value = best.EffectiveValue;
             Log.Dev($"핑 물건 연출: {best.Data.DisplayName} {value}"); // 2인 검증용
             return value > 0 ? $" · {best.Data.DisplayName} {value}" : $" · {best.Data.DisplayName}";
+        }
+
+        // 핑 지점이 고양이 몸 가까이면 그 고양이 (고양이 165)
+        private static AI.CatBrain CatAt(Vector3 world)
+        {
+            AI.CatBrain best = null; float bestD = CatPingSnap * CatPingSnap;
+            foreach (var c in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None))
+            {
+                var col = c.GetComponentInChildren<Collider>();
+                Vector3 near = col != null ? col.ClosestPoint(world) : c.transform.position;
+                float d = (near - world).sqrMagnitude;
+                if (d < bestD) { bestD = d; best = c; }
+            }
+            return best;
+        }
+
+        private static string CatText(AI.CatBrain cat)
+        {
+            var p = cat.Personality;
+            string who = p == null ? "고양이" : p.IsGuard ? "문지기" : p.IsPatroller ? "순찰꾼" : p.IsKitten ? "아기 고양이" : "고양이";
+            Log.Dev($"핑 고양이 연출: {who}"); // 2인 검증용
+            return $" · {who}!";
         }
 
         private Marker CreateMarker(ulong owner)
@@ -178,6 +206,7 @@ namespace RatGame.UI
                     m.Rect.gameObject.SetActive(false);
                     continue;
                 }
+                if (m.Follow != null) m.World = m.Follow.position + m.FollowOffset;
                 m.Rect.anchoredPosition = ScreenAnchor.ToCanvas(cam, _canvasRect, m.World, EdgeMargins, out bool onScreen);
                 m.Group.alpha = Mathf.Clamp01(left / FadeSeconds) * (onScreen ? 1f : OffscreenAlpha);
                 string dist = $"{Mathf.RoundToInt(Vector3.Distance(cam.transform.position, m.World))}m";
