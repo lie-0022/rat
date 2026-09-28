@@ -40,7 +40,14 @@ namespace RatGame.World
             var body = other.attachedRigidbody.GetComponent<DownedBody>();
             if (body != null)
             {
-                if (RunManager.Instance != null) RunManager.Instance.ServerRevive(body.Owner.Value);
+                if (RunManager.Instance == null) return;
+                // 그 순간 몸을 들고 있던 쥐 = 구한 쥐 (고양이 186). 살리면 몸이 곧바로 디스폰되므로 먼저 복사
+                var bodyItem = body.GetComponent<CarryableItem>();
+                var rescuers = new System.Collections.Generic.List<ulong>();
+                if (bodyItem != null) foreach (var carrier in bodyItem.CarrierIds) rescuers.Add(carrier);
+                ulong owner = body.Owner.Value;
+                if (RunManager.Instance.ServerRevive(owner))
+                    foreach (var carrier in rescuers) EventBus.RaiseRatRescued(carrier, owner);
                 return;
             }
 

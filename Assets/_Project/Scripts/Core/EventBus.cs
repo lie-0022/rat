@@ -29,6 +29,8 @@ namespace RatGame.Core
         // Player
         public static event Action<ulong /*clientId*/> PlayerDowned;
         public static event Action<ulong /*clientId*/> PlayerRevived;
+        /// <summary>동료 구조 — 끈끈이 구출·쓰러진 몸 부활 (호스트 전용, 결과 화면 구조 횟수, 고양이 186).</summary>
+        public static event Action<ulong /*rescuer*/, ulong /*rescued*/> RatRescued;
         /// <summary>핑 수신 (전 클라 — PlayerPing이 서버 중계를 받은 뒤 로컬 발행, 마커 UI용).</summary>
         public static event Action<ulong /*clientId*/, UnityEngine.Vector3 /*worldPos*/> PingReceived;
         /// <summary>킁킁 (소유 클라 로컬 — 목적지 쪽 다음 문까지 냄새 줄기, 고양이 76).</summary>
@@ -79,6 +81,7 @@ namespace RatGame.Core
         public static void RaiseStageBriefing(int stage, int stages, int quota, byte flags, byte modifier = 0) => StageBriefing?.Invoke(stage, stages, quota, flags, modifier);
         public static void RaisePlayerDowned(ulong clientId) => PlayerDowned?.Invoke(clientId);
         public static void RaisePlayerRevived(ulong clientId) => PlayerRevived?.Invoke(clientId);
+        public static void RaiseRatRescued(ulong rescuer, ulong rescued) => RatRescued?.Invoke(rescuer, rescued);
         public static void RaisePingReceived(ulong clientId, UnityEngine.Vector3 worldPos) => PingReceived?.Invoke(clientId, worldPos);
         public static void RaiseSniffCooldown(float secondsLeft) => SniffCooldown?.Invoke(secondsLeft);
         public static void RaiseSniffHint(UnityEngine.Vector3 from, UnityEngine.Vector3 to, float seconds) => SniffHint?.Invoke(from, to, seconds);

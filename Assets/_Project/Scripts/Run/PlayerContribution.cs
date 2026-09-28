@@ -17,6 +17,8 @@ namespace RatGame.Run
         public int CarriedValue;
         /// <summary>결과 시점에 다운 상태였나.</summary>
         public bool Downed;
+        /// <summary>동료 구조 횟수 — 끈끈이 구출·쓰러진 몸 부활 (고양이 186).</summary>
+        public int Rescues;
 
         public int Total => DepositedValue + CarriedValue;
 
@@ -27,10 +29,11 @@ namespace RatGame.Run
             serializer.SerializeValue(ref DepositCount);
             serializer.SerializeValue(ref CarriedValue);
             serializer.SerializeValue(ref Downed);
+            serializer.SerializeValue(ref Rescues);
         }
 
         public bool Equals(PlayerContribution other) =>
             ClientId == other.ClientId && DepositedValue == other.DepositedValue && DepositCount == other.DepositCount
-            && CarriedValue == other.CarriedValue && Downed == other.Downed;
+            && CarriedValue == other.CarriedValue && Downed == other.Downed && Rescues == other.Rescues;
     }
 }

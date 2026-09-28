@@ -33,6 +33,7 @@ namespace RatGame.Player
             if (!IsServer || State.Value != ConditionState.Trapped) return;
             ServerSetState(ConditionState.Active);
             Log.Dev($"구출: client {clientId} → client {OwnerClientId}");
+            EventBus.RaiseRatRescued(clientId, OwnerClientId);
         }
 
         /// <summary>호스트 전용 상태 전이. Downed/Trapped 진입 시 들고 있던 아이템 드랍 (docs/04·05).</summary>

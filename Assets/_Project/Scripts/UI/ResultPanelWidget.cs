@@ -139,7 +139,9 @@ namespace RatGame.UI
                 var c = list[i];
                 bool me = nm != null && c.ClientId == nm.LocalClientId;
                 // 이름·색은 팀 기본색 기준 (팀 상태·토스트와 같은 이름, 나간 쥐도 표시 가능)
-                _rows[i].Show($"{PlayerVisual.ColorNameFor(c.ClientId)}{(me ? " (나)" : "")}", PlayerVisual.ColorFor(c.ClientId),
+                // 구조 횟수는 이름 옆에 (고양이 186) — 식량을 못 모았어도 판을 살린 쥐가 보이게
+                string rescues = c.Rescues > 0 ? $" · 구조 {c.Rescues}" : "";
+                _rows[i].Show($"{PlayerVisual.ColorNameFor(c.ClientId)}{(me ? " (나)" : "")}{rescues}", PlayerVisual.ColorFor(c.ClientId),
                               c.DepositedValue, c.DepositCount, c.CarriedValue, i == best, c.Downed && returned, returned, depositLabel);
             }
         }
