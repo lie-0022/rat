@@ -16,6 +16,23 @@ namespace RatGame.UI
         [SerializeField] private UiThemeSO _theme;
         [SerializeField] private TMP_Text _label;
         [SerializeField] private GameObject _box;
+        [SerializeField] private TMP_Text _scentLabel;   // 위 줄 "냄새 · 치즈" (고양이 174)
+        [SerializeField] private GameObject _scentBox;
+
+        private const float ScentShowSeconds = 2f;
+        private float _scentUntil;
+        private string _scentText = "";
+
+        private void OnEnable() => EventBus.ScentLeft += OnScentLeft;
+        private void OnDisable() => EventBus.ScentLeft -= OnScentLeft;
+
+        // 강도로 이유를 가른다 — 치즈 60·젖은 발 40·찍힘 20 (PlayerScent)
+        private void OnScentLeft(float strength)
+        {
+            _scentUntil = Time.unscaledTime + ScentShowSeconds;
+            string text = _balance == null ? "냄새" : strength >= _balance.ScentEdible - 0.5f ? "냄새 · 치즈" : strength >= _balance.ScentWet - 0.5f ? "냄새 · 젖은 발" : "냄새 · 찍힘";
+            if (text != _scentText) { _scentText = text; if (_scentLabel != null) _scentLabel.text = text; Log.Dev($"냄새 표시: {text}"); }
+        }
 
         private enum Level { None, Quiet, Walk, Run, Echo }
         private Level _shown = Level.None;
@@ -27,8 +44,15 @@ namespace RatGame.UI
         {
             var nm = NetworkManager.Singleton;
             var me = nm != null && nm.LocalClient != null ? nm.LocalClient.PlayerObject : null;
-            if (me == null || _balance == null) { if (_box.activeSelf) _box.SetActive(false); _shown = Level.None; return; }
+            if (me == null || _balance == null) { if (_box.activeSelf) _box.SetActive(false); if (_scentBox != null && _scentBox.activeSelf) _scentBox.SetActive(false); _shown = Level.None; return; }
             if (!_box.activeSelf) _box.SetActive(true);
+            bool scent = Time.unscaledTime < _scentUntil;
+            if (_scentBox != null && _scentBox.activeSelf != scent)
+            {
+                _scentBox.SetActive(scent);
+                if (scent && _theme != null) _scentLabel.color = _theme.GetColor(UiColorRole.Warning); // 켠 뒤에 — 테마 초기화가 덮지 않게
+                if (!scent) { _scentText = ""; Log.Dev("냄새 표시: 끝"); }
+            }
 
             Transform t = me.transform;
             if (_baseScaleY < 0f) { _baseScaleY = t.localScale.y; _lastPos = t.position; }
@@ -61,7 +85,8 @@ namespace RatGame.UI
         }
 
 #if UNITY_EDITOR
-        public void EditorSetup(BalanceConfigSO balance, UiThemeSO theme, TMP_Text label, GameObject box) { _balance = balance; _theme = theme; _label = label; _box = box; }
+        public void EditorSetup(BalanceConfigSO balance, UiThemeSO theme, TMP_Text label, GameObject box, TMP_Text scentLabel, GameObject scentBox)
+        { _balance = balance; _theme = theme; _label = label; _box = box; _scentLabel = scentLabel; _scentBox = scentBox; }
 #endif
     }
 }

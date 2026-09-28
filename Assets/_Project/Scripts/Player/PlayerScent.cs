@@ -97,6 +97,7 @@ namespace RatGame.Player
         private void ScentMarkClientRpc(Vector3 pos, float lifeSeconds, ClientRpcParams rpcParams = default)
         {
             if (!IsOwner) return;
+            if (_balance != null) EventBus.RaiseScentLeft(lifeSeconds * _balance.ScentDecayPerSec); // HUD "냄새 · 치즈" (고양이 174)
             // 가장 오래된 점을 재사용 (최대 = 자국 버퍼 크기)
             int cap = _balance != null ? _balance.ScentMaxMarks : 32;
             Transform dot;

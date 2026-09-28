@@ -23,7 +23,7 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 - 전파 반경 = `loudness / 100 * maxNoiseRadius(14m)`. 반경 내 리스너에게 전달.
 - 벽 감쇠: 리스너까지 Linecast(NoiseBlocker 레이어) — 벽 1장당 loudness 40% 감소 (레이 1회, 단순하게). 방 벽·문판은 NoiseBlocker 레이어에 둔다(시야도 막는다) — 데모 창고방 벽·문(고양이 45).
 - 클라 시각화: loudness 40 이상이면 발생 지점에 파문 이펙트 ClientRpc (플레이어가 "들렸다"를 인지해야 긴장이 성립).
-- **내 발소리 크기 표시 (고양이 170)**: HUD 오른쪽 아래 "소리 · 조용 / 발소리 1m / 쿵쿵 3m / 울림 5m" — 호스트 발소리 판단(`PlayerNoiseEmitter`)을 내 클라에서 같은 수치로 다시 계산(`UI/NoiseMeterWidget`, 동기화 없음). 거리 = 소음 크기 ÷ 100 × `maxNoiseRadius`. 도구 `Tools/RatGame/UI/Build Noise Meter`.
+- **내 발소리 크기 표시 (고양이 170)**: HUD 오른쪽 아래 "소리 · 조용 / 발소리 1m / 쿵쿵 3m / 울림 5m" — 호스트 발소리 판단(`PlayerNoiseEmitter`)을 내 클라에서 같은 수치로 다시 계산(`UI/NoiseMeterWidget`, 동기화 없음). 거리 = 소음 크기 ÷ 100 × `maxNoiseRadius`. 도구 `Tools/RatGame/UI/Build Noise Meter`. 그 위 줄 "냄새 · 치즈/젖은 발/찍힘" — 내 냄새 자국이 남은 뒤 2초(소유 클라 자국 알림 → `EventBus.ScentLeft`, 고양이 174).
   - 구현 (2026-09-24, 고양이 45): 호스트 `NoiseSystem.Rippled` → `RunManager.NoiseRippleClientRpc` → `EventBus.NoiseRipple` → `Noise/NoiseRippleView`(씬마다 자동 생성)가 바닥에 전파 반경까지 0.7s 퍼지는 노란 고리(LineRenderer, 최대 8개 재사용).
 
 ## 소음원 기준표 (BalanceConfigSO)

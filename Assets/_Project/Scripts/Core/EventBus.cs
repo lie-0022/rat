@@ -55,6 +55,8 @@ namespace RatGame.Core
         public static event Action<UnityEngine.Vector3, float /*loudness*/> NoiseRipple;
         /// <summary>쥐가 찍찍 (전 클라 — PlayerNoiseEmitter.SqueakClientRpc, 고양이 158).</summary>
         public static event Action<ulong, UnityEngine.Vector3> RatSqueak;
+        /// <summary>내 쥐가 냄새 자국을 남김 — 강도 (소유 클라 로컬, 고양이 174).</summary>
+        public static event Action<float> ScentLeft;
         /// <summary>기지 오브젝트가 "이 클라에 패널을 열어 달라" (자판기·거울·도감 — 규칙 3, 2026-09-24 고양이 52). source = 그 오브젝트.</summary>
         public static event Action<WorldPanelKind, UnityEngine.Object> WorldPanelRequested;
         /// <summary>패널을 연 오브젝트가 사라졌다(씬 전환) — 그 패널을 닫는다.</summary>
@@ -88,6 +90,7 @@ namespace RatGame.Core
         public static void RaiseCodexUnlocked(string itemId) => CodexUnlocked?.Invoke(itemId);
         public static void RaiseHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEvent?.Invoke(kind, phase);
         public static void RaiseNoiseRipple(UnityEngine.Vector3 pos, float loudness) => NoiseRipple?.Invoke(pos, loudness);
+        public static void RaiseScentLeft(float strength) => ScentLeft?.Invoke(strength);
         public static void RaiseRatSqueak(ulong owner, UnityEngine.Vector3 pos) => RatSqueak?.Invoke(owner, pos);
         public static void RaiseCheeseEaten(float amount) => CheeseEaten?.Invoke(amount);
         public static void RaiseTrapBait(bool sneaky) => TrapBait?.Invoke(sneaky);

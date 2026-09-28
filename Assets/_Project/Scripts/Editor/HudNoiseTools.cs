@@ -55,8 +55,28 @@ namespace RatGame.Editor
                 tmp.textWrappingMode = TextWrappingModes.NoWrap;
                 textRt.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.TextMuted, UiTextRole.Small);
 
+                // 위 줄 — 냄새를 남기는 중일 때만 (고양이 174)
+                var sbox = NewUi("ScentBox", area);
+                sbox.anchorMin = sbox.anchorMax = new Vector2(1f, 0f);
+                sbox.pivot = new Vector2(1f, 0f);
+                sbox.anchoredPosition = new Vector2(-24f, 24f + 44f + 6f);
+                sbox.sizeDelta = new Vector2(220f, 40f);
+                var simg = sbox.gameObject.AddComponent<UnityEngine.UI.Image>();
+                simg.raycastTarget = false;
+                sbox.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.Panel, UiTextRole.None);
+                var stRt = NewUi("Text", sbox);
+                stRt.anchorMin = Vector2.zero; stRt.anchorMax = Vector2.one;
+                stRt.offsetMin = new Vector2(14f, 0f); stRt.offsetMax = new Vector2(-14f, 0f);
+                var stmp = stRt.gameObject.AddComponent<TextMeshProUGUI>();
+                stmp.text = "냄새 · 치즈";
+                stmp.raycastTarget = false;
+                stmp.alignment = TextAlignmentOptions.MidlineLeft;
+                stmp.textWrappingMode = TextWrappingModes.NoWrap;
+                stRt.gameObject.AddComponent<ThemedGraphic>().Setup(theme, UiColorRole.Warning, UiTextRole.Small);
+                sbox.gameObject.SetActive(false);
+
                 var widget = area.gameObject.AddComponent<NoiseMeterWidget>();
-                widget.EditorSetup(AssetDatabase.LoadAssetAtPath<BalanceConfigSO>(BalancePath), theme, tmp, box.gameObject);
+                widget.EditorSetup(AssetDatabase.LoadAssetAtPath<BalanceConfigSO>(BalancePath), theme, tmp, box.gameObject, stmp, sbox.gameObject);
                 PrefabUtility.SaveAsPrefabAsset(root, HudPath);
                 Debug.Log("[HudNoise] 내 발소리 크기 표시 — 오른쪽 아래 (Hud/NoiseArea)");
             }
