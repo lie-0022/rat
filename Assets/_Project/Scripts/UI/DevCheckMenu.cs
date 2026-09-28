@@ -79,6 +79,12 @@ namespace RatGame.UI
 
             GUILayout.Space(6);
             GUILayout.Label("<b>고양이</b>", Rich());
+            // 판단 12 비교 — 고양이 눈높이 (고양이 180)
+            if (GUILayout.Button(CatSenses.DevEyeByBody ? "고양이 눈높이: 몸에 맞춤 (누르면 고정 0.5m)" : "고양이 눈높이: 고정 0.5m (누르면 몸에 맞춤)"))
+            {
+                CatSenses.DevEyeByBody = !CatSenses.DevEyeByBody;
+                Log.Dev($"고양이 눈높이: {(CatSenses.DevEyeByBody ? "몸에 맞춤" : "고정")}");
+            }
             var cats = FindObjectsByType<CatBrain>(FindObjectsSortMode.None);
             if (cats.Length == 0) GUILayout.Label("이 씬엔 고양이 없음");
             foreach (var cat in cats)

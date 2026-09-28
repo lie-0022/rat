@@ -123,6 +123,8 @@ namespace RatGame.Data
         [SerializeField] private float _catChaseSpeed = 5.5f;   // sprint 7보다 느림 — 밸런스의 축, 신중히
         [SerializeField] private float _catReturnSpeed = 2f;
         [SerializeField] private float _catViewDistance = 8f;
+        [SerializeField] private float _catEyeHeight = 0.5f;                  // 시야 선 시작 높이(발밑 위, m) — 예전 코드에 박혀 있던 값 (고양이 180)
+        [SerializeField] private bool _catEyeHeightScalesWithBody = false;     // 켜면 눈높이 = 몸 윗면 × 0.8 (판단 12)
         [SerializeField, Range(0f, 1f)] private float _catCrouchViewMultiplier = 0.5f;
         [SerializeField, Range(0f, 1f)] private float _catDarkViewMultiplier = 0.5f; // 어둠 구역(LightZone) 속 쥐 (docs/07)
         [SerializeField] private float _catViewHalfAngle = 35f; // 시야각 70°
@@ -505,6 +507,8 @@ namespace RatGame.Data
         public float CatChaseSpeed => _catChaseSpeed;
         public float CatReturnSpeed => _catReturnSpeed;
         public float CatViewDistance => _catViewDistance;
+        public float CatEyeHeight => _catEyeHeight;
+        public bool CatEyeHeightScalesWithBody => _catEyeHeightScalesWithBody;
         public float CatCrouchViewMultiplier => _catCrouchViewMultiplier;
         public float CatDarkViewMultiplier => _catDarkViewMultiplier;
         public float CatViewHalfAngle => _catViewHalfAngle;

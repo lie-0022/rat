@@ -91,7 +91,8 @@ namespace RatGame.AI
             var key = a.GetInstanceID() < b.GetInstanceID() ? (a.GetInstanceID(), b.GetInstanceID()) : (b.GetInstanceID(), a.GetInstanceID());
             if (_pairCooldown.TryGetValue(key, out float until) && Time.time < until) return;
 
-            Vector3 pa = a.transform.position + Vector3.up * 0.5f, pb = b.transform.position + Vector3.up * 0.5f;
+            var sa = a.GetComponent<CatSenses>(); var sb = b.GetComponent<CatSenses>();
+            Vector3 pa = a.transform.position + Vector3.up * (sa != null ? sa.EyeHeight : 0.5f), pb = b.transform.position + Vector3.up * (sb != null ? sb.EyeHeight : 0.5f);
             if (Vector3.Distance(pa, pb) > _balance.CatFightDistance) return;
             int blockMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker");
             if (Physics.Linecast(pa, pb, blockMask, QueryTriggerInteraction.Ignore)) return; // 벽 너머면 모른다

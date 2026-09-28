@@ -19,6 +19,23 @@ namespace RatGame.AI
         public void ServerSetBalance(BalanceConfigSO balance) => _balance = balance; // 큰 고양이 복사본 (고양이 141)
 
         public NetworkVariable<float> SuspicionGauge = new NetworkVariable<float>(0f);
+
+        /// <summary>개발용 — F4에서 켜면 밸런스 값과 상관없이 눈높이를 몸에 맞춘다 (판단 12 비교, 고양이 180). 호스트만 의미.</summary>
+        public static bool DevEyeByBody;
+
+        /// <summary>시야 선 시작 높이(발밑 위, m) — 고정값 또는 몸 윗면 × 0.8.</summary>
+        public float EyeHeight
+        {
+            get
+            {
+                if (_balance == null) return 0.5f;
+                if (!_balance.CatEyeHeightScalesWithBody && !DevEyeByBody) return _balance.CatEyeHeight;
+                var col = GetComponent<CapsuleCollider>();
+                if (col == null) return _balance.CatEyeHeight;
+                float top = (col.center.y + col.height * 0.5f) * transform.localScale.y;
+                return Mathf.Max(_balance.CatEyeHeight, top * 0.8f);
+            }
+        }
         /// <summary>게이지를 마지막으로 올린 자극 (고양이 171) — HUD "?" 밑 이유. 호스트만, 바뀔 때만 씀.</summary>
         public NetworkVariable<byte> LastCause = new NetworkVariable<byte>((byte)StimulusCause.None);
 
@@ -132,7 +149,7 @@ namespace RatGame.AI
                 if (Vector3.Angle(transform.forward, toPlayer) > (ViewHalfAngleOverride ?? _balance.CatViewHalfAngle)) continue;
 
                 int blockMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker", "Default");
-                if (Physics.Linecast(transform.position + Vector3.up * 0.5f,
+                if (Physics.Linecast(transform.position + Vector3.up * EyeHeight,
                         playerObj.transform.position, blockMask, QueryTriggerInteraction.Ignore)) continue;
 
                 float gm = TargetGainMultiplier != null ? TargetGainMultiplier(condition.OwnerClientId) : 1f;
@@ -171,7 +188,7 @@ namespace RatGame.AI
             float viewDist = _balance.CatViewDistance * SensitivityMultiplier * ViewMultiplier;
             float minSpeed = _balance.CatCuriosityMinSpeed * CuriositySpeedMultiplier;
             float best = float.MaxValue;
-            Vector3 eye = transform.position + Vector3.up * 0.5f;
+            Vector3 eye = transform.position + Vector3.up * EyeHeight;
             int blockMask = LayerMask.GetMask("RoomStatic", "NoiseBlocker", "Default");
             foreach (var item in _items)
             {
