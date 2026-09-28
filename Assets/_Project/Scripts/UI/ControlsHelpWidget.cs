@@ -75,6 +75,11 @@ namespace RatGame.UI
             Line(sb, key, "1~4", "주머니 칸 고르기");
             Line(sb, key, "Tab", "지도 (벽 속, 누르고 있기)");
             Line(sb, key, "Esc", "메뉴");
+            // 화면 읽기 — 3번째 루프에서 늘어난 표시들 (고양이 176)
+            sb.Append('\n').Append("<color=").Append(key).Append(">화면 읽기</color>\n");
+            sb.Append("고양이 위 <b>?</b> 의심(밑에 이유) · <b>!</b> 추격\n");
+            sb.Append("오른쪽 아래 — 내 소리 크기 · 냄새 남기는 중\n");
+            sb.Append("빨간 표시 — 위기인 동료(구해질 때까지)\n");
             if (Debug.isDebugBuild) sb.Append("<color=#9a9a9a>F3  고양이 정보 · F4  확인 메뉴 (개발용)</color>");
             return sb.ToString();
         }
@@ -93,15 +98,29 @@ namespace RatGame.UI
                 if (b.isPartOfComposite) continue;
                 string path = b.isComposite && i + 1 < bindings.Count ? bindings[i + 1].path : b.path;
                 if (path.StartsWith("<Gamepad>")) continue;
-                parts.Add(Friendly(a.GetBindingDisplayString(i)));
+                // 키 자리 이름으로 — 표시 이름은 지금 입력 언어를 따라 한글 자판이면 "ㅈ/ㅁ/ㄴ/ㅇ"가 됐다 (고양이 176)
+                if (b.isComposite)
+                {
+                    var comp = new System.Collections.Generic.List<string>();
+                    var byName = new System.Collections.Generic.Dictionary<string, string>();
+                    for (int j = i + 1; j < bindings.Count && bindings[j].isPartOfComposite; j++) { string k = KeyName(bindings[j].path); comp.Add(k); byName[bindings[j].name] = k; }
+                    // 이동은 위·아래·왼·오 순서로 들어 있어 W/S/A/D가 됐다 — 익숙한 W/A/S/D로
+                    if (byName.TryGetValue("up", out var u) && byName.TryGetValue("left", out var l) && byName.TryGetValue("down", out var d) && byName.TryGetValue("right", out var r))
+                        parts.Add($"{u}/{l}/{d}/{r}");
+                    else parts.Add(string.Join("/", comp));
+                }
+                else parts.Add(KeyName(b.path));
             }
             return string.Join(" / ", parts);
         }
 
+        private static string KeyName(string path) =>
+            Friendly(InputControlPath.ToHumanReadableString(path, InputControlPath.HumanReadableStringOptions.OmitDevice));
+
         private static string Friendly(string key) => key switch
         {
-            "LMB" => "좌클릭", "RMB" => "우클릭", "MMB" => "휠클릭",
-            "Left Shift" => "Shift", "Left Control" => "Ctrl",
+            "LMB" or "Left Button" => "좌클릭", "RMB" or "Right Button" => "우클릭", "MMB" or "Middle Button" => "휠클릭",
+            "Left Shift" => "Shift", "Left Control" or "Left Ctrl" => "Ctrl", "Escape" => "Esc",
             _ => key,
         };
 
