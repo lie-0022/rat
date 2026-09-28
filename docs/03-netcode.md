@@ -96,7 +96,7 @@ public class SteamLobbyService
 
 | 위치 | 변수 | 타입 |
 |---|---|---|
-| RunManager | Phase, RunTotalValue, StashedValue, ReturnReadyCount/NeededCount, ReturnAt, ResultCarriedValue, ResultEndsAt (docs/09) | enum, int…, double |
+| RunManager | Phase, RunTotalValue, StashedValue, ReturnReadyCount/NeededCount, ReturnAt, ResultCarriedValue, ResultEndsAt, Contributions 목록(적립·들고 옴·쓰러짐·구조 — 고양이 186) (docs/09) | enum, int…, double, NetworkList |
 | PlayerCondition | State (Active/Stunned/Trapped/Downed) | enum |
 | PlayerCarryController | CarriedItemNetId (0=빈손) | ulong |
 | CarryableItem | CarrierIds (최대4), Durability | NetworkList<ulong>, float |

@@ -212,13 +212,14 @@ public class RunManager : NetworkBehaviour
     public NetworkVariable<int> ResultCarriedValue;  // 귀환 시 들고 온 가치
     public NetworkVariable<double> ResultEndsAt;     // 결과 화면 끝 (ServerTime)
     public NetworkList<PlayerContribution> Contributions; // 플레이어별 기여 — 결과 화면 "오늘의 쥐들" (2026-09-16)
-        // { ClientId, DepositedValue, DepositCount, CarriedValue, Downed }
+        // { ClientId, DepositedValue, DepositCount, CarriedValue, Downed, Rescues }
+        // Rescues = 동료 구조 횟수 — EventBus.RatRescued(호스트: 끈끈이 구출·쓰러진 몸을 들고 쥐구멍에 넣은 쥐 전부) (2026-09-28 고양이 186)
         // 출발 시 접속 인원으로 채움 · 적립 시 마지막으로 놓은 쥐(LastCarrierId)에 가산 ·
         // 귀환 시 각자 손·주머니 가치(여럿이 든 대형은 먼저 센 한 명) + 다운 여부 · 전멸 시 전원 Downed
 
     public void ServerStartStage(int seed);          // 기지 발판으로 들어오면 자동 호출
     public void ServerDeposit(int value, ulong by);  // DepositZone(쥐구멍)이 호출
-    public void ServerRevive(ulong clientId);
+    public bool ServerRevive(ulong clientId);        // 실제로 살렸으면 true (구조 집계)
 }
 ```
 
