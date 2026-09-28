@@ -34,8 +34,8 @@ namespace RatGame.UI
                 CatCueKind.KittenCall => "(냐앙! — 아기 고양이가 엄마를 부른다)",
                 CatCueKind.GuardNap => "(쿨쿨… 문지기가 졸고 있다 — 지금!)",
                 CatCueKind.PatrolNap => "(꾸벅꾸벅… 순찰꾼이 잠들었다 — 큰길이 빈다)",
-                CatCueKind.Snore => "(드르렁… 고양이가 깊이 잠들었다)",
-                CatCueKind.SnoreStop => "(코골이가 멈췄다 — 곧 깬다!)",
+                CatCueKind.Snore => $"(드르렁… {RoleName(catPos, "고양이가", "문지기가", "순찰꾼이", "아기 고양이가")} 깊이 잠들었다)",
+                CatCueKind.SnoreStop => $"({RoleName(catPos, "", "문지기 ", "순찰꾼 ", "아기 고양이 ")}코골이가 멈췄다 — 곧 깬다!)",
                 _ => null
             };
             if (text == null || text == _lastCue) return;
@@ -96,6 +96,23 @@ namespace RatGame.UI
             string text = $"(킁킁… 코가 아직 얼얼 — {Mathf.CeilToInt(secondsLeft)}초)";
             Log.Dev($"킁킁 쿨다운 안내: {text}");
             Show(text, UiColorRole.Secondary, 1.5f);
+        }
+
+        // 코골이 자막에 누가 자는지 (고양이 163) — 성격은 클라에도 동기화돼 있어 자막 자리의 고양이로 판단
+        private static string RoleName(Vector3 catPos, string plain, string guard, string patroller, string kitten)
+        {
+            AI.CatBrain best = null; float bestD = 1.5f * 1.5f;
+            foreach (var c in FindObjectsByType<AI.CatBrain>(FindObjectsSortMode.None))
+            {
+                float d = (c.transform.position - catPos).sqrMagnitude;
+                if (d < bestD) { bestD = d; best = c; }
+            }
+            var p = best != null ? best.Personality : null;
+            if (p == null) return plain;
+            if (p.IsGuard) return guard;
+            if (p.IsPatroller) return patroller;
+            if (p.IsKitten) return kitten;
+            return plain;
         }
     }
 }
