@@ -18,7 +18,7 @@ namespace RatGame.UI
 
         [SerializeField] private Material _puffMaterial;
 
-        private sealed class Puff { public Transform T; public Vector3 Start; public Vector3 Dir; public float Born; public float Life; }
+        private sealed class Puff { public Transform T; public Vector3 Start; public Vector3 Dir; public float Born; public float Life; public float Scale = 1f; }
 
         private readonly List<Puff> _pool = new();
         private readonly List<Puff> _live = new();
@@ -30,17 +30,21 @@ namespace RatGame.UI
         private void OnEnable() { EventBus.SniffHint += OnSniff; EventBus.SniffFood += OnSniffFood; }
         private void OnDisable() { EventBus.SniffHint -= OnSniff; EventBus.SniffFood -= OnSniffFood; }
 
-        private const int WispPuffs = 4;       // 음식마다 김 알갱이
+        private static readonly int[] WispPuffs = { 3, 4, 6 };            // 값 구간별 김 알갱이 — 비쌀수록 높이 (고양이 160)
+        private static readonly float[] WispScale = { 1f, 1.15f, 1.35f };
         private const float WispRise = 0.35f;  // 알갱이 사이 높이
 
         // 음식 냄새 김 (고양이 150) — 줄기와 같은 알갱이가 음식 위로 차례로 떠오른다
-        private void OnSniffFood(System.Collections.Generic.IReadOnlyList<Vector3> spots, float seconds)
+        private void OnSniffFood(System.Collections.Generic.IReadOnlyList<Vector3> spots, System.Collections.Generic.IReadOnlyList<int> tiers, float seconds)
         {
             if (_root == null) { _root = new GameObject("SniffPuffs").transform; _pool.Clear(); _live.Clear(); }
             for (int s = 0; s < spots.Count; s++)
-                for (int i = 0; i < WispPuffs && _live.Count < MaxPuffs * 2; i++)
+            {
+                int tier = tiers != null && s < tiers.Count ? Mathf.Clamp(tiers[s], 0, 2) : 1;
+                for (int i = 0; i < WispPuffs[tier] && _live.Count < MaxPuffs * 2; i++)
                 {
                     var p = Take();
+                    p.Scale = WispScale[tier];
                     p.Start = spots[s] + Vector3.up * (Height + i * WispRise);
                     p.Dir = Vector3.up;
                     p.Born = Time.time + 0.3f + s * 0.05f + i * 0.12f; // 줄기가 먼저 뻗고 나서
@@ -50,6 +54,7 @@ namespace RatGame.UI
                     p.T.gameObject.SetActive(true);
                     _live.Add(p);
                 }
+            }
         }
 
         private void OnSniff(Vector3 from, Vector3 to, float seconds)
@@ -66,6 +71,7 @@ namespace RatGame.UI
                 p.Start = new Vector3(from.x, 0f, from.z) + dir * Mathf.Min(length, i * Spacing) + Vector3.up * Height;
                 p.Dir = dir;
                 p.Born = Time.time + i * 0.04f; // 발밑부터 차례로 — 줄기가 뻗어 나가는 느낌
+                p.Scale = 1f; // 풀에서 꺼낸 알갱이 크기 되돌림
                 p.Life = seconds;
                 p.T.position = p.Start;
                 p.T.localScale = Vector3.zero;
@@ -99,7 +105,7 @@ namespace RatGame.UI
                 if (t >= 1f) { p.T.gameObject.SetActive(false); _live.RemoveAt(i); _pool.Add(p); continue; }
                 float bob = Mathf.Sin((now + p.Start.x) * 6f) * 0.03f;
                 p.T.position = p.Start + p.Dir * (Drift * t) + Vector3.up * bob;
-                p.T.localScale = Vector3.one * (Size * Mathf.Sin(t * Mathf.PI)); // 나타났다 사라짐
+                p.T.localScale = Vector3.one * (Size * p.Scale * Mathf.Sin(t * Mathf.PI)); // 나타났다 사라짐
             }
         }
     }

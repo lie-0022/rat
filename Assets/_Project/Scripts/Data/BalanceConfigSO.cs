@@ -115,6 +115,7 @@ namespace RatGame.Data
         [SerializeField] private float _sniffTrailSeconds = 3f;     // 냄새 줄기 보이는 시간
         [SerializeField] private float _sniffFoodMeters = 14f;      // 킁킁 — 이 안의 음식에서 냄새 김 (고양이 150)
         [SerializeField] private int _sniffFoodMax = 8;             // 가까운 순 최대 개수
+        [SerializeField] private Vector2 _sniffFoodTierValues = new(30f, 80f); // 값이 이 둘 미만/사이/이상 → 김 3·4·6알 (고양이 160)
 
         [Header("고양이 (docs/07)")]
         [SerializeField] private float _catPatrolSpeed = 2f;
@@ -493,6 +494,7 @@ namespace RatGame.Data
         public float SniffTrailSeconds => _sniffTrailSeconds;
         public float SniffFoodMeters => _sniffFoodMeters;
         public int SniffFoodMax => _sniffFoodMax;
+        public Vector2 SniffFoodTierValues => _sniffFoodTierValues;
 
         /// <summary>파손 데미지: 문턱 초과분 × 0.15 (docs/05).</summary>
         public float GetFragileDamage(float impactSpeed) =>

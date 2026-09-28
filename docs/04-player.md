@@ -134,6 +134,7 @@ public interface IInteractable
 | sniffTrailSeconds | 3 s |
 | sniffFoodMeters | 14 m |
 | sniffFoodMax | 8 |
+| sniffFoodTierValues | 30 / 80 (값이 이 미만/사이/이상 → 김 3·4·6알, 고양이 160) |
 
 ## 애니메이션 파라미터 (PlayerAnimatorLink → Animator)
 
