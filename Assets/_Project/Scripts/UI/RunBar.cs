@@ -1,4 +1,5 @@
 using RatGame.Data;
+using RatGame.Player;
 using RatGame.Run;
 using RatGame.World;
 using TMPro;
@@ -34,6 +35,8 @@ namespace RatGame.UI
         private DeparturePad _pad;
         private float _padSearchAt;
         private float _popupUntil;
+        private bool _emptyHanded;
+        private float _emptyCheckAt;
 
         private void Update()
         {
@@ -82,12 +85,16 @@ namespace RatGame.UI
 
             bool sub = true;
             int ready = run.ReturnReadyCount.Value, needed = run.ReturnNeededCount.Value;
+            // 예전 루프는 할당량이 없어 식량 0이어도 떠난다 — 실수로 빈손 귀환하지 않게 알려만 준다 (고양이 181)
+            bool empty = quota == null && stashed == 0 && (ready > 0 || phase == RunPhase.Returning) && EmptyHanded();
             if (phase == RunPhase.Returning)
-                ShowSub($"<size=130%>{(quota != null ? "다음으로" : "귀환 중")}… {Remaining(run.ReturnAt.Value):0}</size>", true);
+                ShowSub($"<size=130%>{(quota != null ? "다음으로" : "귀환 중")}… {Remaining(run.ReturnAt.Value):0}</size>{(empty ? " · 빈손" : "")}",
+                    empty ? UiColorRole.Warning : UiColorRole.Positive);
             else if (ready > 0 && quota != null && !quota.Met(stashed)) // 창고에 왔는데 모자람
                 ShowSub($"식량이 모자라요 — {quota.Quota.Value - stashed} 더 모아 창고에", false);
             else if (ready > 0) // 누가 쥐구멍에 들어가 있을 때만 — 나머지를 부르는 신호
-                ShowSub(quota != null ? $"창고에 모이면 다음으로   {ready}/{needed}" : $"쥐구멍에 모이면 귀환   {ready}/{needed}", false);
+                ShowSub(quota != null ? $"창고에 모이면 다음으로   {ready}/{needed}" : $"쥐구멍에 모이면 귀환   {ready}/{needed}{(empty ? " · 아직 빈손이에요" : "")}",
+                    empty ? UiColorRole.Warning : UiColorRole.Dim);
             else if (quota != null && quota.Met(stashed)) // 채웠지만 아직 아무도 창고에 없음 — 갈지 더 모을지 (고양이 95)
                 ShowSub($"할당량 채움! 창고에 모이면 다음 · 상점 돈 +{stashed - quota.Quota.Value}", false); // 짧게 — 오른쪽 토스트 칸과 안 겹치게
             else
@@ -124,11 +131,32 @@ namespace RatGame.UI
             SetVisible(true, false, true);
         }
 
-        private void ShowSub(string text, bool countdown)
+        // 누구 손·주머니에도 값 있는 물건이 없나 (귀환 계산과 같은 기준, 0.5초마다)
+        private bool EmptyHanded()
+        {
+            if (Time.time < _emptyCheckAt) return _emptyHanded;
+            _emptyCheckAt = Time.time + 0.5f;
+            _emptyHanded = true;
+            foreach (var carry in FindObjectsByType<PlayerCarryController>(FindObjectsSortMode.None))
+            {
+                if (carry.CarriedItem != null && carry.CarriedItem.EffectiveValue > 0) { _emptyHanded = false; break; }
+                for (int s = 0; s < carry.SlotCount && _emptyHanded; s++)
+                {
+                    var item = carry.GetSlotItem(s);
+                    if (item != null && item.EffectiveValue > 0) _emptyHanded = false;
+                }
+                if (!_emptyHanded) break;
+            }
+            return _emptyHanded;
+        }
+
+        private void ShowSub(string text, bool countdown) => ShowSub(text, countdown ? UiColorRole.Positive : UiColorRole.Dim);
+
+        private void ShowSub(string text, UiColorRole role)
         {
             SetText(_subText, text);
             if (_theme == null) return;
-            Color color = _theme.GetColor(countdown ? UiColorRole.Positive : UiColorRole.Dim);
+            Color color = _theme.GetColor(role);
             if (_subBackground.color != color) _subBackground.color = color;
         }
 
