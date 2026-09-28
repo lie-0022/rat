@@ -57,9 +57,20 @@ namespace RatGame.UI
             if (Vector3.Distance(nm.LocalClient.PlayerObject.transform.position, pos) > range) return;
             if (_lastSqueak.TryGetValue(owner, out float last) && Time.unscaledTime - last < SqueakToastGap) return;
             _lastSqueak[owner] = Time.unscaledTime;
-            string text = $"(찍찍!) {PlayerVisual.ColorNameFor(owner)} · {Where(pos)}";
+            // 쓰러진 채 찍찍 = 구해 달라는 신호 (몸 자리에서 난다 — 고양이 184)
+            bool downed = IsDowned(owner);
+            string text = downed
+                ? $"(찍찍!) 쓰러진 {PlayerVisual.ColorNameFor(owner)} — 여기 있어요 · {Where(pos)}"
+                : $"(찍찍!) {PlayerVisual.ColorNameFor(owner)} · {Where(pos)}";
             Log.Dev($"동료 찍찍 자막: {text}"); // 2인 검증용
-            Show(text, UiColorRole.Secondary);
+            Show(text, downed ? UiColorRole.Danger : UiColorRole.Secondary);
+        }
+
+        private static bool IsDowned(ulong owner)
+        {
+            foreach (var condition in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None)) // 찍찍 때만 — 1.5초에 한 번꼴
+                if (condition.IsSpawned && condition.OwnerClientId == owner) return condition.State.Value == ConditionState.Downed;
+            return false;
         }
 
         // 동료 위기 알림 둘째 줄 — "오른쪽 뒤 23m" (고양이 155)
