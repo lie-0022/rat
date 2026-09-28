@@ -69,14 +69,31 @@ namespace RatGame.AI
         private const float MouthClearance = 0.4f; // 쥐 반지름 0.3 + 여유
         private const float CarryLeadSeconds = 0.2f;
 
+        private static readonly float[] MouthTries = { 0f, 45f, -45f, 90f, -90f, 135f, -135f, 180f };
+
         private Vector3 MouthPoint(PlayerCondition victim)
         {
             // 몸통 충돌체 바로 앞(쥐 반지름 + 여유) — 0.6 고정이면 큰 고양이·키운 충돌체 속에 놓여 튕겼다 (고양이 167)
-            Vector3 p = transform.position + transform.forward * FrontDistance(MouthClearance);
-            p = CatMovement.Sample(p, 0.8f, transform.position);
-            p.y = victim.transform.position.y;
-            return p;
+            // 앞이 벽이면 몸 둘레로 — 바닥이 없다고 고양이 위치를 대신 쓰면 쥐가 고양이 한가운데 놓였다 (고양이 179)
+            float front = FrontDistance(MouthClearance);
+            float minDist = front - 0.1f; // 몸 반지름 + 쥐 반지름 이상
+            for (int i = 0; i < MouthTries.Length; i++)
+            {
+                Vector3 dir = Quaternion.Euler(0f, MouthTries[i], 0f) * transform.forward;
+                if (!UnityEngine.AI.NavMesh.SamplePosition(transform.position + dir * front, out var hit, 0.8f, UnityEngine.AI.NavMesh.AllAreas)) continue;
+                Vector3 flat = hit.position - transform.position; flat.y = 0f;
+                if (flat.magnitude < minDist) continue; // 끌려 들어온 점도 몸 속
+                if (i > 0) MouthFallbacks++;
+                Vector3 p = hit.position;
+                p.y = victim.transform.position.y;
+                return p;
+            }
+            MouthFallbacks++;
+            return victim.transform.position; // 둘 데가 없으면 쥐를 그대로
         }
+
+        /// <summary>테스트용 — 입 자리를 앞이 아닌 곳(또는 제자리)으로 잡은 횟수.</summary>
+        public int MouthFallbacks { get; private set; }
 
         private static void PushVictim(PlayerCondition victim, Vector3 pos)
         {
