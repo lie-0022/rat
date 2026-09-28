@@ -201,6 +201,9 @@ namespace RatGame.UI
                     if (state == ConditionState.Trapped) Show("끈끈이! 동료가 E로 구해 줘야 해요", UiColorRole.Danger);
                     if (state == ConditionState.Stunned) Show("찌릿! 잠깐 못 움직여요", UiColorRole.Warning);
                     if (state == ConditionState.Pinned) Show("잡혔다! A·D 번갈아 연타 = 버둥 — 보는 쪽으로 굴러간다", UiColorRole.Danger);
+                    // 쓰러지면 몸이 대리 몸으로 바뀌고 조작이 멈춘다 — 기다리면 된다는 것과 살아나는 길을 본인에게도 (고양이 183)
+                    if (state == ConditionState.Downed) Show($"쓰러졌어요… 동료가 내 몸을 {(IsWalls ? "창고(주황 방)" : "쥐구멍")}으로 끌고 가면 살아나요", UiColorRole.Danger);
+                    if (prev == ConditionState.Downed) Show("살아났다! 다시 움직여요", UiColorRole.Positive);
                 }
                 else if (prev != state && !p.IsOwner)
                 {
