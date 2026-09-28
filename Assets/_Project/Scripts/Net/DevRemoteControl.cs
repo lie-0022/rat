@@ -17,6 +17,7 @@ namespace RatGame.Net
     ///   report          : 이 클라에서 보이는 모든 쥐의 위치·키(스케일)·고양이 배율 로그 (고양이 137·141)
     ///   trace:초        : 이 클라에서 호스트 쥐 움직임을 매 프레임 재서 요약 — 프레임 간 최대 이동·튐 횟수 (보간 확인, 고양이 137)
     ///   tp:x,y,z        : 소유 클라에서 순간이동 (InvariantCulture 소수점)
+    ///   hud:이름        : 이름에 그 낱말이 든 UI 아래 켜진 글자를 로그 (클라 화면 글자 확인, 고양이 182 — 전체 화면 찍기 대신)
     /// 협동 운반처럼 두 플레이어가 동시에 움직여야 하는 검증에 쓴다. 릴리즈엔 영향 없음(호출부 없음).
     /// </summary>
     public class DevRemoteControl : NetworkBehaviour
@@ -79,6 +80,15 @@ namespace RatGame.Net
             {
                 StartCoroutine(TraceHost(secs));
             }
+            else if (command.StartsWith("hud:"))
+            {
+                string key = command.Substring(4);
+                foreach (var label in FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None))
+                {
+                    if (!label.isActiveAndEnabled || !UnderNamed(label.transform, key)) continue;
+                    Log.Dev($"[DevRC] hud {label.name}: {label.text}");
+                }
+            }
             else if (command.StartsWith("tp:"))
             {
                 // 소유 클라에서 직접 이동 — 호스트가 원격 플레이어를 옮기면 소유자 위치가 곧 덮어써서 테스트가 거짓이 된다
@@ -115,6 +125,13 @@ namespace RatGame.Net
                 last = host.position;
             }
             Log.Dev($"[DevRC] trace: {frames}프레임, 이동 {total:F2}m, 프레임 최대 {maxStep:F3}m, 튐 {pops}, 멈춘 프레임 {still}, 최고 y {maxY:F2}");
+        }
+
+        private static bool UnderNamed(Transform t, string key)
+        {
+            for (; t != null; t = t.parent)
+                if (t.name.Contains(key)) return true;
+            return false;
         }
     }
 }

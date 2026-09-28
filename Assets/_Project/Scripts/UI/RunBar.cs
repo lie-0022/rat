@@ -36,7 +36,8 @@ namespace RatGame.UI
         private float _padSearchAt;
         private float _popupUntil;
         private bool _emptyHanded;
-        private float _emptyCheckAt;
+        private int _downedCount;
+        private float _scanAt;
 
         private void Update()
         {
@@ -86,15 +87,20 @@ namespace RatGame.UI
             bool sub = true;
             int ready = run.ReturnReadyCount.Value, needed = run.ReturnNeededCount.Value;
             // 예전 루프는 할당량이 없어 식량 0이어도 떠난다 — 실수로 빈손 귀환하지 않게 알려만 준다 (고양이 181)
-            bool empty = quota == null && stashed == 0 && (ready > 0 || phase == RunPhase.Returning) && EmptyHanded();
+            bool gathering = ready > 0 || phase == RunPhase.Returning;
+            if (gathering) Scan();
+            bool empty = gathering && quota == null && stashed == 0 && _emptyHanded;
+            // 집합은 쓰러진 쥐를 빼고 센다 — 그 쥐와 든 물건을 두고 떠난다는 걸 모이는 줄에 알린다 (고양이 182)
+            string left = gathering && _downedCount > 0 ? $" · 쓰러진 {_downedCount}명 두고 감" : "";
+            bool warn = empty || left.Length > 0;
             if (phase == RunPhase.Returning)
-                ShowSub($"<size=130%>{(quota != null ? "다음으로" : "귀환 중")}… {Remaining(run.ReturnAt.Value):0}</size>{(empty ? " · 빈손" : "")}",
-                    empty ? UiColorRole.Warning : UiColorRole.Positive);
+                ShowSub($"<size=130%>{(quota != null ? "다음으로" : "귀환 중")}… {Remaining(run.ReturnAt.Value):0}</size>{(empty ? " · 빈손" : "")}{left}",
+                    warn ? UiColorRole.Warning : UiColorRole.Positive);
             else if (ready > 0 && quota != null && !quota.Met(stashed)) // 창고에 왔는데 모자람
                 ShowSub($"식량이 모자라요 — {quota.Quota.Value - stashed} 더 모아 창고에", false);
             else if (ready > 0) // 누가 쥐구멍에 들어가 있을 때만 — 나머지를 부르는 신호
-                ShowSub(quota != null ? $"창고에 모이면 다음으로   {ready}/{needed}" : $"쥐구멍에 모이면 귀환   {ready}/{needed}{(empty ? " · 아직 빈손이에요" : "")}",
-                    empty ? UiColorRole.Warning : UiColorRole.Dim);
+                ShowSub((quota != null ? $"창고에 모이면 다음으로   {ready}/{needed}" : $"쥐구멍에 모이면 귀환   {ready}/{needed}{(empty ? " · 아직 빈손이에요" : "")}") + left,
+                    warn ? UiColorRole.Warning : UiColorRole.Dim);
             else if (quota != null && quota.Met(stashed)) // 채웠지만 아직 아무도 창고에 없음 — 갈지 더 모을지 (고양이 95)
                 ShowSub($"할당량 채움! 창고에 모이면 다음 · 상점 돈 +{stashed - quota.Quota.Value}", false); // 짧게 — 오른쪽 토스트 칸과 안 겹치게
             else
@@ -131,24 +137,25 @@ namespace RatGame.UI
             SetVisible(true, false, true);
         }
 
-        // 누구 손·주머니에도 값 있는 물건이 없나 (귀환 계산과 같은 기준, 0.5초마다)
-        private bool EmptyHanded()
+        // 0.5초마다: 누구 손·주머니에도 값 있는 물건이 없나(귀환 계산과 같은 기준) + 쓰러진 쥐 수. 동기화된 값만 읽어 클라도 같다
+        private void Scan()
         {
-            if (Time.time < _emptyCheckAt) return _emptyHanded;
-            _emptyCheckAt = Time.time + 0.5f;
+            if (Time.time < _scanAt) return;
+            _scanAt = Time.time + 0.5f;
             _emptyHanded = true;
             foreach (var carry in FindObjectsByType<PlayerCarryController>(FindObjectsSortMode.None))
             {
-                if (carry.CarriedItem != null && carry.CarriedItem.EffectiveValue > 0) { _emptyHanded = false; break; }
+                if (HasValue(carry.CarriedItem)) { _emptyHanded = false; break; }
                 for (int s = 0; s < carry.SlotCount && _emptyHanded; s++)
-                {
-                    var item = carry.GetSlotItem(s);
-                    if (item != null && item.EffectiveValue > 0) _emptyHanded = false;
-                }
+                    if (HasValue(carry.GetSlotItem(s))) _emptyHanded = false;
                 if (!_emptyHanded) break;
             }
-            return _emptyHanded;
+            _downedCount = 0;
+            foreach (var condition in FindObjectsByType<PlayerCondition>(FindObjectsSortMode.None))
+                if (condition.IsSpawned && condition.State.Value == ConditionState.Downed) _downedCount++;
         }
+
+        private static bool HasValue(CarryableItem item) => item != null && item.EffectiveValue > 0;
 
         private void ShowSub(string text, bool countdown) => ShowSub(text, countdown ? UiColorRole.Positive : UiColorRole.Dim);
 
