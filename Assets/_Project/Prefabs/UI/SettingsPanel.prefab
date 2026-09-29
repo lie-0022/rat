@@ -1145,6 +1145,7 @@ GameObject:
   - component: {fileID: 2274495041061819042}
   - component: {fileID: 1467449469180552788}
   - component: {fileID: 7661766799888808485}
+  - component: {fileID: 4248806571322759726}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -1286,6 +1287,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &4248806571322759726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976018870082529882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &1150959480050440153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1298,6 +1311,7 @@ GameObject:
   - component: {fileID: 3235116330686354419}
   - component: {fileID: 8035068796652055951}
   - component: {fileID: 4408513686453390346}
+  - component: {fileID: 7340638456362073755}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -1439,6 +1453,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 2
+--- !u!114 &7340638456362073755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150959480050440153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &1176409328627507625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1542,6 +1568,7 @@ GameObject:
   - component: {fileID: 3628433980426325342}
   - component: {fileID: 4273876660752067739}
   - component: {fileID: 3819253484437693260}
+  - component: {fileID: 4663385639858529738}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -1683,6 +1710,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 6
   _text: 2
+--- !u!114 &4663385639858529738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361967805195517982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &1395633440951589577
 GameObject:
   m_ObjectHideFlags: 0
@@ -2204,6 +2243,7 @@ GameObject:
   - component: {fileID: 6896425817284717359}
   - component: {fileID: 2900145690129756534}
   - component: {fileID: 5685521883033668903}
+  - component: {fileID: 8535811168652338192}
   m_Layer: 0
   m_Name: "Heading_\uD654\uBA74"
   m_TagString: Untagged
@@ -2365,6 +2405,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8535811168652338192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1736211311799278998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &1943333658221099787
 GameObject:
   m_ObjectHideFlags: 0
@@ -3505,6 +3557,7 @@ GameObject:
   - component: {fileID: 8638211812857431898}
   - component: {fileID: 348206320497761362}
   - component: {fileID: 5076052246320747676}
+  - component: {fileID: 6848468221102667488}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -3646,6 +3699,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &6848468221102667488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2470428301943282826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &2497258832268123819
 GameObject:
   m_ObjectHideFlags: 0
@@ -3658,6 +3723,7 @@ GameObject:
   - component: {fileID: 5428581116040988420}
   - component: {fileID: 7963837245363944616}
   - component: {fileID: 3518318583810476389}
+  - component: {fileID: 9102832076846831788}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -3799,6 +3865,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 2
+--- !u!114 &9102832076846831788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2497258832268123819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &2589531815497309475
 GameObject:
   m_ObjectHideFlags: 0
@@ -4055,6 +4133,7 @@ GameObject:
   - component: {fileID: 8126569986170523835}
   - component: {fileID: 8819185314668145475}
   - component: {fileID: 1886028163778761001}
+  - component: {fileID: 1440597504074409783}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -4196,6 +4275,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &1440597504074409783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2799225876416147133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &2806887115241032086
 GameObject:
   m_ObjectHideFlags: 0
@@ -5106,6 +5197,7 @@ GameObject:
   - component: {fileID: 6386638544217150129}
   - component: {fileID: 8218757575560143776}
   - component: {fileID: 975341288737567910}
+  - component: {fileID: 2993893480185800263}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -5247,6 +5339,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &2993893480185800263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3500302683828485154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &3549138048857615165
 GameObject:
   m_ObjectHideFlags: 0
@@ -6616,6 +6720,7 @@ GameObject:
   - component: {fileID: 7069331937388642618}
   - component: {fileID: 3694978270179749213}
   - component: {fileID: 6198452479798156891}
+  - component: {fileID: 8768800814431190804}
   m_Layer: 0
   m_Name: Title
   m_TagString: Untagged
@@ -6757,6 +6862,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 7
   _text: 1
+--- !u!114 &8768800814431190804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4895473073770304259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &4972119256987966261
 GameObject:
   m_ObjectHideFlags: 0
@@ -6901,6 +7018,7 @@ GameObject:
   - component: {fileID: 981943610178008896}
   - component: {fileID: 845925269265487930}
   - component: {fileID: 7256743325542481850}
+  - component: {fileID: 5643511712043378835}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -7042,6 +7160,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &5643511712043378835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5233629294312247032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &5515083389738561500
 GameObject:
   m_ObjectHideFlags: 0
@@ -7532,6 +7662,7 @@ GameObject:
   - component: {fileID: 8706316323555750772}
   - component: {fileID: 6970041348812609117}
   - component: {fileID: 7572156743024482357}
+  - component: {fileID: 8390942040382038380}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -7673,6 +7804,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &8390942040382038380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5809260716578346426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &5831722735398028697
 GameObject:
   m_ObjectHideFlags: 0
@@ -8533,6 +8676,7 @@ GameObject:
   - component: {fileID: 1964183753857976246}
   - component: {fileID: 6760763461319427281}
   - component: {fileID: 4638475329477190390}
+  - component: {fileID: 5877915713801924545}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -8674,6 +8818,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &5877915713801924545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715435080142173628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &6770564258471237721
 GameObject:
   m_ObjectHideFlags: 0
@@ -8885,6 +9041,7 @@ GameObject:
   - component: {fileID: 1452963912542227327}
   - component: {fileID: 7540566998997293546}
   - component: {fileID: 4576217689373165634}
+  - component: {fileID: 5919598194938471237}
   m_Layer: 0
   m_Name: "Heading_\uC870\uC791"
   m_TagString: Untagged
@@ -9046,6 +9203,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &5919598194938471237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6799034962630068908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &6837471551944852001
 GameObject:
   m_ObjectHideFlags: 0
@@ -9058,6 +9227,7 @@ GameObject:
   - component: {fileID: 816155674244159491}
   - component: {fileID: 3470398712153364844}
   - component: {fileID: 8435697252389616981}
+  - component: {fileID: 4966153268372523758}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -9199,6 +9369,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &4966153268372523758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6837471551944852001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &6915035735823799617
 GameObject:
   m_ObjectHideFlags: 0
@@ -9669,6 +9851,7 @@ GameObject:
   - component: {fileID: 3573891298079344580}
   - component: {fileID: 8197327550496228783}
   - component: {fileID: 3143728441001523659}
+  - component: {fileID: 1572973464325304209}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -9810,6 +9993,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &1572973464325304209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7247572620695588040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &7456206525784929872
 GameObject:
   m_ObjectHideFlags: 0
@@ -10065,6 +10260,7 @@ GameObject:
   - component: {fileID: 3409568613084348948}
   - component: {fileID: 3114448684367087568}
   - component: {fileID: 7516792631486405230}
+  - component: {fileID: 1717560783427249823}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -10206,6 +10402,18 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &1717560783427249823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7739032838012451723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &7795481380377333056
 GameObject:
   m_ObjectHideFlags: 0
@@ -11357,6 +11565,7 @@ GameObject:
   - component: {fileID: 795495588398136720}
   - component: {fileID: 2680675655331162035}
   - component: {fileID: 1766958018027102345}
+  - component: {fileID: 8938550103086829680}
   m_Layer: 0
   m_Name: "Heading_\uC18C\uB9AC"
   m_TagString: Untagged
@@ -11518,6 +11727,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8938550103086829680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8682392908876284793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &8892935490732764140
 GameObject:
   m_ObjectHideFlags: 0
@@ -11720,6 +11941,7 @@ GameObject:
   - component: {fileID: 6917050944040939040}
   - component: {fileID: 7557086035392168449}
   - component: {fileID: 7613115854758395314}
+  - component: {fileID: 1959249535872378016}
   m_Layer: 0
   m_Name: "Heading_\uC5B8\uC5B4"
   m_TagString: Untagged
@@ -11881,6 +12103,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1959249535872378016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8992992681162970409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
 --- !u!1 &9113691469787004620
 GameObject:
   m_ObjectHideFlags: 0

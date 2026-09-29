@@ -39,12 +39,17 @@ namespace RatGame.UI
             _confirmLeaveButton.onClick.AddListener(LeaveSession);
             _cancelLeaveButton.onClick.AddListener(HideConfirm);
             _settings.Closed += OnSettingsClosed;
+            Loc.Changed += OnLanguageChanged;
             _root.SetActive(false);
         }
+
+        // 설정 창에서 언어를 바꾸고 돌아오면 세션 줄도 새 언어로
+        private void OnLanguageChanged() => _sessionText.text = DescribeSession();
 
         // 세션 종료로 HUD째 파괴돼도 입력이 묶여 있지 않게
         private void OnDestroy()
         {
+            Loc.Changed -= OnLanguageChanged;
             if (_open) InputFocus.PanelClosed(false);
         }
 

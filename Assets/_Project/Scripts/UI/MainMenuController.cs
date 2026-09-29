@@ -36,17 +36,25 @@ namespace RatGame.UI
             _joinButton.onClick.AddListener(OnJoin);
             _settingsButton.onClick.AddListener(OnSettings);
             _quitButton.onClick.AddListener(OnQuit);
-            _versionText.text = $"v{Application.version}{(Debug.isDebugBuild ? Loc.T(" · 개발 빌드") : "")}";
-            var launcher = NetworkLauncher.Instance;
-            _modeText.text = launcher != null && launcher.UsingSteam
-                ? $"Steam · {launcher.Steam.PersonaName}"
-                : Loc.T("로컬 모드 (같은 PC에서만 참가)");
+            RefreshFooter();
+            Loc.Changed += RefreshFooter;
             SetStatus("", UiColorRole.TextMuted);
+            var launcher = NetworkLauncher.Instance;
             if (launcher != null)
             {
                 launcher.JoinStarted += OnInviteJoinStarted;
                 launcher.LaunchFailed += OnLaunchFailed;
             }
+        }
+
+        // 아래 버전·연결 상태 줄 — 설정에서 언어를 바꾸면 다시 쓴다
+        private void RefreshFooter()
+        {
+            _versionText.text = $"v{Application.version}{(Debug.isDebugBuild ? Loc.T(" · 개발 빌드") : "")}";
+            var launcher = NetworkLauncher.Instance;
+            _modeText.text = launcher != null && launcher.UsingSteam
+                ? $"Steam · {launcher.Steam.PersonaName}"
+                : Loc.T("로컬 모드 (같은 PC에서만 참가)");
         }
 
         private void Start()
@@ -60,6 +68,7 @@ namespace RatGame.UI
 
         private void OnDestroy()
         {
+            Loc.Changed -= RefreshFooter;
             var nm = NetworkManager.Singleton;
             if (nm != null) nm.OnClientDisconnectCallback -= OnClientDisconnected;
             var launcher = NetworkLauncher.Instance;
