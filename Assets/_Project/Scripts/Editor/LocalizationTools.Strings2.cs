@@ -163,6 +163,9 @@ namespace RatGame.EditorTools
             ["혼자 연 방에서 귀환하거나 엔딩 보기"] = "Get home or see the ending in a solo room",
             ["수집가"] = "Collector",
             ["도감 15종 채우기"] = "Fill 15 codex entries",
+            ["완료"] = "Done",
+            ["  · 보상: {0}"] = "  · Reward: {0}",
+            [" · 도전과제 {0}/{1}"] = " · Achievements {0}/{1}",
         };
     }
 }

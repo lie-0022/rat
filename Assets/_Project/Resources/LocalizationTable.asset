@@ -965,3 +965,9 @@ MonoBehaviour:
     En: Collector
   - Ko: "\uB3C4\uAC10 15\uC885 \uCC44\uC6B0\uAE30"
     En: Fill 15 codex entries
+  - Ko: "\uC644\uB8CC"
+    En: Done
+  - Ko: "  \xB7 \uBCF4\uC0C1: {0}"
+    En: "  \xB7 Reward: {0}"
+  - Ko: " \xB7 \uB3C4\uC804\uACFC\uC81C {0}/{1}"
+    En: " \xB7 Achievements {0}/{1}"
