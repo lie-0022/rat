@@ -821,3 +821,67 @@ MonoBehaviour:
       {1}'
   - Ko: "{0}\uAC00 \uB098\uAC14\uC5B4\uC694"
     En: '{0} left'
+  - Ko: "(\uBC30 \uAF2C\uB974\uB975 \u2014 \uACE0\uC591\uC774\uAC00 \uBC25 \uBA39\uC73C\uB7EC)"
+    En: "(Tummy rumble \u2014 the cat heads to eat)"
+  - Ko: "(\uBAA8\uB798 \uAE01\uB294 \uC18C\uB9AC\u2026 \uACE7 \uC6B0\uB2E4\uB2E4!)"
+    En: "(Litter scratching\u2026 zoomies incoming!)"
+  - Ko: "(\uCC3D\uAC00 \uCABD \uAE30\uC9C0\uAC1C \u2014 \uD587\uBCD5 \uCB10\uB7EC)"
+    En: "(A stretch by the window \u2014 off to sunbathe)"
+  - Ko: "(\uCA4C\uC5B5 \uD558\uD488 \u2014 \uC790\uB7EC \uAC04\uB2E4)"
+    En: "(Big yawn \u2014 off to nap)"
+  - Ko: "(\uD560\uC9DD\uD560\uC9DD \u2014 \uBB3C \uB9C8\uC2DC\uB7EC)"
+    En: "(Lap lap \u2014 off to drink)"
+  - Ko: "(\uCE04\uB985\u2026 \uC5B4\uB514\uC120\uAC00)"
+    En: "(Slurp\u2026 from somewhere)"
+  - Ko: "(\uB0D0\uC559! \u2014 \uC544\uAE30 \uACE0\uC591\uC774\uAC00 \uC5C4\uB9C8\uB97C
+      \uBD80\uB978\uB2E4)"
+    En: "(Mew! \u2014 a kitten calls for mom)"
+  - Ko: "(\uCFE8\uCFE8\u2026 \uBB38\uC9C0\uAE30\uAC00 \uC878\uACE0 \uC788\uB2E4 \u2014
+      \uC9C0\uAE08!)"
+    En: "(Zzz\u2026 the gatekeeper is dozing \u2014 now!)"
+  - Ko: "(\uAFB8\uBC85\uAFB8\uBC85\u2026 \uC21C\uCC30\uAFBC\uC774 \uC7A0\uB4E4\uC5C8\uB2E4
+      \u2014 \uD070\uAE38\uC774 \uBE48\uB2E4)"
+    En: "(Nodding off\u2026 the patroller fell asleep \u2014 the main hall is clear)"
+  - Ko: "(\uB4DC\uB974\uB801\u2026 \uACE0\uC591\uC774\uAC00 \uAE4A\uC774 \uC7A0\uB4E4\uC5C8\uB2E4)"
+    En: "(Snore\u2026 the cat is fast asleep)"
+  - Ko: "(\uB4DC\uB974\uB801\u2026 \uBB38\uC9C0\uAE30\uAC00 \uAE4A\uC774 \uC7A0\uB4E4\uC5C8\uB2E4)"
+    En: "(Snore\u2026 the gatekeeper is fast asleep)"
+  - Ko: "(\uB4DC\uB974\uB801\u2026 \uC21C\uCC30\uAFBC\uC774 \uAE4A\uC774 \uC7A0\uB4E4\uC5C8\uB2E4)"
+    En: "(Snore\u2026 the patroller is fast asleep)"
+  - Ko: "(\uB4DC\uB974\uB801\u2026 \uC544\uAE30 \uACE0\uC591\uC774\uAC00 \uAE4A\uC774
+      \uC7A0\uB4E4\uC5C8\uB2E4)"
+    En: "(Snore\u2026 the kitten is fast asleep)"
+  - Ko: "(\uCF54\uACE8\uC774\uAC00 \uBA48\uCDC4\uB2E4 \u2014 \uACE7 \uAE6C\uB2E4!)"
+    En: "(The snoring stopped \u2014 waking soon!)"
+  - Ko: "(\uBB38\uC9C0\uAE30 \uCF54\uACE8\uC774\uAC00 \uBA48\uCDC4\uB2E4 \u2014 \uACE7
+      \uAE6C\uB2E4!)"
+    En: "(The gatekeeper stopped snoring \u2014 waking soon!)"
+  - Ko: "(\uC21C\uCC30\uAFBC \uCF54\uACE8\uC774\uAC00 \uBA48\uCDC4\uB2E4 \u2014 \uACE7
+      \uAE6C\uB2E4!)"
+    En: "(The patroller stopped snoring \u2014 waking soon!)"
+  - Ko: "(\uC544\uAE30 \uACE0\uC591\uC774 \uCF54\uACE8\uC774\uAC00 \uBA48\uCDC4\uB2E4
+      \u2014 \uACE7 \uAE6C\uB2E4!)"
+    En: "(The kitten stopped snoring \u2014 waking soon!)"
+  - Ko: "(\uCC0D\uCC0D!) \uC4F0\uB7EC\uC9C4 {0} \u2014 \uC5EC\uAE30 \uC788\uC5B4\uC694
+      \xB7 {1}"
+    En: "(Squeak!) Downed {0} \u2014 over here \xB7 {1}"
+  - Ko: "(\uCC0D\uCC0D!) {0} \xB7 {1}"
+    En: "(Squeak!) {0} \xB7 {1}"
+  - Ko: "\uC55E"
+    En: ahead
+  - Ko: "\uC624\uB978\uCABD \uC55E"
+    En: ahead right
+  - Ko: "\uC624\uB978\uCABD"
+    En: right
+  - Ko: "\uC624\uB978\uCABD \uB4A4"
+    En: behind right
+  - Ko: "\uB4A4"
+    En: behind
+  - Ko: "\uC67C\uCABD \uB4A4"
+    En: behind left
+  - Ko: "\uC67C\uCABD"
+    En: left
+  - Ko: "\uC67C\uCABD \uC55E"
+    En: ahead left
+  - Ko: "(\uD081\uD081\u2026 \uCF54\uAC00 \uC544\uC9C1 \uC5BC\uC5BC \u2014 {0}\uCD08)"
+    En: "(Sniff\u2026 nose still tingling \u2014 {0}s)"

@@ -250,6 +250,7 @@
 - [ ] **U-194 패널 영어** (3번째 루프, 기지·벽 속) — English 적용 뒤 기지 자판기 "Rat Shop": "Bigger pockets / +1 pocket slot…", 도감 "Codex 2/21"·해금한 물건 소개글 영어, 거울 "Black rat … Wear". 벽 속 상점: "Yarn ball / Throw it and cats chase it / 40 food". 로딩 화면 제목 "Off to the storeroom". 번역 문장이 어색하면 적어 주세요(임시 번역).
 - [ ] **U-195 결과 화면 영어** (3번째 루프, 창고·벽 속) — English 적용 뒤 창고에서 쥐구멍으로 귀환: "Made it home safe!", 수확 칸 "Haul / Stashed in mousehole / Carried home / This haul / Total", "Today's rats", "to base in 7s". 로딩 화면 팁이 영어. 벽 속에서 스테이지를 넘기면 "Stage 1 clear! / The family ate …".
 - [ ] **U-196 알림 영어** (3번째 루프, 벽 속·창고) — English 적용 뒤 벽 속 출발: 오른쪽 알림 "Stage 1/5 — gather … food…", 스테이지 1 팁 "R sniff = …· Tab map". 집주인 사건(청소기·초인종 등)·치즈 먹기 "Yum — stamina +25"·끈끈이 "Glued! …"·쓰러짐 안내 영어. 2인이면 "Blue rat joined", 동료 위기 "Blue rat is stuck on a glue trap!…"(방향·거리 줄은 아직 한국어 — 다음 작업).
+- [ ] **U-197 소리 자막 영어** (3번째 루프, 벽 속) — English 적용 뒤 고양이 근처: "(Big yawn — off to nap) · ahead left", 문지기가 자면 "(Snore… the gatekeeper is fast asleep)". R을 연타하면 "(Sniff… nose still tingling — 3s)". 2인이면 동료 Q에 "(Squeak!) Blue rat · right 8m". **여기까지 되면 영어 모드에서 한국어가 남은 곳을 적어 주세요** (개발용 F3·F4 화면은 제외).
 
 - [ ] **U-188 F1 위기 때** (3번째 루프) — F1을 누르면 맨 아래에 "위기 때" 두 줄(쓰러짐 — 몸을 쥐구멍(창고)에 넣으면 삶 / 끈끈이 — 동료가 옆에서 E 길게), 상호작용·찍찍 설명이 늘어남. 글자가 전보다 작아지지 않았는지, **4인일 때** 패널 아래가 화면 밖으로 안 나가는지.
   - 내 검증: 한글 입력 상태에서 W/A/S/D·E·Q·F·R, 창 안에 다 들어감. 사진 `production/plans/cat-176/`.

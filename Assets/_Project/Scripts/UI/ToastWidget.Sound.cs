@@ -34,10 +34,12 @@ namespace RatGame.UI
                 CatCueKind.KittenCall => "(냐앙! — 아기 고양이가 엄마를 부른다)",
                 CatCueKind.GuardNap => "(쿨쿨… 문지기가 졸고 있다 — 지금!)",
                 CatCueKind.PatrolNap => "(꾸벅꾸벅… 순찰꾼이 잠들었다 — 큰길이 빈다)",
-                CatCueKind.Snore => $"(드르렁… {RoleName(catPos, "고양이가", "문지기가", "순찰꾼이", "아기 고양이가")} 깊이 잠들었다)",
-                CatCueKind.SnoreStop => $"({RoleName(catPos, "", "문지기 ", "순찰꾼 ", "아기 고양이 ")}코골이가 멈췄다 — 곧 깬다!)",
+                // 역할별 통문장 — 조사 조각을 끼우면 번역이 안 돼서 (고양이 197)
+                CatCueKind.Snore => RoleName(catPos, "(드르렁… 고양이가 깊이 잠들었다)", "(드르렁… 문지기가 깊이 잠들었다)", "(드르렁… 순찰꾼이 깊이 잠들었다)", "(드르렁… 아기 고양이가 깊이 잠들었다)"),
+                CatCueKind.SnoreStop => RoleName(catPos, "(코골이가 멈췄다 — 곧 깬다!)", "(문지기 코골이가 멈췄다 — 곧 깬다!)", "(순찰꾼 코골이가 멈췄다 — 곧 깬다!)", "(아기 고양이 코골이가 멈췄다 — 곧 깬다!)"),
                 _ => null
             };
+            text = Loc.T(text);
             if (text == null || text == _lastCue) return;
             _lastCue = text;
             if (kind != CatCueKind.Ambush) text += " · " + DirectionFrom(catPos); // 매복은 어디서인지 모르는 게 핵심 (고양이 153)
@@ -60,8 +62,8 @@ namespace RatGame.UI
             // 쓰러진 채 찍찍 = 구해 달라는 신호 (몸 자리에서 난다 — 고양이 184)
             bool downed = IsDowned(owner);
             string text = downed
-                ? $"(찍찍!) 쓰러진 {PlayerVisual.ColorNameFor(owner)} — 여기 있어요 · {Where(pos)}"
-                : $"(찍찍!) {PlayerVisual.ColorNameFor(owner)} · {Where(pos)}";
+                ? Loc.F("(찍찍!) 쓰러진 {0} — 여기 있어요 · {1}", Loc.T(PlayerVisual.ColorNameFor(owner)), Where(pos))
+                : Loc.F("(찍찍!) {0} · {1}", Loc.T(PlayerVisual.ColorNameFor(owner)), Where(pos));
             Log.Dev($"동료 찍찍 자막: {text}"); // 2인 검증용
             Show(text, downed ? UiColorRole.Danger : UiColorRole.Secondary);
         }
@@ -88,13 +90,13 @@ namespace RatGame.UI
         private static string DirectionFrom(Vector3 source)
         {
             var cam = Camera.main;
-            if (cam == null) return Directions[0];
+            if (cam == null) return Loc.T(Directions[0]);
             Vector3 to = source - cam.transform.position; to.y = 0f;
             Vector3 fwd = cam.transform.forward; fwd.y = 0f;
-            if (to.sqrMagnitude < 0.01f || fwd.sqrMagnitude < 0.0001f) return Directions[0];
+            if (to.sqrMagnitude < 0.01f || fwd.sqrMagnitude < 0.0001f) return Loc.T(Directions[0]);
             float angle = Vector3.SignedAngle(fwd, to, Vector3.up); // 오른쪽이 +
             int i = Mathf.RoundToInt(Mathf.Repeat(angle, 360f) / 45f) % 8;
-            return Directions[i];
+            return Loc.T(Directions[i]);
         }
 
         private float _lastSniffHintAt = -10f;
@@ -104,7 +106,7 @@ namespace RatGame.UI
         {
             if (Time.unscaledTime - _lastSniffHintAt < 1f) return;
             _lastSniffHintAt = Time.unscaledTime;
-            string text = $"(킁킁… 코가 아직 얼얼 — {Mathf.CeilToInt(secondsLeft)}초)";
+            string text = Loc.F("(킁킁… 코가 아직 얼얼 — {0}초)", Mathf.CeilToInt(secondsLeft));
             Log.Dev($"킁킁 쿨다운 안내: {text}");
             Show(text, UiColorRole.Secondary, 1.5f);
         }
