@@ -42,6 +42,7 @@ namespace RatGame.World
 
         /// <summary>동시에 잡을 수 있는 인원 (대형 = 자동 슬롯 수). 클라에서도 계산 가능 — HUD용.</summary>
         public int CarrySlotCount => IsHeavy ? HeavySlotCount : (_gripPoints != null ? _gripPoints.Length : 0);
+        private int HeavySlotCount => _balance != null ? _balance.HeavyCarrySlots(Mass) : 2; // 특대 4 (고양이 212)
         public bool IsCarrySlotsFull => CarrierIds.Count >= CarrySlotCount;
 
         /// <summary>금 간 Fragile (Durability&lt;0.5) — 정산 가치 감소, HUD "금 감" 표시가 같은 기준을 쓴다.</summary>
@@ -66,7 +67,6 @@ namespace RatGame.World
         private readonly Dictionary<ulong, ConfigurableJoint> _joints = new();
 
         // 자동 대형: 긴 변 양쪽 면 중앙. LocalAnchor = 쥐가 서는 점(면에서 바깥으로 stand 거리) — 조인트가 이 점을 쥐 몸에 붙인다
-        private const int HeavySlotCount = 2;
         private struct CarrySlot { public Vector3 LocalAnchor; }
         private CarrySlot[] _carrySlots;
 

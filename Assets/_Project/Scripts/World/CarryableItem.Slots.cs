@@ -24,13 +24,17 @@ namespace RatGame.World
             bool longIsZ = half.z * sz >= half.x * sx;
             float stand = _balance.CarrySlotStandDistance;
 
-            _carrySlots = new CarrySlot[HeavySlotCount];
-            for (int i = 0; i < HeavySlotCount; i++)
+            int count = HeavySlotCount;
+            _carrySlots = new CarrySlot[count];
+            // 2자리: 긴 변 양쪽 한가운데. 4자리(특대): 긴 변 양쪽에 둘씩 — 긴 축 1/4·3/4 지점 (docs/05 "특대 grip 4", 고양이 212).
+            // 순서는 양쪽 번갈아(0 = +쪽, 1 = −쪽, …) — 두 번째 사람이 반대편에 서는 기존 규칙(ChooseCarrySlot)과 맞게
+            for (int i = 0; i < count; i++)
             {
-                float sign = i == 0 ? 1f : -1f;
+                float sign = i % 2 == 0 ? 1f : -1f;
+                float along = count <= 2 ? 0f : (i < 2 ? 0.5f : -0.5f); // 긴 축 반길이 비율
                 Vector3 anchor = longIsZ
-                    ? new Vector3(center.x + sign * (half.x + stand / sx), center.y + half.y, center.z)
-                    : new Vector3(center.x, center.y + half.y, center.z + sign * (half.z + stand / sz));
+                    ? new Vector3(center.x + sign * (half.x + stand / sx), center.y + half.y, center.z + along * half.z)
+                    : new Vector3(center.x + along * half.x, center.y + half.y, center.z + sign * (half.z + stand / sz));
                 _carrySlots[i] = new CarrySlot { LocalAnchor = anchor };
             }
         }

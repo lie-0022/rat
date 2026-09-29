@@ -51,6 +51,7 @@ namespace RatGame.EditorTools
                 if (armed == "carry") Begin("운반 입력", CarrySteps());
                 else if (armed == "chase") Begin("고양이 추격", ChaseSteps());
                 else if (armed == "heavy2p") Begin("대형 2인 운반", HeavyCarrySteps(), false);
+                else if (armed == "xl4p") Begin("특대 4인 운반", ExtraLargeSteps(), false);
             };
         }
 

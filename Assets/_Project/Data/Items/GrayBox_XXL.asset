@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67a0e138a810e4cb3b1b76ee7b8f4bd0, type: 3}
   m_Name: GrayBox_XXL
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.LootItemSO
+  _id: 
   _displayName: GrayBox_XXL
+  _codexFlavor: 
   _baseValue: 200
   _mass: 20
+  _traits: 0
+  _tier: 2
+  _prefab: {fileID: 0}
+  _icon: {fileID: 0}

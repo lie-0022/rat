@@ -54,6 +54,8 @@ sprint 금지  = loadPerRat > 3
 | 대형 | 치즈 덩어리, 바게트 | 8~12 | 2~3 | 2 |
 | 특대 | 수박 조각, 로스트치킨 | 16~24 | 4 | 3~4 |
 
+- **잡는 자리 수 (구현, 2026-09-30 고양이 212)**: 대형(Large·Special 등급)은 무게로 나눈다 — `extraLargeMass` 16kg 이상 = 특대 **4자리**(`extraLargeCarrySlots`), 아니면 **2자리**(`largeCarrySlots`). 특대는 등급이 아니라 무게(통닭 22·수박 18은 등급 Large). 자리 위치: 2자리는 긴 변 양쪽 한가운데, 4자리는 긴 변 양쪽 둘씩(긴 축 1/4·3/4). 시험 상자 GrayBox_XXL(20kg)은 등급이 Small로 잘못돼 있어 Large로 고침.
+
 ## 잡기 판정 플로우 (03 문서의 RPC와 연결)
 
 1. 소유 클라: Grab 홀드 시작 → 카메라 전방 SphereCast(r 0.35, d 1.0, Carryable 레이어)
