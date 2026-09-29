@@ -21,7 +21,7 @@ namespace RatGame.EditorTools
     /// 결과 한 줄 "[Rat] 플레이 시험 … 통과/실패". 세이브는 런을 끝내지 않아 안 바뀐다.
     /// </summary>
     [InitializeOnLoad]
-    public static class PlayTests
+    public static partial class PlayTests
     {
         private const string ArmedKey = "RatGame.PlayTest.Armed";
 
@@ -50,6 +50,7 @@ namespace RatGame.EditorTools
                 SessionState.SetString(ArmedKey, "");
                 if (armed == "carry") Begin("운반 입력", CarrySteps());
                 else if (armed == "chase") Begin("고양이 추격", ChaseSteps());
+                else if (armed == "heavy2p") Begin("대형 2인 운반", HeavyCarrySteps(), false);
             };
         }
 
@@ -66,10 +67,10 @@ namespace RatGame.EditorTools
             EditorApplication.isPlaying = true;
         }
 
-        private static void Begin(string name, List<Step> body)
+        private static void Begin(string name, List<Step> body, bool warehouse = true)
         {
             _name = name;
-            _steps = new List<Step>(ToWarehouse());
+            _steps = warehouse ? new List<Step>(ToWarehouse()) : new List<Step>();
             _steps.AddRange(body);
             _index = 0; _fails = 0; Report.Clear();
             _stepAt = _startAt = EditorApplication.timeSinceStartup;
@@ -80,7 +81,7 @@ namespace RatGame.EditorTools
         private static void Tick()
         {
             if (!EditorApplication.isPlaying) { EditorApplication.update -= Tick; return; }
-            if (EditorApplication.timeSinceStartup - _startAt > 120) { Fail("2분 초과"); Done(); return; }
+            if (EditorApplication.timeSinceStartup - _startAt > 180) { Fail("3분 초과"); Done(); return; } // 2인 시험은 빌드 클라 켜는 데 수십 초
             if (_index >= _steps.Count && _name == "고양이 추격") Report.Append($" | 전이 {string.Join(",", Transitions)}");
             if (_index >= _steps.Count) { Done(); return; }
             var s = _steps[_index];
@@ -98,11 +99,15 @@ namespace RatGame.EditorTools
             _stepAt = EditorApplication.timeSinceStartup;
         }
 
+        private static Action OnDone; // 시험별 정리 (빌드 클라 닫기 등)
+
         private static void Fail(string why) { _fails++; Report.Append($" | ✗ {why}"); }
 
         private static void Done()
         {
             EditorApplication.update -= Tick;
+            OnDone?.Invoke();
+            OnDone = null;
             InputSystem.QueueStateEvent(Mouse.current, new MouseState());
             InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
             Debug.Log($"[Rat] 플레이 시험 {_name} — {(_fails == 0 ? "통과" : $"실패 {_fails}")} ({EditorApplication.timeSinceStartup - _startAt:0}초){Report}");
