@@ -99,8 +99,17 @@ namespace RatGame.EditorTools
             yield return new Step { Name = $"{n}인 걷기", Wait = 1f, Act = () =>
             {
                 if (_heavy.CarrierIds.Count != n) Fail($"{n}인: 잡은 쥐 {_heavy.CarrierIds.Count}/{n}");
-                var b = _heavy.GetComponentInChildren<Collider>().bounds;
-                var axis = b.size.z >= b.size.x ? Vector3.forward : Vector3.right;
+                // 걷는 방향은 실제로 잡은 쥐 자리에서 — 호스트와 가장 먼 쥐(반대편)를 잇는 선에 수직.
+                // 정육면체는 겉모양 상자로 긴 축을 고르면 판마다 뒤집혀, 한쪽은 물건을 밀고 반대쪽은 멀어지다 관절이 끊겼다 (고양이 215)
+                Vector3 far = Me().transform.position; float farD = 0f;
+                foreach (var c in Clients)
+                {
+                    if (!_heavy.CarrierIds.Contains(c.OwnerClientId)) continue;
+                    float d = Vector3.Distance(c.transform.position, Me().transform.position);
+                    if (d > farD) { farD = d; far = c.transform.position; }
+                }
+                Vector3 line = far - Me().transform.position; line.y = 0f;
+                var axis = Vector3.Cross(Vector3.up, line.normalized);
                 var along = FreeDirection(axis);
                 _p0 = _heavy.transform.position;
                 PlayerController.DevForcedInput = along;
@@ -115,7 +124,13 @@ namespace RatGame.EditorTools
                     var sb = new System.Text.StringBuilder($"[Rat] 특대 추적 {n}인 t{(sample + 1) * 0.5f:0.0}: 물건 {_heavy.transform.position:F2} v {_heavy.GetComponent<Rigidbody>().linearVelocity.magnitude:0.00} · 호스트 {Me().transform.position:F2}");
                     foreach (var c in Clients) sb.Append($" · c{c.OwnerClientId} {c.transform.position:F2}");
                     foreach (var j in _heavy.GetComponents<ConfigurableJoint>())
-                        sb.Append($" · 관절→{(j.connectedBody != null ? j.connectedBody.name : "없음")} 힘 {j.currentForce.magnitude:0} 키네 {(j.connectedBody != null && j.connectedBody.isKinematic)}");
+                    {
+                        // 늘어난 길이 = 물건 쪽 앵커와 쥐 쪽 앵커의 월드 거리 — 스프링 600이면 0.13m 넘게 늘면 최대 힘 80N (고양이 215)
+                        var cb = j.connectedBody;
+                        string who = cb != null && cb.TryGetComponent<NetworkObject>(out var no) ? $"c{no.OwnerClientId}" : "없음";
+                        float stretch = cb != null ? Vector3.Distance(_heavy.transform.TransformPoint(j.anchor), cb.transform.TransformPoint(j.connectedAnchor)) : -1f;
+                        sb.Append($" · 관절→{who} 늘어남 {stretch:0.00}m");
+                    }
                     Debug.Log(sb.ToString());
                 } };
             }
