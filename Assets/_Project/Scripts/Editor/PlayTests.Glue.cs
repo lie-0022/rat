@@ -63,15 +63,19 @@ namespace RatGame.EditorTools
                     var pi = Me().GetComponent<PlayerInteractor>();
                     var ia = typeof(PlayerInteractor).GetField("_interactAction", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(pi) as InputAction;
                     Report.Append($" | E키 {Keyboard.current.eKey.isPressed} · 액션 눌림 {ia?.IsPressed()} · 액션 켜짐 {ia?.enabled} · 창 초점 {UnityEditorInternal.InternalEditorUtility.isApplicationActive}");
+                    // 초점 없는 에디터는 가상 키 입력을 버릴 때가 있다(Run All Full에서 3연속, 고양이 239) — 게임 탓이 아니니 건너뜀으로 보고
+                    if (!Keyboard.current.eKey.isPressed && ia != null && !ia.IsPressed() && !UnityEditorInternal.InternalEditorUtility.isApplicationActive)
+                        _skip = "유니티 창 초점 없음 — 키 입력이 버려짐, 창을 누르고 다시";
                     return null;
                 } },
-                new Step { Name = "풀림", Ready = () =>
+                new Step { Name = "풀림", Ready = () => _skip != null ||
                     _client.GetComponent<PlayerCondition>().State.Value != ConditionState.Trapped || EditorApplication.timeSinceStartup - _stepAt > 5,
                     Check = () =>
                     {
                         float held = (float)(EditorApplication.timeSinceStartup - _stepAt);
                         InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
                         var st = _client.GetComponent<PlayerCondition>().State.Value;
+                        if (_skip != null) return null;
                         Report.Append($" | 누른 시간 {held:0.0}초 → 클라 {st}");
                         return st == ConditionState.Active ? null : "5초 눌러도 안 풀림";
                     } },

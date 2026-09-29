@@ -37,20 +37,22 @@ namespace RatGame.EditorTools
             SessionState.SetString(QueueKey, comma < 0 ? "" : queue.Substring(comma + 1));
             SessionState.SetString(ArmedKey, next);
             EditorApplication.delayCall += () => EditorApplication.isPlaying = true;
+            EditorApplication.QueuePlayerLoopUpdate(); // 에디터가 뒤에 있으면 delayCall이 안 불릴 때가 있다 — 한 번 깨움 (고양이 239)
         }
 
         // 시험 하나가 끝나면 결과를 적고 플레이를 멈춘다(멈추면 ContinueQueue). 묶음이 아니면 아무것도 안 함
-        private static void QueueResult(string name, bool passed)
+        private static void QueueResult(string name, string mark)
         {
             string results = SessionState.GetString(ResultsKey, null);
             if (results == null) return; // 묶음 밖에서 돌린 시험
-            results += (results.Length > 0 ? "|" : "") + $"{(passed ? "✓" : "✗")} {name}";
+            results += (results.Length > 0 ? "|" : "") + $"{mark} {name}";
             SessionState.SetString(ResultsKey, results);
             if (string.IsNullOrEmpty(SessionState.GetString(QueueKey, "")))
             {
                 var parts = results.Split('|');
-                int ok = 0; foreach (var p in parts) if (p.StartsWith("✓")) ok++;
-                Debug.Log($"[Rat] 시험 묶음 끝 — {parts.Length}개 중 {ok} 통과 | {results}");
+                int ok = 0, skipped = 0;
+                foreach (var p in parts) { if (p.StartsWith("✓")) ok++; else if (p.StartsWith("–")) skipped++; }
+                Debug.Log($"[Rat] 시험 묶음 끝 — {parts.Length}개 중 {ok} 통과{(skipped > 0 ? $" · {skipped} 건너뜀" : "")} | {results}");
                 SessionState.EraseString(ResultsKey);
             }
             EditorApplication.delayCall += () => EditorApplication.isPlaying = false;

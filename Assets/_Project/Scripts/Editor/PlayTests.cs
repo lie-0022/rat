@@ -40,6 +40,7 @@ namespace RatGame.EditorTools
         private static string _name;
         private static readonly StringBuilder Report = new();
         private static int _fails;
+        private static string _skip; // 시험 도구가 확인할 수 없는 상태(예: 창 초점 없음) — 실패 대신 건너뜀 (고양이 239)
 
         static PlayTests()
         {
@@ -87,7 +88,7 @@ namespace RatGame.EditorTools
             _name = name;
             _steps = warehouse ? new List<Step>(ToWarehouse()) : new List<Step>();
             _steps.AddRange(body);
-            _index = 0; _fails = 0; Report.Clear();
+            _index = 0; _fails = 0; _skip = null; Report.Clear();
             _stepAt = _startAt = EditorApplication.timeSinceStartup;
             EditorApplication.update -= Tick;
             EditorApplication.update += Tick;
@@ -125,8 +126,9 @@ namespace RatGame.EditorTools
             OnDone = null;
             InputSystem.QueueStateEvent(Mouse.current, new MouseState());
             InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
-            Debug.Log($"[Rat] 플레이 시험 {_name} — {(_fails == 0 ? "통과" : $"실패 {_fails}")} ({EditorApplication.timeSinceStartup - _startAt:0}초){Report}");
-            QueueResult(_name, _fails == 0);
+            string verdict = _fails > 0 ? $"실패 {_fails}" : _skip != null ? $"건너뜀 ({_skip})" : "통과";
+            Debug.Log($"[Rat] 플레이 시험 {_name} — {verdict} ({EditorApplication.timeSinceStartup - _startAt:0}초){Report}");
+            QueueResult(_name, _fails > 0 ? "✗" : _skip != null ? "–" : "✓");
         }
 
         // ---- 공통: 메인 메뉴 → 호스트 → 기지 발판 → 창고 ----
