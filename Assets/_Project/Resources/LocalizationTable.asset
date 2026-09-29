@@ -189,3 +189,55 @@ MonoBehaviour:
     En: Buy
   - Ko: "[E] \uC950 \uC0C1\uC810"
     En: '[E] Rat Shop'
+  - Ko: "\uC870\uC791  <size=70%>(F1 \uB2EB\uAE30)</size>"
+    En: Controls  <size=70%>(F1 to close)</size>
+  - Ko: "\uC774\uB3D9"
+    En: Move
+  - Ko: "\uB2EC\uB9AC\uAE30"
+    En: Sprint
+  - Ko: "\uC810\uD504"
+    En: Jump
+  - Ko: "\uC7A1\uAE30 \xB7 \uB193\uAE30"
+    En: "Grab \xB7 drop"
+  - Ko: "\uB358\uC9C0\uAE30 (\uB204\uB974\uACE0 \uC788\uB2E4 \uB5BC\uAE30)"
+    En: Throw (hold, then release)
+  - Ko: "\uC0C1\uD638\uC791\uC6A9 ([E] \uC548\uB0B4\uAC00 \uB728\uBA74)"
+    En: Interact (when an [E] prompt shows)
+  - Ko: "\uCC0D\uCC0D (\uC18C\uB9AC \uB0A8 \xB7 \uC4F0\uB7EC\uC838\uC11C\uB3C4 \uB428)"
+    En: "Squeak (makes noise \xB7 works while down)"
+  - Ko: "\uD551"
+    En: Ping
+  - Ko: "\uD081\uD081 \u2014 \uBAA9\uC801\uC9C0\xB7\uC74C\uC2DD \uB0C4\uC0C8"
+    En: "Sniff \u2014 destination & food scent"
+  - Ko: "\uC8FC\uBA38\uB2C8 \uCE78 \uACE0\uB974\uAE30"
+    En: Pick pocket slot
+  - Ko: "\uC9C0\uB3C4 (\uBCBD \uC18D, \uB204\uB974\uACE0 \uC788\uAE30)"
+    En: Map (in the walls, hold)
+  - Ko: "\uBA54\uB274"
+    En: Menu
+  - Ko: "\uD654\uBA74 \uC77D\uAE30"
+    En: Reading the screen
+  - Ko: "\uACE0\uC591\uC774 \uC704 <b>?</b> \uC758\uC2EC(\uBC11\uC5D0 \uC774\uC720)
+      \xB7 <b>!</b> \uCD94\uACA9"
+    En: "Above a cat: <b>?</b> suspicious (reason below) \xB7 <b>!</b> chasing"
+  - Ko: "\uC624\uB978\uCABD \uC544\uB798 \u2014 \uB0B4 \uC18C\uB9AC \uD06C\uAE30
+      \xB7 \uB0C4\uC0C8 \uB0A8\uAE30\uB294 \uC911"
+    En: "Bottom right \u2014 how loud you are \xB7 leaving scent"
+  - Ko: "\uBE68\uAC04 \uD45C\uC2DC \u2014 \uC704\uAE30\uC778 \uB3D9\uB8CC(\uAD6C\uD574\uC9C8
+      \uB54C\uAE4C\uC9C0)"
+    En: "Red marker \u2014 teammate in trouble (until rescued)"
+  - Ko: "\uC704\uAE30 \uB54C"
+    En: When in trouble
+  - Ko: "\uC4F0\uB7EC\uC9D0 \u2014 \uB3D9\uB8CC\uAC00 \uBAB8\uC744 \uC950\uAD6C\uBA4D(\uCC3D\uACE0)\uC5D0
+      \uB123\uC73C\uBA74 \uC0B6"
+    En: "Down \u2014 a teammate carries your body into the mousehole (storeroom)"
+  - Ko: "\uB048\uB048\uC774 \u2014 \uB3D9\uB8CC\uAC00 \uC606\uC5D0\uC11C E \uAE38\uAC8C"
+    En: "Glue trap \u2014 a teammate holds E next to you"
+  - Ko: "F3  \uACE0\uC591\uC774 \uC815\uBCF4 \xB7 F4  \uD655\uC778 \uBA54\uB274 (\uAC1C\uBC1C\uC6A9)"
+    En: "F3  cat info \xB7 F4  check menu (dev)"
+  - Ko: "\uC88C\uD074\uB9AD"
+    En: LMB
+  - Ko: "\uC6B0\uD074\uB9AD"
+    En: RMB
+  - Ko: "\uD720\uD074\uB9AD"
+    En: MMB

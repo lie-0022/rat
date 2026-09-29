@@ -30,7 +30,19 @@ namespace RatGame.UI
 
         private bool _open;
 
-        private void Start() => Show(false);
+        private void Start()
+        {
+            Show(false);
+            Loc.Changed += OnLanguageChanged;
+        }
+
+        private void OnDestroy() => Loc.Changed -= OnLanguageChanged;
+
+        // 펼친 채로 언어를 바꿔도 목록이 따라가게 (고양이 190)
+        private void OnLanguageChanged()
+        {
+            if (_open) _list.text = BuildList();
+        }
 
         private void Update()
         {
@@ -70,21 +82,21 @@ namespace RatGame.UI
             {
                 var a = map?.FindAction(action);
                 if (a == null) continue;
-                Line(sb, key, Keys(a), label);
+                Line(sb, key, Keys(a), Loc.T(label));
             }
-            Line(sb, key, "1~4", "주머니 칸 고르기");
-            Line(sb, key, "Tab", "지도 (벽 속, 누르고 있기)");
-            Line(sb, key, "Esc", "메뉴");
+            Line(sb, key, "1~4", Loc.T("주머니 칸 고르기"));
+            Line(sb, key, "Tab", Loc.T("지도 (벽 속, 누르고 있기)"));
+            Line(sb, key, "Esc", Loc.T("메뉴"));
             // 화면 읽기 — 3번째 루프에서 늘어난 표시들 (고양이 176)
-            sb.Append('\n').Append("<color=").Append(key).Append(">화면 읽기</color>\n");
-            sb.Append("고양이 위 <b>?</b> 의심(밑에 이유) · <b>!</b> 추격\n");
-            sb.Append("오른쪽 아래 — 내 소리 크기 · 냄새 남기는 중\n");
-            sb.Append("빨간 표시 — 위기인 동료(구해질 때까지)\n");
+            sb.Append('\n').Append("<color=").Append(key).Append(">").Append(Loc.T("화면 읽기")).Append("</color>\n");
+            sb.Append(Loc.T("고양이 위 <b>?</b> 의심(밑에 이유) · <b>!</b> 추격")).Append('\n');
+            sb.Append(Loc.T("오른쪽 아래 — 내 소리 크기 · 냄새 남기는 중")).Append('\n');
+            sb.Append(Loc.T("빨간 표시 — 위기인 동료(구해질 때까지)")).Append('\n');
             // 위기 때 — 쓰러짐·끈끈이에서 돌아오는 길 (고양이 188, 181~187 흐름)
-            sb.Append('\n').Append("<color=").Append(key).Append(">위기 때</color>\n");
-            sb.Append("쓰러짐 — 동료가 몸을 쥐구멍(창고)에 넣으면 삶\n");
-            sb.Append("끈끈이 — 동료가 옆에서 E 길게\n");
-            if (Debug.isDebugBuild) sb.Append("<color=#9a9a9a>F3  고양이 정보 · F4  확인 메뉴 (개발용)</color>");
+            sb.Append('\n').Append("<color=").Append(key).Append(">").Append(Loc.T("위기 때")).Append("</color>\n");
+            sb.Append(Loc.T("쓰러짐 — 동료가 몸을 쥐구멍(창고)에 넣으면 삶")).Append('\n');
+            sb.Append(Loc.T("끈끈이 — 동료가 옆에서 E 길게")).Append('\n');
+            if (Debug.isDebugBuild) sb.Append("<color=#9a9a9a>").Append(Loc.T("F3  고양이 정보 · F4  확인 메뉴 (개발용)")).Append("</color>");
             return sb.ToString();
         }
 
@@ -123,7 +135,7 @@ namespace RatGame.UI
 
         private static string Friendly(string key) => key switch
         {
-            "LMB" or "Left Button" => "좌클릭", "RMB" or "Right Button" => "우클릭", "MMB" or "Middle Button" => "휠클릭",
+            "LMB" or "Left Button" => Loc.T("좌클릭"), "RMB" or "Right Button" => Loc.T("우클릭"), "MMB" or "Middle Button" => Loc.T("휠클릭"),
             "Left Shift" => "Shift", "Left Control" or "Left Ctrl" => "Ctrl", "Escape" => "Esc",
             _ => key,
         };
