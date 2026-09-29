@@ -13,16 +13,26 @@ namespace RatGame.EditorTools
     /// </summary>
     public static partial class SoakHarness
     {
-        private const string TwoPlayerKey = "RatGame.Soak.TwoPlayer";
+        private const string ClientCountKey = "RatGame.Soak.ClientCount";
         private const string ClientApp = "Builds/macOS/Rat.app";
-        private static bool _twoPlayer, _clientLaunched, _clientSettled;
+        private static int _clientCount; // 빌드 클라 수 — 0 혼자, 1 = 2인, 3 = 4인 (고양이 209)
+        private static bool _twoPlayer => _clientCount > 0;
+        private static bool _clientLaunched, _clientSettled;
         private static float _clientWaitStart, _clientMoveAt, _clientJoinedAt;
-        private static string ClientLog => Path.GetFullPath("Temp/soak-client.log");
+        private static string ClientLog(int i) => Path.GetFullPath(i == 0 ? "Temp/soak-client.log" : $"Temp/soak-client{i + 1}.log");
 
         [MenuItem("Tools/RatGame/Test/Full Run Soak (Walls, 2P build client)")]
         private static void ArmTwoPlayer()
         {
-            SessionState.SetBool(TwoPlayerKey, true);
+            SessionState.SetInt(ClientCountKey, 1);
+            Arm(false);
+        }
+
+        // 4인 — 빌드 클라 3개 (docs/03·09 4인 수용 기준의 자동판, 고양이 209)
+        [MenuItem("Tools/RatGame/Test/Full Run Soak (Walls, 4P build clients)")]
+        private static void ArmFourPlayer()
+        {
+            SessionState.SetInt(ClientCountKey, 3);
             Arm(false);
         }
 
@@ -30,14 +40,14 @@ namespace RatGame.EditorTools
         [MenuItem("Tools/RatGame/Test/Full Run Soak (Walls, 2P build client, English)")]
         private static void ArmTwoPlayerEnglish()
         {
-            SessionState.SetBool(TwoPlayerKey, true);
+            SessionState.SetInt(ClientCountKey, 1);
             Arm(true);
         }
 
         private static void BeginClient()
         {
-            _twoPlayer = SessionState.GetBool(TwoPlayerKey, false);
-            SessionState.SetBool(TwoPlayerKey, false);
+            _clientCount = SessionState.GetInt(ClientCountKey, 0);
+            SessionState.SetInt(ClientCountKey, 0);
             _clientLaunched = false; _clientSettled = false; _clientJoinedAt = 0f; _clientMoveAt = 0f;
         }
 
@@ -50,14 +60,17 @@ namespace RatGame.EditorTools
             if (!_clientLaunched)
             {
                 if (!Directory.Exists(ClientApp)) { Finish($"빌드 없음 ({ClientApp})"); return false; }
-                if (File.Exists(ClientLog)) File.Delete(ClientLog);
-                // 빌드 클라는 호스트 play가 뜬 뒤에 띄운다 (먼저 띄우면 재시도 끝에 실패 — loop-state 테스트 요령)
-                System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -autoshop -logFile \"{ClientLog}\"");
+                // 빌드 클라는 호스트 play가 뜬 뒤에 띄운다 (먼저 띄우면 재시도 끝에 실패 — loop-state 테스트 요령). 로그는 클라마다 따로(같은 Player.log를 덮으므로)
+                for (int i = 0; i < _clientCount; i++)
+                {
+                    if (File.Exists(ClientLog(i))) File.Delete(ClientLog(i));
+                    System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -autoshop -logFile \"{ClientLog(i)}\"");
+                }
                 _clientLaunched = true;
                 _clientWaitStart = Time.realtimeSinceStartup;
-                Debug.Log("[Rat] 통째 시험: 빌드 클라 띄움");
+                Debug.Log($"[Rat] 통째 시험: 빌드 클라 {_clientCount}개 띄움");
             }
-            if (nm.ConnectedClientsIds.Count >= 2)
+            if (nm.ConnectedClientsIds.Count >= 1 + _clientCount)
             {
                 // 붙자마자 보낸 순간이동은 클라 쪽 스폰 전이라 사라진다 — 3초 뒤 기지 단계 시계를 새로 (클라 앱 켜는 데 수십 초라 45초 제한을 다 쓴다)
                 if (_clientJoinedAt == 0f) _clientJoinedAt = Time.realtimeSinceStartup;
@@ -65,7 +78,7 @@ namespace RatGame.EditorTools
                 if (!_clientSettled) { _clientSettled = true; Go(Step.Hub); }
                 return true;
             }
-            if (Time.realtimeSinceStartup - _clientWaitStart > 60f) Finish("클라가 60초 안에 안 붙음");
+            if (Time.realtimeSinceStartup - _clientWaitStart > 90f) Finish($"클라가 90초 안에 다 안 붙음 ({nm.ConnectedClientsIds.Count - 1}/{_clientCount})");
             return false;
         }
 
@@ -76,14 +89,18 @@ namespace RatGame.EditorTools
             _clientMoveAt = Time.realtimeSinceStartup + 1f; // 매 프레임 RPC 도배 안 하게
             var nm = NetworkManager.Singleton;
             if (nm == null) return;
+            int k = 0;
             foreach (var id in nm.ConnectedClientsIds)
             {
                 if (id == nm.LocalClientId) continue;
                 var player = nm.ConnectedClients[id].PlayerObject;
                 var controller = player != null ? player.GetComponent<PlayerController>() : null;
                 if (controller == null) continue;
+                k++;
                 var rpc = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { id } } };
-                controller.TeleportClientRpc(pos + Vector3.right * 0.6f, Quaternion.identity, rpc);
+                // 서로 겹치면 튕겨 기절한다 (고양이 133 — 시작 자리 겹침). 발판이 2.5m라 한 줄로 세우면 넷째가 밖 — 호스트 둘레 2×2 격자 0.6m
+                var offset = k switch { 1 => new Vector3(0.6f, 0f, 0f), 2 => new Vector3(0f, 0f, 0.6f), _ => new Vector3(0.6f, 0f, 0.6f) };
+                controller.TeleportClientRpc(pos + offset, Quaternion.identity, rpc);
             }
         }
 
@@ -92,10 +109,18 @@ namespace RatGame.EditorTools
         {
             if (!_twoPlayer) return "";
             System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS");
-            if (!File.Exists(ClientLog)) return " | 클라 로그 없음";
+            var sb = new System.Text.StringBuilder();
+            for (int c = 0; c < _clientCount; c++) sb.Append(ReportClientLog(c));
+            return sb.ToString();
+        }
+
+        private static string ReportClientLog(int c)
+        {
+            string path = ClientLog(c), tag = _clientCount == 1 ? "클라" : $"클라{c + 1}";
+            if (!File.Exists(path)) return $" | {tag} 로그 없음";
             string[] lines;
-            try { lines = File.ReadAllLines(ClientLog); }
-            catch (IOException) { return " | 클라 로그 못 읽음"; }
+            try { lines = File.ReadAllLines(path); }
+            catch (IOException) { return $" | {tag} 로그 못 읽음"; }
             int warn = 0, err = 0, ex = 0, rat = 0;
             string firstIssue = null;
             for (int i = 0; i < lines.Length; i++)
@@ -106,7 +131,7 @@ namespace RatGame.EditorTools
                 if (w) warn++; if (e) err++; if (x) ex++;
                 if ((w || e || x) && firstIssue == null) firstIssue = x ? l : (i >= 1 ? lines[i - 1] : l);
             }
-            return $" | 클라: [Rat] 줄 {rat} · 경고 {warn} · 오류 {err} · 예외 {ex}{(firstIssue != null ? $" · 첫 문제: {firstIssue}" : "")}";
+            return $" | {tag}: [Rat] 줄 {rat} · 경고 {warn} · 오류 {err} · 예외 {ex}{(firstIssue != null ? $" · 첫 문제: {firstIssue}" : "")}";
         }
     }
 }

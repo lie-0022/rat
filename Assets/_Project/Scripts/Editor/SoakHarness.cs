@@ -80,7 +80,7 @@ namespace RatGame.EditorTools
             Application.logMessageReceived += OnLog;
             EditorApplication.update -= Tick;
             EditorApplication.update += Tick;
-            Debug.Log($"[Rat] 통째 시험 시작 (벽 속, {(_twoPlayer ? "빌드 클라 2인" : "혼자")}{(_english ? ", 영어" : "")})");
+            Debug.Log($"[Rat] 통째 시험 시작 (벽 속, {(_twoPlayer ? $"빌드 클라 {_clientCount}개 = {_clientCount + 1}인" : "혼자")}{(_english ? ", 영어" : "")})");
         }
 
         private static void OnLog(string msg, string stack, LogType type)
