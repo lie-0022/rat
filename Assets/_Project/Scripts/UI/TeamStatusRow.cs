@@ -1,3 +1,4 @@
+using RatGame.Core;
 using RatGame.Data;
 using RatGame.Player;
 using TMPro;
@@ -25,12 +26,12 @@ namespace RatGame.UI
 
             string label = state switch
             {
-                ConditionState.Stunned => "기절",
-                ConditionState.Trapped => "끈끈이!",
-                ConditionState.Hidden => "숨음",
-                ConditionState.Pinned => "잡힘",
-                ConditionState.Active => "찍힘",
-                _ => "다운"
+                ConditionState.Stunned => Loc.T("기절"),
+                ConditionState.Trapped => Loc.T("끈끈이!"),
+                ConditionState.Hidden => Loc.T("숨음"),
+                ConditionState.Pinned => Loc.T("잡힘"),
+                ConditionState.Active => Loc.T("찍힘"),
+                _ => Loc.T("다운")
             };
             if (_stateText.text != label) _stateText.text = label;
             if (_theme == null) return;

@@ -150,6 +150,7 @@
 | 190 | F1 조작 안내도 영어 — 키 목록·화면 읽기·위기 때 설명·좌클릭/우클릭 이름, 펼친 채 언어를 바꿔도 바로 다시 그림 | U-190 |
 | 191 | 위 상태 막대 영어 — 기지 "Gather on the departure pad…/Total·Destination", 맵 안 "Mousehole·Total", 벽 속 "Stage·Food", 귀환·집합·할당량 줄, 오늘의 집 이름 | U-191 |
 | 192 | E 안내·집기 안내 영어 — "[E] Shop"·"Rescue — Gray rat (hold)"·"Hide in boot", "[LMB] Grab — Cheese slice"·"Lift together"·"Throw", 숨는 중 화면, 물건 이름 24개 | U-192 |
+| 193 | HUD 작은 표시 영어 — 팀 상태 "Team 1/4 · Gray rat (me)·Glued!", 핑 이름·물건·고양이 역할, 소리/냄새 막대 "Noise · footsteps 3m", 든 물건 "Cheese slice / Value 14", 주머니 칸 | U-193 |
 | 188 | F1 안내에 "위기 때" 두 줄 + 상호작용·찍찍 설명, 글자 줄어듦 막으려 패널 세로 720 | U-188 |
 
 ---

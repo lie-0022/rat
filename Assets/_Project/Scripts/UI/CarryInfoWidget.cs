@@ -1,3 +1,4 @@
+using RatGame.Core;
 using RatGame.Data;
 using RatGame.Player;
 using TMPro;
@@ -40,8 +41,8 @@ namespace RatGame.UI
             if (_icon.gameObject.activeSelf != (icon != null)) _icon.gameObject.SetActive(icon != null);
             if (icon != null && _icon.sprite != icon) _icon.sprite = icon;
 
-            SetText(_nameText, data != null ? data.DisplayName : item.name);
-            SetText(_valueText, $"가치 {item.EffectiveValue}");
+            SetText(_nameText, data != null ? Loc.T(data.DisplayName) : item.name);
+            SetText(_valueText, Loc.F("가치 {0}", item.EffectiveValue));
             bool cracked = item.IsCracked;
             if (_crackedTag.activeSelf != cracked) _crackedTag.SetActive(cracked);
             SetColor(_valueText, cracked ? UiColorRole.DangerText : UiColorRole.AccentText);
@@ -58,8 +59,8 @@ namespace RatGame.UI
                 // 자리가 다 찼으면 더 부를 사람이 없다 — 재촉 대신 상태만
                 bool full = item.IsCarrySlotsFull;
                 label = full
-                    ? $"무거움 — 함께 드는 중 ({item.CarrierIds.Count}/{item.CarrySlotCount})"
-                    : $"무거움! 같이 들자 ({item.CarrierIds.Count}/{item.CarrySlotCount})";
+                    ? Loc.F("무거움 — 함께 드는 중 ({0}/{1})", item.CarrierIds.Count, item.CarrySlotCount)
+                    : Loc.F("무거움! 같이 들자 ({0}/{1})", item.CarrierIds.Count, item.CarrySlotCount);
                 if (!full)
                 {
                     bg = UiColorRole.Danger;
@@ -69,8 +70,8 @@ namespace RatGame.UI
             else if (_balance != null)
             {
                 float load = _carry.CurrentLoadPerRat;
-                if (load >= _balance.JumpBlockLoad) label = "무거움 — 못 달림·못 뜀";
-                else if (load >= _balance.SprintBlockLoad) label = "무거움 — 못 달림";
+                if (load >= _balance.JumpBlockLoad) label = Loc.T("무거움 — 못 달림·못 뜀");
+                else if (load >= _balance.SprintBlockLoad) label = Loc.T("무거움 — 못 달림");
             }
 
             bool chip = label != null;

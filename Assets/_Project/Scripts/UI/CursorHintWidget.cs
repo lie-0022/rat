@@ -19,7 +19,8 @@ namespace RatGame.UI
         {
             bool show = Cursor.lockState != CursorLockMode.Locked && !InputFocus.IsUiOpen && Application.isFocused;
             if (_box.activeSelf != show) _box.SetActive(show);
-            if (show && _text.text != _message) _text.text = _message;
+            string message = Loc.T(_message);
+            if (show && _text.text != message) _text.text = message;
         }
     }
 }

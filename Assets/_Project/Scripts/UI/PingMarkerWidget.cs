@@ -73,7 +73,7 @@ namespace RatGame.UI
         private static string WhoText(ulong owner)
         {
             var nm = NetworkManager.Singleton;
-            return PlayerVisual.ColorNameFor(owner) + (nm != null && owner == nm.LocalClientId ? " (나)" : "");
+            return Loc.T(PlayerVisual.ColorNameFor(owner)) + (nm != null && owner == nm.LocalClientId ? Loc.T(" (나)") : "");
         }
 
         // 음식을 찍으면 이름·가치까지 (고양이 139) — 물건 위치·가치는 모두에게 이미 있어 각자 계산, 동기화 없음
@@ -92,7 +92,7 @@ namespace RatGame.UI
             if (best == null) return "";
             int value = best.EffectiveValue;
             Log.Dev($"핑 물건 연출: {best.Data.DisplayName} {value}"); // 2인 검증용
-            return value > 0 ? $" · {best.Data.DisplayName} {value}" : $" · {best.Data.DisplayName}";
+            return value > 0 ? $" · {Loc.T(best.Data.DisplayName)} {value}" : $" · {Loc.T(best.Data.DisplayName)}";
         }
 
         // 핑 지점이 고양이 몸 가까이면 그 고양이 (고양이 165)
@@ -116,7 +116,7 @@ namespace RatGame.UI
             var p = cat.Personality;
             string who = p == null ? "고양이" : p.IsGuard ? "문지기" : p.IsPatroller ? "순찰꾼" : p.IsKitten ? "아기 고양이" : "고양이";
             Log.Dev($"핑 고양이 연출: {who}"); // 2인 검증용
-            return $" · {who}!";
+            return $" · {Loc.T(who)}!";
         }
 
         private Marker CreateMarker(ulong owner)
@@ -151,9 +151,9 @@ namespace RatGame.UI
                 if (p.IsOwner) continue;
                 string label = p.State.Value switch
                 {
-                    ConditionState.Downed => "다운",
-                    ConditionState.Trapped => "끈끈이",
-                    ConditionState.Pinned => "잡힘",
+                    ConditionState.Downed => Loc.T("다운"),
+                    ConditionState.Trapped => Loc.T("끈끈이"),
+                    ConditionState.Pinned => Loc.T("잡힘"),
                     _ => null
                 };
                 if (label == null) continue;
@@ -165,7 +165,7 @@ namespace RatGame.UI
                     _help[id] = m;
                 }
                 m.World = p.transform.position + Vector3.up * HelpHeight; // 다운이면 시점(플레이어)이 끌려가는 몸을 따라간다 — 같은 자리
-                string text = $"{PlayerVisual.ColorNameFor(id)} · {label}";
+                string text = $"{Loc.T(PlayerVisual.ColorNameFor(id))} · {label}";
                 if (m.Name.text != text) { m.Name.text = text; Log.Dev($"동료 위기 표시: {text}"); } // 2인 검증용
                 if (!m.Rect.gameObject.activeSelf)
                 {

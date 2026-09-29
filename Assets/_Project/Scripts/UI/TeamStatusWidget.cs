@@ -1,3 +1,4 @@
+using RatGame.Core;
 using System.Collections.Generic;
 using RatGame.Player;
 using RatGame.Run;
@@ -45,11 +46,11 @@ namespace RatGame.UI
             _players.Sort((a, b) => a.OwnerClientId.CompareTo(b.OwnerClientId));
 
             bool inStage = RunManager.Instance != null;
-            SetText(_headerText, inStage ? $"팀 {_players.Count}/{MaxPlayers}" : $"기지 · {_players.Count}/{MaxPlayers}명");
+            SetText(_headerText, inStage ? Loc.F("팀 {0}/{1}", _players.Count, MaxPlayers) : Loc.F("기지 · {0}/{1}명", _players.Count, MaxPlayers));
             var launcher = Net.NetworkLauncher.Instance;
             string hint = inStage ? ""
-                : launcher != null && launcher.UsingSteam ? "친구 초대: Steam 친구 목록에서"
-                : "로컬 모드 — 같은 PC에서만 참가";
+                : launcher != null && launcher.UsingSteam ? Loc.T("친구 초대: Steam 친구 목록에서")
+                : Loc.T("로컬 모드 — 같은 PC에서만 참가");
             SetText(_hintText, hint);
             if (_hintText.gameObject.activeSelf != (hint.Length > 0)) _hintText.gameObject.SetActive(hint.Length > 0);
 
@@ -61,7 +62,7 @@ namespace RatGame.UI
                 if (_rows[i].gameObject.activeSelf != active) _rows[i].gameObject.SetActive(active);
                 if (!active) continue;
                 var p = _players[i];
-                string name = PlayerVisual.ColorNameFor(p.OwnerClientId) + (p.IsOwner ? " (나)" : "");
+                string name = Loc.T(PlayerVisual.ColorNameFor(p.OwnerClientId)) + (p.IsOwner ? Loc.T(" (나)") : "");
                 _rows[i].Show(PlayerVisual.ColorFor(p.OwnerClientId), name, p.State.Value, IsGrudged(p.OwnerClientId));
             }
             LogIfChanged();

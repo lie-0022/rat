@@ -1,3 +1,4 @@
+using RatGame.Core;
 using System.Collections.Generic;
 using RatGame.Player;
 using UnityEngine;
@@ -40,7 +41,7 @@ namespace RatGame.UI
             for (int i = 0; i < _views.Count; i++)
             {
                 var item = _carry.GetSlotItem(i);
-                string label = item != null ? (item.Data != null ? item.Data.DisplayName : item.name) : "—";
+                string label = item != null ? (item.Data != null ? Loc.T(item.Data.DisplayName) : item.name) : "—";
                 _views[i].Set(i + 1, label, i == selected);
             }
 

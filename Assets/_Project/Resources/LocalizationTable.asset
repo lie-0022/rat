@@ -410,3 +410,61 @@ MonoBehaviour:
     En: Pocket watch
   - Ko: "\uC218\uBC15 \uC870\uAC01"
     En: Watermelon slice
+  - Ko: "\uB0C4\uC0C8"
+    En: Scent
+  - Ko: "\uB0C4\uC0C8 \xB7 \uCE58\uC988"
+    En: "Scent \xB7 cheese"
+  - Ko: "\uB0C4\uC0C8 \xB7 \uC816\uC740 \uBC1C"
+    En: "Scent \xB7 wet paws"
+  - Ko: "\uB0C4\uC0C8 \xB7 \uCC0D\uD798"
+    En: "Scent \xB7 marked"
+  - Ko: "\uC18C\uB9AC \xB7 \uC870\uC6A9"
+    En: "Noise \xB7 quiet"
+  - Ko: "\uC18C\uB9AC \xB7 \uBC1C\uC18C\uB9AC {0}m"
+    En: "Noise \xB7 footsteps {0}m"
+  - Ko: "\uC18C\uB9AC \xB7 \uCFF5\uCFF5 {0}m"
+    En: "Noise \xB7 thudding {0}m"
+  - Ko: "\uC18C\uB9AC \xB7 \uC6B8\uB9BC {0}m"
+    En: "Noise \xB7 booming {0}m"
+  - Ko: "\uD300 {0}/{1}"
+    En: Team {0}/{1}
+  - Ko: "\uAE30\uC9C0 \xB7 {0}/{1}\uBA85"
+    En: "Base \xB7 {0}/{1}"
+  - Ko: "\uCE5C\uAD6C \uCD08\uB300: Steam \uCE5C\uAD6C \uBAA9\uB85D\uC5D0\uC11C"
+    En: Invite friends from your Steam friends list
+  - Ko: "\uB85C\uCEEC \uBAA8\uB4DC \u2014 \uAC19\uC740 PC\uC5D0\uC11C\uB9CC \uCC38\uAC00"
+    En: "Local mode \u2014 same PC only"
+  - Ko: " (\uB098)"
+    En: ' (me)'
+  - Ko: "\uAE30\uC808"
+    En: Stunned
+  - Ko: "\uB048\uB048\uC774!"
+    En: Glued!
+  - Ko: "\uC228\uC74C"
+    En: Hidden
+  - Ko: "\uC7A1\uD798"
+    En: Caught
+  - Ko: "\uCC0D\uD798"
+    En: Marked
+  - Ko: "\uB048\uB048\uC774"
+    En: Glued
+  - Ko: "\uACE0\uC591\uC774"
+    En: Cat
+  - Ko: "\uBB38\uC9C0\uAE30"
+    En: Gatekeeper
+  - Ko: "\uC21C\uCC30\uAFBC"
+    En: Patroller
+  - Ko: "\uC544\uAE30 \uACE0\uC591\uC774"
+    En: Kitten
+  - Ko: "\uAC00\uCE58 {0}"
+    En: Value {0}
+  - Ko: "\uBB34\uAC70\uC6C0 \u2014 \uD568\uAED8 \uB4DC\uB294 \uC911 ({0}/{1})"
+    En: "Heavy \u2014 carrying together ({0}/{1})"
+  - Ko: "\uBB34\uAC70\uC6C0! \uAC19\uC774 \uB4E4\uC790 ({0}/{1})"
+    En: Heavy! Lift it together ({0}/{1})
+  - Ko: "\uBB34\uAC70\uC6C0 \u2014 \uBABB \uB2EC\uB9BC\xB7\uBABB \uB700"
+    En: "Heavy \u2014 can't sprint or jump"
+  - Ko: "\uBB34\uAC70\uC6C0 \u2014 \uBABB \uB2EC\uB9BC"
+    En: "Heavy \u2014 can't sprint"
+  - Ko: "\uD654\uBA74\uC744 \uD074\uB9AD\uD558\uBA74 \uB2E4\uC2DC \uC870\uC791"
+    En: Click the screen to take control again

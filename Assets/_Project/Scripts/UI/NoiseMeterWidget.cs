@@ -30,7 +30,7 @@ namespace RatGame.UI
         private void OnScentLeft(float strength)
         {
             _scentUntil = Time.unscaledTime + ScentShowSeconds;
-            string text = _balance == null ? "냄새" : strength >= _balance.ScentEdible - 0.5f ? "냄새 · 치즈" : strength >= _balance.ScentWet - 0.5f ? "냄새 · 젖은 발" : "냄새 · 찍힘";
+            string text = Loc.T(_balance == null ? "냄새" : strength >= _balance.ScentEdible - 0.5f ? "냄새 · 치즈" : strength >= _balance.ScentWet - 0.5f ? "냄새 · 젖은 발" : "냄새 · 찍힘");
             if (text != _scentText) { _scentText = text; if (_scentLabel != null) _scentLabel.text = text; Log.Dev($"냄새 표시: {text}"); }
         }
 
@@ -75,10 +75,10 @@ namespace RatGame.UI
             int meters = Mathf.RoundToInt(loud / 100f * _balance.MaxNoiseRadius);
             _label.text = level switch
             {
-                Level.Quiet => "소리 · 조용",
-                Level.Walk => $"소리 · 발소리 {Mathf.Max(1, meters)}m",
-                Level.Run => $"소리 · 쿵쿵 {meters}m",
-                _ => $"소리 · 울림 {meters}m",
+                Level.Quiet => Loc.T("소리 · 조용"),
+                Level.Walk => Loc.F("소리 · 발소리 {0}m", Mathf.Max(1, meters)),
+                Level.Run => Loc.F("소리 · 쿵쿵 {0}m", meters),
+                _ => Loc.F("소리 · 울림 {0}m", meters),
             };
             if (_theme != null) _label.color = _theme.GetColor(level == Level.Quiet ? UiColorRole.TextMuted : level == Level.Walk ? UiColorRole.Text : UiColorRole.Warning);
             Log.Dev($"소리 표시: {_label.text}"); // 검증용
