@@ -127,6 +127,34 @@ namespace RatGame.EditorTools
             ["좌클릭"] = "LMB",
             ["우클릭"] = "RMB",
             ["휠클릭"] = "MMB",
+            // 위 상태 막대 RunBar (고양이 191) — {0}은 숫자·이름 자리 (Loc.F)
+            ["[Enter] 출발   누계 {0}"] = "[Enter] Depart   Total {0}",
+            ["호스트 출발 대기   누계 {0}"] = "Waiting for host to depart   Total {0}",
+            ["스테이지 {0}/{1}   식량 {2}/{3}"] = "Stage {0}/{1}   Food {2}/{3}",
+            ["쥐구멍 {0}   누계 {1}"] = "Mousehole {0}   Total {1}",
+            [" · 쓰러진 {0}명 두고 감"] = " · leaving {0} downed behind",
+            ["다음으로"] = "Next",
+            ["귀환 중"] = "Heading home",
+            [" · 빈손"] = " · empty-handed",
+            ["식량이 모자라요 — {0} 더 모아 창고에"] = "Not enough food — bring {0} more to the storeroom",
+            ["창고에 모이면 다음으로   {0}/{1}"] = "Gather in the storeroom to move on   {0}/{1}",
+            ["쥐구멍에 모이면 귀환   {0}/{1}"] = "Gather at the mousehole to go home   {0}/{1}",
+            [" · 아직 빈손이에요"] = " · still empty-handed",
+            ["할당량 채움! 창고에 모이면 다음 · 상점 돈 +{0}"] = "Quota met! Gather in the storeroom · shop money +{0}",
+            ["   · 정전"] = "   · Blackout",
+            ["   · 덫 대방출"] = "   · Trap sale",
+            ["   · 간식 날"] = "   · Treat day",
+            ["   · 집주인 외출"] = "   · Owner out",
+            ["   · 분주한 집"] = "   · Busy house",
+            ["   · 고양이 손님"] = "   · Cat guest",
+            ["출발…"] = "Departing…",
+            ["출발 발판에 모이면 출발   {0}/{1}"] = "Gather on the departure pad to go   {0}/{1}",
+            ["   최고 스테이지 {0}"] = "   Best stage {0}",
+            [" · 엔딩 {0}번"] = " · endings {0}",
+            ["누계 {0}   목적지 {1}"] = "Total {0}   Destination {1}",
+            ["창고"] = "Storeroom",
+            ["부엌(생성)"] = "Kitchen (generated)",
+            ["벽 속(생성)"] = "Inside the walls (generated)",
         };
 
         // 스크립트가 들고 있지만 글자는 안 쓰는 것 (색·위치만 읽음) — 번역해도 된다
@@ -184,10 +212,25 @@ namespace RatGame.EditorTools
 
             EditorUtility.SetDirty(table);
             AssetDatabase.SaveAssets();
-            int missing = 0;
-            foreach (var e in table.Entries) if (string.IsNullOrEmpty(e.En)) missing++;
+            int missing = 0, badSlots = 0;
+            foreach (var e in table.Entries)
+            {
+                if (string.IsNullOrEmpty(e.En)) { missing++; continue; }
+                // Loc.F 틀 — 영어에 {n} 자리가 하나라도 다르면 string.Format이 게임 중에 터진다
+                if (Slots(e.Ko) != Slots(e.En)) { badSlots++; Debug.LogError($"[Rat] 번역 자리 불일치: \"{e.Ko}\" → \"{e.En}\""); }
+            }
             foreach (var m in missingEn) Debug.Log($"[Rat] 번역 없음 — {m}");
-            Debug.Log($"[Rat] 메뉴 번역 준비: 표 {table.Entries.Count}줄(새 {added}, 영어 빈 칸 {missing}) · LocalizedText 새로 {attached}개");
+            Debug.Log($"[Rat] 메뉴 번역 준비: 표 {table.Entries.Count}줄(새 {added}, 영어 빈 칸 {missing}, 자리 불일치 {badSlots}) · LocalizedText 새로 {attached}개");
+        }
+
+        private static readonly Regex Slot = new(@"\{\d+[^}]*\}");
+
+        private static string Slots(string s)
+        {
+            var list = new List<string>();
+            foreach (Match m in Slot.Matches(s)) list.Add(m.Value);
+            list.Sort(System.StringComparer.Ordinal);
+            return string.Join(",", list);
         }
 
         // 스크립트가 [SerializeField]로 들고 있는 글자 = 코드가 쓰는 글자 (LocalizedText를 붙이면 원문이 엉뚱하게 잡힌다)

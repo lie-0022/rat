@@ -241,3 +241,59 @@ MonoBehaviour:
     En: RMB
   - Ko: "\uD720\uD074\uB9AD"
     En: MMB
+  - Ko: "[Enter] \uCD9C\uBC1C   \uB204\uACC4 {0}"
+    En: '[Enter] Depart   Total {0}'
+  - Ko: "\uD638\uC2A4\uD2B8 \uCD9C\uBC1C \uB300\uAE30   \uB204\uACC4 {0}"
+    En: Waiting for host to depart   Total {0}
+  - Ko: "\uC2A4\uD14C\uC774\uC9C0 {0}/{1}   \uC2DD\uB7C9 {2}/{3}"
+    En: Stage {0}/{1}   Food {2}/{3}
+  - Ko: "\uC950\uAD6C\uBA4D {0}   \uB204\uACC4 {1}"
+    En: Mousehole {0}   Total {1}
+  - Ko: " \xB7 \uC4F0\uB7EC\uC9C4 {0}\uBA85 \uB450\uACE0 \uAC10"
+    En: " \xB7 leaving {0} downed behind"
+  - Ko: "\uB2E4\uC74C\uC73C\uB85C"
+    En: Next
+  - Ko: "\uADC0\uD658 \uC911"
+    En: Heading home
+  - Ko: " \xB7 \uBE48\uC190"
+    En: " \xB7 empty-handed"
+  - Ko: "\uC2DD\uB7C9\uC774 \uBAA8\uC790\uB77C\uC694 \u2014 {0} \uB354 \uBAA8\uC544
+      \uCC3D\uACE0\uC5D0"
+    En: "Not enough food \u2014 bring {0} more to the storeroom"
+  - Ko: "\uCC3D\uACE0\uC5D0 \uBAA8\uC774\uBA74 \uB2E4\uC74C\uC73C\uB85C   {0}/{1}"
+    En: Gather in the storeroom to move on   {0}/{1}
+  - Ko: "\uC950\uAD6C\uBA4D\uC5D0 \uBAA8\uC774\uBA74 \uADC0\uD658   {0}/{1}"
+    En: Gather at the mousehole to go home   {0}/{1}
+  - Ko: " \xB7 \uC544\uC9C1 \uBE48\uC190\uC774\uC5D0\uC694"
+    En: " \xB7 still empty-handed"
+  - Ko: "\uD560\uB2F9\uB7C9 \uCC44\uC6C0! \uCC3D\uACE0\uC5D0 \uBAA8\uC774\uBA74 \uB2E4\uC74C
+      \xB7 \uC0C1\uC810 \uB3C8 +{0}"
+    En: "Quota met! Gather in the storeroom \xB7 shop money +{0}"
+  - Ko: "   \xB7 \uC815\uC804"
+    En: "   \xB7 Blackout"
+  - Ko: "   \xB7 \uB36B \uB300\uBC29\uCD9C"
+    En: "   \xB7 Trap sale"
+  - Ko: "   \xB7 \uAC04\uC2DD \uB0A0"
+    En: "   \xB7 Treat day"
+  - Ko: "   \xB7 \uC9D1\uC8FC\uC778 \uC678\uCD9C"
+    En: "   \xB7 Owner out"
+  - Ko: "   \xB7 \uBD84\uC8FC\uD55C \uC9D1"
+    En: "   \xB7 Busy house"
+  - Ko: "   \xB7 \uACE0\uC591\uC774 \uC190\uB2D8"
+    En: "   \xB7 Cat guest"
+  - Ko: "\uCD9C\uBC1C\u2026"
+    En: "Departing\u2026"
+  - Ko: "\uCD9C\uBC1C \uBC1C\uD310\uC5D0 \uBAA8\uC774\uBA74 \uCD9C\uBC1C   {0}/{1}"
+    En: Gather on the departure pad to go   {0}/{1}
+  - Ko: "   \uCD5C\uACE0 \uC2A4\uD14C\uC774\uC9C0 {0}"
+    En: '   Best stage {0}'
+  - Ko: " \xB7 \uC5D4\uB529 {0}\uBC88"
+    En: " \xB7 endings {0}"
+  - Ko: "\uB204\uACC4 {0}   \uBAA9\uC801\uC9C0 {1}"
+    En: Total {0}   Destination {1}
+  - Ko: "\uCC3D\uACE0"
+    En: Storeroom
+  - Ko: "\uBD80\uC5CC(\uC0DD\uC131)"
+    En: Kitchen (generated)
+  - Ko: "\uBCBD \uC18D(\uC0DD\uC131)"
+    En: Inside the walls (generated)

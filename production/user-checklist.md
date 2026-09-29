@@ -244,6 +244,7 @@
 - [ ] **U-188 언어 전환** (3번째 루프, 메뉴) — 메인 메뉴 → 설정 → 언어 English → [적용]: 제목·버튼·설정 항목이 바로 영어(임시 번역이라 어색해도 됨). 기지에서 Esc 일시정지 창도 영어. 다시 한국어 → [적용]하면 원래대로. 게임 중 HUD는 아직 한국어가 정상.
 - [ ] **U-189 게임 중 영어** (3번째 루프, 기지) — English 적용 뒤 기지: 자판기·거울·도감 앞 "[E] Rat Shop / Mirror / Codex", 왼쪽 아래 "F1 Controls", 상점·거울·도감 창 제목과 닫기 버튼이 영어. 알림·조작 안내·결과 제목 같은 건 아직 한국어가 정상. 한국어로 되돌리면 전부 원래대로.
 - [ ] **U-190 F1 영어** (3번째 루프, 아무 맵) — English 적용 뒤 F1: 제목 "Controls (F1 to close)", 키 목록 "W/A/S/D Move · LMB Grab · drop …", 아래 "Reading the screen"·"When in trouble" 설명까지 영어. 한국어로 되돌리면 원래대로.
+- [ ] **U-191 위 상태 막대 영어** (3번째 루프, 기지·창고·벽 속) — English 적용 뒤 기지 위 줄 "Gather on the departure pad to go 0/1", 둘째 줄 "Total … Destination Storeroom". 창고에서 "Mousehole 0 Total …", 쥐구멍에 들어가면 "Gather at the mousehole to go home 1/1"·"Heading home… 3". 벽 속은 "Stage 1/5 Food 0/…"·오늘의 집 이름. 숫자가 이상하게 빠지거나 {0}이 보이면 적어 주세요.
 
 - [ ] **U-188 F1 위기 때** (3번째 루프) — F1을 누르면 맨 아래에 "위기 때" 두 줄(쓰러짐 — 몸을 쥐구멍(창고)에 넣으면 삶 / 끈끈이 — 동료가 옆에서 E 길게), 상호작용·찍찍 설명이 늘어남. 글자가 전보다 작아지지 않았는지, **4인일 때** 패널 아래가 화면 밖으로 안 나가는지.
   - 내 검증: 한글 입력 상태에서 W/A/S/D·E·Q·F·R, 창 안에 다 들어감. 사진 `production/plans/cat-176/`.

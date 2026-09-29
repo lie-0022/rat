@@ -35,6 +35,13 @@ namespace RatGame.UI
             return table != null && table.TryGetEn(ko, out var en) ? en : ko;
         }
 
+        /// <summary>숫자·이름이 끼는 문장 — 원문 틀("누계 {0}")을 번역한 뒤 채운다. 틀이 곧 키.</summary>
+        public static string F(string koFormat, params object[] args)
+        {
+            try { return string.Format(T(koFormat), args); }
+            catch (FormatException) { return string.Format(koFormat, args); } // 번역 틀이 잘못돼도 한국어로는 보이게
+        }
+
         private static LocalizationTableSO Table
         {
             get

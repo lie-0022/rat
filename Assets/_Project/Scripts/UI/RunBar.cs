@@ -72,8 +72,8 @@ namespace RatGame.UI
             {
                 bool host = NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
                 SetText(_mainText, host
-                    ? $"[Enter] 출발   누계 {run.RunTotalValue.Value}"
-                    : $"호스트 출발 대기   누계 {run.RunTotalValue.Value}");
+                    ? Loc.F("[Enter] 출발   누계 {0}", run.RunTotalValue.Value)
+                    : Loc.F("호스트 출발 대기   누계 {0}", run.RunTotalValue.Value));
                 SetVisible(true, false, false);
                 return;
             }
@@ -81,8 +81,8 @@ namespace RatGame.UI
             var quota = run.GetComponent<StageQuota>(); // 새 루프(벽 속)만 있다
             int stashed = run.StashedValue.Value;
             SetText(_mainText, quota != null
-                ? $"스테이지 {quota.StageNumber.Value}/{quota.StagesPerRun.Value}   식량 {stashed}/{quota.Quota.Value}{TodayShort((StageModifier)quota.Modifier.Value)}"
-                : $"쥐구멍 {stashed}   누계 {run.RunTotalValue.Value}");
+                ? Loc.F("스테이지 {0}/{1}   식량 {2}/{3}", quota.StageNumber.Value, quota.StagesPerRun.Value, stashed, quota.Quota.Value) + TodayShort((StageModifier)quota.Modifier.Value)
+                : Loc.F("쥐구멍 {0}   누계 {1}", stashed, run.RunTotalValue.Value));
 
             bool sub = true;
             int ready = run.ReturnReadyCount.Value, needed = run.ReturnNeededCount.Value;
@@ -91,18 +91,18 @@ namespace RatGame.UI
             if (gathering) Scan();
             bool empty = gathering && quota == null && stashed == 0 && _emptyHanded;
             // 집합은 쓰러진 쥐를 빼고 센다 — 그 쥐와 든 물건을 두고 떠난다는 걸 모이는 줄에 알린다 (고양이 182)
-            string left = gathering && _downedCount > 0 ? $" · 쓰러진 {_downedCount}명 두고 감" : "";
+            string left = gathering && _downedCount > 0 ? Loc.F(" · 쓰러진 {0}명 두고 감", _downedCount) : "";
             bool warn = empty || left.Length > 0;
             if (phase == RunPhase.Returning)
-                ShowSub($"<size=130%>{(quota != null ? "다음으로" : "귀환 중")}… {Remaining(run.ReturnAt.Value):0}</size>{(empty ? " · 빈손" : "")}{left}",
+                ShowSub($"<size=130%>{Loc.T(quota != null ? "다음으로" : "귀환 중")}… {Remaining(run.ReturnAt.Value):0}</size>{(empty ? Loc.T(" · 빈손") : "")}{left}",
                     warn ? UiColorRole.Warning : UiColorRole.Positive);
             else if (ready > 0 && quota != null && !quota.Met(stashed)) // 창고에 왔는데 모자람
-                ShowSub($"식량이 모자라요 — {quota.Quota.Value - stashed} 더 모아 창고에", false);
+                ShowSub(Loc.F("식량이 모자라요 — {0} 더 모아 창고에", quota.Quota.Value - stashed), false);
             else if (ready > 0) // 누가 쥐구멍에 들어가 있을 때만 — 나머지를 부르는 신호
-                ShowSub((quota != null ? $"창고에 모이면 다음으로   {ready}/{needed}" : $"쥐구멍에 모이면 귀환   {ready}/{needed}{(empty ? " · 아직 빈손이에요" : "")}") + left,
+                ShowSub((quota != null ? Loc.F("창고에 모이면 다음으로   {0}/{1}", ready, needed) : Loc.F("쥐구멍에 모이면 귀환   {0}/{1}", ready, needed) + (empty ? Loc.T(" · 아직 빈손이에요") : "")) + left,
                     warn ? UiColorRole.Warning : UiColorRole.Dim);
             else if (quota != null && quota.Met(stashed)) // 채웠지만 아직 아무도 창고에 없음 — 갈지 더 모을지 (고양이 95)
-                ShowSub($"할당량 채움! 창고에 모이면 다음 · 상점 돈 +{stashed - quota.Quota.Value}", false); // 짧게 — 오른쪽 토스트 칸과 안 겹치게
+                ShowSub(Loc.F("할당량 채움! 창고에 모이면 다음 · 상점 돈 +{0}", stashed - quota.Quota.Value), false); // 짧게 — 오른쪽 토스트 칸과 안 겹치게
             else
                 sub = false;
 
@@ -110,12 +110,12 @@ namespace RatGame.UI
         }
 
         // 오늘의 집 짧게 (고양이 120) — 자세한 건 스테이지 안내 토스트
-        private static string TodayShort(StageModifier m) => m switch
+        private static string TodayShort(StageModifier m) => Loc.T(m switch
         {
             StageModifier.Blackout => "   · 정전", StageModifier.TrapSale => "   · 덫 대방출", StageModifier.CatTreats => "   · 간식 날",
             StageModifier.OwnerOut => "   · 집주인 외출", StageModifier.Busy => "   · 분주한 집", StageModifier.Guest => "   · 고양이 손님",
             _ => "",
-        };
+        });
 
         // 기지 (런 매니저가 없는 씬)
         private void ShowPad()
@@ -128,12 +128,12 @@ namespace RatGame.UI
             if (_pad == null || !_pad.IsSpawned) { SetVisible(false, false, false); return; }
 
             if (_pad.Counting.Value)
-                SetText(_mainText, $"<size=130%>출발… {Remaining(_pad.DepartAt.Value):0}</size>");
+                SetText(_mainText, $"<size=130%>{Loc.T("출발…")} {Remaining(_pad.DepartAt.Value):0}</size>");
             else
-                SetText(_mainText, $"출발 발판에 모이면 출발   {_pad.ReadyCount.Value}/{_pad.NeededCount.Value}");
+                SetText(_mainText, Loc.F("출발 발판에 모이면 출발   {0}/{1}", _pad.ReadyCount.Value, _pad.NeededCount.Value));
 
-            string record = _pad.BestStage.Value > 0 ? $"   최고 스테이지 {_pad.BestStage.Value}{(_pad.Endings.Value > 0 ? $" · 엔딩 {_pad.Endings.Value}번" : "")}" : "";
-            ShowSub($"누계 {_pad.TotalValue.Value}   목적지 {_pad.DestinationName}{record}", false);
+            string record = _pad.BestStage.Value > 0 ? Loc.F("   최고 스테이지 {0}", _pad.BestStage.Value) + (_pad.Endings.Value > 0 ? Loc.F(" · 엔딩 {0}번", _pad.Endings.Value) : "") : "";
+            ShowSub(Loc.F("누계 {0}   목적지 {1}", _pad.TotalValue.Value, Loc.T(_pad.DestinationName)) + record, false);
             SetVisible(true, false, true);
         }
 
