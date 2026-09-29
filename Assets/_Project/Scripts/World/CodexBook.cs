@@ -14,7 +14,7 @@ namespace RatGame.World
         /// <summary>도감 패널이 읽는 전체 목록.</summary>
         public ItemDatabase Database => _database;
 
-        public string PromptText => "도감";
+        public string PromptText => Loc.T("도감");
         public float HoldSeconds => 0f;
         public bool CanInteract(ulong clientId) => true;
 

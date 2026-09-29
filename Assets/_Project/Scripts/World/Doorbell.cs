@@ -17,7 +17,7 @@ namespace RatGame.World
         /// <summary>이미 눌렀다 (런당 1회 — 클라 프롬프트도 사라진다).</summary>
         public NetworkVariable<bool> Used = new NetworkVariable<bool>(false);
 
-        public string PromptText => "초인종 누르기";
+        public string PromptText => Loc.T("초인종 누르기");
         public float HoldSeconds => _balance != null ? _balance.DoorbellHoldSeconds : 1f;
         public bool CanInteract(ulong clientId) => !Used.Value;
 

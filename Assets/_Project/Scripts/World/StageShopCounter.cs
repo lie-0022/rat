@@ -20,7 +20,7 @@ namespace RatGame.World
         public NetworkVariable<bool> Closed = new(false); // 마지막 스테이지 — 살 수 없음
 
         public StageShopSO Shop => _shop;
-        public string PromptText => "상점";
+        public string PromptText => Loc.T("상점");
         public float HoldSeconds => 0f;
         public bool CanInteract(ulong clientId) => true;
 

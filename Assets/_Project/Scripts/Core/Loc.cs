@@ -1,13 +1,13 @@
 using System;
-using RatGame.Core;
 using RatGame.Data;
 using UnityEngine;
 
-namespace RatGame.UI
+namespace RatGame.Core
 {
     /// <summary>
     /// 문구 번역 (docs/12). 한국어 원문을 넘기면 지금 언어의 문구를 돌려준다 — 번역이 없으면 원문 그대로.
     /// 언어가 바뀌면 <see cref="Changed"/> — 표시 중인 문구는 이걸 듣고 다시 그린다(LocalizedText).
+    /// Core에 둔다 — 게임 물체가 내놓는 안내 글자(E 안내 등)도 여기서 번역해야 해서 (UI를 부르면 docs/02 위반, 고양이 192).
     /// </summary>
     public static class Loc
     {

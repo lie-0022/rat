@@ -21,7 +21,7 @@ namespace RatGame.Player
 
         private float _stunEndTime; // 호스트 전용
 
-        public string PromptText => $"구출하기 — {PlayerVisual.ColorNameFor(OwnerClientId)}"; // 누구인지 (고양이 187)
+        public string PromptText => Loc.F("구출하기 — {0}", Loc.T(PlayerVisual.ColorNameFor(OwnerClientId))); // 누구인지 (고양이 187)
         public float HoldSeconds => _balance.RescueHoldSeconds;
 
         public bool CanInteract(ulong clientId) =>

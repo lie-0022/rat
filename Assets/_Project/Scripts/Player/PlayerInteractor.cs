@@ -88,7 +88,7 @@ namespace RatGame.Player
             var condition = GetComponent<PlayerCondition>();
             if (InputFocus.IsUiOpen || (condition != null && condition.State.Value != ConditionState.Active)) { FocusPromptText = null; return; }
             var target = FindTarget() as IInteractable;
-            FocusPromptText = target == null ? null : target.HoldSeconds > 0f ? $"{target.PromptText} (길게)" : target.PromptText;
+            FocusPromptText = target == null ? null : target.HoldSeconds > 0f ? target.PromptText + Loc.T(" (길게)") : target.PromptText;
         }
 
         private NetworkBehaviour FindTarget()

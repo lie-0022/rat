@@ -31,7 +31,7 @@ namespace RatGame.World
         public Vector3 PuddleCenter => transform.position;
         public float PuddleRadius => _balance != null ? _balance.PuddleRadius : 2.5f;
 
-        public string PromptText => "물그릇 엎기";
+        public string PromptText => Loc.T("물그릇 엎기");
         public float HoldSeconds => 1f;
         public bool CanInteract(ulong clientId) => !Spilled.Value;
 

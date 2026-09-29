@@ -297,3 +297,116 @@ MonoBehaviour:
     En: Kitchen (generated)
   - Ko: "\uBCBD \uC18D(\uC0DD\uC131)"
     En: Inside the walls (generated)
+  - Ko: "\uBAA9\uC801\uC9C0 \uBC14\uAFB8\uAE30"
+    En: Change destination
+  - Ko: "\uB048 \uD754\uB4E4\uAE30"
+    En: Wiggle string
+  - Ko: "\uC0C1\uC810"
+    En: Shop
+  - Ko: "\uAC70\uC6B8"
+    En: Mirror
+  - Ko: "\uCD08\uC778\uC885 \uB204\uB974\uAE30"
+    En: Ring doorbell
+  - Ko: "\uBA39\uAE30 (\uC2A4\uD0DC\uBBF8\uB098 \uD68C\uBCF5)"
+    En: Eat (restores stamina)
+  - Ko: "\uBB38 \uB2EB\uAE30"
+    En: Close door
+  - Ko: "\uBB38 \uC5F4\uAE30"
+    En: Open door
+  - Ko: "\uBB3C\uADF8\uB987 \uC5CE\uAE30"
+    En: Tip over water bowl
+  - Ko: "{0}\uC5D0\uC11C \uB098\uC624\uAE30"
+    En: Leave {0}
+  - Ko: "{0}\uC5D0 \uC228\uAE30"
+    En: Hide in {0}
+  - Ko: "\uAD6C\uCD9C\uD558\uAE30 \u2014 {0}"
+    En: "Rescue \u2014 {0}"
+  - Ko: " (\uAE38\uAC8C)"
+    En: ' (hold)'
+  - Ko: "[\uC88C\uD074\uB9AD] \uB193\uAE30"
+    En: '[LMB] Let go'
+  - Ko: "[\uC88C\uD074\uB9AD] \uB193\uAE30   {0}\uC73C\uB85C \uB04C\uACE0 \uAC00\uBA74
+      \uC0B4\uC544\uB098\uC694 {1}/{2}"
+    En: '[LMB] Let go   Drag to {0} to revive {1}/{2}'
+  - Ko: "[\uC88C\uD074\uB9AD] \uB193\uAE30   \uD568\uAED8 \uB4DC\uB294 \uC911 {0}/{1}"
+    En: '[LMB] Let go   Carrying together {0}/{1}'
+  - Ko: "[\uC6B0\uD074\uB9AD \uB5BC\uAE30] \uB358\uC9C0\uAE30   [\uC88C\uD074\uB9AD]
+      \uCDE8\uC18C"
+    En: '[Release RMB] Throw   [LMB] Cancel'
+  - Ko: "[\uC88C\uD074\uB9AD] \uB0B4\uB824\uB193\uAE30   [\uC6B0\uD074\uB9AD \uD640\uB4DC]
+      \uB358\uC9C0\uAE30"
+    En: '[LMB] Put down   [Hold RMB] Throw'
+  - Ko: "\uC4F0\uB7EC\uC9C4 {0}"
+    En: Downed {0}
+  - Ko: "[\uC88C\uD074\uB9AD] \uC9D1\uAE30 \u2014 {0}"
+    En: "[LMB] Grab \u2014 {0}"
+  - Ko: "{0} \u2014 \uC790\uB9AC \uC5C6\uC74C ({1}/{2})"
+    En: "{0} \u2014 no room ({1}/{2})"
+  - Ko: "[\uC88C\uD074\uB9AD] \uAC19\uC774 \uB4E4\uAE30 \u2014 {0} ({1}/{2})"
+    En: "[LMB] Lift together \u2014 {0} ({1}/{2})"
+  - Ko: "\uCC3D\uACE0(\uC8FC\uD669 \uBC29)"
+    En: the storeroom (orange room)
+  - Ko: "\uC950\uAD6C\uBA4D"
+    En: the mousehole
+  - Ko: "\uC228\uC8FD\uC5EC\u2026 \uACE0\uC591\uC774\uAC00 \uCF54\uC55E"
+    En: "Hold your breath\u2026 the cat is right there"
+  - Ko: "\uC228\uB294 \uC911 \xB7 [E] \uB098\uAC00\uAE30 (\uC18C\uB9AC \uB0A8)"
+    En: "Hiding \xB7 [E] Leave (makes noise)"
+  - Ko: "\uD68C\uC0C9 \uC950"
+    En: Gray rat
+  - Ko: "\uD30C\uB791 \uC950"
+    En: Blue rat
+  - Ko: "\uCD08\uB85D \uC950"
+    En: Green rat
+  - Ko: "\uB178\uB791 \uC950"
+    En: Yellow rat
+  - Ko: "\uC2E0\uBC1C"
+    En: shoe
+  - Ko: "\uBE48 \uC0C1\uC790"
+    En: empty box
+  - Ko: "\uC7A5\uD654"
+    En: boot
+  - Ko: "\uC4F0\uB7EC\uC9C4 \uB3D9\uB8CC"
+    En: Downed teammate
+  - Ko: "\uBC14\uAC8C\uD2B8"
+    En: Baguette
+  - Ko: "\uBCD1\uB69C\uAED1"
+    En: Bottle cap
+  - Ko: "\uCC38\uCE58\uCE94"
+    En: Tuna can
+  - Ko: "\uC0AC\uD0D5"
+    En: Candy
+  - Ko: "\uCE58\uC988 \uC870\uAC01"
+    En: Cheese slice
+  - Ko: "\uCE58\uC988 \uB369\uC5B4\uB9AC"
+    En: Cheese block
+  - Ko: "\uB85C\uC2A4\uD2B8\uCE58\uD0A8"
+    En: Roast chicken
+  - Ko: "\uB3D9\uC804"
+    En: Coin
+  - Ko: "\uD06C\uB798\uCEE4"
+    En: Cracker
+  - Ko: "\uACC4\uB780"
+    En: Egg
+  - Ko: "\uD3EC\uB3C4\uC54C"
+    En: Grape
+  - Ko: "\uD5E4\uC5B4\uBCFC"
+    En: Hairball
+  - Ko: "\uD584 \uB369\uC5B4\uB9AC"
+    En: Ham
+  - Ko: "\uC824\uB9AC"
+    En: Jelly
+  - Ko: "\uC804\uAD6C"
+    En: Light bulb
+  - Ko: "\uC2A4\uB9C8\uD2B8\uD3F0"
+    En: Smartphone
+  - Ko: "\uC811\uC2DC"
+    En: Plate
+  - Ko: "\uBC18\uC9C0"
+    En: Ring
+  - Ko: "\uBE44\uB204"
+    En: Soap
+  - Ko: "\uD68C\uC911\uC2DC\uACC4"
+    En: Pocket watch
+  - Ko: "\uC218\uBC15 \uC870\uAC01"
+    En: Watermelon slice

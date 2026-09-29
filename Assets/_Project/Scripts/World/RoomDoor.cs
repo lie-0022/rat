@@ -55,7 +55,7 @@ namespace RatGame.World
         private Quaternion _closedRot;
         private bool _wasPushing;
 
-        public string PromptText => Open.Value ? "문 닫기" : "문 열기";
+        public string PromptText => Loc.T(Open.Value ? "문 닫기" : "문 열기");
         public float HoldSeconds => 0.4f;
         public bool CanInteract(ulong clientId) => Open.Value ? !CatInDoorway(1f) : true;
 

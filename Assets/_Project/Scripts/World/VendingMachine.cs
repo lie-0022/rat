@@ -20,7 +20,7 @@ namespace RatGame.World
         public NetworkVariable<UpgradeLevels> Levels = new();
 
         public UpgradeSO[] Upgrades => _upgrades;
-        public string PromptText => "상점";
+        public string PromptText => Loc.T("상점");
         public float HoldSeconds => 0f;
         public bool CanInteract(ulong clientId) => true;
 

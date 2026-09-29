@@ -9,7 +9,7 @@ namespace RatGame.World
     {
 
 
-        public string PromptText => "거울";
+        public string PromptText => Loc.T("거울");
         public float HoldSeconds => 0f;
         public bool CanInteract(ulong clientId) => true;
 

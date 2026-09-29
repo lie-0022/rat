@@ -14,7 +14,7 @@ namespace RatGame.World
         [SerializeField] private DeparturePad _pad;
         [SerializeField] private TMP_Text _label;
 
-        public string PromptText => "목적지 바꾸기";
+        public string PromptText => Loc.T("목적지 바꾸기");
         public float HoldSeconds => 0f;
         public bool CanInteract(ulong clientId) => _pad != null && _pad.IsSpawned && !_pad.Counting.Value;
 

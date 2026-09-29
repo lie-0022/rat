@@ -40,7 +40,7 @@ namespace RatGame.World
         private Vector3 FloorPoint(Vector3 p) { p.y = transform.position.y - Mathf.Abs(transform.lossyScale.y) * 0.5f + RatHalfHeight; return p; }
         private const float RatHalfHeight = 0.65f; // 쥐 캡슐(높이 2 × 스케일 0.6) 절반 + 여유 — 피벗이 몸 중앙
 
-        public string PromptText => IsOccupant(LocalClientIdSafe()) ? $"{_displayName}에서 나오기" : $"{_displayName}에 숨기";
+        public string PromptText => Loc.F(IsOccupant(LocalClientIdSafe()) ? "{0}에서 나오기" : "{0}에 숨기", Loc.T(_displayName));
         // 들어가기는 짧은 홀드(급하게), 나오기는 즉시
         public float HoldSeconds => IsOccupant(LocalClientIdSafe()) ? 0f : (_balance != null ? _balance.HideEnterSeconds : 0.3f);
 

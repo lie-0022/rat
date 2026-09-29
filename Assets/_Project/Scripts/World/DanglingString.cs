@@ -27,7 +27,7 @@ namespace RatGame.World
         /// <summary>고양이가 와서 노는 곳 (바닥).</summary>
         public Vector3 PlayPoint { get { var p = transform.position; p.y = 0f; return p; } }
 
-        public string PromptText => "끈 흔들기";
+        public string PromptText => Loc.T("끈 흔들기");
         public float HoldSeconds => 0.3f;
         public bool CanInteract(ulong clientId) => !Swinging.Value;
 

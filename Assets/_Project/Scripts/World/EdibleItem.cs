@@ -17,7 +17,7 @@ namespace RatGame.World
 
         private CarryableItem _item;
 
-        public string PromptText => "먹기 (스태미나 회복)";
+        public string PromptText => Loc.T("먹기 (스태미나 회복)");
         public float HoldSeconds => _balance != null ? _balance.EatSeconds : 1f;
 
         private void Awake() => _item = GetComponent<CarryableItem>();

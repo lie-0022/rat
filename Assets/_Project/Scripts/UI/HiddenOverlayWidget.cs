@@ -1,3 +1,4 @@
+using RatGame.Core;
 using RatGame.AI;
 using RatGame.Data;
 using RatGame.Player;
@@ -65,7 +66,7 @@ namespace RatGame.UI
             if (_heart != null) _heart.localScale = Vector3.one * Mathf.Lerp(1f, Mathf.Lerp(1.05f, 1.35f, t), beat);
             if (_text != null)
             {
-                string s = t > 0.7f ? "숨죽여… 고양이가 코앞" : "숨는 중 · [E] 나가기 (소리 남)";
+                string s = Loc.T(t > 0.7f ? "숨죽여… 고양이가 코앞" : "숨는 중 · [E] 나가기 (소리 남)");
                 if (_text.text != s) _text.text = s;
                 if (_theme != null)
                 {

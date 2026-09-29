@@ -1,3 +1,4 @@
+using RatGame.Core;
 using RatGame.Player;
 using RatGame.Run;
 using RatGame.World;
@@ -34,24 +35,24 @@ namespace RatGame.UI
                 if (carry.IsDraggingHeavy)
                 {
                     var held = carry.CarriedItem;
-                    if (held == null) return "[좌클릭] 놓기";
+                    if (held == null) return Loc.T("[좌클릭] 놓기");
                     if (held.GetComponent<DownedBody>() != null) // 어디로 끌어야 살아나는지 (고양이 185)
-                        return $"[좌클릭] 놓기   {ReviveSpot()}으로 끌고 가면 살아나요 {held.CarrierIds.Count}/{held.CarrySlotCount}";
-                    return $"[좌클릭] 놓기   함께 드는 중 {held.CarrierIds.Count}/{held.CarrySlotCount}";
+                        return Loc.F("[좌클릭] 놓기   {0}으로 끌고 가면 살아나요 {1}/{2}", Loc.T(ReviveSpot()), held.CarrierIds.Count, held.CarrySlotCount);
+                    return Loc.F("[좌클릭] 놓기   함께 드는 중 {0}/{1}", held.CarrierIds.Count, held.CarrySlotCount);
                 }
                 return carry.ThrowCharge > 0f
-                    ? "[우클릭 떼기] 던지기   [좌클릭] 취소"
-                    : "[좌클릭] 내려놓기   [우클릭 홀드] 던지기";
+                    ? Loc.T("[우클릭 떼기] 던지기   [좌클릭] 취소")
+                    : Loc.T("[좌클릭] 내려놓기   [우클릭 홀드] 던지기");
             }
 
             var cand = carry.GrabCandidate;
             if (cand == null) return null;
-            string name = cand.Data != null ? cand.Data.DisplayName : cand.name;
+            string name = cand.Data != null ? Loc.T(cand.Data.DisplayName) : cand.name;
             var body = cand.GetComponent<DownedBody>();
-            if (body != null && body.Owner.Value != ulong.MaxValue) name = $"쓰러진 {PlayerVisual.ColorNameFor(body.Owner.Value)}"; // 누구 몸인지 (고양이 185)
-            if (!cand.IsHeavy) return $"[좌클릭] 집기 — {name}";
-            if (cand.IsCarrySlotsFull) return $"{name} — 자리 없음 ({cand.CarrierIds.Count}/{cand.CarrySlotCount})";
-            return $"[좌클릭] 같이 들기 — {name} ({cand.CarrierIds.Count}/{cand.CarrySlotCount})";
+            if (body != null && body.Owner.Value != ulong.MaxValue) name = Loc.F("쓰러진 {0}", Loc.T(PlayerVisual.ColorNameFor(body.Owner.Value))); // 누구 몸인지 (고양이 185)
+            if (!cand.IsHeavy) return Loc.F("[좌클릭] 집기 — {0}", name);
+            if (cand.IsCarrySlotsFull) return Loc.F("{0} — 자리 없음 ({1}/{2})", name, cand.CarrierIds.Count, cand.CarrySlotCount);
+            return Loc.F("[좌클릭] 같이 들기 — {0} ({1}/{2})", name, cand.CarrierIds.Count, cand.CarrySlotCount);
         }
 
         // 벽 속(할당량 있는 새 루프)은 창고 방이 살리는 자리
