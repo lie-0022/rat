@@ -47,6 +47,15 @@ namespace RatGame.Data
         [SerializeField] private float _depositFrom = 1046f, _depositTo = 1568f, _depositSeconds = 0.6f;
         [SerializeField, Range(0f, 1f)] private float _depositVolume = 0.5f;
 
+        [Header("집 이벤트 (고양이 245) — 집 전체에서 들리는 소리라 2D. 루틴 예고 방울만 고양이 자리 3D")]
+        [SerializeField, Range(0f, 1f)] private float _houseCueVolume = 0.55f;   // 딩동·삐·딸깍·덜컹
+        [SerializeField, Range(0f, 1f)] private float _houseLoopVolume = 0.25f;  // TV·청소기·물소리 — 켜져 있는 동안 반복
+        [SerializeField, Range(0f, 1f)] private float _catBellVolume = 0.6f;     // 루틴 출발 방울
+
+        public float HouseCueVolume => _houseCueVolume;
+        public float HouseLoopVolume => _houseLoopVolume;
+        public float CatBellVolume => _catBellVolume;
+
         public float CatMinDistance => _catMinDistance;
         public float CatMaxDistance => _catMaxDistance;
         public float SuspiciousVolume => _suspiciousVolume;

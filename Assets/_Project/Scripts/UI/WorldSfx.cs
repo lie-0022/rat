@@ -10,7 +10,7 @@ namespace RatGame.UI
     /// 정산 "딸랑"은 쥐구멍 적립(StashedValue NV)이 오를 때 2D. 정산·깨짐 이벤트(LootDeposited·LootBroken)는 호스트 전용이라 쓰지 않는다.
     /// 정적 Instance 없음 — AchievementService처럼 스스로 생겨 씬을 넘어 산다.
     /// </summary>
-    public class WorldSfx : MonoBehaviour
+    public partial class WorldSfx : MonoBehaviour
     {
         private const int PoolSize = 6;
 
@@ -49,12 +49,16 @@ namespace RatGame.UI
             _ui.spatialBlend = 0f;
             EventBus.RatSqueak += OnSqueak;
             EventBus.NoiseRipple += OnRipple;
+            EventBus.HouseEvent += OnHouseEvent;
+            EventBus.CatCue += OnCatCue;
         }
 
         private void OnDestroy()
         {
             EventBus.RatSqueak -= OnSqueak;
             EventBus.NoiseRipple -= OnRipple;
+            EventBus.HouseEvent -= OnHouseEvent;
+            EventBus.CatCue -= OnCatCue;
         }
 
         private static float Sfx => Mathf.Clamp01(SettingsService.Current.SfxVolume);
@@ -76,7 +80,7 @@ namespace RatGame.UI
         private void Update()
         {
             var run = Run.RunManager.Instance;
-            if (run == null || !run.IsSpawned) { _run = null; return; }
+            if (run == null || !run.IsSpawned) { if (_run != null) StopHouseLoops(); _run = null; return; } // 런이 끝나면 켜져 있던 TV·청소기 소리도 끈다
             int stash = run.StashedValue.Value;
             if (run != _run) { _run = run; _lastStash = stash; return; }
             if (stash > _lastStash && _audio != null)

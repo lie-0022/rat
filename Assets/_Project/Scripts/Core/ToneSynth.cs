@@ -73,6 +73,22 @@ namespace RatGame.Core
             return 0.5f * a + 0.6f * b;
         });
 
+        /// <summary>쏴아 — 물이 쏟아지는 잡음(반복용). grit이 클수록 거칠다 (고양이 245).</summary>
+        public static AudioClip Rush(float grit, float seconds) => Get($"rush{grit}-{seconds}", seconds, (t, u) =>
+        {
+            _low += (Noise() - _low) * grit;
+            return _low * (0.8f + 0.2f * Mathf.Sin(2f * Mathf.PI * 3f * u)); // 한 바퀴에 세 번 출렁 — 이음매 없음
+        });
+
+        /// <summary>웅얼웅얼 — 멀리서 들리는 말소리(TV). 잡음을 음절 박자로 켰다 껐다 (반복용, 고양이 245).</summary>
+        public static AudioClip Babble(float syllables, float seconds) => Get($"babble{syllables}-{seconds}", seconds, (t, u) =>
+        {
+            _low += (Noise() - _low) * 0.25f;
+            float syl = Mathf.Max(0f, Mathf.Sin(2f * Mathf.PI * syllables * t)) * (0.6f + 0.4f * Mathf.Sin(2f * Mathf.PI * 0.7f * t));
+            float voice = Mathf.Sin(2f * Mathf.PI * (180f + 40f * Mathf.Sin(2f * Mathf.PI * 1.3f * t)) * t);
+            return syl * (0.6f * _low + 0.4f * voice);
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }
