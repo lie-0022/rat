@@ -50,17 +50,17 @@ namespace RatGame.UI
         // 벽 속 스테이지 안내 (고양이 81·84) — 토스트가 최대 3개라 머리줄 + 고양이 줄 + 지도 줄
         private void OnStageBriefing(int stage, int stages, int quota, byte flags, byte modifier)
         {
-            string today = ModifierText((Run.StageModifier)modifier);
-            Show($"스테이지 {stage}/{stages} — 식량 {quota} 모아 목적지(주황 방)로{(today != null ? "\n오늘: " + today : "")}", UiColorRole.Accent, BriefingSeconds);
+            string today = Loc.T(ModifierText((Run.StageModifier)modifier));
+            Show(Loc.F("스테이지 {0}/{1} — 식량 {2} 모아 목적지(주황 방)로", stage, stages, quota) + (today != null ? Loc.F("\n오늘: {0}", today) : ""), UiColorRole.Accent, BriefingSeconds);
             // 고양이 줄 — 이 스테이지에 있는 역할만 이어서 (토스트 칸 두 줄 안)
             var cats = new List<string>();
-            if ((flags & Run.GridZoneBuilder.BriefGuard) != 0) cats.Add("문지기(푸른 회색)가 목적지 앞");
-            if ((flags & Run.GridZoneBuilder.BriefPatroller) != 0) cats.Add("순찰꾼(적갈색)이 큰길을 오감");
-            if ((flags & Run.GridZoneBuilder.BriefKitten) != 0) cats.Add("아기는 들키면 엄마를 부름");
+            if ((flags & Run.GridZoneBuilder.BriefGuard) != 0) cats.Add(Loc.T("문지기(푸른 회색)가 목적지 앞"));
+            if ((flags & Run.GridZoneBuilder.BriefPatroller) != 0) cats.Add(Loc.T("순찰꾼(적갈색)이 큰길을 오감"));
+            if ((flags & Run.GridZoneBuilder.BriefKitten) != 0) cats.Add(Loc.T("아기는 들키면 엄마를 부름"));
             if (cats.Count > 0) Show(string.Join(" · ", cats), UiColorRole.Warning, BriefingSeconds);
             // 토스트 칸은 두 줄 높이라 한 토스트에 한 문장 (스테이지 1엔 고양이 줄이 없어 3개 안에 든다)
-            if ((flags & Run.GridZoneBuilder.BriefTreasure) != 0) Show("막다른 방 하나는 보물방 — 비싼 음식, 함정 가득", UiColorRole.Secondary, BriefingSeconds);
-            if (stage == 1) Show(((flags & Run.GridZoneBuilder.BriefPipe) != 0 ? "회색 배관은 쥐만 · " : "") + "R 킁킁 = 목적지·음식 냄새 · Tab 지도", UiColorRole.Secondary, BriefingSeconds); // 조작 팁은 배관 없는 맵에도
+            if ((flags & Run.GridZoneBuilder.BriefTreasure) != 0) Show(Loc.T("막다른 방 하나는 보물방 — 비싼 음식, 함정 가득"), UiColorRole.Secondary, BriefingSeconds);
+            if (stage == 1) Show(((flags & Run.GridZoneBuilder.BriefPipe) != 0 ? Loc.T("회색 배관은 쥐만 · ") : "") + Loc.T("R 킁킁 = 목적지·음식 냄새 · Tab 지도"), UiColorRole.Secondary, BriefingSeconds); // 조작 팁은 배관 없는 맵에도
         }
 
         // 오늘의 집 (고양이 106) — 머리줄에 붙여 토스트 수를 안 늘린다
@@ -75,11 +75,11 @@ namespace RatGame.UI
             _ => null,
         };
 
-        private void OnCheeseEaten(float amount) => Show($"냠냠 — 스태미나 +{amount:0}", UiColorRole.Positive);
-        private void OnCatBelled(Vector3 _) => Show("방울 달았다! Tab 지도에 고양이가 보여요", UiColorRole.Positive);
-        private void OnTrapBaitNear() => Show("쥐덫 위 음식은 미끼 — 웅크리고(Ctrl) 집기", UiColorRole.Warning);
+        private void OnCheeseEaten(float amount) => Show(Loc.F("냠냠 — 스태미나 +{0:0}", amount), UiColorRole.Positive);
+        private void OnCatBelled(Vector3 _) => Show(Loc.T("방울 달았다! Tab 지도에 고양이가 보여요"), UiColorRole.Positive);
+        private void OnTrapBaitNear() => Show(Loc.T("쥐덫 위 음식은 미끼 — 웅크리고(Ctrl) 집기"), UiColorRole.Warning);
         private void OnTrapBait(bool sneaky) =>
-            Show(sneaky ? "살금살금 — 미끼만 쏙!" : "탁! 미끼는 웅크리고(Ctrl) 살금살금", sneaky ? UiColorRole.Positive : UiColorRole.Danger);
+            Show(Loc.T(sneaky ? "살금살금 — 미끼만 쏙!" : "탁! 미끼는 웅크리고(Ctrl) 살금살금"), sneaky ? UiColorRole.Positive : UiColorRole.Danger);
 
         // 집주인 이벤트 (design/cat-ideas/10) — 인간은 안 보인다, 소리·말로만
         private void OnHouseEvent(HouseEventKind kind, HouseEventPhase phase)
@@ -114,13 +114,13 @@ namespace RatGame.UI
             };
             if (text == null) return;
             Log.Dev($"집주인 알림: {text}");
-            Show(text, phase == HouseEventPhase.Start ? UiColorRole.Positive : UiColorRole.Warning);
+            Show(Loc.T(text), phase == HouseEventPhase.Start ? UiColorRole.Positive : UiColorRole.Warning);
         }
 
         private void OnCodexUnlocked(string itemId)
         {
             var item = _database != null ? _database.GetById(itemId) : null;
-            Show($"도감 등록!  {(item != null ? item.DisplayName : itemId)}", UiColorRole.Accent);
+            Show(Loc.F("도감 등록!  {0}", item != null ? Loc.T(item.DisplayName) : itemId), UiColorRole.Accent);
         }
 
         public void Show(string text, UiColorRole stripe) => Show(text, stripe, _seconds);
@@ -167,7 +167,7 @@ namespace RatGame.UI
             if (quota == null || !quota.IsSpawned || quota.Quota.Value <= 0) { _quotaSeen = null; return; }
             bool met = quota.Met(run.StashedValue.Value);
             if (quota != _quotaSeen) { _quotaSeen = quota; _quotaWasMet = met; return; } // 늦게 들어와 이미 채운 상태면 알리지 않음
-            if (met && !_quotaWasMet) Show("할당량 채움! 이제 목적지에 모두 모이면 다음 스테이지", UiColorRole.Accent);
+            if (met && !_quotaWasMet) Show(Loc.T("할당량 채움! 이제 목적지에 모두 모이면 다음 스테이지"), UiColorRole.Accent);
             _quotaWasMet = met;
         }
 
@@ -189,28 +189,28 @@ namespace RatGame.UI
                 ulong id = p.OwnerClientId;
                 var state = p.State.Value;
                 _seen.Add(id);
-                string name = PlayerVisual.ColorNameFor(id);
+                string name = Loc.T(PlayerVisual.ColorNameFor(id));
                 if (!_known.TryGetValue(id, out var prev))
                 {
-                    if (_snapshotted && !p.IsOwner) Show($"{name}가 들어왔어요", UiColorRole.Positive);
+                    if (_snapshotted && !p.IsOwner) Show(Loc.F("{0}가 들어왔어요", name), UiColorRole.Positive);
                 }
                 else if (prev != state && p.IsOwner)
                 {
                     // 고양이가 놓아줬다 — 도망칠 창 (design/cat-ideas/04)
-                    if (prev == ConditionState.Pinned && state == ConditionState.Active) Show("풀려났다! 지금 도망쳐!", UiColorRole.Warning);
-                    if (state == ConditionState.Trapped) Show("끈끈이! 동료가 E로 구해 줘야 해요", UiColorRole.Danger);
-                    if (state == ConditionState.Stunned) Show("찌릿! 잠깐 못 움직여요", UiColorRole.Warning);
-                    if (state == ConditionState.Pinned) Show("잡혔다! A·D 번갈아 연타 = 버둥 — 보는 쪽으로 굴러간다", UiColorRole.Danger);
+                    if (prev == ConditionState.Pinned && state == ConditionState.Active) Show(Loc.T("풀려났다! 지금 도망쳐!"), UiColorRole.Warning);
+                    if (state == ConditionState.Trapped) Show(Loc.T("끈끈이! 동료가 E로 구해 줘야 해요"), UiColorRole.Danger);
+                    if (state == ConditionState.Stunned) Show(Loc.T("찌릿! 잠깐 못 움직여요"), UiColorRole.Warning);
+                    if (state == ConditionState.Pinned) Show(Loc.T("잡혔다! A·D 번갈아 연타 = 버둥 — 보는 쪽으로 굴러간다"), UiColorRole.Danger);
                     // 쓰러지면 몸이 대리 몸으로 바뀌고 조작이 멈춘다 — 기다리면 된다는 것과 살아나는 길을 본인에게도 (고양이 183)
-                    if (state == ConditionState.Downed) Show($"쓰러졌어요… 동료가 내 몸을 {(IsWalls ? "창고(주황 방)" : "쥐구멍")}으로 끌고 가면 살아나요\n[Q] 찍찍 = 동료에게 내 자리 알림 (고양이도 들어요)", UiColorRole.Danger); // 둘째 줄 고양이 184
-                    if (prev == ConditionState.Downed) Show("살아났다! 다시 움직여요", UiColorRole.Positive);
+                    if (state == ConditionState.Downed) Show(Loc.F("쓰러졌어요… 동료가 내 몸을 {0}으로 끌고 가면 살아나요\n[Q] 찍찍 = 동료에게 내 자리 알림 (고양이도 들어요)", Loc.T(IsWalls ? "창고(주황 방)" : "쥐구멍")), UiColorRole.Danger); // 둘째 줄 고양이 184
+                    if (prev == ConditionState.Downed) Show(Loc.T("살아났다! 다시 움직여요"), UiColorRole.Positive);
                 }
                 else if (prev != state && !p.IsOwner)
                 {
                     // 둘째 줄 = 어디 (고양이 155) — 넓어진 맵에서 지도를 안 열어도 첫 발을 뗄 수 있게
-                    if (state == ConditionState.Pinned) Show($"{name}가 고양이에게 잡혔어요! 눈에 띄어 고양이를 떼어 내요\n{Where(p.transform.position)}", UiColorRole.Danger);
-                    if (state == ConditionState.Downed) Show($"{name}가 다운됐어요! {(IsWalls ? "창고(주황 방)" : "쥐구멍")}으로 옮겨 주세요\n{Where(p.transform.position)}", UiColorRole.Danger);
-                    else if (state == ConditionState.Trapped) Show($"{name}가 끈끈이에 붙었어요! [E] 길게 눌러 구출\n{Where(p.transform.position)}", UiColorRole.Warning);
+                    if (state == ConditionState.Pinned) Show(Loc.F("{0}가 고양이에게 잡혔어요! 눈에 띄어 고양이를 떼어 내요\n{1}", name, Where(p.transform.position)), UiColorRole.Danger);
+                    if (state == ConditionState.Downed) Show(Loc.F("{0}가 다운됐어요! {1}으로 옮겨 주세요\n{2}", name, Loc.T(IsWalls ? "창고(주황 방)" : "쥐구멍"), Where(p.transform.position)), UiColorRole.Danger);
+                    else if (state == ConditionState.Trapped) Show(Loc.F("{0}가 끈끈이에 붙었어요! [E] 길게 눌러 구출\n{1}", name, Where(p.transform.position)), UiColorRole.Warning);
                     if (state == ConditionState.Pinned || state == ConditionState.Downed || state == ConditionState.Trapped) Log.Dev($"동료 위기 알림: {name} {state} — {Where(p.transform.position)}"); // 2인 검증용
                 }
                 _known[id] = state;
@@ -222,7 +222,7 @@ namespace RatGame.UI
             foreach (var id in _gone)
             {
                 _known.Remove(id);
-                if (_snapshotted) Show($"{PlayerVisual.ColorNameFor(id)}가 나갔어요", UiColorRole.Secondary);
+                if (_snapshotted) Show(Loc.F("{0}가 나갔어요", Loc.T(PlayerVisual.ColorNameFor(id))), UiColorRole.Secondary);
             }
             // 처음 본 목록(세션 입장·HUD 생성 직후)은 알리지 않는다
             _snapshotted = true;

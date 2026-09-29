@@ -84,7 +84,30 @@ namespace RatGame.EditorTools
                 if (Slots(e.Ko) != Slots(e.En)) { badSlots++; Debug.LogError($"[Rat] 번역 자리 불일치: \"{e.Ko}\" → \"{e.En}\""); }
             }
             foreach (var m in missingEn) Debug.Log($"[Rat] 번역 없음 — {m}");
-            Debug.Log($"[Rat] 메뉴 번역 준비: 표 {table.Entries.Count}줄(새 {added}, 영어 빈 칸 {missing}, 자리 불일치 {badSlots}) · LocalizedText 새로 {attached}개");
+            int codeMissing = CheckCodeLiterals(table);
+            Debug.Log($"[Rat] 메뉴 번역 준비: 표 {table.Entries.Count}줄(새 {added}, 영어 빈 칸 {missing}, 자리 불일치 {badSlots}, 코드 원문 누락 {codeMissing}) · LocalizedText 새로 {attached}개");
+        }
+
+        // 코드의 Loc.T/F("…") 한 줄 안 한국어 문자열(삼항 양쪽 포함)이 표에 있는지 — 빠뜨리면 영어 화면에 한국어가 남는다 (고양이 196)
+        private static readonly Regex LocCall = new(@"Loc\.[TF]\(([^;\n]*)");
+        private static readonly Regex Literal = new(@"""((?:[^""\\]|\\.)*)""");
+
+        private static int CheckCodeLiterals(LocalizationTableSO table)
+        {
+            int missing = 0;
+            foreach (var file in System.IO.Directory.GetFiles("Assets/_Project/Scripts", "*.cs", System.IO.SearchOption.AllDirectories))
+            {
+                if (file.Replace('\\', '/').Contains("/Editor/")) continue;
+                foreach (Match call in LocCall.Matches(System.IO.File.ReadAllText(file)))
+                    foreach (Match lit in Literal.Matches(call.Groups[1].Value))
+                    {
+                        string ko = Regex.Unescape(lit.Groups[1].Value);
+                        if (!Hangul.IsMatch(ko) || table.TryGetEn(ko, out _)) continue;
+                        missing++;
+                        Debug.LogWarning($"[Rat] 코드 원문 번역 없음: {System.IO.Path.GetFileName(file)} \"{ko}\"");
+                    }
+            }
+            return missing;
         }
 
         private static readonly Regex Slot = new(@"\{\d+[^}]*\}");

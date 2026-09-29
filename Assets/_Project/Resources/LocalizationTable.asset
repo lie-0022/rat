@@ -676,3 +676,148 @@ MonoBehaviour:
     En: Running straight outpaces cats. Just avoid dead ends.
   - Ko: "\uC774\uBC88\uC5D0 \uC0C8\uB85C \uCC44\uC6B4 \uB3C4\uAC10\uC740 \uC5C6\uC5B4\uC694"
     En: No new codex entries this time
+  - Ko: "\uC2A4\uD14C\uC774\uC9C0 {0}/{1} \u2014 \uC2DD\uB7C9 {2} \uBAA8\uC544 \uBAA9\uC801\uC9C0(\uC8FC\uD669
+      \uBC29)\uB85C"
+    En: "Stage {0}/{1} \u2014 gather {2} food and head to the destination (orange
+      room)"
+  - Ko: "\n\uC624\uB298: {0}"
+    En: '
+
+      Today: {0}'
+  - Ko: "\uBB38\uC9C0\uAE30(\uD478\uB978 \uD68C\uC0C9)\uAC00 \uBAA9\uC801\uC9C0 \uC55E"
+    En: A gatekeeper (blue-gray) guards the destination
+  - Ko: "\uC21C\uCC30\uAFBC(\uC801\uAC08\uC0C9)\uC774 \uD070\uAE38\uC744 \uC624\uAC10"
+    En: A patroller (red-brown) walks the main hall
+  - Ko: "\uC544\uAE30\uB294 \uB4E4\uD0A4\uBA74 \uC5C4\uB9C8\uB97C \uBD80\uB984"
+    En: Kittens call their mom if they spot you
+  - Ko: "\uB9C9\uB2E4\uB978 \uBC29 \uD558\uB098\uB294 \uBCF4\uBB3C\uBC29 \u2014 \uBE44\uC2FC
+      \uC74C\uC2DD, \uD568\uC815 \uAC00\uB4DD"
+    En: "One dead end is a treasure room \u2014 pricey food, lots of traps"
+  - Ko: "\uD68C\uC0C9 \uBC30\uAD00\uC740 \uC950\uB9CC \xB7 "
+    En: "Gray pipes are rats-only \xB7 "
+  - Ko: "R \uD081\uD081 = \uBAA9\uC801\uC9C0\xB7\uC74C\uC2DD \uB0C4\uC0C8 \xB7 Tab
+      \uC9C0\uB3C4"
+    En: "R sniff = destination & food scent \xB7 Tab map"
+  - Ko: "\uC815\uC804 (\uC5B4\uB450\uC6B4 \uBC29\uC774 \uB9CE\uC544\uC694)"
+    En: Blackout (lots of dark rooms)
+  - Ko: "\uB36B \uB300\uBC29\uCD9C (\uD568\uC815\uC774 \uB9CE\uC544\uC694)"
+    En: Trap sale (lots of traps)
+  - Ko: "\uACE0\uC591\uC774 \uAC04\uC2DD \uB0A0 (\uACE0\uC591\uC774\uAC00 \uB290\uB9BF\uB290\uB9BF)"
+    En: Cat treat day (cats are sluggish)
+  - Ko: "\uC9D1\uC8FC\uC778 \uC678\uCD9C (\uC9D1\uC8FC\uC778 \uC0AC\uAC74 \uC5C6\uC74C)"
+    En: Owner's out (no owner events)
+  - Ko: "\uBD84\uC8FC\uD55C \uC9D1 (\uC9D1\uC8FC\uC778 \uC0AC\uAC74\uC774 \uC7A6\uC544\uC694)"
+    En: Busy house (frequent owner events)
+  - Ko: "\uACE0\uC591\uC774 \uC190\uB2D8 (\uD55C \uB9C8\uB9AC \uB354 \uC654\uC5B4\uC694)"
+    En: Cat guest (one more cat came over)
+  - Ko: "\uB0E0\uB0E0 \u2014 \uC2A4\uD0DC\uBBF8\uB098 +{0:0}"
+    En: "Yum \u2014 stamina +{0:0}"
+  - Ko: "\uBC29\uC6B8 \uB2EC\uC558\uB2E4! Tab \uC9C0\uB3C4\uC5D0 \uACE0\uC591\uC774\uAC00
+      \uBCF4\uC5EC\uC694"
+    En: Belled! The cat now shows on the Tab map
+  - Ko: "\uC950\uB36B \uC704 \uC74C\uC2DD\uC740 \uBBF8\uB07C \u2014 \uC6C5\uD06C\uB9AC\uACE0(Ctrl)
+      \uC9D1\uAE30"
+    En: "Food on a mousetrap is bait \u2014 crouch (Ctrl) to grab it"
+  - Ko: "\uC0B4\uAE08\uC0B4\uAE08 \u2014 \uBBF8\uB07C\uB9CC \uC3D9!"
+    En: "Sneaky \u2014 bait snatched!"
+  - Ko: "\uD0C1! \uBBF8\uB07C\uB294 \uC6C5\uD06C\uB9AC\uACE0(Ctrl) \uC0B4\uAE08\uC0B4\uAE08"
+    En: Snap! Crouch (Ctrl) and sneak for bait
+  - Ko: "\uBA40\uB9AC\uC11C \"\uB098\uBE44\uC57C~ \uAC04\uC2DD!\""
+    En: 'From afar: "Kitty~ treats!"'
+  - Ko: "\uACE0\uC591\uC774\uAC00 \uB098\uAC14\uB2E4! \uC9C0\uAE08\uC774\uC57C"
+    En: The cat left! Go now
+  - Ko: "\uACE0\uC591\uC774\uAC00 \uB3CC\uC544\uC654\uB2E4\u2026 \uC5B4\uB290 \uBB38\uC73C\uB85C?"
+    En: "The cat is back\u2026 through which door?"
+  - Ko: "\uB529\uB3D9! \uB204\uAC00 \uCD08\uC778\uC885\uC744\u2026"
+    En: "Ding-dong! Someone's at the door\u2026"
+  - Ko: "\uC9D1\uC8FC\uC778\uC774 \uD604\uAD00\uC73C\uB85C \u2014 \uACE0\uC591\uC774\uB3C4
+      \uB530\uB77C\uAC14\uB2E4!"
+    En: "The owner went to the door \u2014 the cat followed!"
+  - Ko: "\uB35C\uCEF9 \u2014 \uC9D1\uC8FC\uC778\uC774 \uCC3D\uBB38\uC744 \uC5F0\uB2E4"
+    En: "Clunk \u2014 the owner opens a window"
+  - Ko: "\uBC14\uB78C! \uB0C4\uC0C8\uAC00 \uB0A0\uC544\uAC00\uACE0 \uAC00\uBCBC\uC6B4
+      \uBB3C\uAC74\uC774 \uAD74\uB7EC\uAC04\uB2E4"
+    En: Wind! Scents blow away and light things roll
+  - Ko: "\uCC3D\uBB38 \uB2EB\uD798"
+    En: Window closed
+  - Ko: "\uCFF5\uCFF5 \u2014 \uC9D1\uC8FC\uC778 \uBC1C\uC18C\uB9AC, \uC5B4\uB450\uC6B4
+      \uBC29\uC5D0 \uBD88\uC774 \uCF1C\uC9C4\uB2E4"
+    En: "Thud thud \u2014 the owner's steps; lights coming on in dark rooms"
+  - Ko: "\uB538\uAE4D \u2014 \uBD88 \uCF1C\uC9D0! \uC5B4\uB460\uC774 \uC0AC\uB77C\uC84C\uB2E4"
+    En: "Click \u2014 lights on! The darkness is gone"
+  - Ko: "\uBD88 \uAEBC\uC9D0 \u2014 \uB2E4\uC2DC \uC5B4\uB460"
+    En: "Lights off \u2014 dark again"
+  - Ko: "\uB9AC\uBAA8\uCEE8 \uB538\uAE4D \u2014 TV\uAC00 \uCF1C\uC84C\uB2E4"
+    En: "Remote click \u2014 the TV is on"
+  - Ko: "\uACE0\uC591\uC774\uAC00 TV \uC55E\uC5D0 \uC549\uC558\uB2E4 \u2014 \uB4F1
+      \uB4A4\uB85C \uC9C0\uB098\uAC00"
+    En: "The cat sat in front of the TV \u2014 sneak behind it"
+  - Ko: "TV \uAEBC\uC9D0"
+    En: TV off
+  - Ko: "\uC090\u2014 \uB85C\uBD07\uCCAD\uC18C\uAE30\uAC00 \uCF1C\uC84C\uB2E4"
+    En: "Beep \u2014 the robot vacuum started"
+  - Ko: "\uCCAD\uC18C\uAE30 \uC18C\uB9AC\uC5D0 \uBC1C\uC18C\uB9AC\uAC00 \uBB3B\uD78C\uB2E4
+      \u2014 \uC9C0\uAE08 \uB6F0\uC5B4!"
+    En: "The vacuum drowns out footsteps \u2014 run now!"
+  - Ko: "\uCCAD\uC18C\uAE30 \uBA48\uCDA4 \u2014 \uB2E4\uC2DC \uC870\uC6A9\uD788"
+    En: "Vacuum stopped \u2014 quiet again"
+  - Ko: "\uBCBD \uC18D\uC5D0\uC11C \uC6B0\uB974\uB989 \u2014 \uBC30\uAD00\uC5D0 \uBB3C\uC774
+      \uB0B4\uB824\uC628\uB2E4"
+    En: "Rumbling in the walls \u2014 water is coming down the pipes"
+  - Ko: "\uC3F4\uC544\u2014 \uBC30\uAD00 \uC548\uC774\uBA74 \uD760\uBED1 \uC816\uB294\uB2E4
+      (\uBB3C\uC18C\uB9AC\uC5D0 \uBC1C\uC18C\uB9AC\uAC00 \uBB3B\uD798)"
+    En: "Whoosh \u2014 you'll get soaked in the pipes (water hides footsteps)"
+  - Ko: "\uBB3C\uC18C\uB9AC \uBA48\uCDA4"
+    En: Water stopped
+  - Ko: "\uBCBD \uB108\uBA38 \uB538\uAE4D\uB538\uAE4D \u2014 \uC9D1\uC8FC\uC778\uC774
+      \uB36B\uC744 \uB193\uB294\uB2E4"
+    En: "Click-click beyond the wall \u2014 the owner is setting traps"
+  - Ko: "\uC0C8 \uB36B\uC774 \uC0DD\uACBC\uB2E4 \u2014 \uC9C0\uB098\uC628 \uAE38\uB3C4
+      \uC870\uC2EC"
+    En: "New traps \u2014 watch the paths you already took"
+  - Ko: "\uBD80\uC5CC\uC5D0\uC11C \uADF8\uB987 \uB2EC\uADF8\uB77D \u2014 \uBC25 \uC2DC\uAC04"
+    En: "Bowls clatter in the kitchen \u2014 feeding time"
+  - Ko: "\uACE0\uC591\uC774\uAC00 \uBC25 \uBA39\uB294 \uC911 \u2014 \uBD80\uC5CC\uB9CC
+      \uD53C\uD574"
+    En: "The cat is eating \u2014 just avoid the kitchen"
+  - Ko: "\uB3C4\uAC10 \uB4F1\uB85D!  {0}"
+    En: Codex entry!  {0}
+  - Ko: "\uD560\uB2F9\uB7C9 \uCC44\uC6C0! \uC774\uC81C \uBAA9\uC801\uC9C0\uC5D0 \uBAA8\uB450
+      \uBAA8\uC774\uBA74 \uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0"
+    En: Quota met! Gather everyone at the destination for the next stage
+  - Ko: "{0}\uAC00 \uB4E4\uC5B4\uC654\uC5B4\uC694"
+    En: '{0} joined'
+  - Ko: "\uD480\uB824\uB0AC\uB2E4! \uC9C0\uAE08 \uB3C4\uB9DD\uCCD0!"
+    En: Free! Run now!
+  - Ko: "\uB048\uB048\uC774! \uB3D9\uB8CC\uAC00 E\uB85C \uAD6C\uD574 \uC918\uC57C
+      \uD574\uC694"
+    En: Glued! A teammate has to free you with E
+  - Ko: "\uCC0C\uB9BF! \uC7A0\uAE50 \uBABB \uC6C0\uC9C1\uC5EC\uC694"
+    En: Zap! Can't move for a moment
+  - Ko: "\uC7A1\uD614\uB2E4! A\xB7D \uBC88\uAC08\uC544 \uC5F0\uD0C0 = \uBC84\uB465
+      \u2014 \uBCF4\uB294 \uCABD\uC73C\uB85C \uAD74\uB7EC\uAC04\uB2E4"
+    En: "Caught! Mash A\xB7D to struggle \u2014 you roll the way you face"
+  - Ko: "\uC4F0\uB7EC\uC84C\uC5B4\uC694\u2026 \uB3D9\uB8CC\uAC00 \uB0B4 \uBAB8\uC744
+      {0}\uC73C\uB85C \uB04C\uACE0 \uAC00\uBA74 \uC0B4\uC544\uB098\uC694\n[Q] \uCC0D\uCC0D
+      = \uB3D9\uB8CC\uC5D0\uAC8C \uB0B4 \uC790\uB9AC \uC54C\uB9BC (\uACE0\uC591\uC774\uB3C4
+      \uB4E4\uC5B4\uC694)"
+    En: "You're down\u2026 a teammate can drag your body to {0} to revive you\n[Q]
+      squeak = tell teammates where you are (cats hear it too)"
+  - Ko: "\uC0B4\uC544\uB0AC\uB2E4! \uB2E4\uC2DC \uC6C0\uC9C1\uC5EC\uC694"
+    En: Revived! You can move again
+  - Ko: "{0}\uAC00 \uACE0\uC591\uC774\uC5D0\uAC8C \uC7A1\uD614\uC5B4\uC694! \uB208\uC5D0
+      \uB744\uC5B4 \uACE0\uC591\uC774\uB97C \uB5BC\uC5B4 \uB0B4\uC694\n{1}"
+    En: '{0} was caught by a cat! Get its attention to pull it off
+
+      {1}'
+  - Ko: "{0}\uAC00 \uB2E4\uC6B4\uB410\uC5B4\uC694! {1}\uC73C\uB85C \uC62E\uACA8 \uC8FC\uC138\uC694\n{2}"
+    En: '{0} is down! Carry them to {1}
+
+      {2}'
+  - Ko: "{0}\uAC00 \uB048\uB048\uC774\uC5D0 \uBD99\uC5C8\uC5B4\uC694! [E] \uAE38\uAC8C
+      \uB20C\uB7EC \uAD6C\uCD9C\n{1}"
+    En: '{0} is stuck on a glue trap! Hold [E] to free them
+
+      {1}'
+  - Ko: "{0}\uAC00 \uB098\uAC14\uC5B4\uC694"
+    En: '{0} left'
