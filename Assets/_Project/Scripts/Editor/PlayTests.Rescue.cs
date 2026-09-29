@@ -23,22 +23,23 @@ namespace RatGame.EditorTools
         private static DownedBody _body;
         private static float _bodyStartDist;
 
-        private static List<Step> RescueSteps() => new()
+        // 2인 창고까지 (호스트 → 빌드 클라 접속 → 둘 다 발판 → 창고) — 구조·끈끈이 시험 공용 (고양이 226)
+        private static IEnumerable<Step> ClientWarehouse(string logName)
         {
-            new Step { Name = "호스트", Wait = 1f, Ready = () => UnityEngine.Object.FindFirstObjectByType<MainMenuController>() != null, Act = () =>
+            yield return new Step { Name = "호스트", Wait = 1f, Ready = () => UnityEngine.Object.FindFirstObjectByType<MainMenuController>() != null, Act = () =>
             {
                 var menu = UnityEngine.Object.FindFirstObjectByType<MainMenuController>();
                 var host = typeof(MainMenuController).GetField("_hostButton", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 ((UnityEngine.UI.Button)host.GetValue(menu)).onClick.Invoke();
-            } },
-            new Step { Name = "빌드 클라", Wait = 2f, Ready = () => SceneManager.GetActiveScene().name == "Hub", Act = () =>
+            } };
+            yield return new Step { Name = "빌드 클라", Wait = 2f, Ready = () => SceneManager.GetActiveScene().name == "Hub", Act = () =>
             {
                 if (!Directory.Exists(ClientApp)) throw new Exception($"빌드 없음 ({ClientApp})");
-                System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -logFile \"{Path.GetFullPath("Temp/rescue-client.log")}\"");
+                System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -logFile \"{Path.GetFullPath($"Temp/{logName}")}\"");
                 OnDone = () => System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS");
                 _joinedAt = 0;
-            } },
-            new Step { Name = "클라 접속", Ready = () =>
+            } };
+            yield return new Step { Name = "클라 접속", Ready = () =>
             {
                 if (NetworkManager.Singleton.ConnectedClientsIds.Count < 2) return false;
                 if (_joinedAt == 0) _joinedAt = EditorApplication.timeSinceStartup;
@@ -47,8 +48,8 @@ namespace RatGame.EditorTools
             {
                 foreach (var id in NetworkManager.Singleton.ConnectedClientsIds)
                     if (id != NetworkManager.Singleton.LocalClientId) _client = NetworkManager.Singleton.ConnectedClients[id].PlayerObject;
-            } },
-            new Step { Name = "창고 도착", Ready = () =>
+            } };
+            yield return new Step { Name = "창고 도착", Ready = () =>
             {
                 if (SceneManager.GetActiveScene().name == "Stage_Warehouse01") return UnityEngine.Object.FindFirstObjectByType<DepositZone>() != null;
                 var pad = UnityEngine.Object.FindFirstObjectByType<DeparturePad>();
@@ -59,7 +60,18 @@ namespace RatGame.EditorTools
                     TeleportClient(pad.transform.position + new Vector3(0.6f, 0.5f, 0f), 0f);
                 }
                 return false;
-            } },
+            } };
+        }
+
+        private static List<Step> RescueSteps()
+        {
+            var steps = new List<Step>(ClientWarehouse("rescue-client.log"));
+            steps.AddRange(RescueBody());
+            return steps;
+        }
+
+        private static List<Step> RescueBody() => new()
+        {
             new Step { Name = "클라 쓰러뜨림", Wait = 3f, Act = () =>
             {
                 // 쥐구멍에서 6m쯤 떨어진 곳에서 쓰러뜨려야 "끌어서 살리기"가 된다

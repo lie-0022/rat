@@ -1,0 +1,76 @@
+using System.Collections.Generic;
+using RatGame.Player;
+using RatGame.World;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+
+namespace RatGame.EditorTools
+{
+    /// <summary>
+    /// 끈끈이 구출 — 실제 E 키 홀드 (고양이 226, 고양이 설계 요약의 오랜 "미검증: 실제 E 키 홀드 입력").
+    /// 2인 창고: 클라를 끈끈이(Trapped)로 → 호스트가 옆에서 바라보고 ① E를 짧게(0.4초) — 풀리면 안 됨 ② E를 끝까지 누르고 있기 — 풀려야 함.
+    /// **유니티 창에 초점이 있어야 통과** — 초점이 없으면 키보드 입력이 액션까지 안 간다(마우스 입력 시험은 됨).
+    /// </summary>
+    public static partial class PlayTests
+    {
+        [MenuItem("Tools/RatGame/Test/Glue Rescue E Hold 2P (build client)")]
+        private static void ArmGlue() => Arm("glue2p");
+
+        private static List<Step> GlueSteps()
+        {
+            var steps = new List<Step>(ClientWarehouse("glue-client.log"));
+            steps.AddRange(new List<Step>
+            {
+                new Step { Name = "끈끈이", Wait = 3f, Act = () =>
+                {
+                    // 주의: 유니티 창에 초점이 없으면 키보드가 입력 액션까지 안 간다("E키 True · 액션 False") — 이 시험은 창에 초점이 있어야 통과.
+                    // 입력 설정을 시험 동안 "항상 게임으로"로 바꾸는 건 오히려 키 상태까지 막혀 되돌림 (고양이 226)
+                    var zone = Object.FindFirstObjectByType<DepositZone>().Area.bounds;
+                    TeleportClient(new Vector3(zone.center.x, zone.min.y + 0.6f, zone.center.z - 6f), 0f);
+                } },
+                new Step { Name = "끈끈이 붙음", Wait = 1f, Act = () => _client.GetComponent<PlayerCondition>().ServerSetState(ConditionState.Trapped),
+                    Check = () => null },
+                // 동료 앞 0.9m에서 바라보기 — 클라 순간이동이 늦게 도착하면 옛 자리 앞에 서게 된다(첫 판 실패).
+                // E 대상 미리 보기(고양이 187)가 "구출하기"가 될 때까지 지금 자리 기준으로 다시 선다
+                new Step { Name = "옆에 서기", Wait = 0.5f, Ready = () =>
+                {
+                    var focus = typeof(PlayerInteractor).GetProperty("FocusPromptText").GetValue(Me().GetComponent<PlayerInteractor>()) as string;
+                    if (focus != null && focus.Contains(RatGame.Core.Loc.T("구출하기 — {0}").Split('{')[0].Trim())) return true;
+                    if (EditorApplication.timeSinceStartup - _stepAt > 6) return true;
+                    Put(_client.transform.position + new Vector3(0f, 0f, -0.9f));
+                    Me().GetComponent<PlayerCameraRig>().SnapYaw(0f);
+                    return false;
+                }, Check = () =>
+                {
+                    var focus = typeof(PlayerInteractor).GetProperty("FocusPromptText").GetValue(Me().GetComponent<PlayerInteractor>()) as string;
+                    Report.Append($" | 대상 안내 \"{focus}\"");
+                    return focus != null ? null : "동료를 대상으로 못 잡음";
+                } },
+                new Step { Name = "짧게 누름", Wait = 0.5f, Act = () => InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.E)) },
+                new Step { Name = "짧게 누름", Wait = 0.4f, Act = () => InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState()),
+                    Check = () => _client.GetComponent<PlayerCondition>().State.Value == ConditionState.Trapped ? null : "짧게 눌렀는데 풀림" },
+                new Step { Name = "길게 누름", Wait = 0.5f, Act = () => InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.E)) },
+                new Step { Name = "입력 상태", Wait = 0.3f, Check = () =>
+                {
+                    var pi = Me().GetComponent<PlayerInteractor>();
+                    var ia = typeof(PlayerInteractor).GetField("_interactAction", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(pi) as InputAction;
+                    Report.Append($" | E키 {Keyboard.current.eKey.isPressed} · 액션 눌림 {ia?.IsPressed()} · 액션 켜짐 {ia?.enabled} · 창 초점 {UnityEditorInternal.InternalEditorUtility.isApplicationActive}");
+                    return null;
+                } },
+                new Step { Name = "풀림", Ready = () =>
+                    _client.GetComponent<PlayerCondition>().State.Value != ConditionState.Trapped || EditorApplication.timeSinceStartup - _stepAt > 5,
+                    Check = () =>
+                    {
+                        float held = (float)(EditorApplication.timeSinceStartup - _stepAt);
+                        InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
+                        var st = _client.GetComponent<PlayerCondition>().State.Value;
+                        Report.Append($" | 누른 시간 {held:0.0}초 → 클라 {st}");
+                        return st == ConditionState.Active ? null : "5초 눌러도 안 풀림";
+                    } },
+            });
+            return steps;
+        }
+    }
+}

@@ -54,6 +54,7 @@ namespace RatGame.EditorTools
                 else if (armed == "xl4p") Begin("특대 4인 운반", ExtraLargeSteps(), false);
                 else if (armed == "rescue2p") Begin("쓰러진 동료 구조", RescueSteps(), false);
                 else if (armed == "achv") Begin("도전과제 판정", AchievementSteps());
+                else if (armed == "glue2p") Begin("끈끈이 구출 E 홀드", GlueSteps(), false);
             };
         }
 
