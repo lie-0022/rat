@@ -53,6 +53,7 @@ namespace RatGame.EditorTools
                 else if (armed == "heavy2p") Begin("대형 2인 운반", HeavyCarrySteps(), false);
                 else if (armed == "xl4p") Begin("특대 4인 운반", ExtraLargeSteps(), false);
                 else if (armed == "rescue2p") Begin("쓰러진 동료 구조", RescueSteps(), false);
+                else if (armed == "achv") Begin("도전과제 판정", AchievementSteps());
             };
         }
 
