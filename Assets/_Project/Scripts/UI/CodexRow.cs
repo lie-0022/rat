@@ -22,6 +22,19 @@ namespace RatGame.UI
             _flavorText.text = unlocked ? Loc.T(item.CodexFlavor) : Loc.T("아직 못 가져온 물건");
         }
 
+        /// <summary>구분 머리 줄 (고양이 223) — 도감 목록과 도전과제 사이. 강조색 배경, 제목만.</summary>
+        public void SetHeader(string title)
+        {
+            if (_theme != null)
+            {
+                _background.color = _theme.GetColor(UiColorRole.Accent);
+                _nameText.color = _theme.GetColor(UiColorRole.OnAccent);
+            }
+            _nameText.text = title;
+            _valueText.text = "";
+            _flavorText.text = "";
+        }
+
         /// <summary>도전과제 한 줄 (고양이 221) — 제목·진행도(또는 "완료")·설명(+보상). 달성은 도감 해금과 같은 배경.</summary>
         public void SetAchievement(AchievementSO a, bool done, int progress)
         {

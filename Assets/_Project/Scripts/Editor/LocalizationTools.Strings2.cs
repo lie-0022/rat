@@ -166,6 +166,7 @@ namespace RatGame.EditorTools
             ["완료"] = "Done",
             ["  · 보상: {0}"] = "  · Reward: {0}",
             [" · 도전과제 {0}/{1}"] = " · Achievements {0}/{1}",
+            ["도전과제"] = "Achievements",
         };
     }
 }

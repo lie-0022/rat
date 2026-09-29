@@ -971,3 +971,5 @@ MonoBehaviour:
     En: "  \xB7 Reward: {0}"
   - Ko: " \xB7 \uB3C4\uC804\uACFC\uC81C {0}/{1}"
     En: " \xB7 Achievements {0}/{1}"
+  - Ko: "\uB3C4\uC804\uACFC\uC81C"
+    En: Achievements

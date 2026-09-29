@@ -23,6 +23,7 @@ namespace RatGame.UI
 
         private readonly List<(LootItemSO item, CodexRow row)> _rows = new();
         private readonly List<(AchievementSO ach, CodexRow row)> _achRows = new(); // 도감 아래 도전과제 (고양이 221)
+        private CodexRow _achHeader;
         private PlayerCodex _codex;
         private bool _open;
         private float _openedAt;
@@ -76,7 +77,9 @@ namespace RatGame.UI
                 _rows.Add((item, row));
             }
             // 도전과제 — 도감 줄 틀 그대로, 목록 끝에 (docs/11). 데이터만 읽는다 — AchievementService는 부르지 않음
-            foreach (var a in Resources.LoadAll<AchievementSO>("Achievements"))
+            var achievements = Resources.LoadAll<AchievementSO>("Achievements");
+            if (achievements.Length > 0) _achHeader = Instantiate(_rowPrefab, _rowsParent); // 구분 머리 줄 (고양이 223)
+            foreach (var a in achievements)
                 _achRows.Add((a, Instantiate(_rowPrefab, _rowsParent)));
         }
 
@@ -91,6 +94,7 @@ namespace RatGame.UI
             }
             var save = SaveService.Data;
             int done = 0;
+            if (_achHeader != null) _achHeader.SetHeader(Loc.T("도전과제")); // 언어가 바뀌어도 열 때마다 다시
             foreach (var (a, row) in _achRows)
             {
                 bool ok = save.CompletedAchievementIds.Contains(a.Id);
