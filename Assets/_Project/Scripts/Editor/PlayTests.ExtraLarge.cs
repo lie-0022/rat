@@ -106,7 +106,20 @@ namespace RatGame.EditorTools
                 PlayerController.DevForcedInput = along;
                 for (int k = 0; k < n - 1; k++) Clients[k].GetComponent<DevRemoteControl>().ServerSend(string.Format(Inv, "walk:{0},{1}", along.x, along.y));
             } };
-            yield return new Step { Name = $"{n}인 측정", Wait = 4f, Act = () =>
+            // 조사용 추적 (고양이 213): 0.5초마다 물건·쥐 위치와 관절 힘 — 여럿이 들어도 0 m/s인 원인 찾기
+            for (int k = 0; k < 7; k++)
+            {
+                int sample = k;
+                yield return new Step { Name = $"{n}인 추적", Wait = 0.5f, Act = () =>
+                {
+                    var sb = new System.Text.StringBuilder($"[Rat] 특대 추적 {n}인 t{(sample + 1) * 0.5f:0.0}: 물건 {_heavy.transform.position:F2} v {_heavy.GetComponent<Rigidbody>().linearVelocity.magnitude:0.00} · 호스트 {Me().transform.position:F2}");
+                    foreach (var c in Clients) sb.Append($" · c{c.OwnerClientId} {c.transform.position:F2}");
+                    foreach (var j in _heavy.GetComponents<ConfigurableJoint>())
+                        sb.Append($" · 관절→{(j.connectedBody != null ? j.connectedBody.name : "없음")} 힘 {j.currentForce.magnitude:0} 키네 {(j.connectedBody != null && j.connectedBody.isKinematic)}");
+                    Debug.Log(sb.ToString());
+                } };
+            }
+            yield return new Step { Name = $"{n}인 측정", Wait = 0.5f, Act = () =>
             {
                 var d = _heavy.transform.position - _p0; d.y = 0f;
                 Report.Append($" | {n}인 {d.magnitude / 4f:0.00} m/s");

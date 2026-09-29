@@ -51,6 +51,7 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 0.5f)] private float _carryMinSpeedMultiplier = 0.15f; // 혼자 대형 끌 때 기어가는 최저 속도 (0이면 정지 — 재미 없음)
         [SerializeField] private float _carrySlotStandDistance = 0.45f; // 자동 대형: 물건 면에서 쥐 몸 중심까지 (m). 쥐 반경 0.3 + 여유
         [SerializeField] private float _carrySlotSnapTime = 0.2f;       // 자동 대형: 자리로 붙는 데 걸리는 시간 (s)
+        [SerializeField] private float _carryGripHeight = 0.78f;        // 대형 잡는 자리 높이(바닥에서, m) — 쥐 몸 앵커 높이와 같게. 윗면에 두면 키 큰 물건(통닭 1.6m)에서 관절이 쥐를 들어 올려 호스트 쥐가 떠서 못 걸었다 (고양이 213)
         [SerializeField] private int _largeCarrySlots = 2;              // 대형(8~12kg) 잡는 자리 — docs/05 표 "대형 grip 2~3"
         [SerializeField] private float _extraLargeMass = 16f;           // 이 무게 이상 대형 = 특대 (docs/05 "특대 16~24") — 등급이 아니라 무게로 (통닭·수박은 등급 Large)
         [SerializeField] private int _extraLargeCarrySlots = 4;         // 특대 잡는 자리 — docs/05 "특대 grip 4, 권장 3~4" (고양이 212)
@@ -454,6 +455,7 @@ namespace RatGame.Data
         public float GrabRange => _grabRange;
         public float GrabBreakDistance => _grabBreakDistance;
         public float CarrySlotStandDistance => _carrySlotStandDistance;
+        public float CarryGripHeight => _carryGripHeight;
         /// <summary>대형 잡는 자리 수 — 특대(무게 extraLargeMass 이상)는 4, 아니면 2 (docs/05 표, 고양이 212).</summary>
         public int HeavyCarrySlots(float mass) => mass >= _extraLargeMass ? _extraLargeCarrySlots : _largeCarrySlots;
         public float CarrySlotSnapTime => _carrySlotSnapTime;

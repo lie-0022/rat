@@ -11,7 +11,7 @@ namespace RatGame.World
     {
         // ---- 자동 대형 ----
 
-        // 콜라이더(로컬) 기준: 긴 수평축을 따라 잡도록 짧은 축 방향 양쪽 면의 윗면 중앙에 자리.
+        // 콜라이더(로컬) 기준: 긴 수평축을 따라 잡도록 짧은 축 방향 양쪽 면에 자리 (높이는 쥐가 잡는 높이 — 고양이 213).
         // stand 거리는 월드 미터라 로컬로 환산(스케일 나눔). 아이템 모양이 바뀌어도 자동으로 따라감
         private void EnsureCarrySlots()
         {
@@ -21,6 +21,9 @@ namespace RatGame.World
             Vector3 half = box != null ? box.size * 0.5f : Vector3.one * 0.5f;
             Vector3 scale = transform.lossyScale;
             float sx = Mathf.Max(Mathf.Abs(scale.x), 0.0001f), sz = Mathf.Max(Mathf.Abs(scale.z), 0.0001f);
+            float sy = Mathf.Max(Mathf.Abs(scale.y), 0.0001f);
+            // 높이: 윗면이 아니라 바닥 + 쥐가 잡는 높이 (윗면이 더 낮으면 윗면) — 고양이 213
+            float gripY = center.y - half.y + Mathf.Min(_balance.CarryGripHeight / sy, half.y * 2f);
             bool longIsZ = half.z * sz >= half.x * sx;
             float stand = _balance.CarrySlotStandDistance;
 
@@ -33,8 +36,8 @@ namespace RatGame.World
                 float sign = i % 2 == 0 ? 1f : -1f;
                 float along = count <= 2 ? 0f : (i < 2 ? 0.5f : -0.5f); // 긴 축 반길이 비율
                 Vector3 anchor = longIsZ
-                    ? new Vector3(center.x + sign * (half.x + stand / sx), center.y + half.y, center.z + along * half.z)
-                    : new Vector3(center.x + along * half.x, center.y + half.y, center.z + sign * (half.z + stand / sz));
+                    ? new Vector3(center.x + sign * (half.x + stand / sx), gripY, center.z + along * half.z)
+                    : new Vector3(center.x + along * half.x, gripY, center.z + sign * (half.z + stand / sz));
                 _carrySlots[i] = new CarrySlot { LocalAnchor = anchor };
             }
         }
