@@ -45,6 +45,34 @@ namespace RatGame.Core
             return breath * (0.9f * _low * rattle + 0.25f * Mathf.Sin(2f * Mathf.PI * 70f * t));
         });
 
+        /// <summary>찍찍 — 높은 음이 두 번 짧게 (쥐 목소리, 고양이 244).</summary>
+        public static AudioClip Squeak(float freq, float seconds) => Get($"squeak{freq}-{seconds}", seconds, (t, u) =>
+        {
+            float half = u < 0.5f ? u / 0.5f : (u - 0.5f) / 0.5f;           // 두 토막
+            float f = freq * (1f + 0.25f * Mathf.Sin(half * Mathf.PI));      // 토막마다 올랐다 내려옴
+            _phase += 2f * Mathf.PI * f / Rate;
+            float env = Mathf.Sin(Mathf.Clamp01(half / 0.8f) * Mathf.PI) * (half < 0.8f ? 1f : 0f);
+            return env * Mathf.Sin(_phase);
+        });
+
+        /// <summary>쨍 — 딱딱한 것이 부딪히는 소리. 어긋난 배음 셋이 빨리 사라지고, 처음에 잡음 한 번 (고양이 244).</summary>
+        public static AudioClip Clink(float freq, float seconds) => Get($"clink{freq}-{seconds}", seconds, (t, u) =>
+        {
+            float decay = Mathf.Exp(-6f * u);
+            float tone = Mathf.Sin(2f * Mathf.PI * freq * t) + 0.6f * Mathf.Sin(2f * Mathf.PI * freq * 2.76f * t) + 0.35f * Mathf.Sin(2f * Mathf.PI * freq * 5.4f * t);
+            float hit = t < 0.015f ? Noise() * (1f - t / 0.015f) : 0f;
+            return decay * tone * 0.5f + hit;
+        });
+
+        /// <summary>딸랑 — 두 음이 차례로 (정산, 고양이 244).</summary>
+        public static AudioClip Chime(float f0, float f1, float seconds) => Get($"chime{f0}-{f1}-{seconds}", seconds, (t, u) =>
+        {
+            float gap = seconds * 0.35f;
+            float a = Mathf.Exp(-5f * t) * Mathf.Sin(2f * Mathf.PI * f0 * t);
+            float b = t < gap ? 0f : Mathf.Exp(-4f * (t - gap)) * Mathf.Sin(2f * Mathf.PI * f1 * (t - gap));
+            return 0.5f * a + 0.6f * b;
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }

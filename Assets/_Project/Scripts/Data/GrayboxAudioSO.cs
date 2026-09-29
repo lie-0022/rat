@@ -33,12 +33,35 @@ namespace RatGame.Data
         [SerializeField] private float _snoreSeconds = 2.6f;
         [SerializeField, Range(0f, 1f)] private float _snoreVolume = 0.45f;
 
+        [Header("쥐·물건 (고양이 244) — 찍찍·큰 소음 파문(깨짐 포함)은 그 자리 3D, 정산 딸랑은 2D")]
+        [SerializeField] private float _worldMinDistance = 1.5f;
+        [SerializeField] private float _worldMaxDistance = 30f;
+        [SerializeField] private AudioClip _squeakClip;
+        [SerializeField] private float _squeakFreq = 2400f, _squeakSeconds = 0.16f;
+        [SerializeField, Range(0f, 1f)] private float _squeakVolume = 0.6f;
+        [SerializeField] private AudioClip _impactClip;
+        [SerializeField] private float _impactFreq = 1150f, _impactSeconds = 0.5f;
+        [Tooltip("소음 크기(loudness) 40 → 이 음량의 절반, 80 이상 → 이 음량")]
+        [SerializeField, Range(0f, 1f)] private float _impactVolume = 0.8f;
+        [SerializeField] private AudioClip _depositClip;
+        [SerializeField] private float _depositFrom = 1046f, _depositTo = 1568f, _depositSeconds = 0.6f;
+        [SerializeField, Range(0f, 1f)] private float _depositVolume = 0.5f;
+
         public float CatMinDistance => _catMinDistance;
         public float CatMaxDistance => _catMaxDistance;
         public float SuspiciousVolume => _suspiciousVolume;
         public float ChaseVolume => _chaseVolume;
         public float CaptureVolume => _captureVolume;
         public float SnoreVolume => _snoreVolume;
+
+        public float WorldMinDistance => _worldMinDistance;
+        public float WorldMaxDistance => _worldMaxDistance;
+        public float SqueakVolume => _squeakVolume;
+        public float DepositVolume => _depositVolume;
+        public float ImpactVolume(float loudness) => _impactVolume * Mathf.Clamp(loudness / 80f, 0.5f, 1f);
+        public AudioClip SqueakClip => _squeakClip != null ? _squeakClip : Core.ToneSynth.Squeak(_squeakFreq, _squeakSeconds);
+        public AudioClip ImpactClip => _impactClip != null ? _impactClip : Core.ToneSynth.Clink(_impactFreq, _impactSeconds);
+        public AudioClip DepositClip => _depositClip != null ? _depositClip : Core.ToneSynth.Chime(_depositFrom, _depositTo, _depositSeconds);
 
         public AudioClip SuspiciousClip => _suspiciousClip != null ? _suspiciousClip : Core.ToneSynth.Chirp(_suspiciousFrom, _suspiciousTo, _suspiciousSeconds);
         public AudioClip ChaseClip => _chaseClip != null ? _chaseClip : Core.ToneSynth.Growl(_chaseFreq, _chaseTremolo, _chaseSeconds);
