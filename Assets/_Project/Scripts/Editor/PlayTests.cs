@@ -52,6 +52,7 @@ namespace RatGame.EditorTools
                     RestoreAfterPlay = null;
                     Debug.Log("[Rat] 플레이 시험: 플레이 멈춘 뒤 세이브 한 번 더 되돌림");
                 }
+                if (s == PlayModeStateChange.EnteredEditMode) ContinueQueue(); // 여러 시험 차례로 (고양이 238)
                 if (s != PlayModeStateChange.EnteredPlayMode) return;
                 string armed = SessionState.GetString(ArmedKey, "");
                 SessionState.SetString(ArmedKey, "");
@@ -125,6 +126,7 @@ namespace RatGame.EditorTools
             InputSystem.QueueStateEvent(Mouse.current, new MouseState());
             InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
             Debug.Log($"[Rat] 플레이 시험 {_name} — {(_fails == 0 ? "통과" : $"실패 {_fails}")} ({EditorApplication.timeSinceStartup - _startAt:0}초){Report}");
+            QueueResult(_name, _fails == 0);
         }
 
         // ---- 공통: 메인 메뉴 → 호스트 → 기지 발판 → 창고 ----
