@@ -36,11 +36,11 @@ namespace RatGame.UI
             _joinButton.onClick.AddListener(OnJoin);
             _settingsButton.onClick.AddListener(OnSettings);
             _quitButton.onClick.AddListener(OnQuit);
-            _versionText.text = $"v{Application.version}{(Debug.isDebugBuild ? " · 개발 빌드" : "")}";
+            _versionText.text = $"v{Application.version}{(Debug.isDebugBuild ? Loc.T(" · 개발 빌드") : "")}";
             var launcher = NetworkLauncher.Instance;
             _modeText.text = launcher != null && launcher.UsingSteam
                 ? $"Steam · {launcher.Steam.PersonaName}"
-                : "로컬 모드 (같은 PC에서만 참가)";
+                : Loc.T("로컬 모드 (같은 PC에서만 참가)");
             SetStatus("", UiColorRole.TextMuted);
             if (launcher != null)
             {
@@ -79,13 +79,13 @@ namespace RatGame.UI
         private async void OnHost()
         {
             SetBusy(true);
-            SetStatus("기지를 여는 중…", UiColorRole.TextMuted);
+            SetStatus(Loc.T("기지를 여는 중…"), UiColorRole.TextMuted);
             _lastFailure = null;
             bool ok = await NetworkLauncher.Instance.StartHostAsync();
             if (!ok)
             {
                 SetBusy(false);
-                SetStatus(_lastFailure ?? "호스트를 시작하지 못했어요. 이미 켜진 게임이 있는지 확인하세요.", UiColorRole.DangerText);
+                SetStatus(_lastFailure ?? Loc.T("호스트를 시작하지 못했어요. 이미 켜진 게임이 있는지 확인하세요."), UiColorRole.DangerText);
                 return;
             }
             NetworkManager.Singleton.SceneManager.LoadScene(_hubSceneName, LoadSceneMode.Single);
@@ -98,12 +98,12 @@ namespace RatGame.UI
             {
                 // Steam은 초대로만 들어간다 — 친구 목록을 열어 두고 초대 수락(또는 친구의 "게임 참가")을 기다린다
                 launcher.Steam.OpenFriendsOverlay();
-                SetStatus("친구가 보낸 초대를 수락하면 바로 들어가요.\n(Steam 친구 목록에서 \"게임 참가\"도 돼요)", UiColorRole.TextMuted);
+                SetStatus(Loc.T("친구가 보낸 초대를 수락하면 바로 들어가요.\n(Steam 친구 목록에서 \"게임 참가\"도 돼요)"), UiColorRole.TextMuted);
                 return;
             }
-            BeginJoinUi("기지에 접속하는 중…");
+            BeginJoinUi(Loc.T("기지에 접속하는 중…"));
             bool ok = await launcher.JoinAsync();
-            if (!ok && _joining) FailJoin("접속을 시작하지 못했어요.");
+            if (!ok && _joining) FailJoin(Loc.T("접속을 시작하지 못했어요."));
             // 성공하면 호스트가 기지 씬을 동기화해 이 씬이 내려간다
         }
 
@@ -127,7 +127,7 @@ namespace RatGame.UI
             // 승인 거절(정원 초과 등)은 우리가 쓴 사유 그대로, 트랜스포트 내부 사유("[Disconnect Event]…")는 읽을 수 있는 문구로
             string reason = nm.DisconnectReason;
             if (string.IsNullOrEmpty(reason) || reason.StartsWith("["))
-                reason = "호스트를 찾지 못했어요. 친구가 방을 열었는지 확인하세요.";
+                reason = Loc.T("호스트를 찾지 못했어요. 친구가 방을 열었는지 확인하세요.");
             FailJoin(reason);
         }
 

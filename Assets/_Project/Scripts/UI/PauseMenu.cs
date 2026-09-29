@@ -101,8 +101,8 @@ namespace RatGame.UI
         {
             var nm = NetworkManager.Singleton;
             _confirmText.text = nm != null && nm.IsHost
-                ? "호스트가 나가면 친구들의 세션도 끝나요.\n메인 메뉴로 나갈까요?"
-                : "메인 메뉴로 나갈까요?\n친구들은 계속 플레이해요.";
+                ? Loc.T("호스트가 나가면 친구들의 세션도 끝나요.\n메인 메뉴로 나갈까요?")
+                : Loc.T("메인 메뉴로 나갈까요?\n친구들은 계속 플레이해요.");
             _mainWindow.SetActive(false);
             _confirmWindow.SetActive(true);
         }
@@ -125,7 +125,7 @@ namespace RatGame.UI
             var nm = NetworkManager.Singleton;
             if (nm == null || !nm.IsListening) return "";
             int players = FindObjectsByType<Player.PlayerController>(FindObjectsSortMode.None).Length;
-            return $"{(nm.IsHost ? "내가 연 방" : "친구 방")} · {players}/4명";
+            return $"{(nm.IsHost ? Loc.T("내가 연 방") : Loc.T("친구 방"))} · {players}/4{Loc.T("명")}";
         }
     }
 }

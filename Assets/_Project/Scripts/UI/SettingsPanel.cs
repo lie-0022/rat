@@ -67,6 +67,22 @@ namespace RatGame.UI
             _applyButton.onClick.AddListener(OnApply);
             _closeButton.onClick.AddListener(Close);
             _root.SetActive(false);
+            Loc.Changed += OnLanguageChanged;
+        }
+
+        private void OnDestroy() => Loc.Changed -= OnLanguageChanged;
+
+        // 적용 직후 선택지 글자도 새 언어로
+        private void OnLanguageChanged()
+        {
+            if (_open) Refresh();
+        }
+
+        private static string[] L(string[] ko)
+        {
+            var r = new string[ko.Length];
+            for (int i = 0; i < ko.Length; i++) r[i] = Loc.T(ko[i]);
+            return r;
         }
 
         public void Open()
@@ -110,14 +126,14 @@ namespace RatGame.UI
             _draft = SettingsService.CreateDefaults();
             Refresh();
             SetDirty(true);
-            ShowMessage("기본값으로 바꿨어요. [적용]을 눌러야 저장돼요.", UiColorRole.TextMuted);
+            ShowMessage(Loc.T("기본값으로 바꿨어요. [적용]을 눌러야 저장돼요."), UiColorRole.TextMuted);
         }
 
         private void OnApply()
         {
             SettingsService.Apply(_draft);
             SetDirty(false);
-            ShowMessage("적용했어요.", UiColorRole.PositiveText);
+            ShowMessage(Loc.T("적용했어요."), UiColorRole.PositiveText);
         }
 
         private void Refresh()
@@ -127,9 +143,9 @@ namespace RatGame.UI
             _sfxVolume.SetValue(_draft.SfxVolume);
             _musicVolume.SetValue(_draft.MusicVolume);
             _voiceVolume.SetValue(_draft.VoiceVolume);
-            _crouch.SetOptions(CrouchOptions, _draft.CrouchToggle ? 1 : 0);
-            if (_cameraShake != null) _cameraShake.SetOptions(ShakeOptions, _draft.CameraShake ? 0 : 1);
-            _screenMode.SetOptions(ScreenModeOptions, (int)_draft.ScreenMode);
+            _crouch.SetOptions(L(CrouchOptions), _draft.CrouchToggle ? 1 : 0);
+            if (_cameraShake != null) _cameraShake.SetOptions(L(ShakeOptions), _draft.CameraShake ? 0 : 1);
+            _screenMode.SetOptions(L(ScreenModeOptions), (int)_draft.ScreenMode);
             _language.SetOptions(LanguageOptions, Mathf.Max(0, Array.IndexOf(LanguageCodes, _draft.Language)));
 
             var names = new string[_resolutions.Count];
@@ -163,7 +179,8 @@ namespace RatGame.UI
 
         private void RefreshLanguageNote()
         {
-            string note = _draft.Language == "ko" ? "" : "영어 문구는 번역 작업 때 채워져요.";
+            // 고른 언어가 아직 적용 전이면 안내 — 적용하면 바로 바뀐다
+            string note = _draft.Language == Loc.Language ? "" : Loc.T("[적용]을 누르면 언어가 바뀌어요.");
             if (_languageNote.text != note) _languageNote.text = note;
         }
 
