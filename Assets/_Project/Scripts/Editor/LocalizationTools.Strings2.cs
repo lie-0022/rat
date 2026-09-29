@@ -124,6 +124,12 @@ namespace RatGame.EditorTools
             ["왼쪽"] = "left",
             ["왼쪽 앞"] = "ahead left",
             ["(킁킁… 코가 아직 얼얼 — {0}초)"] = "(Sniff… nose still tingling — {0}s)",
+            // 기지 목적지 게시판·계산대 (고양이 200)
+            ["[E] 목적지"] = "[E] Destination",
+            ["[E] 상점"] = "[E] Shop",
+            ["고양이 기능 모음 — 한 판"] = "All the cat features — one round",
+            ["무작위 부엌 — 한 판"] = "Random kitchen — one round",
+            ["새 루프 · 5스테이지 · 식량 할당량 · 목적지 상점 · 엔딩"] = "New loop · 5 stages · food quota · destination shop · ending",
         };
     }
 }

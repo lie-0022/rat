@@ -27,8 +27,8 @@ namespace RatGame.World
         private void Update()
         {
             if (_label == null || _pad == null || !_pad.IsSpawned) return;
-            string blurb = _pad.DestinationBlurb;
-            string text = $"[E] 목적지\n<size=130%>{_pad.DestinationName}</size>{(blurb.Length > 0 ? $"\n<size=60%>{blurb}</size>" : "")}";
+            string blurb = Loc.T(_pad.DestinationBlurb); // 매 프레임 비교라 언어를 바꾸면 바로 따라간다 (고양이 200)
+            string text = $"{Loc.T("[E] 목적지")}\n<size=130%>{Loc.T(_pad.DestinationName)}</size>{(blurb.Length > 0 ? $"\n<size=60%>{blurb}</size>" : "")}";
             if (_label.text != text) _label.text = text; // 같으면 안 건드린다 — 메시 재생성 방지
         }
 

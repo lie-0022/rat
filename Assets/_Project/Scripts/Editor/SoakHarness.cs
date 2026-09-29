@@ -9,6 +9,7 @@ using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SettingsService = RatGame.Core.SettingsService;
 
 namespace RatGame.EditorTools
 {
@@ -32,7 +33,12 @@ namespace RatGame.EditorTools
         private static bool _sawFinished;
         private static readonly Dictionary<string, int> Issues = new();
         private static readonly List<string> StageLines = new();
-        private static string _saveBackup, _bakBackup;
+        private static string _saveBackup, _bakBackup, _languageBefore;
+        private static bool _english;
+        private static float _scanAt;
+        private static readonly Dictionary<string, string> KoreanSeen = new(); // 영어 모드에서 화면에 남은 한국어 (글자 → 오브젝트)
+        private static readonly System.Text.RegularExpressions.Regex Hangul = new("[가-힣]");
+        private const string EnglishKey = "RatGame.Soak.English";
         private static string BakPath => Path.Combine(Application.persistentDataPath, "save.bak");
 
         static SoakHarness()
@@ -44,9 +50,16 @@ namespace RatGame.EditorTools
         }
 
         [MenuItem("Tools/RatGame/Test/Full Run Soak (Walls)")]
-        private static void Arm()
+        private static void Arm() => Arm(false);
+
+        // 영어로 한 판 — 번역 틀 오류(예외)와 화면에 남은 한국어를 잡는다 (고양이 200)
+        [MenuItem("Tools/RatGame/Test/Full Run Soak (Walls, English)")]
+        private static void ArmEnglish() => Arm(true);
+
+        private static void Arm(bool english)
         {
             SessionState.SetBool(ArmedKey, true);
+            SessionState.SetBool(EnglishKey, english);
             if (EditorApplication.isPlaying) Begin();
             else EditorApplication.isPlaying = true;
         }
@@ -56,14 +69,17 @@ namespace RatGame.EditorTools
             SessionState.SetBool(ArmedKey, false);
             _step = Step.Menu; _startAt = _stepAt = Time.realtimeSinceStartup;
             _stagesSeen = 0; _itemsMoved = 0; _sawFinished = false;
-            Issues.Clear(); StageLines.Clear();
+            Issues.Clear(); StageLines.Clear(); KoreanSeen.Clear();
+            _english = SessionState.GetBool(EnglishKey, false);
+            _languageBefore = SettingsService.Current.Language;
+            if (_english) SetLanguage("en");
             _saveBackup = File.Exists(SaveService.FilePath) ? File.ReadAllText(SaveService.FilePath) : null;
             _bakBackup = File.Exists(BakPath) ? File.ReadAllText(BakPath) : null;
             Application.logMessageReceived -= OnLog;
             Application.logMessageReceived += OnLog;
             EditorApplication.update -= Tick;
             EditorApplication.update += Tick;
-            Debug.Log("[Rat] 통째 시험 시작 (벽 속, 혼자)");
+            Debug.Log($"[Rat] 통째 시험 시작 (벽 속, 혼자{(_english ? ", 영어" : "")})");
         }
 
         private static void OnLog(string msg, string stack, LogType type)
@@ -82,6 +98,7 @@ namespace RatGame.EditorTools
             if (!EditorApplication.isPlaying) { Finish("플레이 모드가 끝남"); return; }
             if (Time.realtimeSinceStartup - _startAt > 600f) { Finish("10분 초과"); return; }
             string scene = SceneManager.GetActiveScene().name;
+            if (_english && Time.realtimeSinceStartup >= _scanAt) { _scanAt = Time.realtimeSinceStartup + 0.5f; ScanKorean(); }
             switch (_step)
             {
                 case Step.Menu:
@@ -162,6 +179,34 @@ namespace RatGame.EditorTools
             MoveLocalPlayer(into);
         }
 
+        private static void SetLanguage(string code)
+        {
+            var d = SettingsService.Current.Clone();
+            d.Language = code;
+            SettingsService.Apply(d);
+        }
+
+        // 켜진 글자 중 한국어 — 개발용 화면(F3 고양이 정보·F4 확인 메뉴)은 뺀다
+        private static void ScanKorean()
+        {
+            foreach (var t in Object.FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None))
+            {
+                if (!t.isActiveAndEnabled || !Hangul.IsMatch(t.text)) continue;
+                if (t.GetComponentInParent<CatDebugOverlay>() != null || t.GetComponentInParent<DevCheckMenu>() != null) continue;
+                if (Invisible(t)) continue; // 알파 0 그룹 안(숨는 중 화면처럼 안 보일 때) — 보이는 글자만 센다
+                string key = t.text.Replace("\n", " / ");
+                if (key.Length > 80) key = key.Substring(0, 80);
+                if (!KoreanSeen.ContainsKey(key)) KoreanSeen[key] = $"{SceneManager.GetActiveScene().name}/{t.transform.parent?.name}/{t.name}";
+            }
+        }
+
+        private static bool Invisible(Component c)
+        {
+            foreach (var g in c.GetComponentsInParent<CanvasGroup>())
+                if (g.alpha < 0.01f) return true;
+            return false;
+        }
+
         private static void MoveLocalPlayer(Vector3 pos)
         {
             var nm = NetworkManager.Singleton;
@@ -180,6 +225,12 @@ namespace RatGame.EditorTools
             sb.Append(failure == null ? "[Rat] 통째 시험 끝 — 성공" : $"[Rat] 통째 시험 끝 — 실패: {failure}");
             sb.Append($" | {Time.realtimeSinceStartup - _startAt:0}초 · 스테이지 {_stagesSeen} · 옮긴 물건 {_itemsMoved} · 엔딩 {(_sawFinished ? "봄" : "못 봄")}");
             foreach (var line in StageLines) sb.Append(" | ").Append(line);
+            if (_english)
+            {
+                sb.Append($" | 영어 모드 화면 한국어 {KoreanSeen.Count}종");
+                foreach (var kv in KoreanSeen) sb.Append($" | [{kv.Value}] {kv.Key}");
+                SetLanguage(_languageBefore);
+            }
             sb.Append($" | 경고·오류 {Issues.Count}종");
             foreach (var kv in Issues) sb.Append($" | {kv.Value}× {kv.Key}");
             // 파일만 되돌린다 — 게임 안 메모리는 그대로라 이 플레이를 계속하면 다시 쓸 수 있다: 끝나면 플레이를 멈출 것

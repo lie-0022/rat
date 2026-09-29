@@ -19,6 +19,8 @@ namespace RatGame.EditorTools
 
         // UI 프리팹 전부 (메뉴 3종으로 시작 — 고양이 188, HUD·패널까지 — 고양이 189)
         private const string UiPrefabFolder = "Assets/_Project/Prefabs/UI";
+        // 벽 속 상점 계산대 같은 월드 이름표 (고양이 200 — 영어 통째 시험에서 "[E] 상점"이 남음)
+        private const string ZonePrefabFolder = "Assets/_Project/Prefabs/Zones";
 
         // 스크립트가 들고 있지만 글자는 안 쓰는 것 (색·위치만 읽음) — 번역해도 된다
         private static readonly HashSet<string> StaticRefs = new() { "ControlsHelpWidget._title", "LoadingOverlayWidget._waiting", "ResultPanelWidget._noChipsText" };
@@ -44,7 +46,7 @@ namespace RatGame.EditorTools
                     if (table.EditorAdd(kv.Key, kv.Value)) added++;
 
             var missingEn = new List<string>();
-            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { UiPrefabFolder }))
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { UiPrefabFolder, ZonePrefabFolder }))
             {
                 var path = AssetDatabase.GUIDToAssetPath(guid);
                 var root = PrefabUtility.LoadPrefabContents(path);

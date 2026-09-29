@@ -884,3 +884,14 @@ MonoBehaviour:
     En: ahead left
   - Ko: "(\uD081\uD081\u2026 \uCF54\uAC00 \uC544\uC9C1 \uC5BC\uC5BC \u2014 {0}\uCD08)"
     En: "(Sniff\u2026 nose still tingling \u2014 {0}s)"
+  - Ko: "[E] \uBAA9\uC801\uC9C0"
+    En: '[E] Destination'
+  - Ko: "[E] \uC0C1\uC810"
+    En: '[E] Shop'
+  - Ko: "\uACE0\uC591\uC774 \uAE30\uB2A5 \uBAA8\uC74C \u2014 \uD55C \uD310"
+    En: "All the cat features \u2014 one round"
+  - Ko: "\uBB34\uC791\uC704 \uBD80\uC5CC \u2014 \uD55C \uD310"
+    En: "Random kitchen \u2014 one round"
+  - Ko: "\uC0C8 \uB8E8\uD504 \xB7 5\uC2A4\uD14C\uC774\uC9C0 \xB7 \uC2DD\uB7C9 \uD560\uB2F9\uB7C9
+      \xB7 \uBAA9\uC801\uC9C0 \uC0C1\uC810 \xB7 \uC5D4\uB529"
+    En: "New loop \xB7 5 stages \xB7 food quota \xB7 destination shop \xB7 ending"
