@@ -678,18 +678,17 @@ MonoBehaviour:
     En: No new codex entries this time
   - Ko: "\uC2A4\uD14C\uC774\uC9C0 {0}/{1} \u2014 \uC2DD\uB7C9 {2} \uBAA8\uC544 \uBAA9\uC801\uC9C0(\uC8FC\uD669
       \uBC29)\uB85C"
-    En: "Stage {0}/{1} \u2014 gather {2} food and head to the destination (orange
-      room)"
+    En: "Stage {0}/{1} \u2014 bring {2} food to the orange room"
   - Ko: "\n\uC624\uB298: {0}"
     En: '
 
       Today: {0}'
   - Ko: "\uBB38\uC9C0\uAE30(\uD478\uB978 \uD68C\uC0C9)\uAC00 \uBAA9\uC801\uC9C0 \uC55E"
-    En: A gatekeeper (blue-gray) guards the destination
+    En: Gatekeeper (blue-gray) at the goal
   - Ko: "\uC21C\uCC30\uAFBC(\uC801\uAC08\uC0C9)\uC774 \uD070\uAE38\uC744 \uC624\uAC10"
-    En: A patroller (red-brown) walks the main hall
+    En: Patroller (red-brown) roams the hall
   - Ko: "\uC544\uAE30\uB294 \uB4E4\uD0A4\uBA74 \uC5C4\uB9C8\uB97C \uBD80\uB984"
-    En: Kittens call their mom if they spot you
+    En: Kittens call mom if they see you
   - Ko: "\uB9C9\uB2E4\uB978 \uBC29 \uD558\uB098\uB294 \uBCF4\uBB3C\uBC29 \u2014 \uBE44\uC2FC
       \uC74C\uC2DD, \uD568\uC815 \uAC00\uB4DD"
     En: "One dead end is a treasure room \u2014 pricey food, lots of traps"
@@ -699,17 +698,17 @@ MonoBehaviour:
       \uC9C0\uB3C4"
     En: "R sniff = destination & food scent \xB7 Tab map"
   - Ko: "\uC815\uC804 (\uC5B4\uB450\uC6B4 \uBC29\uC774 \uB9CE\uC544\uC694)"
-    En: Blackout (lots of dark rooms)
+    En: Blackout (many dark rooms)
   - Ko: "\uB36B \uB300\uBC29\uCD9C (\uD568\uC815\uC774 \uB9CE\uC544\uC694)"
-    En: Trap sale (lots of traps)
+    En: Trap sale (many traps)
   - Ko: "\uACE0\uC591\uC774 \uAC04\uC2DD \uB0A0 (\uACE0\uC591\uC774\uAC00 \uB290\uB9BF\uB290\uB9BF)"
-    En: Cat treat day (cats are sluggish)
+    En: Cat treat day (slow cats)
   - Ko: "\uC9D1\uC8FC\uC778 \uC678\uCD9C (\uC9D1\uC8FC\uC778 \uC0AC\uAC74 \uC5C6\uC74C)"
     En: Owner's out (no owner events)
   - Ko: "\uBD84\uC8FC\uD55C \uC9D1 (\uC9D1\uC8FC\uC778 \uC0AC\uAC74\uC774 \uC7A6\uC544\uC694)"
-    En: Busy house (frequent owner events)
+    En: Busy house (many owner events)
   - Ko: "\uACE0\uC591\uC774 \uC190\uB2D8 (\uD55C \uB9C8\uB9AC \uB354 \uC654\uC5B4\uC694)"
-    En: Cat guest (one more cat came over)
+    En: Cat guest (+1 cat)
   - Ko: "\uB0E0\uB0E0 \u2014 \uC2A4\uD0DC\uBBF8\uB098 +{0:0}"
     En: "Yum \u2014 stamina +{0:0}"
   - Ko: "\uBC29\uC6B8 \uB2EC\uC558\uB2E4! Tab \uC9C0\uB3C4\uC5D0 \uACE0\uC591\uC774\uAC00
@@ -801,8 +800,8 @@ MonoBehaviour:
       {0}\uC73C\uB85C \uB04C\uACE0 \uAC00\uBA74 \uC0B4\uC544\uB098\uC694\n[Q] \uCC0D\uCC0D
       = \uB3D9\uB8CC\uC5D0\uAC8C \uB0B4 \uC790\uB9AC \uC54C\uB9BC (\uACE0\uC591\uC774\uB3C4
       \uB4E4\uC5B4\uC694)"
-    En: "You're down\u2026 a teammate can drag your body to {0} to revive you\n[Q]
-      squeak = tell teammates where you are (cats hear it too)"
+    En: "You're down\u2026 get dragged to {0} to revive\n[Q] squeak = call teammates
+      (cats hear it)"
   - Ko: "\uC0B4\uC544\uB0AC\uB2E4! \uB2E4\uC2DC \uC6C0\uC9C1\uC5EC\uC694"
     En: Revived! You can move again
   - Ko: "{0}\uAC00 \uACE0\uC591\uC774\uC5D0\uAC8C \uC7A1\uD614\uC5B4\uC694! \uB208\uC5D0
