@@ -1,3 +1,5 @@
+using System;
+using Object = UnityEngine.Object;
 using System.Collections.Generic;
 using System.IO;
 using RatGame.AI;
@@ -21,6 +23,23 @@ namespace RatGame.EditorTools
         private static void ArmAchievements() => Arm("achv");
 
         private static string _saveBefore, _bakBefore;
+        private static Action RestoreAfterPlay; // 플레이가 멈춘 뒤 한 번 더 (고양이 234)
+
+        /// <summary>세이브·백업을 떠 두고, 되돌리는 동작을 돌려준다(시험 끝 OnDone) — 플레이가 멈춘 뒤에도 한 번 더 되돌린다.</summary>
+        private static Action BackupSave(string testName)
+        {
+            string bak = Path.Combine(Application.persistentDataPath, "save.bak");
+            string save = File.Exists(SaveService.FilePath) ? File.ReadAllText(SaveService.FilePath) : null;
+            string backup = File.Exists(bak) ? File.ReadAllText(bak) : null;
+            _saveBefore = save; _bakBefore = backup;
+            Action restore = () =>
+            {
+                if (save != null) File.WriteAllText(SaveService.FilePath, save);
+                if (backup != null) File.WriteAllText(bak, backup);
+            };
+            RestoreAfterPlay = restore;
+            return () => { restore(); Debug.Log($"[Rat] {testName} 시험: 세이브 되돌림 (플레이를 멈추면 한 번 더)"); };
+        }
         private static bool _sawChase;
 
         private static int Stat(string key)
@@ -36,15 +55,7 @@ namespace RatGame.EditorTools
             {
                 new Step { Name = "세이브 뜨기", Act = () =>
                 {
-                    string bak = Path.Combine(Application.persistentDataPath, "save.bak");
-                    _saveBefore = File.Exists(SaveService.FilePath) ? File.ReadAllText(SaveService.FilePath) : null;
-                    _bakBefore = File.Exists(bak) ? File.ReadAllText(bak) : null;
-                    OnDone = () =>
-                    {
-                        if (_saveBefore != null) File.WriteAllText(SaveService.FilePath, _saveBefore);
-                        if (_bakBefore != null) File.WriteAllText(bak, _bakBefore);
-                        Debug.Log("[Rat] 도전과제 판정 시험: 세이브 되돌림 (플레이를 멈출 것)");
-                    };
+                    OnDone = BackupSave("도전과제 판정");
                     ghostBefore = Stat("ghostClears"); soloBefore = Stat("soloReturns");
                     _sawChase = false;
                     Cat().ServerWake(); // 창고 고양이는 자고 있을 수 있다 — 자면 2m 앞에 서도 안 쫓는다 (첫 판 30초 추격 0)

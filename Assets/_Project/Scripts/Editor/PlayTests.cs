@@ -45,6 +45,13 @@ namespace RatGame.EditorTools
         {
             EditorApplication.playModeStateChanged += s =>
             {
+                // 플레이를 멈출 때 게임이 한 번 더 저장해 시험 끝의 되돌리기를 덮는다 — 멈춘 뒤 한 번 더 (고양이 234)
+                if (s == PlayModeStateChange.EnteredEditMode && RestoreAfterPlay != null)
+                {
+                    RestoreAfterPlay();
+                    RestoreAfterPlay = null;
+                    Debug.Log("[Rat] 플레이 시험: 플레이 멈춘 뒤 세이브 한 번 더 되돌림");
+                }
                 if (s != PlayModeStateChange.EnteredPlayMode) return;
                 string armed = SessionState.GetString(ArmedKey, "");
                 SessionState.SetString(ArmedKey, "");

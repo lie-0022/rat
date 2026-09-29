@@ -26,6 +26,7 @@ namespace RatGame.EditorTools
         // 2인 창고까지 (호스트 → 빌드 클라 접속 → 둘 다 발판 → 창고) — 구조·끈끈이 시험 공용 (고양이 226)
         private static IEnumerable<Step> ClientWarehouse(string logName)
         {
+            Action restoreSave = null; // 구조 통계(도전과제)가 세이브를 바꾼다 — 떠 두고 되돌림 (고양이 234)
             yield return new Step { Name = "호스트", Wait = 1f, Ready = () => UnityEngine.Object.FindFirstObjectByType<MainMenuController>() != null, Act = () =>
             {
                 var menu = UnityEngine.Object.FindFirstObjectByType<MainMenuController>();
@@ -36,7 +37,8 @@ namespace RatGame.EditorTools
             {
                 if (!Directory.Exists(ClientApp)) throw new Exception($"빌드 없음 ({ClientApp})");
                 System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -logFile \"{Path.GetFullPath($"Temp/{logName}")}\"");
-                OnDone = () => System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS");
+                restoreSave = BackupSave(logName);
+                OnDone = () => { System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS"); restoreSave(); };
                 _joinedAt = 0;
             } };
             yield return new Step { Name = "클라 접속", Ready = () =>

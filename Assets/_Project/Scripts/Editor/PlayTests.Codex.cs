@@ -24,15 +24,7 @@ namespace RatGame.EditorTools
             {
                 new Step { Name = "세이브 뜨기", Act = () =>
                 {
-                    string bak = Path.Combine(Application.persistentDataPath, "save.bak");
-                    _saveBefore = File.Exists(SaveService.FilePath) ? File.ReadAllText(SaveService.FilePath) : null;
-                    _bakBefore = File.Exists(bak) ? File.ReadAllText(bak) : null;
-                    OnDone = () =>
-                    {
-                        if (_saveBefore != null) File.WriteAllText(SaveService.FilePath, _saveBefore);
-                        if (_bakBefore != null) File.WriteAllText(bak, _bakBefore);
-                        Debug.Log("[Rat] 전리품 전부 정산 시험: 세이브 되돌림 (플레이를 멈출 것)");
-                    };
+                    OnDone = BackupSave("전리품 전부 정산");
                     Report.Append($" | 시작 도감 {SaveService.Data.UnlockedCodexIds.Count}종");
                 } },
             };
