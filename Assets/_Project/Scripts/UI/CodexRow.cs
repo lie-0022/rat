@@ -1,3 +1,4 @@
+using RatGame.Core;
 using RatGame.Data;
 using TMPro;
 using UnityEngine;
@@ -16,9 +17,9 @@ namespace RatGame.UI
         public void Set(LootItemSO item, bool unlocked)
         {
             if (_theme != null) _background.color = _theme.GetColor(unlocked ? UiColorRole.Secondary : UiColorRole.Row);
-            _nameText.text = unlocked ? item.DisplayName : "???";
+            _nameText.text = unlocked ? Loc.T(item.DisplayName) : "???";
             _valueText.text = unlocked ? $"{item.BaseValue}" : "-";
-            _flavorText.text = unlocked ? item.CodexFlavor : "아직 못 가져온 물건";
+            _flavorText.text = unlocked ? Loc.T(item.CodexFlavor) : Loc.T("아직 못 가져온 물건");
         }
     }
 }

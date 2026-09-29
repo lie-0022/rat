@@ -5961,6 +5961,7 @@ GameObject:
   - component: {fileID: 4695438186098209374}
   - component: {fileID: 2794612763145978108}
   - component: {fileID: 7337262564283993419}
+  - component: {fileID: 1319206112001587064}
   m_Layer: 0
   m_Name: Waiting
   m_TagString: Untagged
@@ -6102,6 +6103,19 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 9
   _text: 3
+--- !u!114 &1319206112001587064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4102482403395284281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uCE5C\uAD6C\uB4E4\uC744 \uAE30\uB2E4\uB9AC\uB294 \uC911\u2026"
 --- !u!1 &4144243892157578311
 GameObject:
   m_ObjectHideFlags: 0

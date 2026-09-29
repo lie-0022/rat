@@ -1,3 +1,4 @@
+using RatGame.Core;
 using System;
 using TMPro;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace RatGame.UI
         public void Refresh(string currentId)
         {
             bool equipped = currentId == _id;
-            string text = equipped ? "착용 중" : "착용";
+            string text = Loc.T(equipped ? "착용 중" : "착용");
             if (_buttonText.text != text) _buttonText.text = text;
             _equipButton.interactable = !equipped;
         }

@@ -85,7 +85,7 @@ namespace RatGame.UI
                 if (on) unlocked++;
                 row.Set(item, on);
             }
-            _countText.text = $"도감 {unlocked}/{_rows.Count}";
+            _countText.text = Loc.F("도감 {0}/{1}", unlocked, _rows.Count);
         }
     }
 }

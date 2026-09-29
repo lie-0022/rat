@@ -79,7 +79,7 @@ namespace RatGame.UI
             if (UiCommon.ClosePressed(_openedAt, out bool byEscape)) { Close(byEscape); return; }
 
             int total = _machine.HaulTotal.Value;
-            SetText(_totalText, $"누계 {total}");
+            SetText(_totalText, Loc.F("누계 {0}", total));
             var levels = _machine.Levels.Value;
             for (int i = 0; i < _rows.Count; i++)
             {

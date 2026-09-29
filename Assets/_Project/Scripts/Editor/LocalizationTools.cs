@@ -21,7 +21,7 @@ namespace RatGame.EditorTools
         private const string UiPrefabFolder = "Assets/_Project/Prefabs/UI";
 
         // 스크립트가 들고 있지만 글자는 안 쓰는 것 (색·위치만 읽음) — 번역해도 된다
-        private static readonly HashSet<string> StaticRefs = new() { "ControlsHelpWidget._title" };
+        private static readonly HashSet<string> StaticRefs = new() { "ControlsHelpWidget._title", "LoadingOverlayWidget._waiting" };
 
         // 코드가 복제해 글자를 새로 쓰는 틀(핑 이름·알림·결과 칩) 또는 Find로 찾아 덮어쓰는 글자 — 붙이면 켜질 때 원문으로 되돌린다
         private static readonly HashSet<string> CodeTemplates = new() { "회색 쥐", "도감 등록!  계란", "계란", "쥐구멍 적립" };

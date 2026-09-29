@@ -468,3 +468,137 @@ MonoBehaviour:
     En: "Heavy \u2014 can't sprint"
   - Ko: "\uD654\uBA74\uC744 \uD074\uB9AD\uD558\uBA74 \uB2E4\uC2DC \uC870\uC791"
     En: Click the screen to take control again
+  - Ko: "\uB3C4\uAC10 {0}/{1}"
+    En: Codex {0}/{1}
+  - Ko: "\uB204\uACC4 {0}"
+    En: Total {0}
+  - Ko: "\uC544\uC9C1 \uBABB \uAC00\uC838\uC628 \uBB3C\uAC74"
+    En: Not brought home yet
+  - Ko: "{0} \uC2DD\uB7C9"
+    En: '{0} food'
+  - Ko: "\uB9C8\uC9C0\uB9C9 \uC2A4\uD14C\uC774\uC9C0 \u2014 \uB2E4\uC74C \uB9F5\uC774
+      \uC5C6\uC5B4\uC11C \uD314\uC9C0 \uC54A\uC544\uC694"
+    En: "Last stage \u2014 nothing for sale, there's no next map"
+  - Ko: "\uC4F8 \uC218 \uC788\uB294 \uC2DD\uB7C9 {0}  (\uB0A8\uC740 \uC2DD\uB7C9
+      + \uD560\uB2F9\uB7C9 \uB118\uC740 \uB9CC\uD07C)"
+    En: Food to spend {0}  (leftover + over quota)
+  - Ko: "\uB2E4\uC74C \uB9F5\uC5D0\uC11C \uBC1B\uC744 \uAC83: \uC5C6\uC74C"
+    En: 'Waiting for you next map: nothing'
+  - Ko: "\uB2E4\uC74C \uB9F5 \uCD9C\uBC1C\uBC29\uC5D0\uC11C \uBC1B\uC744 \uAC83:
+      {0}"
+    En: 'Waiting in the next map''s start room: {0}'
+  - Ko: "\uBBF8\uB9AC\uBCF4\uAE30 \uC911 \u2014 [\uC774 \uC0C9 \uC785\uAE30]\uB97C
+      \uB20C\uB7EC\uC57C \uC800\uC7A5\uB3FC\uC694"
+    En: "Previewing \u2014 press [Wear this color] to save"
+  - Ko: "\uAE30\uBCF8 (\uD300 \uC0C9)"
+    En: Default (team color)
+  - Ko: "\uCC29\uC6A9 \uC911"
+    En: Wearing
+  - Ko: "\uCC29\uC6A9"
+    En: Wear
+  - Ko: "\uAE30\uC9C0\uB85C \uB3CC\uC544\uAC00\uB294 \uC911"
+    En: Heading back to base
+  - Ko: "\uCC3D\uACE0\uB85C \uCD9C\uBC1C"
+    En: Off to the storeroom
+  - Ko: "\uCE5C\uAD6C\uB4E4\uC744 \uAE30\uB2E4\uB9AC\uB294 \uC911\u2026"
+    En: "Waiting for friends\u2026"
+  - Ko: "\uC8FC\uBA38\uB2C8 \uD655\uC7A5"
+    En: Bigger pockets
+  - Ko: "\uC778\uBCA4 \uCE78 +1 (3\xB74\uD0A4\uB85C \uC804\uD658)"
+    En: "+1 pocket slot (switch with 3\xB74)"
+  - Ko: "\uD1B5\uD1B5 \uB4B7\uBC1C"
+    En: Bouncy hind legs
+  - Ko: "\uC810\uD504 \uB192\uC774 \uC57D +21%"
+    En: Jump height about +21%
+  - Ko: "\uD2BC\uD2BC\uD55C \uB2E4\uB9AC"
+    En: Sturdy legs
+  - Ko: "\uAC77\uAE30\xB7\uB2EC\uB9AC\uAE30 \uC18D\uB3C4 +8%"
+    En: Walk & sprint speed +8%
+  - Ko: "\uD070 \uD5C8\uD30C"
+    En: Big lungs
+  - Ko: "\uCD5C\uB300 \uC2A4\uD0DC\uBBF8\uB098 +20%"
+    En: Max stamina +20%
+  - Ko: "\uD798\uC13C \uC55E\uBC1C"
+    En: Strong forepaws
+  - Ko: "\uB358\uC9C0\uAE30 \uC18D\uB3C4 +15%"
+    En: Throw speed +15%
+  - Ko: "\uAC80\uC740 \uC950"
+    En: Black rat
+  - Ko: "\uBD84\uD64D \uC950"
+    En: Pink rat
+  - Ko: "\uD770 \uC950"
+    En: White rat
+  - Ko: "\uB178\uB780 \uC950"
+    En: Yellow rat
+  - Ko: "\uD138\uC2E4"
+    En: Yarn ball
+  - Ko: "\uB358\uC9C0\uBA74 \uACE0\uC591\uC774\uAC00 \uCAD3\uC544\uAC00\uC694"
+    En: Throw it and cats chase it
+  - Ko: "\uD6C4\uCD94\uD1B5"
+    En: Pepper shaker
+  - Ko: "\uC3DF\uC73C\uBA74 \uB0C4\uC0C8 \uC790\uAD6D\uC774 \uC9C0\uC6CC\uC9C0\uACE0
+      \uACE0\uC591\uC774\uAC00 \uC7AC\uCC44\uAE30"
+    En: "Spill it to erase scent trails \u2014 cats sneeze"
+  - Ko: "\uB808\uC774\uC800 \uD3EC\uC778\uD130"
+    En: Laser pointer
+  - Ko: "\uB4E4\uACE0 \uC788\uC73C\uBA74 \uBE68\uAC04 \uC810 \u2014 \uD55C\uAC00\uD55C
+      \uACE0\uC591\uC774\uAC00 \uCAD3\uC544\uC694"
+    En: "Hold it for a red dot \u2014 idle cats chase it"
+  - Ko: "\uBC29\uC6B8"
+    En: Bell
+  - Ko: "\uACE0\uC591\uC774\uC5D0 \uB358\uC838 \uB9DE\uD788\uBA74 \uC9C0\uB3C4(Tab)\uC5D0
+      \uBCF4\uC5EC\uC694"
+    En: Hit a cat with it to see it on the map (Tab)
+  - Ko: "\uC774\uD2C0 \uC9C0\uB098\uBA74 \uBB34\uAE30\uAC00 \uB41C\uB2E4. \uC624\uB298\uC740
+      \uC7AC\uC0B0\uC774\uB2E4."
+    En: In two days it's a weapon. Today it's wealth.
+  - Ko: "\uC950 \uC0AC\uD68C\uC758 \uBC29\uD328. \uC720\uD589\uC740 \uB3CC\uACE0
+      \uB3C8\uB2E4."
+    En: The shield of rat society. Trends come and go.
+  - Ko: "\uACE0\uC591\uC774\uB3C4 \uC774\uAC78 \uB178\uB9B0\uB2E4. \uC11C\uB450\uB974\uC790."
+    En: The cats want this too. Hurry.
+  - Ko: "\uD600\uC5D0 \uBD99\uB294\uB2E4. \uD600\uC9F8\uB85C \uC6B4\uBC18\uD558\uC9C0
+      \uB9D0 \uAC83."
+    En: Sticks to your tongue. Do not carry by tongue.
+  - Ko: "\uBE44\uC0C1\uC2DD\uB7C9. \uD558\uC9C0\uB9CC \uC9C0\uAE08\uC774 \uBE44\uC0C1
+      \uC544\uB2CC\uAC00?"
+    En: Emergency rations. But isn't this an emergency?
+  - Ko: "\uC950 \uBB38\uBA85\uC758 \uAE08\uAD34. \uBA39\uC73C\uBA74 \uC548 \uB41C\uB2E4.
+      \uBA39\uC73C\uBA74\u2026 \uC548 \uB41C\uB2E4."
+    En: "The gold bar of rat civilization. Do not eat. Do not\u2026 eat."
+  - Ko: "4\uC778 \uC6B4\uBC18 \uAD8C\uC7A5. 4\uC778 \uC2DC\uC2DD \uAE08\uC9C0."
+    En: Four-rat carry recommended. Four-rat tasting forbidden.
+  - Ko: "\uC778\uAC04\uC740 \uC774\uAC78 \uBAA8\uC73C\uB824\uACE0 \uD3C9\uC0DD\uC744
+      \uC4F4\uB2E4\uB354\uB77C."
+    En: They say humans spend their whole lives collecting these.
+  - Ko: "\uBC1F\uC73C\uBA74 \uBC14\uC0AC\uC0AD. \uC99D\uAC70\uC778\uBA78\uC774 \uC27D\uB2E4."
+    En: Crunch when stepped on. Easy to destroy the evidence.
+  - Ko: "\uC778\uC0DD\uACFC \uAC19\uB2E4. \uAD74\uB9AC\uBA74 \uAD1C\uCC2E\uACE0 \uB358\uC9C0\uBA74
+      \uB05D\uC7A5."
+    En: 'Like life: roll it and it''s fine, throw it and it''s over.'
+  - Ko: "\uAD74\uB7EC\uAC04\uB2E4. \uC5B4\uB514\uAE4C\uC9C0? \uB05D\uAE4C\uC9C0."
+    En: It rolls. How far? All the way.
+  - Ko: "\uACE0\uC591\uC774\uAC00 \uC900 \uC120\uBB3C. \uBC1B\uAE30 \uC2EB\uC5C8\uB2E4."
+    En: A gift from the cat. Nobody wanted it.
+  - Ko: "\uC65C \uBB34\uAC70\uC6B4 \uAC83\uC740 \uB2E4 \uB9DB\uC788\uB294\uAC00."
+    En: Why is everything heavy also delicious?
+  - Ko: "\uCD9C\uB801\uCD9C\uB801. \uB4E4\uACE0 \uC788\uC73C\uBA74 \uBA40\uBBF8\uAC00
+      \uC628\uB2E4."
+    En: Wobble wobble. Carrying it makes you seasick.
+  - Ko: "\uC544\uC774\uB514\uC5B4\uAC00 \uB5A0\uC62C\uB790\uB2E4: \uC870\uC2EC\uD788
+      \uB4E4\uC790."
+    En: 'Bright idea: carry it carefully.'
+  - Ko: "\uB9CC\uC9C0\uBA74 \uC6B4\uB2E4. \uC778\uAC04\uB3C4 \uADF8\uB807\uB2E4."
+    En: Touch it and it cries. Humans too.
+  - Ko: "\uC124\uAC70\uC9C0 \uC9C1\uD6C4\uAC00 \uC81C\uC77C \uC704\uD5D8\uD558\uB2E4."
+    En: Most dangerous right after the dishes.
+  - Ko: "\uACE0\uC591\uC774 \uC606\uC5D0\uC11C \uBC18\uC9DD\uC778\uB2E4. \uD568\uC815
+      \uAC19\uC9C0\uB9CC \uC9C4\uC9DC\uB2E4."
+    En: Sparkles next to the cat. Looks like a trap, but it's real.
+  - Ko: "\uCCAD\uACB0\uD55C \uBD80\uC790\uAC00 \uB418\uC790. \uC7A1\uC744 \uC218\uB9CC
+      \uC788\uB2E4\uBA74."
+    En: Be clean and rich. If only you could hold on to it.
+  - Ko: "\uB611\uB531\uB611\uB531. \uACE0\uC591\uC774 \uADC0\uC5D0\uB3C4 \uB611\uB531\uB611\uB531."
+    En: Tick tock. Tick tock in the cat's ears too.
+  - Ko: "\uC999\uC774 \uC190\uC7A1\uC774\uB97C \uBC30\uC2E0\uD55C\uB2E4."
+    En: The juice betrays your grip.

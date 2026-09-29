@@ -1,3 +1,4 @@
+using RatGame.Core;
 using System;
 using TMPro;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace RatGame.UI
         {
             _nameText.text = displayName;
             _descText.text = description;
-            _priceText.text = $"{price} 식량";
+            _priceText.text = Loc.F("{0} 식량", price);
             _buyButton.onClick.RemoveAllListeners();
             _buyButton.onClick.AddListener(() => onBuy?.Invoke());
         }

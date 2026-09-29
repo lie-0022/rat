@@ -1,3 +1,4 @@
+using RatGame.Core;
 using System;
 using RatGame.Data;
 using TMPro;
@@ -21,8 +22,8 @@ namespace RatGame.UI
         {
             _index = index;
             _onBuy = onBuy;
-            _nameText.text = upgrade.DisplayName;
-            _descText.text = upgrade.Description;
+            _nameText.text = Loc.T(upgrade.DisplayName);
+            _descText.text = Loc.T(upgrade.Description);
             _buyButton.onClick.RemoveAllListeners();
             _buyButton.onClick.AddListener(() => _onBuy?.Invoke(_index));
         }

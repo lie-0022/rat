@@ -119,7 +119,7 @@ namespace RatGame.UI
         private void RefreshHint()
         {
             if (_previewHint == null) return;
-            string text = _previewing ? "미리보기 중 — [이 색 입기]를 눌러야 저장돼요" : "";
+            string text = _previewing ? Loc.T("미리보기 중 — [이 색 입기]를 눌러야 저장돼요") : "";
             if (_previewHint.text != text) _previewHint.text = text;
         }
 
@@ -194,13 +194,13 @@ namespace RatGame.UI
             _rows.Clear();
             // 첫 줄: 기본색 (스킨 없음)
             var basic = Instantiate(_rowPrefab, _rowsParent);
-            basic.Bind("", "기본 (팀 색)", _skin.GetComponent<PlayerVisual>().DefaultColor, _skin.Equip);
+            basic.Bind("", Loc.T("기본 (팀 색)"), _skin.GetComponent<PlayerVisual>().DefaultColor, _skin.Equip);
             _rows.Add(basic);
             foreach (var so in _skin.Skins)
             {
                 if (so == null) continue;
                 var row = Instantiate(_rowPrefab, _rowsParent);
-                row.Bind(so.Id, so.DisplayName, so.TintColor, _skin.Equip);
+                row.Bind(so.Id, Loc.T(so.DisplayName), so.TintColor, _skin.Equip);
                 _rows.Add(row);
             }
         }

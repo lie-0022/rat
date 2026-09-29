@@ -97,7 +97,7 @@ namespace RatGame.UI
             _open = true;
             _fading = false;
             _openedAt = Time.unscaledTime;
-            _title.text = sceneName == BaseSceneName ? "기지로 돌아가는 중" : "창고로 출발";
+            _title.text = Loc.T(sceneName == BaseSceneName ? "기지로 돌아가는 중" : "창고로 출발");
             if (_tips != null)
             {
                 _tipIndex = _tips.PickIndex(_tipIndex);
