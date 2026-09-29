@@ -69,7 +69,8 @@ namespace RatGame.Core
             try
             {
                 string json = JsonUtility.ToJson(_data, true);
-                string tmp = FilePath + ".tmp";
+                // 프로세스마다 다른 임시 이름 — 같은 컴퓨터에서 여러 개(시험용 빌드 클라)가 동시에 저장하면 같은 .tmp를 서로 지웠다 (고양이 224)
+                string tmp = $"{FilePath}.{System.Diagnostics.Process.GetCurrentProcess().Id}.tmp";
                 File.WriteAllText(tmp, json);
                 // 쓰는 도중 꺼져도 직전본이 남게: 기존 파일 → .bak, 임시 파일 → 본 파일
                 if (File.Exists(FilePath)) File.Copy(FilePath, BackupPath, true);

@@ -44,8 +44,30 @@ namespace RatGame.EditorTools
             Arm(true);
         }
 
+        private static int _clientActions, _pingsSeen, _squeaksSeen;
+
+        // 스테이지마다 모든 클라가 킁킁·핑·찍찍 (예전 소크 3~13처럼) — 호스트에서 핑(EventBus.PingReceived)·찍찍(RatSqueak)이 도착하는지 센다
+        private static void ClientActions()
+        {
+            if (!_twoPlayer) return;
+            var nm = NetworkManager.Singleton;
+            foreach (var id in nm.ConnectedClientsIds)
+            {
+                if (id == nm.LocalClientId) continue;
+                var rc = nm.ConnectedClients[id].PlayerObject.GetComponent<RatGame.Net.DevRemoteControl>();
+                rc.ServerSend("sniff"); rc.ServerSend("ping"); rc.ServerSend("squeak");
+                _clientActions++;
+            }
+        }
+
+        private static void OnPingSeen(ulong owner, Vector3 _) { if (owner != NetworkManager.Singleton.LocalClientId) _pingsSeen++; }
+        private static void OnSqueakSeen(ulong owner, Vector3 _) { if (owner != NetworkManager.Singleton.LocalClientId) _squeaksSeen++; }
+
         private static void BeginClient()
         {
+            _clientActions = _pingsSeen = _squeaksSeen = 0;
+            RatGame.Core.EventBus.PingReceived -= OnPingSeen; RatGame.Core.EventBus.PingReceived += OnPingSeen;
+            RatGame.Core.EventBus.RatSqueak -= OnSqueakSeen; RatGame.Core.EventBus.RatSqueak += OnSqueakSeen;
             _clientCount = SessionState.GetInt(ClientCountKey, 0);
             SessionState.SetInt(ClientCountKey, 0);
             _clientLaunched = false; _clientSettled = false; _clientJoinedAt = 0f; _clientMoveAt = 0f;
@@ -107,11 +129,25 @@ namespace RatGame.EditorTools
         // 클라를 닫고 로그에서 경고·오류·예외를 센다 — 개발 빌드는 경고·오류 뒤에 "UnityEngine.Debug:LogWarning" 같은 줄이 붙는다
         private static string CloseClientAndReport()
         {
+            RatGame.Core.EventBus.PingReceived -= OnPingSeen;
+            RatGame.Core.EventBus.RatSqueak -= OnSqueakSeen;
             if (!_twoPlayer) return "";
             System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS");
             var sb = new System.Text.StringBuilder();
             for (int c = 0; c < _clientCount; c++) sb.Append(ReportClientLog(c));
             return sb.ToString();
+        }
+
+        // 개발 빌드 로그는 메시지 뒤에 스택이 줄줄이 온다 — 위로 올라가 스택 줄("(at "·"UnityEngine."로 시작)이 아닌 첫 줄 = 메시지 (고양이 224)
+        private static string MessageAbove(string[] lines, int i)
+        {
+            for (int k = i - 1; k >= 0 && k >= i - 12; k--)
+            {
+                string l = lines[k];
+                if (l.Length == 0 || l.StartsWith("UnityEngine.") || l.StartsWith("RatGame.") || l.StartsWith("Unity.") || l.StartsWith("System.")) continue;
+                return l;
+            }
+            return lines[i];
         }
 
         private static string ReportClientLog(int c)
@@ -129,7 +165,7 @@ namespace RatGame.EditorTools
                 if (l.StartsWith("[Rat]")) rat++;
                 bool w = l.Contains("Debug:LogWarning"), e = l.Contains("Debug:LogError"), x = Regex.IsMatch(l, @"^\w*Exception");
                 if (w) warn++; if (e) err++; if (x) ex++;
-                if ((w || e || x) && firstIssue == null) firstIssue = x ? l : (i >= 1 ? lines[i - 1] : l);
+                if ((w || e || x) && firstIssue == null) firstIssue = x ? l : MessageAbove(lines, i);
             }
             return $" | {tag}: [Rat] 줄 {rat} · 경고 {warn} · 오류 {err} · 예외 {ex}{(firstIssue != null ? $" · 첫 문제: {firstIssue}" : "")}";
         }

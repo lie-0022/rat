@@ -127,6 +127,7 @@ namespace RatGame.EditorTools
                     if (run == null || run.Phase.Value != RunPhase.StageActive || run.GetComponent<StageQuota>() == null) { if (InStep > 40f) Finish($"스테이지가 안 열림 ({scene})"); return; }
                     if (Object.FindFirstObjectByType<DepositZone>() == null || InStep < 2f) return; // 맵 생성·스폰 여유
                     _stagesSeen++; _stageStartAt = Time.realtimeSinceStartup;
+                    ClientActions(); // 클라 킁킁·핑·찍찍 (고양이 224)
                     Go(Step.Stage);
                     return;
 
@@ -229,6 +230,7 @@ namespace RatGame.EditorTools
             sb.Append(failure == null ? "[Rat] 통째 시험 끝 — 성공" : $"[Rat] 통째 시험 끝 — 실패: {failure}");
             sb.Append($" | {Time.realtimeSinceStartup - _startAt:0}초 · 스테이지 {_stagesSeen} · 옮긴 물건 {_itemsMoved} · 엔딩 {(_sawFinished ? "봄" : "못 봄")}");
             foreach (var line in StageLines) sb.Append(" | ").Append(line);
+            if (_twoPlayer) sb.Append($" | 클라 행동 {_clientActions}번 → 호스트가 받은 핑 {_pingsSeen} · 찍찍 자막 {_squeaksSeen}");
             if (_english)
             {
                 sb.Append($" | 영어 모드 화면 한국어 {KoreanSeen.Count}종");
