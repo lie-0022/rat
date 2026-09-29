@@ -19,7 +19,7 @@ namespace RatGame.EditorTools
     /// 결과는 콘솔 "[Rat] 통째 시험" 줄 — 경고·오류는 첫 줄 기준 종류별.
     /// </summary>
     [InitializeOnLoad]
-    public static class SoakHarness
+    public static partial class SoakHarness
     {
         private const string ArmedKey = "RatGame.Soak.Armed";
         private const float StageTimeout = 90f;
@@ -71,6 +71,7 @@ namespace RatGame.EditorTools
             _stagesSeen = 0; _itemsMoved = 0; _sawFinished = false;
             Issues.Clear(); StageLines.Clear(); KoreanSeen.Clear();
             _english = SessionState.GetBool(EnglishKey, false);
+            BeginClient();
             _languageBefore = SettingsService.Current.Language;
             if (_english) SetLanguage("en");
             _saveBackup = File.Exists(SaveService.FilePath) ? File.ReadAllText(SaveService.FilePath) : null;
@@ -79,7 +80,7 @@ namespace RatGame.EditorTools
             Application.logMessageReceived += OnLog;
             EditorApplication.update -= Tick;
             EditorApplication.update += Tick;
-            Debug.Log($"[Rat] 통째 시험 시작 (벽 속, 혼자{(_english ? ", 영어" : "")})");
+            Debug.Log($"[Rat] 통째 시험 시작 (벽 속, {(_twoPlayer ? "빌드 클라 2인" : "혼자")}{(_english ? ", 영어" : "")})");
         }
 
         private static void OnLog(string msg, string stack, LogType type)
@@ -114,9 +115,11 @@ namespace RatGame.EditorTools
                     if (scene != "Hub" || InStep < 2f) return;
                     var pad = Object.FindFirstObjectByType<DeparturePad>();
                     if (pad == null || !pad.IsSpawned) return;
+                    if (!ClientReady()) return;
                     for (int i = 0; i < 4 && !pad.DestinationName.Contains("벽 속"); i++) pad.ServerCycleDestination();
                     MoveLocalPlayer(pad.transform.position + Vector3.up * 0.5f);
-                    if (pad.Counting.Value || InStep > 8f) Go(Step.WaitStage);
+                    MoveClients(pad.transform.position + Vector3.up * 0.5f);
+                    if (pad.Counting.Value || InStep > 45f) Go(Step.WaitStage); // 클라 접속 대기를 포함해 넉넉히
                     return;
 
                 case Step.WaitStage:
@@ -177,6 +180,7 @@ namespace RatGame.EditorTools
                 return;
             }
             MoveLocalPlayer(into);
+            MoveClients(into);
         }
 
         private static void SetLanguage(string code)
@@ -234,6 +238,7 @@ namespace RatGame.EditorTools
             sb.Append($" | 경고·오류 {Issues.Count}종");
             foreach (var kv in Issues) sb.Append($" | {kv.Value}× {kv.Key}");
             // 파일만 되돌린다 — 게임 안 메모리는 그대로라 이 플레이를 계속하면 다시 쓸 수 있다: 끝나면 플레이를 멈출 것
+            sb.Append(CloseClientAndReport());
             if (_saveBackup != null) { File.WriteAllText(SaveService.FilePath, _saveBackup); sb.Append(" | 세이브 되돌림"); }
             if (_bakBackup != null) File.WriteAllText(BakPath, _bakBackup);
             Debug.Log(sb.ToString());

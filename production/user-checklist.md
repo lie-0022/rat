@@ -254,6 +254,7 @@
 - [ ] **U-198 영어 글자 넘침** (3번째 루프, 벽 속) — English 적용 뒤 벽 속 스테이지 2 이상 출발: 오른쪽 첫 알림 "Stage 2/5 — bring … food to the orange room / Today: …"가 칸 안 두 줄. 고양이 역할 줄도 두 줄. 쓰러지면 "You're down… get dragged to Storeroom (orange room) to revive"가 칸 안.
 - [ ] **U-199 통째 시험 도구** (개발용) — 에디터 메뉴 Tools → RatGame → Test → Full Run Soak (Walls): 플레이가 켜지고 혼자 벽 속 5스테이지·엔딩까지 1~2분에 돌고 콘솔에 "통째 시험 끝 — 성공 | …". 끝나면 플레이를 멈추면 세이브는 시작 전 그대로.
 - [ ] **U-200 게시판·계산대 영어** (3번째 루프, 기지·벽 속) — English 적용 뒤 기지 목적지 게시판 "[E] Destination / Storeroom / All the cat features — one round"(E로 바꾸면 Kitchen·Inside the walls도 영어), 벽 속 상점 계산대 이름표 "[E] Shop". 개발용: 메뉴 Test → Full Run Soak (Walls, English)로 한 판 자동.
+- [ ] **U-201 통째 시험 2인** (개발용) — Builds/macOS/Rat.app을 먼저 빌드해 두고 메뉴 Test → Full Run Soak (Walls, 2P build client): 빌드 창이 하나 떠서 자동으로 붙고, 두 쥐가 벽 속 5스테이지·엔딩, 끝나면 빌드 창이 닫히고 콘솔에 "클라: … 오류 0". 세이브는 시작 전 그대로.
 
 - [ ] **U-188 F1 위기 때** (3번째 루프) — F1을 누르면 맨 아래에 "위기 때" 두 줄(쓰러짐 — 몸을 쥐구멍(창고)에 넣으면 삶 / 끈끈이 — 동료가 옆에서 E 길게), 상호작용·찍찍 설명이 늘어남. 글자가 전보다 작아지지 않았는지, **4인일 때** 패널 아래가 화면 밖으로 안 나가는지.
   - 내 검증: 한글 입력 상태에서 W/A/S/D·E·Q·F·R, 창 안에 다 들어감. 사진 `production/plans/cat-176/`.
