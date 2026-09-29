@@ -63,6 +63,7 @@ namespace RatGame.EditorTools
                 else if (armed == "achv") Begin("도전과제 판정", AchievementSteps());
                 else if (armed == "glue2p") Begin("끈끈이 구출 E 홀드", GlueSteps(), false);
                 else if (armed == "codexall") Begin("전리품 전부 정산", CodexAllSteps());
+                else if (armed == "sync4p") Begin("4인 던지기 동기화", SyncSteps(), false);
             };
         }
 

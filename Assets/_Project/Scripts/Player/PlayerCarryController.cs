@@ -99,6 +99,19 @@ namespace RatGame.Player
             ReadSlotInput();
         }
 
+        /// <summary>무인 테스트용 — 소유 클라에서 들고 있는 걸 던지기(차지 0~1, 시선 방향)·내려놓기. 실제 입력과 같은 RPC (고양이 236).</summary>
+        public void DevThrow(float charge)
+        {
+            if (!IsOwner || !IsHolding) return;
+            ThrowRequestServerRpc(GetThrowDirection(), Mathf.Clamp01(charge));
+        }
+
+        public void DevPutDown()
+        {
+            if (!IsOwner || !IsHolding) return;
+            PutDownRequestServerRpc();
+        }
+
         /// <summary>무인 테스트용 — 소유 클라에서 가장 가까운 물건 집기 (커서 잠금 무시).</summary>
         public void DevGrabNearest()
         {

@@ -8,6 +8,9 @@ namespace RatGame.Net
     /// <summary>
     /// 무인 멀티 테스트용 — 호스트가 특정 클라의 플레이어에게 명령을 보낸다 (소유 클라에서만 실행).
     ///   grab            : 가장 가까운 물건 집기
+    ///   throw:차지      : 들고 있는 것 던지기 (0~1, 시선 방향 — 고양이 236)
+    ///   drop            : 내려놓기
+    ///   items:id,id…    : 이 클라에서 보이는 그 네트 오브젝트들의 위치 로그 (동기화 어긋남 재기 — 고양이 236)
     ///   ping            : 카메라 정면으로 핑
     ///   sniff           : 킁킁 (목적지 냄새 줄기)
     ///   squeak          : 찍찍 (동료 자막, 고양이 158)
@@ -40,6 +43,22 @@ namespace RatGame.Net
             if (command == "grab")
             {
                 GetComponent<PlayerCarryController>()?.DevGrabNearest();
+            }
+            else if (command.StartsWith("throw:") && float.TryParse(command.Substring(6), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float charge))
+            {
+                GetComponent<PlayerCarryController>()?.DevThrow(charge);
+            }
+            else if (command == "drop")
+            {
+                GetComponent<PlayerCarryController>()?.DevPutDown();
+            }
+            else if (command.StartsWith("items:"))
+            {
+                var sb = new System.Text.StringBuilder("[DevRC] items:");
+                foreach (var part in command.Substring(6).Split(','))
+                    if (ulong.TryParse(part, out ulong id) && NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(id, out var obj))
+                        sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, " {0}={1:F3},{2:F3},{3:F3}", id, obj.transform.position.x, obj.transform.position.y, obj.transform.position.z));
+                Log.Dev(sb.ToString());
             }
             else if (command == "ping")
             {
