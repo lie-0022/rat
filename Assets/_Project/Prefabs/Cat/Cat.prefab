@@ -413,6 +413,7 @@ GameObject:
   - component: {fileID: 6827321491400620316}
   - component: {fileID: 199811673258655019}
   - component: {fileID: 4692677592587701738}
+  - component: {fileID: 2357483320691410935}
   m_Layer: 10
   m_Name: Cat
   m_TagString: Untagged
@@ -586,6 +587,11 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  LastCause:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
 --- !u!114 &199811673258655019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,6 +605,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.AI.CatBrain
   ShowTopMostFoldoutHeaderGroup: 1
+  Belled:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
   BlunderKind:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -679,6 +690,11 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
+  BodyScale:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 1
 --- !u!114 &4692677592587701738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -695,6 +711,20 @@ MonoBehaviour:
   _visual: {fileID: 2407484151826992311}
   _tail: {fileID: 4212809660860624361}
   _bodyRenderer: {fileID: 5500383425722402524}
+--- !u!114 &2357483320691410935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7338030491282097720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24d51d579a310427d87c59041db6ba58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.AI.CatVoice
+  _brain: {fileID: 199811673258655019}
+  _audio: {fileID: 11400000, guid: c1828b91b068544678a92ef8fc524962, type: 2}
 --- !u!1 &7607717681367788741
 GameObject:
   m_ObjectHideFlags: 0

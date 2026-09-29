@@ -213,6 +213,7 @@ FSM은 같고 배율만 다르다. 스폰 시 프리팹의 프로필 목록에�
 - 그레이박스 텔레그래프 (2026-09-24, `AI/CatVisual`, 전 클라 읽기): 몸 색(잠 갈색·의심 노랑·추격 빨강·포획 진빨강·유인 하늘) + 꼬리 피벗(얕은 잠 천천히 / 깊은 잠→얕은 잠 예고 급씰룩 / 의심·추격 빠름) + 깊은 잠 배 펄스·몸 가라앉음 + HalfAwake 머리 들림. `SleepPhase` NetworkVariable로 단계 복제. 소리는 오디오 단계에서 같은 계약으로.
 - CatState NetworkVariable OnValueChanged → CatAnimatorLink가 애니·사운드 재생:
   Suspicious: 귀 쫑긋+"냐?" / Chase: 낮은 그르렁+BGM 전환(EventBus) / Capture: 앞발 스윙
+- **그레이박스 소리 (고양이 242, `AI/CatVoice` + `Core/ToneSynth` 합성음, 연출값 `Resources/GrayboxAudio` = `GrayboxAudioSO`)**: 전 클라 로컬, State·SleepPhase 읽기만. Suspicious "냐?"(520→820Hz 0.35s) · Chase 그르렁 반복(58Hz, 떨림 22Hz) · Capture 쉭(0.22s) · 깊은 잠 코골이 반복(2.6s, ToLight에서 멈춤). 3D 선형 감쇠 2~28m, 볼륨 = 전체 × 효과음 설정. SO의 클립 칸을 채우면 합성음 대신 진짜 소리. BGM 전환은 아직.
 - 상태가 항상 소리로 먼저 들려야 한다 — 시야 밖 고양이의 상태를 소리로 읽는 것이 은신 플레이의 정보 구조.
 
 ## 수용 기준 (W6)

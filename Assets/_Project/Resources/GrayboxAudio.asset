@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c48a9f7d271c244448526db4f27a7bde, type: 3}
+  m_Name: GrayboxAudio
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.GrayboxAudioSO
+  _catMinDistance: 2
+  _catMaxDistance: 28
+  _suspiciousClip: {fileID: 0}
+  _suspiciousFrom: 520
+  _suspiciousTo: 820
+  _suspiciousSeconds: 0.35
+  _suspiciousVolume: 0.8
+  _chaseClip: {fileID: 0}
+  _chaseFreq: 58
+  _chaseTremolo: 22
+  _chaseSeconds: 1
+  _chaseVolume: 0.55
+  _captureClip: {fileID: 0}
+  _captureSeconds: 0.22
+  _captureVolume: 0.9
+  _snoreClip: {fileID: 0}
+  _snoreSeconds: 2.6
+  _snoreVolume: 0.45
