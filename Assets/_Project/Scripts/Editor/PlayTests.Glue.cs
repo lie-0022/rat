@@ -25,8 +25,14 @@ namespace RatGame.EditorTools
             {
                 new Step { Name = "끈끈이", Wait = 3f, Act = () =>
                 {
-                    // 주의: 유니티 창에 초점이 없으면 키보드가 입력 액션까지 안 간다("E키 True · 액션 False") — 이 시험은 창에 초점이 있어야 통과.
-                    // 입력 설정을 시험 동안 "항상 게임으로"로 바꾸는 건 오히려 키 상태까지 막혀 되돌림 (고양이 226)
+                    // 유니티 창에 초점이 없으면 키보드가 입력 액션까지 안 간다("E키 True · 액션 False", 고양이 226).
+                    // 226에선 두 설정(게임 창 초점 규칙 + 배경 동작)을 같이 바꿔 키 상태까지 막혔다 — 게임 창 초점 규칙 하나만 시험 동안 바꾼다 (고양이 235).
+                    // 에셋 없는 메모리 설정이라 끝나면 되돌림
+                    var settings = InputSystem.settings;
+                    var behavior = settings.editorInputBehaviorInPlayMode;
+                    settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+                    var before = OnDone;
+                    OnDone = () => { settings.editorInputBehaviorInPlayMode = behavior; before?.Invoke(); };
                     var zone = Object.FindFirstObjectByType<DepositZone>().Area.bounds;
                     TeleportClient(new Vector3(zone.center.x, zone.min.y + 0.6f, zone.center.z - 6f), 0f);
                 } },

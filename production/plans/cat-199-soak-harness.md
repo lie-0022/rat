@@ -61,3 +61,6 @@
 - 2인 창고 공용 준비 단계를 `ClientWarehouse(로그 이름)`로 묶음(구조 시험과 같이 씀). 클라를 끈끈이로 → 호스트가 동료 앞에서 E 대상 안내가 "구출하기"가 될 때까지 다시 섬 → E 짧게(풀리면 안 됨) → E 길게(풀려야 함).
 - **E 홀드 구출 자체는 확인**: 판이 살아 있을 때 실제 E 키 상태 이벤트로 "상호작용 시작: 구출하기 — 파랑 쥐" → Trapped → Active.
 - **시험은 아직 불안정**: 유니티 창에 초점이 없으면 키보드가 입력 액션까지 안 간다(진단: "E키 True · 액션 눌림 False · 창 초점 False"). 입력 설정을 시험 동안 "모든 입력은 게임으로 + 배경 무시"로 바꾸자 키 상태까지 막혀 되돌림. 마우스 입력(운반 시험)은 초점 없이도 됨. → 이 시험은 창에 초점이 있을 때만 통과로 표시.
+
+## 고양이 235 — 키보드 시험 창 초점 해결
+- 226에선 입력 설정 두 개(`editorInputBehaviorInPlayMode` + `backgroundBehavior`)를 같이 바꿔 키 상태까지 막혔다. **게임 창 초점 규칙 하나만**(`AllDeviceInputAlwaysGoesToGameView`) 시험 동안 바꾸고 끝나면 되돌리니 **창 초점 없이 통과(24초)** — 짧게 누름은 안 풀리고, 길게 누름 1.2초 뒤 끈끈이 해제. 설정은 끝나고 원래 값(PointersAndKeyboardsRespectGameViewFocus·ResetAndDisableNonBackgroundDevices)으로 돌아옴, 세이브 원본 그대로.
