@@ -55,6 +55,7 @@ namespace RatGame.EditorTools
                 else if (armed == "rescue2p") Begin("쓰러진 동료 구조", RescueSteps(), false);
                 else if (armed == "achv") Begin("도전과제 판정", AchievementSteps());
                 else if (armed == "glue2p") Begin("끈끈이 구출 E 홀드", GlueSteps(), false);
+                else if (armed == "codexall") Begin("전리품 전부 정산", CodexAllSteps());
             };
         }
 
