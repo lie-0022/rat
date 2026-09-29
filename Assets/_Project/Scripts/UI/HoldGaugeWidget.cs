@@ -21,13 +21,15 @@ namespace RatGame.UI
         private void Update()
         {
             string prompt = _interactor != null ? _interactor.HoldPromptText : null;
+            bool holding = prompt != null;
+            if (!holding && _interactor != null) prompt = _interactor.FocusPromptText; // 누르기 전 미리 보기 (고양이 187)
             bool show = prompt != null;
             if (_box.activeSelf != show) _box.SetActive(show);
             if (!show) return;
 
             string text = $"[E] {prompt}";
             if (_label.text != text) _label.text = text;
-            float t = _interactor.HoldProgress;
+            float t = holding ? _interactor.HoldProgress : 0f;
             if (!Mathf.Approximately(_fill.anchorMax.x, t)) _fill.anchorMax = new Vector2(t, 1f);
         }
     }

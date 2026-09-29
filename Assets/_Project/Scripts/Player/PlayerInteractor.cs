@@ -25,6 +25,13 @@ namespace RatGame.Player
         public string HoldPromptText =>
             _holdTarget != null && _holdTarget is IInteractable ia && ia.HoldSeconds > 0f ? ia.PromptText : null;
 
+        /// <summary>
+        /// E를 안 누르는 동안 바라보는 대상의 안내("구출하기 — 파랑 쥐 (길게)"), 없으면 null — 누르기 전에 된다는 걸 보이게 (고양이 187).
+        /// 숨어 있는 동안은 나가기 안내가 따로 있어 없음.
+        /// </summary>
+        public string FocusPromptText { get; private set; }
+        private float _focusAt;
+
         /// <summary>홀드 진행 0~1.</summary>
         public float HoldProgress =>
             _holdTarget != null && _holdTarget is IInteractable ia && ia.HoldSeconds > 0f
@@ -44,8 +51,10 @@ namespace RatGame.Player
             if (!_interactAction.IsPressed() || InputFocus.IsUiOpen) // 메뉴가 떠 있으면 E로 또 열지 않게
             {
                 _holdTarget = null;
+                UpdateFocus();
                 return;
             }
+            FocusPromptText = null;
 
             if (_holdTarget == null)
             {
@@ -70,6 +79,16 @@ namespace RatGame.Player
                 InteractRequestServerRpc(_holdTarget.NetworkObjectId);
                 _holdTarget = null;
             }
+        }
+
+        private void UpdateFocus()
+        {
+            if (Time.time < _focusAt) return;
+            _focusAt = Time.time + 0.2f; // 화면 갱신 주기 — 구 캐스트를 매 프레임 하지 않게
+            var condition = GetComponent<PlayerCondition>();
+            if (InputFocus.IsUiOpen || (condition != null && condition.State.Value != ConditionState.Active)) { FocusPromptText = null; return; }
+            var target = FindTarget() as IInteractable;
+            FocusPromptText = target == null ? null : target.HoldSeconds > 0f ? $"{target.PromptText} (길게)" : target.PromptText;
         }
 
         private NetworkBehaviour FindTarget()
