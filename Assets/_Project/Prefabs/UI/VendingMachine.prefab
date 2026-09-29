@@ -103,7 +103,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ab0ee37a0b29e4306b4a0d1d95d2e0bd, type: 2}
   - {fileID: 11400000, guid: 8e6ff0708737f4046a38268a40aa8db7, type: 2}
   - {fileID: 11400000, guid: 6a1897eece44a4d7294492bcc9e3c28c, type: 2}
-  _panelPrefab: {fileID: 6125324764225488796, guid: d6385c4d15d3b4f52aace00664eb8497, type: 3}
   HaulTotal:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0
@@ -130,6 +129,7 @@ GameObject:
   - component: {fileID: 3240433142600573692}
   - component: {fileID: 8253538546506809365}
   - component: {fileID: 6501082566716403295}
+  - component: {fileID: 4087908924909336468}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -300,6 +300,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 8253538546506809365}
   m_maskType: 0
+--- !u!114 &4087908924909336468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802713077603178303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "[E] \uC950 \uC0C1\uC810"
 --- !u!1 &7789210325367860040
 GameObject:
   m_ObjectHideFlags: 0

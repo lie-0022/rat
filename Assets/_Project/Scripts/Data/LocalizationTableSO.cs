@@ -51,6 +51,12 @@ namespace RatGame.Data
             return true;
         }
 
+        public bool EditorRemove(string ko)
+        {
+            _en = null;
+            return _entries.RemoveAll(e => e.Ko == ko) > 0;
+        }
+
         private void OnValidate() => _en = null;
 #endif
     }

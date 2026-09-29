@@ -16,12 +16,8 @@ namespace RatGame.EditorTools
     {
         private const string TablePath = "Assets/_Project/Resources/LocalizationTable.asset";
 
-        private static readonly string[] MenuPrefabs =
-        {
-            "Assets/_Project/Prefabs/UI/MainMenu.prefab",
-            "Assets/_Project/Prefabs/UI/PauseMenu.prefab",
-            "Assets/_Project/Prefabs/UI/SettingsPanel.prefab",
-        };
+        // UI 프리팹 전부 (메뉴 3종으로 시작 — 고양이 188, HUD·패널까지 — 고양이 189)
+        private const string UiPrefabFolder = "Assets/_Project/Prefabs/UI";
 
         private static readonly Dictionary<string, string> DummyEn = new()
         {
@@ -81,7 +77,35 @@ namespace RatGame.EditorTools
             ["기본값으로 바꿨어요. [적용]을 눌러야 저장돼요."] = "Reset to defaults. Press [Apply] to save.",
             ["적용했어요."] = "Applied.",
             ["[적용]을 누르면 언어가 바뀌어요."] = "Press [Apply] to change the language.",
+            // 게임 중 HUD·패널 (고양이 189)
+            ["[E] 도감"] = "[E] Codex",
+            ["[E] 거울"] = "[E] Mirror",
+            ["[E] 쥐 상점"] = "[E] Rat Shop",
+            ["도감"] = "Codex",
+            ["닫기 (E / Esc)"] = "Close (E / Esc)",
+            ["금 감"] = "Cracked",
+            ["<b>F1</b>  조작"] = "<b>F1</b>  Controls",
+            ["벽 속 지도  <size=70%>(팀이 가 본 방 · 주황 = 목적지 · 금색 = 보물방 · 파란 선 = 배관)</size>"] = "Map of the walls  <size=70%>(rooms your team visited · orange = destination · gold = treasure room · blue line = pipe)</size>",
+            ["수확"] = "Haul",
+            ["들고 온 것"] = "Carried home",
+            ["누계"] = "Total",
+            ["오늘의 쥐들"] = "Today's rats",
+            ["오늘의 일꾼"] = "Top worker",
+            ["다운"] = "Down",
+            ["새 도감"] = "New codex",
+            ["거울 — 스킨·털 색"] = "Mirror — skins & fur color",
+            ["털 색 팔레트"] = "Fur color palette",
+            ["색상"] = "Hue",
+            ["채도"] = "Saturation",
+            ["밝기"] = "Brightness",
+            ["이 색 입기"] = "Wear this color",
+            ["쥐 상점"] = "Rat Shop",
+            ["상점 — 다음 맵 준비"] = "Shop — prepare for the next map",
+            ["사기"] = "Buy",
         };
+
+        // 코드가 복제해 글자를 새로 쓰는 틀(핑 이름·알림·결과 칩) 또는 Find로 찾아 덮어쓰는 글자 — 붙이면 켜질 때 원문으로 되돌린다
+        private static readonly HashSet<string> CodeTemplates = new() { "회색 쥐", "도감 등록!  계란", "계란", "쥐구멍 적립" };
 
         private static readonly Regex Hangul = new("[가-힣]");
 
@@ -99,20 +123,31 @@ namespace RatGame.EditorTools
             foreach (var kv in DummyEn)
                 if (table.EditorAdd(kv.Key, kv.Value)) added++;
 
-            foreach (var path in MenuPrefabs)
+            var missingEn = new List<string>();
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { UiPrefabFolder }))
             {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
                 var root = PrefabUtility.LoadPrefabContents(path);
                 var codeDriven = CollectCodeDriven(root);
                 bool changed = false;
                 foreach (var text in root.GetComponentsInChildren<TMP_Text>(true))
                 {
                     if (!Hangul.IsMatch(text.text) || codeDriven.Contains(text)) continue;
+                    if (CodeTemplates.Contains(text.text))
+                    {
+                        var wrong = text.GetComponent<LocalizedText>();
+                        if (wrong != null) { Object.DestroyImmediate(wrong, true); changed = true; }
+                        if (table.EditorRemove(text.text)) added--;
+                        continue;
+                    }
                     // 중첩 프리팹(설정 패널 안의 행 등)은 그 프리팹 쪽에서 붙인다
                     if (PrefabUtility.IsPartOfPrefabInstance(text)) continue;
                     if (table.EditorAdd(text.text, DummyEn.TryGetValue(text.text, out var en) ? en : "")) added++;
-                    if (text.GetComponent<LocalizedText>() != null) continue;
-                    text.gameObject.AddComponent<LocalizedText>();
-                    attached++;
+                    if (string.IsNullOrEmpty(en)) missingEn.Add($"{System.IO.Path.GetFileNameWithoutExtension(path)}/{text.name}: {text.text.Replace("\n", "\\n")}");
+                    var loc = text.GetComponent<LocalizedText>();
+                    if (loc != null && loc.Ko == text.text) continue;
+                    if (loc == null) { loc = text.gameObject.AddComponent<LocalizedText>(); attached++; }
+                    loc.Ko = text.text;
                     changed = true;
                 }
                 if (changed) PrefabUtility.SaveAsPrefabAsset(root, path);
@@ -123,6 +158,7 @@ namespace RatGame.EditorTools
             AssetDatabase.SaveAssets();
             int missing = 0;
             foreach (var e in table.Entries) if (string.IsNullOrEmpty(e.En)) missing++;
+            foreach (var m in missingEn) Debug.Log($"[Rat] 번역 없음 — {m}");
             Debug.Log($"[Rat] 메뉴 번역 준비: 표 {table.Entries.Count}줄(새 {added}, 영어 빈 칸 {missing}) · LocalizedText 새로 {attached}개");
         }
 

@@ -1299,6 +1299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uD6A8\uACFC\uC74C"
 --- !u!1 &1150959480050440153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1465,6 +1466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uB2EB\uAE30"
 --- !u!1 &1176409328627507625
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,6 +1724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC801\uC6A9"
 --- !u!1 &1395633440951589577
 GameObject:
   m_ObjectHideFlags: 0
@@ -2417,6 +2420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uD654\uBA74"
 --- !u!1 &1943333658221099787
 GameObject:
   m_ObjectHideFlags: 0
@@ -3711,6 +3715,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC6C5\uD06C\uB9AC\uAE30"
 --- !u!1 &2497258832268123819
 GameObject:
   m_ObjectHideFlags: 0
@@ -3877,6 +3882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uAE30\uBCF8\uAC12"
 --- !u!1 &2589531815497309475
 GameObject:
   m_ObjectHideFlags: 0
@@ -4287,6 +4293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uBCF4\uC774\uC2A4"
 --- !u!1 &2806887115241032086
 GameObject:
   m_ObjectHideFlags: 0
@@ -5351,6 +5358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uD574\uC0C1\uB3C4"
 --- !u!1 &3549138048857615165
 GameObject:
   m_ObjectHideFlags: 0
@@ -6874,6 +6882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC124\uC815"
 --- !u!1 &4972119256987966261
 GameObject:
   m_ObjectHideFlags: 0
@@ -7172,6 +7181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC5B8\uC5B4"
 --- !u!1 &5515083389738561500
 GameObject:
   m_ObjectHideFlags: 0
@@ -7816,6 +7826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC74C\uC545"
 --- !u!1 &5831722735398028697
 GameObject:
   m_ObjectHideFlags: 0
@@ -8830,6 +8841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uD654\uBA74 \uD754\uB4E4\uB9BC"
 --- !u!1 &6770564258471237721
 GameObject:
   m_ObjectHideFlags: 0
@@ -9215,6 +9227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC870\uC791"
 --- !u!1 &6837471551944852001
 GameObject:
   m_ObjectHideFlags: 0
@@ -9381,6 +9394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uD654\uBA74 \uBAA8\uB4DC"
 --- !u!1 &6915035735823799617
 GameObject:
   m_ObjectHideFlags: 0
@@ -10005,6 +10019,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC804\uCCB4"
 --- !u!1 &7456206525784929872
 GameObject:
   m_ObjectHideFlags: 0
@@ -10414,6 +10429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uB9C8\uC6B0\uC2A4 \uAC10\uB3C4"
 --- !u!1 &7795481380377333056
 GameObject:
   m_ObjectHideFlags: 0
@@ -11739,6 +11755,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC18C\uB9AC"
 --- !u!1 &8892935490732764140
 GameObject:
   m_ObjectHideFlags: 0
@@ -12115,6 +12132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC5B8\uC5B4"
 --- !u!1 &9113691469787004620
 GameObject:
   m_ObjectHideFlags: 0

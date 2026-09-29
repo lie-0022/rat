@@ -467,6 +467,7 @@ GameObject:
   - component: {fileID: 5018593187119810199}
   - component: {fileID: 6804380205492607469}
   - component: {fileID: 6313151692574522871}
+  - component: {fileID: 1749359010804060587}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -608,6 +609,19 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 8
   _text: 3
+--- !u!114 &1749359010804060587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040981054000582509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uB2EB\uAE30 (E / Esc)"
 --- !u!1 &1658366255341888848
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,6 +1129,7 @@ GameObject:
   - component: {fileID: 5439171148067646402}
   - component: {fileID: 2910171287721249307}
   - component: {fileID: 81953871263657007}
+  - component: {fileID: 7958806234477560148}
   m_Layer: 0
   m_Name: TitleText
   m_TagString: Untagged
@@ -1256,6 +1271,19 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 7
   _text: 1
+--- !u!114 &7958806234477560148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6853858385618512592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uB3C4\uAC10"
 --- !u!1 &7503312776832140367
 GameObject:
   m_ObjectHideFlags: 0

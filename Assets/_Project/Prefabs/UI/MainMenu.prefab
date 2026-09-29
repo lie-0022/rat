@@ -415,6 +415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC950\uB3C4 \uC0C8\uB3C4 \uBAA8\uB974\uAC8C"
 --- !u!1 &1900764838056082363
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,6 +674,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uD638\uC2A4\uD2B8 \uC2DC\uC791"
 --- !u!1 &3829371338692556427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1308,6 +1310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uCE5C\uAD6C \uBC29 \uCC38\uAC00"
 --- !u!1 &4578628187774681482
 GameObject:
   m_ObjectHideFlags: 0
@@ -1851,6 +1854,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC885\uB8CC"
 --- !u!1 &6086764733199561754
 GameObject:
   m_ObjectHideFlags: 0
@@ -2170,6 +2174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC124\uC815"
 --- !u!1 &7461780352197916876
 GameObject:
   m_ObjectHideFlags: 0
@@ -2470,6 +2475,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uBC30\uACBD \uC7A5\uBA74 \uC790\uB9AC\n\uC950\uAD6C\uBA4D \uC55E\uC5D0\uC11C
+    \uC950 4\uB9C8\uB9AC \uB300\uAE30 (\uC544\uD2B8 \uB2E8\uACC4)"
 --- !u!1 &8545016118330301328
 GameObject:
   m_ObjectHideFlags: 0
@@ -2636,6 +2643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "1~4\uC778 \uD611\uB3D9 \uC740\uC2E0 \uC57D\uD0C8"
 --- !u!1001 &5404310993881928839
 PrefabInstance:
   m_ObjectHideFlags: 0

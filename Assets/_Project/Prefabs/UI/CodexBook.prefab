@@ -189,7 +189,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.World.CodexBook
   ShowTopMostFoldoutHeaderGroup: 1
   _database: {fileID: 11400000, guid: 75a1c8e7017db4a38bed225347fe3606, type: 2}
-  _panelPrefab: {fileID: 3282085328299846866, guid: 78c68b739ad5b4b6599b91e44f6239af, type: 3}
 --- !u!1 &8456093795462633156
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +290,7 @@ GameObject:
   - component: {fileID: 8775487091200057709}
   - component: {fileID: 6871173456463626191}
   - component: {fileID: 4157997614419617950}
+  - component: {fileID: 828041179033488999}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -461,3 +461,16 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 6871173456463626191}
   m_maskType: 0
+--- !u!114 &828041179033488999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8633192766673765084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "[E] \uB3C4\uAC10"

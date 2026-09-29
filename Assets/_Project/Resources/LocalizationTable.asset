@@ -138,3 +138,54 @@ MonoBehaviour:
   - Ko: "Esc \xB7 \uACC4\uC18D\uD558\uAE30   (\uAC8C\uC784\uC740 \uBA48\uCD94\uC9C0
       \uC54A\uC544\uC694)"
     En: "Esc \xB7 Resume   (the game keeps running)"
+  - Ko: "[E] \uB3C4\uAC10"
+    En: '[E] Codex'
+  - Ko: "\uB3C4\uAC10"
+    En: Codex
+  - Ko: "\uB2EB\uAE30 (E / Esc)"
+    En: Close (E / Esc)
+  - Ko: "\uAE08 \uAC10"
+    En: Cracked
+  - Ko: "<b>F1</b>  \uC870\uC791"
+    En: <b>F1</b>  Controls
+  - Ko: "\uBCBD \uC18D \uC9C0\uB3C4  <size=70%>(\uD300\uC774 \uAC00 \uBCF8 \uBC29
+      \xB7 \uC8FC\uD669 = \uBAA9\uC801\uC9C0 \xB7 \uAE08\uC0C9 = \uBCF4\uBB3C\uBC29
+      \xB7 \uD30C\uB780 \uC120 = \uBC30\uAD00)</size>"
+    En: "Map of the walls  <size=70%>(rooms your team visited \xB7 orange = destination
+      \xB7 gold = treasure room \xB7 blue line = pipe)</size>"
+  - Ko: "\uC218\uD655"
+    En: Haul
+  - Ko: "\uB4E4\uACE0 \uC628 \uAC83"
+    En: Carried home
+  - Ko: "\uB204\uACC4"
+    En: Total
+  - Ko: "\uC624\uB298\uC758 \uC950\uB4E4"
+    En: Today's rats
+  - Ko: "\uC624\uB298\uC758 \uC77C\uAFBC"
+    En: Top worker
+  - Ko: "\uB2E4\uC6B4"
+    En: Down
+  - Ko: "\uC0C8 \uB3C4\uAC10"
+    En: New codex
+  - Ko: "[E] \uAC70\uC6B8"
+    En: '[E] Mirror'
+  - Ko: "\uAC70\uC6B8 \u2014 \uC2A4\uD0A8\xB7\uD138 \uC0C9"
+    En: "Mirror \u2014 skins & fur color"
+  - Ko: "\uD138 \uC0C9 \uD314\uB808\uD2B8"
+    En: Fur color palette
+  - Ko: "\uC0C9\uC0C1"
+    En: Hue
+  - Ko: "\uCC44\uB3C4"
+    En: Saturation
+  - Ko: "\uBC1D\uAE30"
+    En: Brightness
+  - Ko: "\uC774 \uC0C9 \uC785\uAE30"
+    En: Wear this color
+  - Ko: "\uC950 \uC0C1\uC810"
+    En: Rat Shop
+  - Ko: "\uC0C1\uC810 \u2014 \uB2E4\uC74C \uB9F5 \uC900\uBE44"
+    En: "Shop \u2014 prepare for the next map"
+  - Ko: "\uC0AC\uAE30"
+    En: Buy
+  - Ko: "[E] \uC950 \uC0C1\uC810"
+    En: '[E] Rat Shop'
