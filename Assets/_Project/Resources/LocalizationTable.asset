@@ -345,9 +345,9 @@ MonoBehaviour:
   - Ko: "[\uC88C\uD074\uB9AD] \uAC19\uC774 \uB4E4\uAE30 \u2014 {0} ({1}/{2})"
     En: "[LMB] Lift together \u2014 {0} ({1}/{2})"
   - Ko: "\uCC3D\uACE0(\uC8FC\uD669 \uBC29)"
-    En: the storeroom (orange room)
+    En: Storeroom (orange room)
   - Ko: "\uC950\uAD6C\uBA4D"
-    En: the mousehole
+    En: Mousehole
   - Ko: "\uC228\uC8FD\uC5EC\u2026 \uACE0\uC591\uC774\uAC00 \uCF54\uC55E"
     En: "Hold your breath\u2026 the cat is right there"
   - Ko: "\uC228\uB294 \uC911 \xB7 [E] \uB098\uAC00\uAE30 (\uC18C\uB9AC \uB0A8)"
@@ -602,3 +602,77 @@ MonoBehaviour:
     En: Tick tock. Tick tock in the cat's ears too.
   - Ko: "\uC999\uC774 \uC190\uC7A1\uC774\uB97C \uBC30\uC2E0\uD55C\uB2E4."
     En: The juice betrays your grip.
+  - Ko: "\uB2E4\uC74C \uB9F5\uC73C\uB85C"
+    En: to the next map
+  - Ko: "\uAE30\uC9C0\uB85C"
+    En: to base
+  - Ko: "\uAD76\uC5C8\uB2E4..."
+    En: Starved...
+  - Ko: "\uC2A4\uD14C\uC774\uC9C0 {0}\uC5D0\uC11C \uC804\uC6D0 \uC4F0\uB7EC\uC9D0
+      \u2014 \uCC98\uC74C\uBD80\uD130 \uB2E4\uC2DC"
+    En: "Everyone went down on stage {0} \u2014 back to the start"
+  - Ko: "\uBC30\uBD88\uB9AC \uACA8\uC6B8\uC744 \uB0AC\uB2E4!"
+    En: A well-fed winter!
+  - Ko: "\uC2A4\uD14C\uC774\uC9C0 {0}\uAC1C\uB97C \uBAA8\uB450 \uB118\uC5B4 \uAC00\uC871\uC774
+      \uAD76\uC9C0 \uC54A\uC558\uC5B4\uC694 \u2014 \uC5D4\uB529\n\uC774\uBC88 \uB7F0:
+      \uBAA8\uC740 \uC2DD\uB7C9 {1} \xB7 \uC0C1\uC810\uC5D0\uC11C \uC0B0 \uBB3C\uAC74
+      {2}\uAC1C"
+    En: "You cleared all {0} stages and the family didn't starve \u2014 ending\nThis
+      run: food gathered {1} \xB7 items bought {2}"
+  - Ko: "\uC2A4\uD14C\uC774\uC9C0 {0} \uD074\uB9AC\uC5B4!"
+    En: Stage {0} clear!
+  - Ko: "\uAC00\uC871\uC774 {0}\uB9CC\uD07C \uBA39\uC5C8\uC5B4\uC694 \u2014 \uB0A8\uC740
+      \uC2DD\uB7C9 {1}"
+    En: "The family ate {0} \u2014 food left {1}"
+  - Ko: "\uBB34\uC0AC\uD788 \uC774\uC0AC \uC644\uB8CC!"
+    En: Made it home safe!
+  - Ko: "\uACE0\uC591\uC774 \uBC25\uC774 \uB418\uC5C8\uB2E4..."
+    En: Became cat food...
+  - Ko: "\uC804\uC6D0 \uC950\uAD6C\uBA4D \uC9D1\uD569 \u2014 \uC624\uB298 \uC218\uD655\uC744
+      \uAE30\uC9C0\uB85C \uC62E\uACBC\uC5B4\uC694"
+    En: "Everyone made it to the mousehole \u2014 today's haul is at base"
+  - Ko: "\uC804\uC6D0 \uB2E4\uC6B4 \u2014 \uC774\uBC88 \uC801\uB9BD\uC744 \uC783\uC5C8\uC5B4\uC694
+      (\uB204\uACC4\uB294 \uADF8\uB300\uB85C)"
+    En: "Everyone went down \u2014 this run's stash is lost (total unchanged)"
+  - Ko: "\uCC3D\uACE0 \uC801\uB9BD"
+    En: Stashed in storeroom
+  - Ko: "\uC950\uAD6C\uBA4D \uC801\uB9BD"
+    En: Stashed in mousehole
+  - Ko: "\uC774\uBC88 \uC218\uD655"
+    En: This haul
+  - Ko: "\uC783\uC740 \uC801\uB9BD"
+    En: Stash lost
+  - Ko: " \xB7 \uAD6C\uC870 {0}"
+    En: " \xB7 rescues {0}"
+  - Ko: "{0:0}\uCD08 \uB4A4 {1}"
+    En: '{1} in {0:0}s'
+  - Ko: "{0} {1} ({2}\uAC1C)"
+    En: '{0} {1} ({2})'
+  - Ko: "\uB4E4\uACE0 \uC634 {0}"
+    En: Carried {0}
+  - Ko: "\uC6C5\uD06C\uB9AC\uBA74 \uBC1C\uC18C\uB9AC\uAC00 \uB098\uC9C0 \uC54A\uC544\uC694.
+      \uACE0\uC591\uC774 \uADFC\uCC98\uC5D0\uC120 \uAE30\uC5B4\uAC00\uC138\uC694."
+    En: Crouching makes no footsteps. Crawl near cats.
+  - Ko: "\uACC4\uB780\uC740 \uB358\uC9C0\uBA74 \uAE68\uC838\uC694. \uAD74\uB824\uC11C
+      \uC950\uAD6C\uBA4D\uC5D0 \uB123\uC73C\uC138\uC694."
+    En: Eggs break when thrown. Roll them into the mousehole.
+  - Ko: "\uC950\uAD6C\uBA4D\uC5D0 \uB123\uC740 \uBB3C\uAC74\uC740 \uC548\uC804\uD574\uC694.
+      \uC804\uBA78\uD558\uBA74 \uC774\uBC88 \uC801\uB9BD\uC740 \uC783\uC5B4\uC694."
+    En: Items in the mousehole are safe. If everyone goes down, this run's stash
+      is lost.
+  - Ko: "\uBB34\uAC70\uC6B4 \uAC74 \uC5EC\uB7FF\uC774 \uAC19\uC774 \uB4E4\uBA74 \uC6C0\uC9C1\uC5EC\uC694."
+    En: Heavy things move when several rats lift together.
+  - Ko: "\uC5B4\uB450\uC6B4 \uACF3\uC5D0\uC120 \uACE0\uC591\uC774 \uC2DC\uC57C\uAC00
+      \uC808\uBC18\uC774 \uB3FC\uC694."
+    En: In the dark, cats see only half as far.
+  - Ko: "\uC4F0\uB7EC\uC9C4 \uB3D9\uB8CC\uB97C \uC950\uAD6C\uBA4D\uAE4C\uC9C0 \uC62E\uAE30\uBA74
+      \uB2E4\uC2DC \uC77C\uC5B4\uB098\uC694."
+    En: Carry a downed teammate to the mousehole and they get back up.
+  - Ko: "\uB048\uB048\uC774\uC5D0 \uBD99\uC740 \uB3D9\uB8CC\uB294 [E]\uB97C \uAE38\uAC8C
+      \uB20C\uB7EC \uAD6C\uCD9C\uD558\uC138\uC694."
+    En: Hold [E] to free a teammate stuck on a glue trap.
+  - Ko: "\uACE7\uAC8C \uB2EC\uB9AC\uBA74 \uACE0\uC591\uC774\uBCF4\uB2E4 \uBE68\uB77C\uC694.
+      \uB9C9\uB2E4\uB978 \uAE38\uB9CC \uD53C\uD558\uC138\uC694."
+    En: Running straight outpaces cats. Just avoid dead ends.
+  - Ko: "\uC774\uBC88\uC5D0 \uC0C8\uB85C \uCC44\uC6B4 \uB3C4\uAC10\uC740 \uC5C6\uC5B4\uC694"
+    En: No new codex entries this time

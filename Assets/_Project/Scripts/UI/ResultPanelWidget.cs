@@ -1,3 +1,4 @@
+using RatGame.Core;
 using System.Collections.Generic;
 using RatGame.Data;
 using RatGame.Player;
@@ -67,7 +68,7 @@ namespace RatGame.UI
             RefreshHarvest(run, returned);
             RefreshRows(run, returned);
             RefreshChips(run);
-            RefreshCountdown(run, quota != null && returned && !quota.Finished.Value ? "다음 맵으로" : "기지로");
+            RefreshCountdown(run, quota != null && returned && !quota.Finished.Value ? Loc.T("다음 맵으로") : Loc.T("기지로"));
         }
 
         private void RefreshQuotaTitle(StageQuota quota, bool cleared)
@@ -75,27 +76,27 @@ namespace RatGame.UI
             SetColor(_titleBand, cleared ? UiColorRole.Positive : UiColorRole.Danger);
             if (!cleared)
             {
-                SetText(_title, "굶었다...");
-                SetText(_subtitle, $"스테이지 {quota.StageNumber.Value}에서 전원 쓰러짐 — 처음부터 다시");
+                SetText(_title, Loc.T("굶었다..."));
+                SetText(_subtitle, Loc.F("스테이지 {0}에서 전원 쓰러짐 — 처음부터 다시", quota.StageNumber.Value));
             }
             else if (quota.Finished.Value)
             {
                 // 엔딩 (docs/09 새 루프 — 짧은 이야기, 스토리는 기획이 채운다)
-                SetText(_title, "배불리 겨울을 났다!");
-                SetText(_subtitle, $"스테이지 {quota.StagesPerRun.Value}개를 모두 넘어 가족이 굶지 않았어요 — 엔딩\n이번 런: 모은 식량 {quota.RunHaul.Value} · 상점에서 산 물건 {quota.RunBuys.Value}개"); // 요약 (고양이 108)
+                SetText(_title, Loc.T("배불리 겨울을 났다!"));
+                SetText(_subtitle, Loc.F("스테이지 {0}개를 모두 넘어 가족이 굶지 않았어요 — 엔딩\n이번 런: 모은 식량 {1} · 상점에서 산 물건 {2}개", quota.StagesPerRun.Value, quota.RunHaul.Value, quota.RunBuys.Value)); // 요약 (고양이 108)
             }
             else
             {
-                SetText(_title, $"스테이지 {quota.StageNumber.Value} 클리어!");
-                SetText(_subtitle, $"가족이 {quota.Quota.Value}만큼 먹었어요 — 남은 식량 {quota.Pantry.Value}");
+                SetText(_title, Loc.F("스테이지 {0} 클리어!", quota.StageNumber.Value));
+                SetText(_subtitle, Loc.F("가족이 {0}만큼 먹었어요 — 남은 식량 {1}", quota.Quota.Value, quota.Pantry.Value));
             }
         }
 
         private void RefreshTitle(bool returned)
         {
             SetColor(_titleBand, returned ? UiColorRole.Positive : UiColorRole.Danger);
-            SetText(_title, returned ? "무사히 이사 완료!" : "고양이 밥이 되었다...");
-            SetText(_subtitle, returned ? "전원 쥐구멍 집합 — 오늘 수확을 기지로 옮겼어요" : "전원 다운 — 이번 적립을 잃었어요 (누계는 그대로)");
+            SetText(_title, Loc.T(returned ? "무사히 이사 완료!" : "고양이 밥이 되었다..."));
+            SetText(_subtitle, Loc.T(returned ? "전원 쥐구멍 집합 — 오늘 수확을 기지로 옮겼어요" : "전원 다운 — 이번 적립을 잃었어요 (누계는 그대로)"));
         }
 
         private void RefreshHarvest(RunManager run, bool returned)
@@ -104,9 +105,9 @@ namespace RatGame.UI
             SetText(_stashedText, stashed.ToString());
             // 줄 이름표 — 벽 속은 목적지 창고 (고양이 96 말투와 같게, 프리팹 글자는 창고 맵 기준)
             var label = _stashedText.transform.parent.Find("Label");
-            if (label != null) SetText(label.GetComponent<TMP_Text>(), run.GetComponent<StageQuota>() != null ? "창고 적립" : "쥐구멍 적립");
+            if (label != null) SetText(label.GetComponent<TMP_Text>(), Loc.T(run.GetComponent<StageQuota>() != null ? "창고 적립" : "쥐구멍 적립"));
             SetText(_carriedText, returned ? carried.ToString() : "—");
-            SetText(_haulLabel, returned ? "이번 수확" : "잃은 적립");
+            SetText(_haulLabel, Loc.T(returned ? "이번 수확" : "잃은 적립"));
             SetText(_haulText, returned ? $"+{stashed + carried}" : $"-{stashed}");
             SetColor(_haulText, returned ? UiColorRole.AccentText : UiColorRole.DangerText);
             SetText(_totalText, run.RunTotalValue.Value.ToString());
@@ -133,15 +134,15 @@ namespace RatGame.UI
             }
 
             var nm = NetworkManager.Singleton;
-            string depositLabel = run.GetComponent<StageQuota>() != null ? "창고" : "쥐구멍"; // 벽 속은 목적지 창고 (고양이 96)
+            string depositLabel = Loc.T(run.GetComponent<StageQuota>() != null ? "창고" : "쥐구멍"); // 벽 속은 목적지 창고 (고양이 96)
             for (int i = 0; i < list.Count; i++)
             {
                 var c = list[i];
                 bool me = nm != null && c.ClientId == nm.LocalClientId;
                 // 이름·색은 팀 기본색 기준 (팀 상태·토스트와 같은 이름, 나간 쥐도 표시 가능)
                 // 구조 횟수는 이름 옆에 (고양이 186) — 식량을 못 모았어도 판을 살린 쥐가 보이게
-                string rescues = c.Rescues > 0 ? $" · 구조 {c.Rescues}" : "";
-                _rows[i].Show($"{PlayerVisual.ColorNameFor(c.ClientId)}{(me ? " (나)" : "")}{rescues}", PlayerVisual.ColorFor(c.ClientId),
+                string rescues = c.Rescues > 0 ? Loc.F(" · 구조 {0}", c.Rescues) : "";
+                _rows[i].Show($"{Loc.T(PlayerVisual.ColorNameFor(c.ClientId))}{(me ? Loc.T(" (나)") : "")}{rescues}", PlayerVisual.ColorFor(c.ClientId),
                               c.DepositedValue, c.DepositCount, c.CarriedValue, i == best, c.Downed && returned, returned, depositLabel);
             }
         }
@@ -160,7 +161,7 @@ namespace RatGame.UI
             {
                 var chip = Instantiate(_chipTemplate, _chipsParent);
                 var item = _database != null ? _database.GetById(id) : null;
-                chip.GetComponentInChildren<TMP_Text>().text = item != null ? item.DisplayName : id;
+                chip.GetComponentInChildren<TMP_Text>().text = item != null ? Loc.T(item.DisplayName) : id;
                 chip.SetActive(true);
                 _chips.Add(chip);
             }
@@ -170,7 +171,7 @@ namespace RatGame.UI
         private void RefreshCountdown(RunManager run, string where)
         {
             double remain = System.Math.Max(0.0, run.ResultEndsAt.Value - NetworkManager.Singleton.ServerTime.Time);
-            SetText(_countdownText, $"{System.Math.Ceiling(remain):0}초 뒤 {where}");
+            SetText(_countdownText, Loc.F("{0:0}초 뒤 {1}", System.Math.Ceiling(remain), where));
             float duration = _balance != null ? _balance.ResultScreenSeconds : 8f;
             float t = Mathf.Clamp01((float)(remain / duration));
             if (!Mathf.Approximately(_countdownFill.anchorMax.x, t)) _countdownFill.anchorMax = new Vector2(t, 1f);

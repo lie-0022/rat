@@ -1,3 +1,4 @@
+using RatGame.Core;
 using TMPro;
 using UnityEngine;
 
@@ -18,10 +19,10 @@ namespace RatGame.UI
         {
             if (_swatch.color != color) _swatch.color = color;
             SetText(_nameText, displayName);
-            SetText(_depositText, depositCount > 0 ? $"{depositLabel} {deposited} ({depositCount}개)" : $"{depositLabel} —");
+            SetText(_depositText, depositCount > 0 ? Loc.F("{0} {1} ({2}개)", depositLabel, deposited, depositCount) : $"{depositLabel} —");
             // 전멸이면 들고 온 것은 의미 없음 — 다운 표시만
             bool showCarried = returned && carried > 0;
-            SetText(_carriedText, showCarried ? $"들고 옴 {carried}" : "");
+            SetText(_carriedText, showCarried ? Loc.F("들고 옴 {0}", carried) : "");
             // 들고 온 줄이 없으면 적립 글자를 줄 가운데로 (위 절반에 떠 보이지 않게)
             var depositRect = _depositText.rectTransform;
             float bottom = showCarried ? 0.5f : 0f;

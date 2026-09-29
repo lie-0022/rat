@@ -37,13 +37,13 @@ namespace RatGame.Data
         }
 
 #if UNITY_EDITOR
-        /// <summary>에디터 도구용 — 없는 원문만 더한다. 이미 있으면 영어를 덮지 않는다(비어 있을 때만 채움).</summary>
+        /// <summary>에디터 도구용 — 원문을 더하거나 영어를 바꾼다. 빈 영어로는 덮지 않는다. 번역 원본은 도구의 목록 파일(고양이 195).</summary>
         public bool EditorAdd(string ko, string en)
         {
             var found = _entries.Find(e => e.Ko == ko);
             if (found != null)
             {
-                if (!string.IsNullOrEmpty(found.En) || string.IsNullOrEmpty(en)) return false;
+                if (string.IsNullOrEmpty(en) || found.En == en) return false;
                 found.En = en;
             }
             else _entries.Add(new Entry { Ko = ko, En = en });

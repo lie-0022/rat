@@ -21,7 +21,7 @@ namespace RatGame.EditorTools
         private const string UiPrefabFolder = "Assets/_Project/Prefabs/UI";
 
         // 스크립트가 들고 있지만 글자는 안 쓰는 것 (색·위치만 읽음) — 번역해도 된다
-        private static readonly HashSet<string> StaticRefs = new() { "ControlsHelpWidget._title", "LoadingOverlayWidget._waiting" };
+        private static readonly HashSet<string> StaticRefs = new() { "ControlsHelpWidget._title", "LoadingOverlayWidget._waiting", "ResultPanelWidget._noChipsText" };
 
         // 코드가 복제해 글자를 새로 쓰는 틀(핑 이름·알림·결과 칩) 또는 Find로 찾아 덮어쓰는 글자 — 붙이면 켜질 때 원문으로 되돌린다
         private static readonly HashSet<string> CodeTemplates = new() { "회색 쥐", "도감 등록!  계란", "계란", "쥐구멍 적립" };
@@ -39,8 +39,9 @@ namespace RatGame.EditorTools
             }
 
             int added = 0, attached = 0;
-            foreach (var kv in DummyEn)
-                if (table.EditorAdd(kv.Key, kv.Value)) added++;
+            foreach (var seed in new[] { DummyEn, DummyEn2 })
+                foreach (var kv in seed)
+                    if (table.EditorAdd(kv.Key, kv.Value)) added++;
 
             var missingEn = new List<string>();
             foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { UiPrefabFolder }))
@@ -61,7 +62,7 @@ namespace RatGame.EditorTools
                     }
                     // 중첩 프리팹(설정 패널 안의 행 등)은 그 프리팹 쪽에서 붙인다
                     if (PrefabUtility.IsPartOfPrefabInstance(text)) continue;
-                    if (table.EditorAdd(text.text, DummyEn.TryGetValue(text.text, out var en) ? en : "")) added++;
+                    if (table.EditorAdd(text.text, DummyEn.TryGetValue(text.text, out var en) || DummyEn2.TryGetValue(text.text, out en) ? en : "")) added++;
                     if (string.IsNullOrEmpty(en)) missingEn.Add($"{System.IO.Path.GetFileNameWithoutExtension(path)}/{text.name}: {text.text.Replace("\n", "\\n")}");
                     var loc = text.GetComponent<LocalizedText>();
                     if (loc != null && loc.Ko == text.text) continue;

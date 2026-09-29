@@ -164,8 +164,8 @@ namespace RatGame.EditorTools
             ["[좌클릭] 집기 — {0}"] = "[LMB] Grab — {0}",
             ["{0} — 자리 없음 ({1}/{2})"] = "{0} — no room ({1}/{2})",
             ["[좌클릭] 같이 들기 — {0} ({1}/{2})"] = "[LMB] Lift together — {0} ({1}/{2})",
-            ["창고(주황 방)"] = "the storeroom (orange room)",
-            ["쥐구멍"] = "the mousehole",
+            ["창고(주황 방)"] = "Storeroom (orange room)",
+            ["쥐구멍"] = "Mousehole",
             ["숨죽여… 고양이가 코앞"] = "Hold your breath… the cat is right there",
             ["숨는 중 · [E] 나가기 (소리 남)"] = "Hiding · [E] Leave (makes noise)",
             // 쥐 색 이름·숨을 곳·물건 이름 (데이터)

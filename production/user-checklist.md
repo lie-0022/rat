@@ -248,6 +248,7 @@
 - [ ] **U-192 E·집기 안내 영어** (3번째 루프, 기지·창고) — English 적용 뒤 기지 자판기 앞 "[E] Shop", 게시판 "[E] Change destination". 창고에서 물건을 보면 "[LMB] Grab — Cheese slice", 들면 "[LMB] Put down [Hold RMB] Throw", 장화에 숨으면 "Hiding · [E] Leave (makes noise)". 2인이면 끈끈이 동료 옆 "[E] Rescue — Blue rat (hold)".
 - [ ] **U-193 HUD 작은 표시 영어** (3번째 루프, 창고) — English 적용 뒤: 왼쪽 위 팀 상자 "Team 1/4 · Gray rat (me)", 오른쪽 아래 "Noise · quiet"→걸으면 "Noise · footsteps …m", 물건을 들면 아래 "Cheese slice / Value 14"·주머니 칸 이름도 영어. 핑(가운데 클릭)하면 "Gray rat (me) · Cheese slice 14", 고양이를 찍으면 "· Cat!". 2인이면 동료 상태 칩 "Glued!/Caught/Down".
 - [ ] **U-194 패널 영어** (3번째 루프, 기지·벽 속) — English 적용 뒤 기지 자판기 "Rat Shop": "Bigger pockets / +1 pocket slot…", 도감 "Codex 2/21"·해금한 물건 소개글 영어, 거울 "Black rat … Wear". 벽 속 상점: "Yarn ball / Throw it and cats chase it / 40 food". 로딩 화면 제목 "Off to the storeroom". 번역 문장이 어색하면 적어 주세요(임시 번역).
+- [ ] **U-195 결과 화면 영어** (3번째 루프, 창고·벽 속) — English 적용 뒤 창고에서 쥐구멍으로 귀환: "Made it home safe!", 수확 칸 "Haul / Stashed in mousehole / Carried home / This haul / Total", "Today's rats", "to base in 7s". 로딩 화면 팁이 영어. 벽 속에서 스테이지를 넘기면 "Stage 1 clear! / The family ate …".
 
 - [ ] **U-188 F1 위기 때** (3번째 루프) — F1을 누르면 맨 아래에 "위기 때" 두 줄(쓰러짐 — 몸을 쥐구멍(창고)에 넣으면 삶 / 끈끈이 — 동료가 옆에서 E 길게), 상호작용·찍찍 설명이 늘어남. 글자가 전보다 작아지지 않았는지, **4인일 때** 패널 아래가 화면 밖으로 안 나가는지.
   - 내 검증: 한글 입력 상태에서 W/A/S/D·E·Q·F·R, 창 안에 다 들어감. 사진 `production/plans/cat-176/`.

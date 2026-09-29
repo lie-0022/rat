@@ -101,7 +101,7 @@ namespace RatGame.UI
             if (_tips != null)
             {
                 _tipIndex = _tips.PickIndex(_tipIndex);
-                _tip.text = _tips.Get(_tipIndex);
+                _tip.text = Loc.T(_tips.Get(_tipIndex));
             }
             _dots.text = ".";
             _waiting.gameObject.SetActive(false);

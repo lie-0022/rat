@@ -152,6 +152,7 @@
 | 192 | E 안내·집기 안내 영어 — "[E] Shop"·"Rescue — Gray rat (hold)"·"Hide in boot", "[LMB] Grab — Cheese slice"·"Lift together"·"Throw", 숨는 중 화면, 물건 이름 24개 | U-192 |
 | 193 | HUD 작은 표시 영어 — 팀 상태 "Team 1/4 · Gray rat (me)·Glued!", 핑 이름·물건·고양이 역할, 소리/냄새 막대 "Noise · footsteps 3m", 든 물건 "Cheese slice / Value 14", 주머니 칸 | U-193 |
 | 194 | 패널 영어 — 기지 상점 업그레이드 5종 이름·설명, 도감 개수·이름·소개글 21개, 거울 스킨 이름·"Wear", 벽 속 상점 물건 4종·가격·지갑, 로딩 제목 | U-194 |
+| 195 | 결과 화면·로딩 팁 영어 — "Made it home safe! / Everyone made it to the mousehole…", 수확·쥐 줄·"to base in 7s", 벽 속 클리어·굶음·엔딩 문장, 로딩 팁 8개 | U-195 |
 | 188 | F1 안내에 "위기 때" 두 줄 + 상호작용·찍찍 설명, 글자 줄어듦 막으려 패널 세로 720 | U-188 |
 
 ---

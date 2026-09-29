@@ -8423,6 +8423,7 @@ GameObject:
   - component: {fileID: 432742791470142630}
   - component: {fileID: 3217694841800017258}
   - component: {fileID: 1467843995381376799}
+  - component: {fileID: 1734566112154828690}
   m_Layer: 0
   m_Name: NoChips
   m_TagString: Untagged
@@ -8564,6 +8565,19 @@ MonoBehaviour:
   _theme: {fileID: 11400000, guid: f7010a36b4e414134b565f67f9e6ff49, type: 2}
   _color: 9
   _text: 4
+--- !u!114 &1734566112154828690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5720655550512567814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2874a20b7a8a348b591efc3e34e13c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.UI.LocalizedText
+  _ko: "\uC774\uBC88\uC5D0 \uC0C8\uB85C \uCC44\uC6B4 \uB3C4\uAC10\uC740 \uC5C6\uC5B4\uC694"
 --- !u!1 &5762268400937792150
 GameObject:
   m_ObjectHideFlags: 0
