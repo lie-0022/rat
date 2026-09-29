@@ -51,6 +51,10 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
   (ClientNetworkTransform 위치는 호스트도 알고 있음). 클라 신뢰 불필요, RPC 절약.
 - 바닥 재질: 발밑 레이캐스트로 PhysicMaterial 태그 확인 (hardfloor ×1.5, rug ×0.5).
 
+## 발소리 소리 (고양이 247)
+
+- `Player/RatFootsteps` — 전 클라 로컬, 위치 변화만 읽어 발소리 합성음(톡)을 낸다. 발걸음 소음과 같은 규칙: 간격 footstepWalk/RunInterval, 달리기 기준 (walkSpeed+sprintSpeed)/2, 웅크림 무음. 음량·거리는 `GrayboxAudioSO`(걷기 0.12·달리기 0.35, 18m). 소리 크기 = 고양이에게 들리는 크기라는 감각을 준다.
+
 ## 고양이 연결 (07 문서와의 계약)
 
 - CatSenses가 OnNoise 구독. `Loudness ≥ hearThreshold(10)`이면 의심 게이지 가산 (거리 반비례).

@@ -52,6 +52,18 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 1f)] private float _houseLoopVolume = 0.25f;  // TV·청소기·물소리 — 켜져 있는 동안 반복
         [SerializeField, Range(0f, 1f)] private float _catBellVolume = 0.6f;     // 루틴 출발 방울
 
+        [Header("쥐 발소리 (고양이 247) — 간격·달리기 기준은 BalanceConfigSO 발걸음 값(소음과 같은 박자). 웅크리면 소리 없음")]
+        [SerializeField] private AudioClip _footstepClip;
+        [SerializeField] private float _footstepBody = 140f, _footstepSeconds = 0.09f;
+        [SerializeField, Range(0f, 1f)] private float _footstepWalkVolume = 0.12f;
+        [SerializeField, Range(0f, 1f)] private float _footstepRunVolume = 0.35f;
+        [SerializeField] private float _footstepMaxDistance = 18f;
+
+        public AudioClip FootstepClip => _footstepClip != null ? _footstepClip : Core.ToneSynth.Tap(_footstepBody, _footstepSeconds);
+        public float FootstepWalkVolume => _footstepWalkVolume;
+        public float FootstepRunVolume => _footstepRunVolume;
+        public float FootstepMaxDistance => _footstepMaxDistance;
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;

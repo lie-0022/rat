@@ -89,6 +89,14 @@ namespace RatGame.Core
             return syl * (0.6f * _low + 0.4f * voice);
         });
 
+        /// <summary>톡 — 작은 발이 바닥을 딛는 소리. 둔한 잡음 + 낮은 울림이 금방 사라진다 (고양이 247).</summary>
+        public static AudioClip Tap(float body, float seconds) => Get($"tap{body}-{seconds}", seconds, (t, u) =>
+        {
+            _low += (Noise() - _low) * 0.3f;
+            float decay = Mathf.Exp(-9f * u);
+            return decay * (0.7f * _low + 0.5f * Mathf.Sin(2f * Mathf.PI * body * t));
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }
