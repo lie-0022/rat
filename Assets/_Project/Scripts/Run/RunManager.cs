@@ -61,6 +61,7 @@ namespace RatGame.Run
             if (_returnZone == null) Log.Dev("RunManager: 쥐구멍(DepositZone)이 없어 귀환할 수 없음");
             EventBus.PlayerDowned += OnPlayerDowned;
             EventBus.RatRescued += OnRatRescued;
+            ServerAchievementsSubscribe(); // 도전과제 판정 (고양이 220)
             Noise.NoiseSystem.Rippled += OnNoiseRipple; // 큰 소음 → 모든 클라 파문 (docs/06)
             // 경계도 디렉터 — 호스트 전용 계산기라 네트워크 컴포넌트가 아니다 (design/cat-ideas/12)
             var director = GetComponent<RunDirector>();
@@ -96,6 +97,7 @@ namespace RatGame.Run
             if (!IsServer) return;
             EventBus.PlayerDowned -= OnPlayerDowned;
             EventBus.RatRescued -= OnRatRescued;
+            ServerAchievementsUnsubscribe();
             _loadGate?.Cancel();
         }
 

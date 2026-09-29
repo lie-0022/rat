@@ -144,6 +144,7 @@ namespace RatGame.Run
         {
             Log.Dev($"스테이지 안내 연출: {stage}/{stages} 식량 {quota} 특징 {flags} 오늘 {(StageModifier)modifier}"); // 2인 검증용
             EventBus.RaiseStageBriefing(stage, stages, quota, flags, modifier);
+            EventBus.RaiseAchievementStat("deepestStage", stage, true); // 깊은 쥐 — 모든 클라가 각자 (고양이 220)
         }
 
         /// <summary>호스트: 집주인 덫 놓기 (고양이 89) — 쥐 근처는 피해서. 놓은 수.</summary>

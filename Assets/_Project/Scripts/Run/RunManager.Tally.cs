@@ -50,6 +50,7 @@ namespace RatGame.Run
             ResultCarriedValue.Value = carriedValue;
             RunTotalValue.Value = RunSession.TotalValue;
             ResultEndsAt.Value = NetworkManager.ServerTime.Time + _balance.ResultScreenSeconds;
+            ServerAchievementsOnCleared(); // 결과 화면 전에 — 엔딩 여부(Finished)는 위 ServerOnCleared가 정함
             SetPhase(RunPhase.Returned);
             EventBus.RaiseZoneEnded(0, true);
             Log.Dev($"귀환: 쥐구멍 {StashedValue.Value} + 들고 온 {carriedValue} = {haul}, 누계 {RunTotalValue.Value}");
@@ -71,6 +72,7 @@ namespace RatGame.Run
         private void OnRatRescued(ulong rescuer, ulong rescued)
         {
             if (!IsServer || rescuer == rescued) return;
+            ServerAchievementRescue(rescuer); // 구급 쥐 — 끈끈이 구출·쓰러진 몸 부활 모두 (결과 화면 "구조"와 같은 기준, 고양이 220)
             int i = ContributionIndex(rescuer);
             var c = Contributions[i];
             c.Rescues++;

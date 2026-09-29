@@ -36,3 +36,11 @@
 - `Meta/AchievementService` — 정적 Instance 없는 자동 생성 DontDestroyOnLoad(docs/02 싱글톤 규칙). `EventBus.AchievementStat(키, 값, keepMax)` → 개인 세이브 `Stats`·`CompletedAchievementIds` → 목표 닿으면 `EventBus.AchievementUnlocked(id, 제목)` → 알림 "도전과제 달성! {제목}"(번역 포함). 예전에 선언만 되고 안 쓰이던 `AchievementUnlocked(id)`는 합침.
 - 확인(기지, 이벤트 직접): revives 9 → 알림 없음, +1 → "도전과제 달성! 구급 쥐"; deepestStage 4 뒤 2(keepMax) → 4 유지·"깊은 쥐"; codexCount 3 → 없음; save.json에 기록. 오류 0. 세이브는 원본으로 되돌림.
 - 다음(2단계): 8종 통계를 실제 게임 일에 연결 — 귀환/스테이지 클리어, 계란·치킨 정산, 추격 0 클리어, 부활(구조한 쥐의 클라에서), 도달 스테이지, 혼자 귀환·엔딩, 도감 수. 클라에서도 일어나야 하는 것(개인 기록)이라 어느 이벤트가 클라에서 도는지 확인하면서.
+
+## 2단계 완료 (고양이 220) — 게임 일에 연결
+- 판정은 호스트(docs/03): `RunManager.Achievements.cs` — 스테이지 동안 고양이 추격 여부(`CatBrain.ServerStateChanged`)·정산(`EventBus.LootDeposited`: 깨지지 않은 계란 수, 로스트치킨)을 지켜보고, 귀환·클리어(`RunManager.Tally` 결과 직전)에 쥐마다 `AchievementStatClientRpc`. 구조는 구한 쥐에게만(결과 화면 "구조"와 같은 기준 — 끈끈이 구출·몸 부활).
+- 각 클라에서 바로: 도달 스테이지 = 스테이지 안내 RPC(`GridZoneBuilder`), 도감 수 = `PlayerCodex` 해금 때.
+- 혼자 살아남기: 접속 1명 + (예전 루프 귀환 또는 벽 속 엔딩).
+- 확인: 통째 시험 2인(새 빌드) — **호스트·클라 모두** 첫 이사·유령 쥐·깊은 쥐·요리사의 적 달성(클라 로그 "도전과제 달성: …" 4줄), 오류 0. 구조 시험 — 구한 호스트만 revives 0→1, 구해진 클라는 안 셈.
+- 아직 실제로 못 본 것: 계란 택배(한 스테이지 계란 3개), 혼자 살아남기, 추격이 있으면 유령 쥐가 **안** 되는 쪽, 수집가(도감 15).
+- 다음(3단계): 도전과제 목록 화면(달성·진행도).
