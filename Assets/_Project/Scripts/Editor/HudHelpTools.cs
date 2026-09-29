@@ -36,7 +36,7 @@ namespace RatGame.Editor
                 var tagText = Text("Text", tag, "<b>F1</b>  조작", theme, UiColorRole.TextMuted, UiTextRole.Small);
                 Stretch(tagText.rectTransform, 12f);
 
-                var panel = Box("Panel", area, theme, new Vector2(24f, -128f), new Vector2(430f, 640f));
+                var panel = Box("Panel", area, theme, new Vector2(24f, -128f), new Vector2(430f, 720f));
                 var title = Text("Title", panel, "조작  <size=70%>(F1 닫기)</size>", theme, UiColorRole.AccentText, UiTextRole.Heading);
                 var trt = title.rectTransform;
                 trt.anchorMin = new Vector2(0f, 1f); trt.anchorMax = new Vector2(1f, 1f); trt.pivot = new Vector2(0.5f, 1f);

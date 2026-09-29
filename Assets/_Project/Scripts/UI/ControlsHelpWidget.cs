@@ -16,8 +16,8 @@ namespace RatGame.UI
         private static readonly (string action, string label)[] Rows =
         {
             ("Move", "이동"), ("Sprint", "달리기"), ("Crouch", "웅크리기"), ("Jump", "점프"),
-            ("Grab", "잡기 · 놓기"), ("Throw", "던지기 (누르고 있다 떼기)"), ("Interact", "상호작용 — 조준점 아래 [E] 안내가 뜰 때"),
-            ("Squeak", "찍찍 (소리 남 · 쓰러져도 됨 = 내 자리 알림)"), ("Ping", "핑"), ("Sniff", "킁킁 — 목적지·음식 냄새"),
+            ("Grab", "잡기 · 놓기"), ("Throw", "던지기 (누르고 있다 떼기)"), ("Interact", "상호작용 ([E] 안내가 뜨면)"),
+            ("Squeak", "찍찍 (소리 남 · 쓰러져서도 됨)"), ("Ping", "핑"), ("Sniff", "킁킁 — 목적지·음식 냄새"),
         };
 
         [SerializeField] private InputActionAsset _inputAsset;
@@ -82,8 +82,8 @@ namespace RatGame.UI
             sb.Append("빨간 표시 — 위기인 동료(구해질 때까지)\n");
             // 위기 때 — 쓰러짐·끈끈이에서 돌아오는 길 (고양이 188, 181~187 흐름)
             sb.Append('\n').Append("<color=").Append(key).Append(">위기 때</color>\n");
-            sb.Append("쓰러지면 — 동료가 몸을 쥐구멍(벽 속은 창고)으로 끌고 가면 살아남\n");
-            sb.Append("끈끈이 — 동료가 옆에서 E 길게 · 결과 화면에 \"구조\"로 남음\n");
+            sb.Append("쓰러짐 — 동료가 몸을 쥐구멍(창고)에 넣으면 삶\n");
+            sb.Append("끈끈이 — 동료가 옆에서 E 길게\n");
             if (Debug.isDebugBuild) sb.Append("<color=#9a9a9a>F3  고양이 정보 · F4  확인 메뉴 (개발용)</color>");
             return sb.ToString();
         }
