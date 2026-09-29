@@ -222,7 +222,7 @@ namespace RatGame.Net
                 _steam?.LeaveLobby(); // 참가 실패 — 들어갔던 로비에서도 나온다
                 return;
             }
-            _exitReason = "호스트와 연결이 끊겨 메인 메뉴로 돌아왔어요.";
+            _exitReason = Loc.T("호스트와 연결이 끊겨 메인 메뉴로 돌아왔어요.");
             Shutdown();
         }
 

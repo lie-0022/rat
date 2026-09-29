@@ -60,9 +60,16 @@ namespace RatGame.World
             var counts = new System.Collections.Generic.Dictionary<string, int>();
             foreach (var id in RunSession.PendingItems) counts[id] = (counts.TryGetValue(id, out int c) ? c : 0) + 1;
             var parts = new System.Collections.Generic.List<string>();
-            foreach (var kv in counts) parts.Add(_shop.TryGet(kv.Key, out var e) ? $"{e.DisplayName} ×{kv.Value}" : kv.Key);
-            string s = string.Join(", ", parts);
-            return s.Length > 60 ? s.Substring(0, 60) : s; // FixedString128 (UTF-8 한글 3바이트)
+            foreach (var kv in counts) parts.Add(_shop.TryGet(kv.Key, out var e) ? Loc.Pack("{0} ×{1}", e.DisplayName, kv.Value) : kv.Key);
+            // 클라가 자기 언어로 푼다 (Loc.Unpack). FixedString128 — UTF-8 한글 3바이트라 넘치기 전에 목록을 끊는다
+            var sb = new System.Text.StringBuilder();
+            foreach (var part in parts)
+            {
+                if (System.Text.Encoding.UTF8.GetByteCount(sb.ToString() + part) > 120) break;
+                if (sb.Length > 0) sb.Append(Loc.RecordSep);
+                sb.Append(part);
+            }
+            return sb.ToString();
         }
 
         public void ServerInteract(ulong clientId) =>
@@ -82,19 +89,20 @@ namespace RatGame.World
             var reply = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { buyer } } };
             var run = RunManager.Instance;
             var quota = run != null ? run.GetComponent<StageQuota>() : null;
-            if (quota == null || _shop == null || index < 0 || index >= _shop.Entries.Length) { ResultClientRpc(false, "살 수 없어요", reply); return; }
-            if (run.Phase.Value != RunPhase.StageActive) { ResultClientRpc(false, "지금은 살 수 없어요", reply); return; }
+            if (quota == null || _shop == null || index < 0 || index >= _shop.Entries.Length) { ResultClientRpc(false, Loc.Pack("살 수 없어요"), reply); return; }
+            if (run.Phase.Value != RunPhase.StageActive) { ResultClientRpc(false, Loc.Pack("지금은 살 수 없어요"), reply); return; }
             var entry = _shop.Entries[index];
             if (!quota.ServerTrySpend(run, entry.Price, out string reason)) { ResultClientRpc(false, reason, reply); return; }
             quota.ServerCountBuy(); // 엔딩 요약 (고양이 108)
             RunSession.PendingItems.Add(entry.Id);
             Log.Dev($"상점: client {buyer}가 {entry.DisplayName}({entry.Price}) — 남은 식량 {RunSession.Pantry}, 창고 {run.StashedValue.Value}, 택배 {RunSession.PendingItems.Count}");
-            ResultClientRpc(true, $"{entry.DisplayName} 샀어요 — 다음 맵 출발방에", reply);
+            ResultClientRpc(true, Loc.Pack("{0} 샀어요 — 다음 맵 출발방에", entry.DisplayName), reply);
         }
 
         [ClientRpc]
         private void ResultClientRpc(bool ok, string message, ClientRpcParams rpcParams = default)
         {
+            message = Loc.Unpack(message); // 호스트가 묶어 보낸 틀·값을 내 언어로 (고양이 202)
             Log.Dev($"상점 결과 연출: {(ok ? "성공" : "실패")} — {message}"); // 2인 검증용
             EventBus.RaiseShopPurchaseResult(ok, message);
         }

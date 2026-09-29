@@ -90,8 +90,8 @@ namespace RatGame.EditorTools
             Debug.Log($"[Rat] 메뉴 번역 준비: 표 {table.Entries.Count}줄(새 {added}, 영어 빈 칸 {missing}, 자리 불일치 {badSlots}, 코드 원문 누락 {codeMissing}) · LocalizedText 새로 {attached}개");
         }
 
-        // 코드의 Loc.T/F("…") 한 줄 안 한국어 문자열(삼항 양쪽 포함)이 표에 있는지 — 빠뜨리면 영어 화면에 한국어가 남는다 (고양이 196)
-        private static readonly Regex LocCall = new(@"Loc\.[TF]\(([^;\n]*)");
+        // 코드의 Loc.T/F/Pack("…") 한 줄 안 한국어 문자열(삼항 양쪽 포함)이 표에 있는지 — 빠뜨리면 영어 화면에 한국어가 남는다 (고양이 196)
+        private static readonly Regex LocCall = new(@"Loc\.(?:T|F|Pack)\(([^;\n]*)");
         private static readonly Regex Literal = new(@"""((?:[^""\\]|\\.)*)""");
 
         private static int CheckCodeLiterals(LocalizationTableSO table)

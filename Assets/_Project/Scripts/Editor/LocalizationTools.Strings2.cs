@@ -130,6 +130,21 @@ namespace RatGame.EditorTools
             ["고양이 기능 모음 — 한 판"] = "All the cat features — one round",
             ["무작위 부엌 — 한 판"] = "Random kitchen — one round",
             ["새 루프 · 5스테이지 · 식량 할당량 · 목적지 상점 · 엔딩"] = "New loop · 5 stages · food quota · destination shop · ending",
+            // 호스트가 묶어 보내는 문장 — Loc.Pack/Unpack (고양이 202)
+            ["{0} ×{1}"] = "{0} ×{1}",
+            ["살 수 없어요"] = "Can't buy that",
+            ["지금은 살 수 없어요"] = "Can't buy right now",
+            ["{0} 샀어요 — 다음 맵 출발방에"] = "Bought {0} — waiting in the next map's start room",
+            ["마지막 스테이지 — 다음 맵이 없어요"] = "Last stage — there's no next map",
+            ["식량 부족 ({0} 필요)"] = "Not enough food ({0} needed)",
+            ["없는 항목"] = "No such item",
+            ["최대 레벨"] = "Max level",
+            ["누계 부족 ({0} 필요)"] = "Not enough total ({0} needed)",
+            ["{0} Lv{1}"] = "{0} Lv{1}",
+            ["정원 초과 (최대 4명)"] = "Room is full (max 4)",
+            ["게임 진행 중에는 참가할 수 없음 (로비에서만 합류)"] = "Can't join mid-game (join from the base)",
+            ["다음 맵으로 이동 중 — 기지로 돌아오면 참가할 수 있어요"] = "Moving to the next map — you can join once they're back at base",
+            ["호스트와 연결이 끊겨 메인 메뉴로 돌아왔어요."] = "Lost connection to the host — back at the main menu.",
         };
     }
 }

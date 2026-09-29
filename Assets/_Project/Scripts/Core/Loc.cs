@@ -42,6 +42,35 @@ namespace RatGame.Core
             catch (FormatException) { return string.Format(koFormat, args); } // 번역 틀이 잘못돼도 한국어로는 보이게
         }
 
+        // 호스트가 만든 문장 (고양이 202) — 호스트 언어로 완성해 보내면 클라가 번역을 못 한다.
+        // 한국어 틀과 값을 구분 문자로 묶어 보내고, 받는 쪽이 자기 언어로 푼다. 여러 문장은 RecordSep로 잇는다(목록).
+        public const char ArgSep = '\u001F', RecordSep = '\u001E';
+
+        public static string Pack(string koFormat, params object[] args) =>
+            args.Length == 0 ? koFormat : koFormat + ArgSep + string.Join(ArgSep.ToString(), args);
+
+        /// <summary>Pack한 글자(또는 그냥 한국어)를 지금 언어로. 값도 한국어 원문이면 번역(물건 이름 등), 숫자는 그대로.</summary>
+        public static string Unpack(string packed)
+        {
+            if (string.IsNullOrEmpty(packed)) return packed;
+            if (packed.IndexOf(RecordSep) >= 0)
+            {
+                var records = packed.Split(RecordSep);
+                for (int i = 0; i < records.Length; i++) records[i] = UnpackOne(records[i]);
+                return string.Join(", ", records);
+            }
+            return UnpackOne(packed);
+        }
+
+        private static string UnpackOne(string s)
+        {
+            var parts = s.Split(ArgSep);
+            if (parts.Length == 1) return T(s);
+            var args = new object[parts.Length - 1];
+            for (int i = 1; i < parts.Length; i++) args[i - 1] = T(parts[i]);
+            return F(parts[0], args);
+        }
+
         private static LocalizationTableSO Table
         {
             get

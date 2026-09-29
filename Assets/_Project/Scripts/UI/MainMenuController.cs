@@ -134,7 +134,7 @@ namespace RatGame.UI
             var nm = NetworkManager.Singleton;
             if (!_joining || nm == null || (clientId != nm.LocalClientId && clientId != 0)) return;
             // 승인 거절(정원 초과 등)은 우리가 쓴 사유 그대로, 트랜스포트 내부 사유("[Disconnect Event]…")는 읽을 수 있는 문구로
-            string reason = nm.DisconnectReason;
+            string reason = Loc.T(nm.DisconnectReason); // 호스트가 보낸 고정 한국어 사유 (고양이 202)
             if (string.IsNullOrEmpty(reason) || reason.StartsWith("["))
                 reason = Loc.T("호스트를 찾지 못했어요. 친구가 방을 열었는지 확인하세요.");
             FailJoin(reason);

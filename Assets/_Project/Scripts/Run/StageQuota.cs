@@ -81,9 +81,9 @@ namespace RatGame.Run
         public bool ServerTrySpend(RunManager run, int price, out string reason)
         {
             reason = null;
-            if (Finished.Value || StageNumber.Value >= StagesPerRun.Value) { reason = "마지막 스테이지 — 다음 맵이 없어요"; return false; }
+            if (Finished.Value || StageNumber.Value >= StagesPerRun.Value) { reason = Loc.Pack("마지막 스테이지 — 다음 맵이 없어요"); return false; }
             int wallet = Wallet(run.StashedValue.Value);
-            if (wallet < price) { reason = $"식량 부족 ({price} 필요)"; return false; }
+            if (wallet < price) { reason = Loc.Pack("식량 부족 ({0} 필요)", price); return false; }
             int fromPantry = Mathf.Min(RunSession.Pantry, price);
             RunSession.Pantry -= fromPantry;
             Pantry.Value = RunSession.Pantry;

@@ -68,26 +68,26 @@ namespace RatGame.World
         {
             ulong buyer = rpcParams.Receive.SenderClientId;
             var reply = new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new[] { buyer } } };
-            if (index < 0 || index >= _upgrades.Length) { PurchaseResultClientRpc(false, "없는 항목", reply); return; }
+            if (index < 0 || index >= _upgrades.Length) { PurchaseResultClientRpc(false, Loc.Pack("없는 항목"), reply); return; }
 
             var so = _upgrades[index];
             int level = MetaUpgrades.GetLevel(so.Effect);
-            if (level >= so.MaxLevel) { PurchaseResultClientRpc(false, "최대 레벨", reply); return; }
+            if (level >= so.MaxLevel) { PurchaseResultClientRpc(false, Loc.Pack("최대 레벨"), reply); return; }
 
             int price = so.PriceForLevel(level + 1);
-            if (SaveService.Data.HaulTotal < price) { PurchaseResultClientRpc(false, $"누계 부족 ({price} 필요)", reply); return; }
+            if (SaveService.Data.HaulTotal < price) { PurchaseResultClientRpc(false, Loc.Pack("누계 부족 ({0} 필요)", price), reply); return; }
 
             SaveService.Data.HaulTotal -= price;
             MetaUpgrades.SetLevel(so.Effect, level + 1); // 누계 차감까지 같이 저장
             PlayerUpgrades.ServerApplyToAll(MetaUpgrades.Levels);
             Log.Dev($"구매: client {buyer} {so.DisplayName} Lv{level + 1} (-{price}, 누계 {SaveService.Data.HaulTotal})");
-            PurchaseResultClientRpc(true, $"{so.DisplayName} Lv{level + 1}", reply);
+            PurchaseResultClientRpc(true, Loc.Pack("{0} Lv{1}", so.DisplayName, level + 1), reply);
         }
 
         [ClientRpc]
         private void PurchaseResultClientRpc(bool ok, string message, ClientRpcParams rpcParams = default)
         {
-            EventBus.RaiseShopPurchaseResult(ok, message);
+            EventBus.RaiseShopPurchaseResult(ok, Loc.Unpack(message)); // 호스트가 묶어 보낸 틀·값을 내 언어로 (고양이 202)
         }
     }
 }

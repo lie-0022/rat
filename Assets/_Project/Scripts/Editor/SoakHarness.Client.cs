@@ -26,6 +26,14 @@ namespace RatGame.EditorTools
             Arm(false);
         }
 
+        // 2인 + 영어 — 호스트가 묶어 보낸 문장(상점 결과 등)을 클라가 영어로 푸는지 (고양이 202). 클라는 같은 settings.json을 읽어 영어로 뜬다
+        [MenuItem("Tools/RatGame/Test/Full Run Soak (Walls, 2P build client, English)")]
+        private static void ArmTwoPlayerEnglish()
+        {
+            SessionState.SetBool(TwoPlayerKey, true);
+            Arm(true);
+        }
+
         private static void BeginClient()
         {
             _twoPlayer = SessionState.GetBool(TwoPlayerKey, false);

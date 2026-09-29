@@ -73,7 +73,7 @@ namespace RatGame.UI
             int wallet = _counter.Wallet.Value;
             bool closed = _counter.Closed.Value;
             SetText(_walletText, closed ? Loc.T("마지막 스테이지 — 다음 맵이 없어서 팔지 않아요") : Loc.F("쓸 수 있는 식량 {0}  (남은 식량 + 할당량 넘은 만큼)", wallet));
-            string pending = _counter.PendingText.Value.ToString();
+            string pending = Loc.Unpack(_counter.PendingText.Value.ToString()); // 호스트가 묶어 보낸 목록 (고양이 202)
             SetText(_pendingText, pending.Length == 0 ? Loc.T("다음 맵에서 받을 것: 없음") : Loc.F("다음 맵 출발방에서 받을 것: {0}", pending));
             var entries = _counter.Shop.Entries;
             for (int i = 0; i < _rows.Count && i < entries.Length; i++) _rows[i].Refresh(!closed && wallet >= entries[i].Price);
