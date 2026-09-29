@@ -145,6 +145,24 @@ namespace RatGame.EditorTools
             ["게임 진행 중에는 참가할 수 없음 (로비에서만 합류)"] = "Can't join mid-game (join from the base)",
             ["다음 맵으로 이동 중 — 기지로 돌아오면 참가할 수 있어요"] = "Moving to the next map — you can join once they're back at base",
             ["호스트와 연결이 끊겨 메인 메뉴로 돌아왔어요."] = "Lost connection to the host — back at the main menu.",
+            // 도전과제 (고양이 219)
+            ["도전과제 달성!  {0}"] = "Achievement!  {0}",
+            ["첫 이사"] = "First Move",
+            ["귀환하거나 벽 속 스테이지를 하나 넘기기"] = "Make it home, or clear one stage inside the walls",
+            ["계란 택배"] = "Egg Courier",
+            ["한 판에 계란 3개를 깨지 않고 가져오기"] = "Bring home 3 unbroken eggs in one run",
+            ["유령 쥐"] = "Ghost Rat",
+            ["고양이에게 한 번도 쫓기지 않고 귀환하거나 스테이지 넘기기"] = "Get home or clear a stage without ever being chased",
+            ["구급 쥐"] = "Medic Rat",
+            ["쓰러진 동료를 10번 살리기"] = "Revive downed teammates 10 times",
+            ["깊은 쥐"] = "Deep Rat",
+            ["벽 속 스테이지 4에 닿기"] = "Reach stage 4 inside the walls",
+            ["요리사의 적"] = "Chef's Nemesis",
+            ["로스트치킨을 가져오기"] = "Bring home a roast chicken",
+            ["혼자 살아남기"] = "Lone Survivor",
+            ["혼자 연 방에서 귀환하거나 엔딩 보기"] = "Get home or see the ending in a solo room",
+            ["수집가"] = "Collector",
+            ["도감 15종 채우기"] = "Fill 15 codex entries",
         };
     }
 }

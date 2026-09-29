@@ -46,9 +46,11 @@ namespace RatGame.Core
 
         // Meta
         public static event Action<int> CheeseCoinChanged;
-        public static event Action<string /*achievementId*/> AchievementUnlocked;
         /// <summary>내 도감에 새 아이템 등록 (소유 클라 로컬 — 토스트용).</summary>
         public static event Action<string /*itemId*/> CodexUnlocked;
+        /// <summary>도전과제 통계 (docs/11, 고양이 219) — 내 클라에서 일어난 일만 올린다. keepMax면 더하지 않고 최댓값으로(도달 스테이지·도감 수).</summary>
+        public static event Action<string /*statKey*/, int /*value*/, bool /*keepMax*/> AchievementStat;
+        public static event Action<string /*id*/, string /*title*/> AchievementUnlocked;
         /// <summary>집주인 이벤트 알림 (각 클라 로컬 — RunManager.HouseEventClientRpc가 발행, 2026-09-24).</summary>
         public static event Action<HouseEventKind, HouseEventPhase> HouseEvent;
         /// <summary>고양이가 루틴 스팟으로 출발 (각 클라 로컬 — CatBrain.CatCueClientRpc가 발행).</summary>
@@ -89,8 +91,9 @@ namespace RatGame.Core
         public static void RaiseLootDeposited(LootItemSO item, int value) => LootDeposited?.Invoke(item, value);
         public static void RaiseLootBroken(LootItemSO item) => LootBroken?.Invoke(item);
         public static void RaiseCheeseCoinChanged(int total) => CheeseCoinChanged?.Invoke(total);
-        public static void RaiseAchievementUnlocked(string achievementId) => AchievementUnlocked?.Invoke(achievementId);
         public static void RaiseCodexUnlocked(string itemId) => CodexUnlocked?.Invoke(itemId);
+        public static void RaiseAchievementStat(string statKey, int value, bool keepMax = false) => AchievementStat?.Invoke(statKey, value, keepMax);
+        public static void RaiseAchievementUnlocked(string id, string title) => AchievementUnlocked?.Invoke(id, title);
         public static void RaiseHouseEvent(HouseEventKind kind, HouseEventPhase phase) => HouseEvent?.Invoke(kind, phase);
         public static void RaiseNoiseRipple(UnityEngine.Vector3 pos, float loudness) => NoiseRipple?.Invoke(pos, loudness);
         public static void RaiseScentLeft(float strength) => ScentLeft?.Invoke(strength);

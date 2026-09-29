@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1099bff7a5c6489184592f6eaedcf55, type: 3}
+  m_Name: ach_collector
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.AchievementSO
+  Id: ach_collector
+  Title: "\uC218\uC9D1\uAC00"
+  Desc: "\uB3C4\uAC10 15\uC885 \uCC44\uC6B0\uAE30"
+  StatKey: codexCount
+  Target: 15
+  RewardSkin: {fileID: 0}

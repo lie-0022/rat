@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1099bff7a5c6489184592f6eaedcf55, type: 3}
+  m_Name: ach_egg_courier
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.AchievementSO
+  Id: ach_egg_courier
+  Title: "\uACC4\uB780 \uD0DD\uBC30"
+  Desc: "\uD55C \uD310\uC5D0 \uACC4\uB780 3\uAC1C\uB97C \uAE68\uC9C0 \uC54A\uACE0
+    \uAC00\uC838\uC624\uAE30"
+  StatKey: eggsInOneRun
+  Target: 3
+  RewardSkin: {fileID: 0}

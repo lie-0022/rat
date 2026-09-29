@@ -41,8 +41,8 @@ namespace RatGame.UI
         private float _nextPoll;
 
         private void Awake() => _toastTemplate.SetActive(false);
-        private void OnEnable() { EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; EventBus.TrapBait += OnTrapBait; EventBus.TrapBaitNear += OnTrapBaitNear; EventBus.CatBelled += OnCatBelled; EventBus.RatSqueak += OnRatSqueak; EventBus.SniffCooldown += OnSniffCooldown; }
-        private void OnDisable() { EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; EventBus.TrapBait -= OnTrapBait; EventBus.TrapBaitNear -= OnTrapBaitNear; EventBus.CatBelled -= OnCatBelled; EventBus.RatSqueak -= OnRatSqueak; EventBus.SniffCooldown -= OnSniffCooldown; }
+        private void OnEnable() { EventBus.AchievementUnlocked += OnAchievementUnlocked; EventBus.CodexUnlocked += OnCodexUnlocked; EventBus.HouseEvent += OnHouseEvent; EventBus.CatCue += OnCatCue; EventBus.CheeseEaten += OnCheeseEaten; EventBus.StageBriefing += OnStageBriefing; EventBus.TrapBait += OnTrapBait; EventBus.TrapBaitNear += OnTrapBaitNear; EventBus.CatBelled += OnCatBelled; EventBus.RatSqueak += OnRatSqueak; EventBus.SniffCooldown += OnSniffCooldown; }
+        private void OnDisable() { EventBus.AchievementUnlocked -= OnAchievementUnlocked; EventBus.CodexUnlocked -= OnCodexUnlocked; EventBus.HouseEvent -= OnHouseEvent; EventBus.CatCue -= OnCatCue; EventBus.CheeseEaten -= OnCheeseEaten; EventBus.StageBriefing -= OnStageBriefing; EventBus.TrapBait -= OnTrapBait; EventBus.TrapBaitNear -= OnTrapBaitNear; EventBus.CatBelled -= OnCatBelled; EventBus.RatSqueak -= OnRatSqueak; EventBus.SniffCooldown -= OnSniffCooldown; }
 
         private const int OneLineMaxChars = 40;
         private const float BriefingSeconds = 6f; // 읽을 게 많아서 평소 토스트보다 길게
@@ -116,6 +116,9 @@ namespace RatGame.UI
             Log.Dev($"집주인 알림: {text}");
             Show(Loc.T(text), phase == HouseEventPhase.Start ? UiColorRole.Positive : UiColorRole.Warning);
         }
+
+        // 도전과제 달성 (docs/11, 고양이 219) — 제목은 한국어 원문으로 와서 여기서 번역
+        private void OnAchievementUnlocked(string id, string title) => Show(Loc.F("도전과제 달성!  {0}", Loc.T(title)), UiColorRole.Accent);
 
         private void OnCodexUnlocked(string itemId)
         {

@@ -22,6 +22,16 @@ namespace RatGame.Core
         public int Endings;
         /// <summary>개인: 도감 해금 아이템 Id (첫 정산 시 호스트 ClientRpc → 각자 저장, docs/08).</summary>
         public System.Collections.Generic.List<string> UnlockedCodexIds = new();
+        /// <summary>개인: 도전과제 통계(키 → 값)와 달성한 도전과제 Id (docs/11, 고양이 219). JsonUtility는 사전을 못 써서 목록.</summary>
+        public System.Collections.Generic.List<StatEntry> Stats = new();
+        public System.Collections.Generic.List<string> CompletedAchievementIds = new();
+    }
+
+    [System.Serializable]
+    public class StatEntry
+    {
+        public string Key;
+        public int Value;
     }
 
     /// <summary>

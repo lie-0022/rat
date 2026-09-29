@@ -30,3 +30,9 @@
 
 ## 판단 부탁 14로 올릴 것
 - 보상 스킨을 잠글지(지금 전부 해금), 모자 7종(아트 필요), ach_rich를 누계 1000으로, ach_troll은 뺄지.
+
+## 1단계 완료 (고양이 219)
+- `Data/AchievementSO`(docs/11 그대로), 에셋 8종 `Resources/Achievements/`(도구 `Tools/RatGame/Meta/Create Achievements` — 위 표의 "새 루프에 맞춘 안"), 보상 스킨은 연결만(잠금 없음).
+- `Meta/AchievementService` — 정적 Instance 없는 자동 생성 DontDestroyOnLoad(docs/02 싱글톤 규칙). `EventBus.AchievementStat(키, 값, keepMax)` → 개인 세이브 `Stats`·`CompletedAchievementIds` → 목표 닿으면 `EventBus.AchievementUnlocked(id, 제목)` → 알림 "도전과제 달성! {제목}"(번역 포함). 예전에 선언만 되고 안 쓰이던 `AchievementUnlocked(id)`는 합침.
+- 확인(기지, 이벤트 직접): revives 9 → 알림 없음, +1 → "도전과제 달성! 구급 쥐"; deepestStage 4 뒤 2(keepMax) → 4 유지·"깊은 쥐"; codexCount 3 → 없음; save.json에 기록. 오류 0. 세이브는 원본으로 되돌림.
+- 다음(2단계): 8종 통계를 실제 게임 일에 연결 — 귀환/스테이지 클리어, 계란·치킨 정산, 추격 0 클리어, 부활(구조한 쥐의 클라에서), 도달 스테이지, 혼자 귀환·엔딩, 도감 수. 클라에서도 일어나야 하는 것(개인 기록)이라 어느 이벤트가 클라에서 도는지 확인하면서.

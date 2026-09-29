@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1099bff7a5c6489184592f6eaedcf55, type: 3}
+  m_Name: ach_ghost
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Data.AchievementSO
+  Id: ach_ghost
+  Title: "\uC720\uB839 \uC950"
+  Desc: "\uACE0\uC591\uC774\uC5D0\uAC8C \uD55C \uBC88\uB3C4 \uCAD3\uAE30\uC9C0 \uC54A\uACE0
+    \uADC0\uD658\uD558\uAC70\uB098 \uC2A4\uD14C\uC774\uC9C0 \uB118\uAE30\uAE30"
+  StatKey: ghostClears
+  Target: 1
+  RewardSkin: {fileID: 0}
