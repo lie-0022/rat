@@ -14,7 +14,7 @@ namespace RatGame.Net
     /// 기본값: 빌드=Steam, 에디터=Unity(메뉴 Tools/RatGame/Net/Use Steam In Editor로 켬). 커맨드라인 -unitytransport로 Unity 강제.
     /// Steam 초기화가 실패하면 Unity 로컬 모드로 계속한다.
     /// </summary>
-    public class NetworkLauncher : MonoBehaviour
+    public partial class NetworkLauncher : MonoBehaviour
     {
         public static NetworkLauncher Instance { get; private set; }
 
@@ -271,33 +271,6 @@ namespace RatGame.Net
             return false;
         }
 
-        // ConnectionApproval (docs/03): 최대 4명, 게임 진행 중(midgame) 참가 거부. 스폰은 NetPlayerSpawner 수동.
-        private void ApproveConnection(NetworkManager.ConnectionApprovalRequest request,
-                                       NetworkManager.ConnectionApprovalResponse response)
-        {
-            response.CreatePlayerObject = false;
-
-            if (NetworkManager.Singleton.ConnectedClientsIds.Count >= MaxPlayers)
-            {
-                response.Approved = false;
-                response.Reason = "정원 초과 (최대 4명)";
-                return;
-            }
-            if (GameStateMachine.Instance.Current == GameState.InRun)
-            {
-                response.Approved = false;
-                response.Reason = "게임 진행 중에는 참가할 수 없음 (로비에서만 합류)";
-                return;
-            }
-            // 다음 맵을 불러오는 동안(스테이지 사이·발판 출발 직후)은 상태가 잠깐 Lobby라 위 검사를 지나친다 —
-            // 그때 들어오면 맵 불러오기와 겹쳐 물체 동기화가 10초 넘게 밀려 접속이 실패했다 (고양이 142)
-            if (Run.RunSession.DepartPending)
-            {
-                response.Approved = false;
-                response.Reason = "다음 맵으로 이동 중 — 기지로 돌아오면 참가할 수 있어요";
-                return;
-            }
-            response.Approved = true;
-        }
+        // 접속 승인 → NetworkLauncher.Approval.cs (고양이 228)
     }
 }
