@@ -58,7 +58,7 @@ public struct NoiseEvent { public Vector3 Pos; public float Loudness; public Noi
 
 ## 수용 기준 (W4)
 
-- [ ] 회색 박스 씬에서 소음 반경 기즈모 시각화 (에디터 전용) — 코드 있음(`PlayerNoiseEmitter.OnDrawGizmos`, 최근 1.2s 소음 반경 와이어 구). Scene 뷰 눈 확인은 사람이.
+- [x] 회색 박스 씬에서 소음 반경 기즈모 시각화 (에디터 전용) — 코드 있음(`PlayerNoiseEmitter.OnDrawGizmos`, 최근 1.2s 소음 반경 와이어 구). (2026-09-30 고양이 208: 기지에서 0.3초마다 소리 40·22를 내고 Scene 뷰를 캡처 — 주황 와이어 구 두 개(반지름 = RadiusFor), 소리를 멈추고 나면 사라짐. `Captures/cat208_noise_gizmo.png`·`_after.png`)
 - [x] 달리기 vs 웅크림으로 고양이 반응 차이 재현 (2026-09-24 고양이 44: 웅크림 게이지 0 / 달리기 1.4s에 의심)
 - [x] 유리병 낙하 → 파문 이펙트 → 리스너 로그까지 전 체인 동작 (고양이 45: 유리병 대신 접시(깨짐 60) → 파문 1회·고리 표시·고양이 Suspicious, 발소리 22는 파문 0. 2인 클라 파문 로그)
 - [x] 벽 뒤 소음 감쇠 확인 (고양이 45: 40 → 창고방 벽 너머 24, 열린 문 40, 닫힌 문 24)
