@@ -173,7 +173,7 @@ namespace RatGame.EditorTools
                 if (best != null)
                 {
                     var body = best.GetComponent<Rigidbody>();
-                    if (body != null) { body.position = into; body.linearVelocity = Vector3.zero; }
+                    if (body != null) { body.position = into; if (!body.isKinematic) body.linearVelocity = Vector3.zero; }
                     best.transform.position = into;
                     _itemsMoved++;
                 }
@@ -217,7 +217,7 @@ namespace RatGame.EditorTools
             var player = nm != null && nm.LocalClient != null ? nm.LocalClient.PlayerObject : null;
             if (player == null) return;
             var body = player.GetComponent<Rigidbody>();
-            if (body != null) { body.position = pos; body.linearVelocity = Vector3.zero; }
+            if (body != null) { body.position = pos; if (!body.isKinematic) body.linearVelocity = Vector3.zero; } // 잡힘·숨음이면 키네마틱 — 속도를 넣으면 오류
             player.transform.position = pos;
         }
 
