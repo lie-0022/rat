@@ -26,6 +26,8 @@ namespace RatGame.EditorTools
                 {
                     OnDone = BackupSave("전리품 전부 정산");
                     Report.Append($" | 시작 도감 {SaveService.Data.UnlockedCodexIds.Count}종");
+                    // 정산 중 고양이가 혼자인 쥐를 잡으면 전멸 → 런이 끝나 나머지가 안 들어간다(첫 실패 8/21, 고양이 249) — 이 시험은 고양이를 멈춘다
+                    foreach (var cat in Object.FindObjectsByType<RatGame.AI.CatBrain>(FindObjectsSortMode.None)) cat.enabled = false;
                 } },
             };
             var db = AssetDatabase.LoadAssetAtPath<ItemDatabase>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("t:ItemDatabase")[0]));

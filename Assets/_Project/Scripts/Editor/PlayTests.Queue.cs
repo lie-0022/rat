@@ -25,8 +25,6 @@ namespace RatGame.EditorTools
             SessionState.SetString(ResultsKey, "");
             Debug.Log($"[Rat] 시험 묶음 시작: {keys}");
             ContinueQueue();
-            // 시작은 편집 모드 한가운데라 바로 켜도 된다 — 에디터가 뒤에 있으면 delayCall이 한참 안 불린다 (고양이 248)
-            EditorApplication.isPlaying = true;
         }
 
         // 편집 모드로 돌아올 때마다 — 남은 게 있으면 다음 시험을 건다
@@ -38,8 +36,8 @@ namespace RatGame.EditorTools
             string next = comma < 0 ? queue : queue.Substring(0, comma);
             SessionState.SetString(QueueKey, comma < 0 ? "" : queue.Substring(comma + 1));
             SessionState.SetString(ArmedKey, next);
-            EditorApplication.delayCall += () => EditorApplication.isPlaying = true;
-            EditorApplication.QueuePlayerLoopUpdate(); // 에디터가 뒤에 있으면 delayCall이 안 불릴 때가 있다 — 한 번 깨움 (고양이 239)
+            // 바로 켠다 — 에디터가 뒤에 있으면 편집 모드에선 delayCall·update가 몇 분씩 안 불려 묶음이 멈췄다(고양이 239·248·249)
+            EditorApplication.isPlaying = true;
         }
 
         // 시험 하나가 끝나면 결과를 적고 플레이를 멈춘다(멈추면 ContinueQueue). 묶음이 아니면 아무것도 안 함
