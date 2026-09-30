@@ -100,6 +100,7 @@ namespace RatGame.EditorTools
             _steps.AddRange(body);
             _index = 0; _fails = 0; _skip = null; Report.Clear();
             DevPort.Choose(); // 7777이 새어 막혔으면 7778 (고양이 262)
+            RatGame.Meta.PlayLog.PathOverride = System.IO.Path.GetFullPath("Temp/playlog-test.csv"); // 사용자 플레이 기록에 안 보태게 (고양이 330)
             BackupSave(name); // 모든 시험이 세이브를 떠 두고 플레이를 멈춘 뒤 되돌린다 — 새 시험이 빠뜨려도 (고양이 297, 296에서 한 번 빠뜨림)
             _stepAt = _startAt = EditorApplication.timeSinceStartup;
             EditorApplication.update -= Tick;

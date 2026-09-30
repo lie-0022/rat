@@ -103,5 +103,18 @@ namespace RatGame.Tests
             Assert.AreEqual("en", RatGame.Core.SettingsService.DefaultLanguageFor(SystemLanguage.Japanese));
             Assert.AreEqual("en", RatGame.Core.SettingsService.DefaultLanguageFor(SystemLanguage.Unknown));
         }
+
+        [Test]
+        public void 플레이_기록_한_줄_형식() // 엑셀로 여는 CSV — 칸 순서·소수점(문화권 무관)·결과 낱말 (고양이 330)
+        {
+            var saved = System.Threading.Thread.CurrentThread.CurrentCulture;
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("de-DE"); // 쉼표 소수점 문화권에서도
+            try
+            {
+                string row = RatGame.Meta.PlayLog.Row(new System.DateTime(2026, 10, 1, 9, 5, 3), 3, 300, 470, 40, "클리어", 187.6f, 2, 1, "Blackout", 12345);
+                Assert.AreEqual("2026-10-01 09:05:03,3,300,470,40,클리어,188,2,1,Blackout,12345", row);
+            }
+            finally { System.Threading.Thread.CurrentThread.CurrentCulture = saved; }
+        }
     }
 }

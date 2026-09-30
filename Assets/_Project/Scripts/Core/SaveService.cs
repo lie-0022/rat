@@ -67,6 +67,9 @@ namespace RatGame.Core
         private static readonly bool NoWrite = Debug.isDebugBuild && !Application.isEditor &&
             (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-autostage") >= 0 || System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-nosave") >= 0);
 
+        /// <summary>개발 빌드 측정 실행(-autostage·-nosave) — 세이브·플레이 기록을 쓰지 않는다.</summary>
+        public static bool WritesDisabled => NoWrite;
+
         public static void Save()
         {
             if (_data == null || NoWrite) return;

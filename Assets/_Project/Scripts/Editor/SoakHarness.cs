@@ -94,6 +94,7 @@ namespace RatGame.EditorTools
         {
             SessionState.SetBool(ArmedKey, false);
             DevPort.Choose(); // 7777이 새어 막혔으면 7778 (고양이 262)
+            StartPlayLog();
             _step = Step.Menu; _startAt = _stepAt = Time.realtimeSinceStartup;
             _stagesSeen = 0; _itemsMoved = 0; _sawFinished = false;
             Issues.Clear(); StageLines.Clear(); KoreanSeen.Clear(); OverflowSeen.Clear();
@@ -265,10 +266,12 @@ namespace RatGame.EditorTools
             SessionState.EraseInt(RatGame.Net.NetworkLauncher.DevPortKey); // 시험 밖 플레이는 늘 기본 포트
             // 든 채 던졌는데 휙이 안 온 것만 실패 — 잡기가 빗나간 판(4인이 한자리에 몰려 상자를 서로 가져감)은 소리 탓이 아니다 (고양이 319)
             if (failure == null && _twoPlayer && _throwsSeen < _heldAtThrow) failure = $"든 채 던진 {_heldAtThrow}번 중 휙 {_throwsSeen}번";
+            string playLog = CheckPlayLog(ref failure);
             var sb = new StringBuilder();
             sb.Append(failure == null ? "[Rat] 통째 시험 끝 — 성공" : $"[Rat] 통째 시험 끝 — 실패: {failure}");
             sb.Append($" | {Time.realtimeSinceStartup - _startAt:0}초 · 스테이지 {_stagesSeen} · 옮긴 물건 {_itemsMoved} · 엔딩 {(_sawFinished ? "봄" : "못 봄")}");
             foreach (var line in StageLines) sb.Append(" | ").Append(line);
+            sb.Append(" | ").Append(playLog);
             if (_twoPlayer) sb.Append($" | 클라 행동 {_clientActions}번 → 호스트가 받은 핑 {_pingsSeen} · 찍찍 자막 {_squeaksSeen} · 잡고 던지기 {_clientThrows} (던질 때 든 것 {_heldAtThrow}) → 휙 {_throwsSeen}");
             if (_english)
             {
