@@ -174,7 +174,7 @@ namespace RatGame.Editor
             Height(row, 32f);
             var text = Text("Label", row, label, theme, UiColorRole.Text, UiTextRole.Body, 32f);
             text.alignment = TextAlignmentOptions.MidlineLeft;
-            var le = text.GetComponent<UnityEngine.UI.LayoutElement>(); le.preferredWidth = 70f; le.minWidth = 70f;
+            var le = text.GetComponent<UnityEngine.UI.LayoutElement>(); le.preferredWidth = 130f; le.minWidth = 130f; // 영어 "Saturation"·"Brightness"가 70에서 넘침 (고양이 315)
 
             var sliderGo = UnityEngine.UI.DefaultControls.CreateSlider(new UnityEngine.UI.DefaultControls.Resources());
             sliderGo.name = "Slider";

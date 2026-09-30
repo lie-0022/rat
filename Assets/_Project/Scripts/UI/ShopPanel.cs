@@ -34,14 +34,19 @@ namespace RatGame.UI
         {
             UiCommon.EnsureEventSystem();
             _closeButton.onClick.AddListener(() => Close(false));
+            Loc.Changed += OnLanguageChanged;
             _root.SetActive(false);
         }
 
         // 씬 전환으로 열린 채 파괴돼도 입력이 묶여 있지 않게
         private void OnDestroy()
         {
+            Loc.Changed -= OnLanguageChanged;
             if (_open) InputFocus.PanelClosed(false);
         }
+
+        // 줄은 처음 열 때 한 번 만든다 — 언어를 바꾸면 이름·설명이 옛 언어로 남아서 다시 만든다 (고양이 315)
+        private void OnLanguageChanged() { if (_machine != null) BuildRows(); }
 
         public void Open(VendingMachine machine)
         {

@@ -2341,9 +2341,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 70
+  m_MinWidth: 130
   m_MinHeight: 32
-  m_PreferredWidth: 70
+  m_PreferredWidth: 130
   m_PreferredHeight: 32
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -2892,9 +2892,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 70
+  m_MinWidth: 130
   m_MinHeight: 32
-  m_PreferredWidth: 70
+  m_PreferredWidth: 130
   m_PreferredHeight: 32
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -6653,9 +6653,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 70
+  m_MinWidth: 130
   m_MinHeight: 32
-  m_PreferredWidth: 70
+  m_PreferredWidth: 130
   m_PreferredHeight: 32
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1

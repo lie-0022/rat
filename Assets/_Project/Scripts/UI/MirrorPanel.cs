@@ -45,6 +45,7 @@ namespace RatGame.UI
         {
             UiCommon.EnsureEventSystem();
             _closeButton.onClick.AddListener(() => Close(false));
+            Loc.Changed += OnLanguageChanged;
             if (_swatchParent != null)
                 foreach (var button in _swatchParent.GetComponentsInChildren<UnityEngine.UI.Button>(true))
                 {
@@ -136,8 +137,12 @@ namespace RatGame.UI
 
         private void OnDestroy()
         {
+            Loc.Changed -= OnLanguageChanged;
             if (_open) InputFocus.PanelClosed(false);
         }
+
+        // 줄은 처음 열 때 한 번 만든다 — 언어를 바꾸면 이름·설명이 옛 언어로 남아서 다시 만든다 (고양이 315)
+        private void OnLanguageChanged() { if (_skin != null) BuildRows(); }
 
         public void Open()
         {
