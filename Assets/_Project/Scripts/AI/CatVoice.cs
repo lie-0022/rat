@@ -18,6 +18,9 @@ namespace RatGame.AI
         private CatState _lastState = (CatState)255;
         private CatSleepPhase _lastPhase = (CatSleepPhase)255;
         private float _loopVolume;
+        private Vector3 _lastPos;
+        private float _bellTravel;
+        private int _jingles; // 시험용
 
         private void Awake()
         {
@@ -53,6 +56,23 @@ namespace RatGame.AI
             if (state != _lastState) OnState(state);
             if (phase != _lastPhase) OnPhase(phase);
             _lastState = state; _lastPhase = phase;
+            UpdateBell();
+        }
+
+        // 방울 단 고양이 (고양이 140·253) — 움직인 거리만큼 딸랑. 목 방울과 같은 NV(Belled)만 읽는다
+        private void UpdateBell()
+        {
+            Vector3 pos = transform.position;
+            Vector3 d = pos - _lastPos; d.y = 0f;
+            _lastPos = pos;
+            if (!_brain.Belled.Value || _audio.CatBellJingleVolume <= 0f) { _bellTravel = 0f; return; }
+            float step = d.magnitude;
+            if (step > 3f) return; // 순간이동
+            _bellTravel += step;
+            if (_bellTravel < _audio.CatBellStepMeters) return;
+            _bellTravel = 0f;
+            _oneShot.PlayOneShot(_audio.CatBellJingleClip, _audio.CatBellJingleVolume * Sfx);
+            _jingles++;
         }
 
         private void OnState(CatState state)

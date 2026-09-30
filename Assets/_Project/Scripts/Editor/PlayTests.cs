@@ -200,6 +200,7 @@ namespace RatGame.EditorTools
                 CatBrain.ServerStateChanged -= OnCat;
                 CatBrain.ServerStateChanged += OnCat;
                 Cat().ServerWake();
+                Cat().ServerAttachBell(); // 방울은 행동을 안 바꾼다 — 같은 판에서 움직일 때 딸랑도 확인 (고양이 253)
             } },
             // 순찰·의심·복귀·잠이면 앞 2m에 계속 붙인다 (2m 안 목격 = 바로 추격, docs/07). 걷는 고양이라 한 번 두면 금방 멀어진다
             new Step { Name = "추격", Ready = () =>
@@ -219,6 +220,13 @@ namespace RatGame.EditorTools
             new Step { Name = "복귀 뒤", Ready = () => Transitions.Exists(t => t.StartsWith("Return→")) || EditorApplication.timeSinceStartup - _stepAt > 15,
                 Act = () => CatBrain.ServerStateChanged -= OnCat,
                 Check = () => Transitions.Exists(t => t.StartsWith("Return→")) ? null : string.Join(",", Transitions) },
+            new Step { Name = "방울 딸랑", Check = () =>
+            {
+                var voice = Cat().GetComponent<RatGame.AI.CatVoice>();
+                int n = voice != null ? (int)typeof(RatGame.AI.CatVoice).GetField("_jingles", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(voice) : 0;
+                Report.Append($" | 방울 딸랑 {n}번");
+                return n > 0 ? null : "방울 단 고양이가 움직였는데 소리 없음";
+            } },
         };
 
         // ---- 도우미 ----

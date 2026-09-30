@@ -82,6 +82,14 @@ namespace RatGame.Data
         public AudioClip HeartbeatClip => _heartbeatClip != null ? _heartbeatClip : Core.ToneSynth.Heartbeat(0.45f);
         public float HeartbeatVolume(float closeness) => _heartbeatVolume * Mathf.Lerp(0.5f, 1f, closeness);
 
+        [Header("고양이 방울 (고양이 253) — 방울 단 고양이가 움직이면 걸음마다 딸랑(3D, 고양이 거리). 0이면 끔")]
+        [SerializeField, Range(0f, 1f)] private float _catBellJingleVolume = 0.35f;
+        [SerializeField] private float _catBellStepMeters = 0.9f; // 이만큼 움직일 때마다 한 번
+
+        public AudioClip CatBellJingleClip => Core.ToneSynth.Clink(2900f, 0.18f);
+        public float CatBellJingleVolume => _catBellJingleVolume;
+        public float CatBellStepMeters => _catBellStepMeters;
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
