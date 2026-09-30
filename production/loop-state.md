@@ -121,6 +121,7 @@
 - **시험 도구 밖에서 손으로 플레이(execute_code로 호스트·발판)하면 세이브가 바뀐다** — 고양이 312 뒤 결과 화면 확인하다 누계 +360이 저장됨 → scratchpad `save.before191.json`·`save.bak.before191`·`settings.before258.json`으로 되돌림. 손 플레이 뒤엔 꼭 cmp.
 - 결과 화면은 실제 시간으로 넘어간다(Time.timeScale 0으로 못 멈춤).
 - EditMode 시험 요청이 "시작 안 됨(초기화 시간 초과)"로 끝나면 그 요청이 남아 있다가 **다음 플레이 중에 돌며** 오류(“This cannot be used during play mode”)를 낸다 — 통째 시험의 경고·오류 칸에 잡힘(고양이 330). 다시 요청해 성공한 걸 본 뒤 플레이 시험을 켤 것.
+- 씬 `Stage_Warehouse01`·`Sandbox_Net`은 **바이너리로 저장돼 있다**(ForceText 설정인데도 — ForceReserializeAssets로도 텍스트가 안 됨, 10-01 확인 후 되돌림). git diff로는 안 보인다 — 바꿀 땐 에디터에서 확인.
 - GC 할당 원인 찾기(고양이 324): 통째 시험이 스테이지에 있을 때 `ProfilerDriver.profileEditor=false; enabled=true` 5초 → 프레임마다 `GetHierarchyFrameDataView`의 PlayerLoop 아래 GC.Alloc self를 부모 이름별로 더함. 빌드 `-profiler-log-file`은 09-30 밤엔 6MB에서 멈췄다.
 - 성능 원인 찾기: 개발 빌드 `-profiler-enable -profiler-log-file <경로>.raw` → 에디터 `ProfilerDriver.LoadProfile` + `GetHierarchyFrameDataView`로 이름별 평균 (고양이 232). raw는 30초에 수백 MB — 끝나면 지움.
 - **키보드 입력 시험**: 유니티 창에 초점이 없으면 키가 입력 액션까지 안 간다 → 시험 동안 `InputSystem.settings.editorInputBehaviorInPlayMode = AllDeviceInputAlwaysGoesToGameView` **하나만** 바꾸고 끝나면 되돌림(메모리 설정). `backgroundBehavior`까지 바꾸면 키 상태가 막힘 (고양이 226·235). 그래도 초점 없으면 운 — 239에서 3연속 키가 버려짐(IgnoreFocus·osascript 앞으로 가져오기 모두 소용없음) → 끈끈이 시험은 그 경우 "건너뜀"으로 보고. 창을 누른 채 돌리면 확인 가능.
