@@ -107,6 +107,15 @@ namespace RatGame.Core
             return 0.8f * thump + drone;
         });
 
+        /// <summary>심장 박동 한 번 — "쿵(55Hz)-쿵(48Hz, 0.16초 뒤)" (숨을 곳, 고양이 252).</summary>
+        public static AudioClip Heartbeat(float seconds) => Get($"heart{seconds}", seconds, (t, u) =>
+        {
+            float lub = Mathf.Exp(-t * 20f) * Mathf.Sin(2f * Mathf.PI * 55f * t);
+            float d = t - 0.16f;
+            float dub = d > 0f ? 0.75f * Mathf.Exp(-d * 24f) * Mathf.Sin(2f * Mathf.PI * 48f * d) : 0f;
+            return lub + dub;
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }

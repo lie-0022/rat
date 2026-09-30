@@ -75,6 +75,13 @@ namespace RatGame.Data
         public float ChaseMusicFadeIn => _chaseMusicFadeIn;
         public float ChaseMusicFadeOut => _chaseMusicFadeOut;
 
+        [Header("숨을 곳 심장 소리 (고양이 252) — 화면 펄스와 같은 박자, 고양이가 멀면 이 음량의 절반·코앞이면 전부")]
+        [SerializeField] private AudioClip _heartbeatClip;
+        [SerializeField, Range(0f, 1f)] private float _heartbeatVolume = 0.7f;
+
+        public AudioClip HeartbeatClip => _heartbeatClip != null ? _heartbeatClip : Core.ToneSynth.Heartbeat(0.45f);
+        public float HeartbeatVolume(float closeness) => _heartbeatVolume * Mathf.Lerp(0.5f, 1f, closeness);
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
