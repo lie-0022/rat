@@ -36,7 +36,7 @@ namespace RatGame.EditorTools
             yield return new Step { Name = "빌드 클라", Wait = 2f, Ready = () => SceneManager.GetActiveScene().name == "Hub", Act = () =>
             {
                 if (!Directory.Exists(ClientApp)) throw new Exception($"빌드 없음 ({ClientApp})");
-                System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -logFile \"{Path.GetFullPath($"Temp/{logName}")}\"");
+                System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport{DevPort.ClientArg} -autojoin -logFile \"{Path.GetFullPath($"Temp/{logName}")}\"");
                 restoreSave = BackupSave(logName);
                 OnDone = () => { System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS"); restoreSave(); };
                 _joinedAt = 0;

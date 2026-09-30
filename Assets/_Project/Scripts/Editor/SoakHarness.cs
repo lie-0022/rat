@@ -67,6 +67,7 @@ namespace RatGame.EditorTools
         private static void Begin()
         {
             SessionState.SetBool(ArmedKey, false);
+            DevPort.Choose(); // 7777이 새어 막혔으면 7778 (고양이 262)
             _step = Step.Menu; _startAt = _stepAt = Time.realtimeSinceStartup;
             _stagesSeen = 0; _itemsMoved = 0; _sawFinished = false;
             Issues.Clear(); StageLines.Clear(); KoreanSeen.Clear();
@@ -226,6 +227,7 @@ namespace RatGame.EditorTools
         {
             EditorApplication.update -= Tick;
             Application.logMessageReceived -= OnLog;
+            SessionState.EraseInt(RatGame.Net.NetworkLauncher.DevPortKey); // 시험 밖 플레이는 늘 기본 포트
             var sb = new StringBuilder();
             sb.Append(failure == null ? "[Rat] 통째 시험 끝 — 성공" : $"[Rat] 통째 시험 끝 — 실패: {failure}");
             sb.Append($" | {Time.realtimeSinceStartup - _startAt:0}초 · 스테이지 {_stagesSeen} · 옮긴 물건 {_itemsMoved} · 엔딩 {(_sawFinished ? "봄" : "못 봄")}");

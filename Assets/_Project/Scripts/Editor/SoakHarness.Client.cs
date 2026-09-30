@@ -86,7 +86,7 @@ namespace RatGame.EditorTools
                 for (int i = 0; i < _clientCount; i++)
                 {
                     if (File.Exists(ClientLog(i))) File.Delete(ClientLog(i));
-                    System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -autoshop -logFile \"{ClientLog(i)}\"");
+                    System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport{DevPort.ClientArg} -autojoin -autoshop -logFile \"{ClientLog(i)}\"");
                 }
                 _clientLaunched = true;
                 _clientWaitStart = Time.realtimeSinceStartup;

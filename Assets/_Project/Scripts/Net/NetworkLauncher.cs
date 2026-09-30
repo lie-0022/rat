@@ -27,7 +27,25 @@ namespace RatGame.Net
         public event Action<string> JoinStarted;
 
         private const string LoopbackAddress = "127.0.0.1";
-        private const ushort Port = 7777;
+        private const ushort DefaultPort = 7777;
+        /// <summary>에디터 시험 도구가 7777이 막혔을 때 고르는 포트 (SessionState, 0 = 기본) — 플레이 중 컴파일로 7777이 새면 재시작 전까지 시험이 멈췄다 (고양이 262).</summary>
+        public const string DevPortKey = "RatGame.DevPort";
+
+        // 로컬(UnityTransport) 포트 — 빌드는 -port N, 에디터는 시험 도구가 정한 값, 없으면 7777
+        private static ushort Port
+        {
+            get
+            {
+                var args = Environment.GetCommandLineArgs();
+                int i = Array.IndexOf(args, "-port");
+                if (i >= 0 && i + 1 < args.Length && ushort.TryParse(args[i + 1], out var fromArg)) return fromArg;
+#if UNITY_EDITOR
+                int dev = UnityEditor.SessionState.GetInt(DevPortKey, 0);
+                if (dev > 0 && dev <= ushort.MaxValue) return (ushort)dev;
+#endif
+                return DefaultPort;
+            }
+        }
         private const int MaxPlayers = 4; // docs/00 — 새 수치 아님(구조 상수)
         // 참가 실패를 빨리 알리려고 — 기본값(60회×1초)이면 메뉴가 1분 가까이 "접속 중"에 묶인다. 10회×0.5초 ≈ 5초
         private const int JoinConnectAttempts = 10;

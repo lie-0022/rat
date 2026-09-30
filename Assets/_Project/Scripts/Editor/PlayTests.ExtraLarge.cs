@@ -38,7 +38,7 @@ namespace RatGame.EditorTools
                 {
                     if (!Directory.Exists(ClientApp)) throw new Exception($"빌드 없음 ({ClientApp})");
                     for (int i = 0; i < 3; i++)
-                        System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -logFile \"{Path.GetFullPath($"Temp/xl-client{i + 1}.log")}\"");
+                        System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport{DevPort.ClientArg} -autojoin -logFile \"{Path.GetFullPath($"Temp/xl-client{i + 1}.log")}\"");
                     OnDone = () => System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS");
                     _joinedAt = 0;
                 } },

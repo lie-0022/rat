@@ -89,6 +89,7 @@ namespace RatGame.EditorTools
             _steps = warehouse ? new List<Step>(ToWarehouse()) : new List<Step>();
             _steps.AddRange(body);
             _index = 0; _fails = 0; _skip = null; Report.Clear();
+            DevPort.Choose(); // 7777이 새어 막혔으면 7778 (고양이 262)
             _stepAt = _startAt = EditorApplication.timeSinceStartup;
             EditorApplication.update -= Tick;
             EditorApplication.update += Tick;
@@ -123,6 +124,7 @@ namespace RatGame.EditorTools
         {
             EditorApplication.update -= Tick;
             OnDone?.Invoke();
+            SessionState.EraseInt(RatGame.Net.NetworkLauncher.DevPortKey); // 시험 밖 플레이는 늘 기본 포트
             OnDone = null;
             InputSystem.QueueStateEvent(Mouse.current, new MouseState());
             InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());

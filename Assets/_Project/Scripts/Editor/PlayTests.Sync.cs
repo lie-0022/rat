@@ -45,7 +45,7 @@ namespace RatGame.EditorTools
                     for (int i = 0; i < 3; i++)
                     {
                         if (File.Exists(SyncLog(i))) File.Delete(SyncLog(i));
-                        System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport -autojoin -logFile \"{SyncLog(i)}\"");
+                        System.Diagnostics.Process.Start("open", $"-n {ClientApp} --args -unitytransport{DevPort.ClientArg} -autojoin -logFile \"{SyncLog(i)}\"");
                     }
                     OnDone = () => System.Diagnostics.Process.Start("pkill", "-f Rat.app/Contents/MacOS");
                     _joinedAt = 0;
