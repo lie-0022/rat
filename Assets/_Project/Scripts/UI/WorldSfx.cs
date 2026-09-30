@@ -52,6 +52,9 @@ namespace RatGame.UI
             EventBus.HouseEvent += OnHouseEvent;
             EventBus.CatCue += OnCatCue;
             EventBus.ItemThrown += OnThrown;
+            EventBus.AchievementUnlocked += OnAchievement;
+            EventBus.CodexUnlocked += OnCodex;
+            EventBus.CheeseEaten += OnEat;
             SettingsService.Changed += ApplyHouseLoopVolume; // 켜져 있는 반복음도 효과음 줄을 바로 따른다 (고양이 251)
         }
 
@@ -62,6 +65,9 @@ namespace RatGame.UI
             EventBus.HouseEvent -= OnHouseEvent;
             EventBus.CatCue -= OnCatCue;
             EventBus.ItemThrown -= OnThrown;
+            EventBus.AchievementUnlocked -= OnAchievement;
+            EventBus.CodexUnlocked -= OnCodex;
+            EventBus.CheeseEaten -= OnEat;
             SettingsService.Changed -= ApplyHouseLoopVolume;
         }
 
@@ -86,6 +92,7 @@ namespace RatGame.UI
         {
             UpdateMusic();
             UpdateUiClick();
+            UpdateQuotaJingle();
             var run = Run.RunManager.Instance;
             if (run == null || !run.IsSpawned) { if (_run != null) StopHouseLoops(); _run = null; return; } // 런이 끝나면 켜져 있던 TV·청소기 소리도 끈다
             int stash = run.StashedValue.Value;

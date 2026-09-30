@@ -143,6 +143,20 @@ namespace RatGame.Core
             return 0.45f * saw + 0.35f * crackle;
         });
 
+        /// <summary>짜잔 — 세 음이 차례로 올라감(도전과제·할당량). notes = 시작 음 Hz, 장3화음으로 (고양이 275).</summary>
+        public static AudioClip Fanfare(float root, float seconds) => Get($"fanfare{root}-{seconds}", seconds, (t, u) =>
+        {
+            float step = seconds * 0.22f, v = 0f;
+            float[] ratio = { 1f, 1.26f, 1.5f };
+            for (int i = 0; i < 3; i++)
+            {
+                float d = t - i * step;
+                if (d <= 0f) continue;
+                v += Mathf.Exp(-d * (i == 2 ? 3f : 7f)) * Mathf.Sin(2f * Mathf.PI * root * ratio[i] * d) * (i == 2 ? 0.7f : 0.5f);
+            }
+            return v;
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }

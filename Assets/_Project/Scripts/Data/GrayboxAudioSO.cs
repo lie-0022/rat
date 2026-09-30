@@ -155,6 +155,14 @@ namespace RatGame.Data
         public AudioClip HissClip => Core.ToneSynth.Rush(0.9f, 0.6f);            // 하악 — 거친 잡음
         public AudioClip PurrClip => Core.ToneSynth.Growl(26f, 23f, 1f);         // 가르랑 — 아주 낮은 떨림(26×1·23×1 정수라 이음매 없음)
 
+        [Header("좋은 순간 (고양이 275) — 도전과제 짜잔·도감 딩·할당량 빰빠밤·치즈 오독오독, 2D")]
+        [SerializeField, Range(0f, 1f)] private float _rewardVolume = 0.5f;
+        public float RewardVolume => _rewardVolume;
+        public AudioClip AchievementClip => Core.ToneSynth.Fanfare(784f, 0.9f);
+        public AudioClip CodexClip => Core.ToneSynth.Chime(1318f, 1760f, 0.4f);
+        public AudioClip QuotaClip => Core.ToneSynth.Fanfare(523f, 1.1f);
+        public AudioClip EatClip => Core.ToneSynth.HeavySteps(0.36f); // 짧은 쿵 셋 = 오독오독
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
