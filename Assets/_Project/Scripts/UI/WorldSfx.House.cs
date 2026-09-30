@@ -49,7 +49,7 @@ namespace RatGame.UI
                 };
                 if (loop != null) StartHouseLoop(kind, loop);
             }
-            else if (_houseLoops.TryGetValue(kind, out var src)) { src.Stop(); Log.Dev($"집 소리: {kind} 반복 멈춤"); }
+            else if (_houseLoops.TryGetValue(kind, out var src) && src != null) { src.Stop(); Log.Dev($"집 소리: {kind} 반복 멈춤"); }
         }
 
         // 루틴 출발(밥·화장실·햇볕·잠자리·물) 방울 — 고양이 자리 3D. 코골이는 CatVoice가 소리로 낸다
@@ -68,24 +68,35 @@ namespace RatGame.UI
 
         private void StartHouseLoop(HouseEventKind kind, AudioClip clip)
         {
-            if (!_houseLoops.TryGetValue(kind, out var src))
+            if (!_houseLoops.TryGetValue(kind, out var src) || src == null) // 물건에 붙인 소리는 씬이 바뀌면 같이 사라진다
             {
-                src = gameObject.AddComponent<AudioSource>();
-                src.playOnAwake = false; src.loop = true; src.spatialBlend = 0f;
+                // TV·청소기는 그 물건에서 3D로 — 청소기가 어디 있는지(발소리가 묻히는 곳) 소리로 안다 (고양이 269). 물소리는 벽 속 전체라 2D
+                Transform at = kind switch
+                {
+                    HouseEventKind.Vacuum => FindAnyObjectByType<World.RobotVacuum>()?.transform,
+                    HouseEventKind.TV => FindAnyObjectByType<World.TvSet>()?.transform,
+                    _ => null,
+                };
+                src = (at != null ? at.gameObject : gameObject).AddComponent<AudioSource>();
+                src.playOnAwake = false; src.loop = true;
+                src.spatialBlend = at != null ? 1f : 0f;
+                src.rolloffMode = AudioRolloffMode.Linear;
+                src.minDistance = _audio.WorldMinDistance; src.maxDistance = _audio.WorldMaxDistance;
+                src.dopplerLevel = 0f;
                 _houseLoops[kind] = src;
             }
             src.clip = clip;
             src.volume = _audio.HouseLoopVolume * Sfx;
             src.Play();
-            Log.Dev($"집 소리: {kind} 반복 ({clip.name})");
+            Log.Dev($"집 소리: {kind} 반복 ({clip.name}, {(src.spatialBlend > 0f ? "3D " + src.gameObject.name : "2D")})");
         }
 
         private void ApplyHouseLoopVolume()
         {
             if (_audio == null) return;
-            foreach (var s in _houseLoops.Values) s.volume = _audio.HouseLoopVolume * Sfx;
+            foreach (var s in _houseLoops.Values) if (s != null) s.volume = _audio.HouseLoopVolume * Sfx;
         }
 
-        private void StopHouseLoops() { foreach (var s in _houseLoops.Values) s.Stop(); }
+        private void StopHouseLoops() { foreach (var s in _houseLoops.Values) if (s != null) s.Stop(); }
     }
 }
