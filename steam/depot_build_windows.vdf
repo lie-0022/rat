@@ -1,0 +1,17 @@
+"DepotBuildConfig"
+{
+	// Windows x64 디포 (고양이 321) — DepotID는 app_build_demo.vdf와 같은 숫자로
+	"DepotID" "0000001"
+
+	"FileMapping"
+	{
+		"LocalPath" "*"
+		"DepotPath" "."
+		"recursive" "1"
+	}
+
+	// 싣지 않는 것 — 빌드 메뉴가 Burst 기호는 이미 Builds/Symbols로 빼지만 혹시 남았을 때를 대비
+	"FileExclusion" "*.pdb"
+	"FileExclusion" "*_BurstDebugInformation_DoNotShip*"
+	"FileExclusion" "*_BackUpThisFolder_ButDontShipItWithYourGame*"
+}

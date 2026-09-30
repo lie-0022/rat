@@ -1,0 +1,37 @@
+# 스팀 업로드 (docs/13 3-6)
+
+데모 빌드를 Steam에 올리는 설정. **여기 있는 건 틀뿐이고, 실제 업로드는 사람이 한다.** (고양이 321)
+
+## 한 번만 — 사람이 할 일
+
+1. Steamworks 파트너 계정에서 데모 앱을 만든다 → **AppID**와 Windows 디포 **DepotID**를 받는다.
+2. 두 숫자를 채운다.
+   - `app_build_demo.vdf`: `"AppID"`, `"Depots"` 안의 `"0000001"`
+   - `depot_build_windows.vdf`: `"DepotID"`
+3. 게임 코드의 AppID도 바꾼다: `Assets/_Project/Scripts/Net/SteamLobbyService.cs`의 `DevAppId = 480`
+   (480은 Valve 시험용 Spacewar — 지금은 이걸로 초대·로비를 시험한다).
+4. steamcmd 설치: `brew install --cask steamcmd` (또는 Steamworks SDK의 `tools/ContentBuilder/builder_osx`).
+   업로드용 Steam 계정은 파트너 권한이 있어야 하고, 첫 로그인 때 Steam Guard 코드를 묻는다.
+
+## 올릴 때마다
+
+1. 유니티: **Tools → RatGame → Build → Windows x64 Demo (release)**
+   → `Builds/Release/Windows/` (Windows Build Support 모듈이 있어야 한다 — 없으면 메뉴가 이유를 말하고 멈춘다)
+2. 미리 보기 (`"Preview" "1"` 그대로): 올리지 않고 올라갈 파일 목록만 만든다 → `Builds/SteamOutput/`에서 확인.
+   ```bash
+   steamcmd +login <업로드 계정> +run_app_build "$(pwd)/steam/app_build_demo.vdf" +quit
+   ```
+3. 목록이 맞으면 `"Preview"`를 `"0"`으로 바꾸고 같은 명령 → 업로드.
+4. Steamworks 웹 → 앱 → SteamPipe → 빌드에서 올라간 빌드를 브랜치(먼저 비공개 `beta`)에 연결한다.
+   `"SetLive"`를 비워 둔 건 실수로 바로 공개되지 않게 하려는 것.
+
+## 싣지 않는 것
+
+- Burst 디버그 기호: 빌드 메뉴가 `Builds/Symbols/Windows-{버전}`으로 옮긴다(크래시 분석용으로 보관). 디포 설정에도 한 번 더 뺐다.
+- `*.pdb`, IL2CPP 백업 폴더.
+
+## 아직 안 한 것 (판단·사람)
+
+- 회사 이름·제품 이름(`ProjectSettings` companyName `DefaultCompany`, productName `Rat`): 바꾸면 세이브 폴더 위치가 바뀐다
+  (`~/Library/Application Support/DefaultCompany/Rat` → 새 이름). 정식 이름이 정해지면 옛 세이브 옮기기와 같이.
+- 스팀 없이 켰을 때 스팀으로 다시 띄우기(`SteamClient.RestartAppIfNecessary`): 데모 AppID가 생긴 뒤.

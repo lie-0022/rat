@@ -3,6 +3,7 @@
     "rootNamespace": "RatGame.Tests",
     "references": [
         "RatGame.Runtime",
+        "RatGame.Editor",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.Netcode.Runtime"

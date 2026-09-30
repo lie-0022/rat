@@ -69,7 +69,7 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 
 | 무엇 | 어디 | 시간 | 언제 |
 |---|---|---|---|
-| EditMode 로직 시험 21개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성·빌드 씬·세이브 왕복·네트워크 프리팹 등록·사라진 스크립트·프리팹·코드·데이터 에셋 번역 글자) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 2초 | 공식·데이터·생성기를 고친 뒤 |
+| EditMode 로직 시험 23개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성·빌드 씬·세이브 왕복·네트워크 프리팹 등록·사라진 스크립트·프리팹·코드·데이터 에셋 번역 글자·스팀 업로드 경로) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 2초 | 공식·데이터·생성기를 고친 뒤 |
 | Run All — Quick (혼자 9) | Tools → RatGame → Test | 2분 | 게임 코드를 고친 뒤 |
 | Run All — Full (혼자 9 + 2·4인·레이저·재접속·이탈 8 = 17) | 〃 (빌드 클라 `Builds/macOS/Rat.app` 필요 — 런타임 코드를 고쳤으면 먼저 빌드) | 8분 | 넷코드·운반을 고친 뒤 |
 | Run Everything (Full 17 + 통째 혼자·영어 2인·4인 = 20) | 〃 | 18분 | 큰 묶음 뒤, 커밋 전 |
@@ -88,6 +88,7 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 
 - 빌드 전 검사: 플레이·컴파일 중 아님, 모듈 있음, 빌드 씬 0번 = Boot. 릴리스는 Burst 디버그 기호(`*_BurstDebugInformation_DoNotShip`)를 `Builds/Symbols/{플랫폼}-{버전}`으로 옮겨 싣지 않는다(크래시 분석용으로 보관).
 - 배치 모드: `Unity -batchmode -quit -projectPath . -executeMethod RatGame.EditorTools.BuildTools.BuildWindowsDemoCli` (실패하면 종료 코드 1).
+- 스팀 업로드: `steam/`(앱·디포 VDF 틀 + README) — 숫자 채우기·업로드는 사람. 기본 `Preview 1`(올리지 않고 목록만), `SetLive` 빈칸(바로 공개 금지). EditMode가 업로드 폴더 = 윈도 릴리스 빌드 폴더, 디포 번호 일치를 검사.
 - 확인 (09-30): macOS 릴리스 124MB·82초·경고 0, 켜서 메뉴까지 오류 0. Windows는 모듈이 없어 "모듈 없음"으로 멈춤 확인.
 
 ## 클로드코드에게 시킬 추가 자동화 (여유 시)

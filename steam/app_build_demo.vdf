@@ -1,0 +1,21 @@
+"AppBuild"
+{
+	// 데모 앱 업로드 설정 (고양이 321). 숫자 둘(AppID·DepotID)은 Steamworks에서 데모 앱을 만든 뒤 사람이 채운다 — README.md
+	"AppID" "0000000"
+	"Desc" "Rat demo"
+
+	// 경로는 이 파일 기준. 내용 = Tools/RatGame/Build/Windows x64 Demo (release) 결과
+	"ContentRoot" "../Builds/Release/Windows/"
+	"BuildOutput" "../Builds/SteamOutput/"
+
+	// 1 = 올리지 않고 무엇이 올라갈지만 계산(첫 시험용). 실제 업로드는 0
+	"Preview" "1"
+
+	// 비워 둔다 — 공개 브랜치 전환은 Steamworks 웹에서 사람이 (실수로 바로 공개되지 않게)
+	"SetLive" ""
+
+	"Depots"
+	{
+		"0000001" "depot_build_windows.vdf"
+	}
+}
