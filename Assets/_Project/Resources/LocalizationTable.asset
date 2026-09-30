@@ -991,3 +991,8 @@ MonoBehaviour:
   - Ko: "\uC9C0\uCE58\uBA74 \u2014 \uC190\uC5D0 \uB4E0 \uCE58\uC988\uB97C E \uAE38\uAC8C\uB85C
       \uBA39\uAE30 (\uAC12\uC740 \uC0AC\uB77C\uC9D0)"
     En: "Tired \u2014 hold E with cheese in hand to eat it (its value is lost)"
+  - Ko: "\uC18C\uB9AC \u2014 \uB0D0?=\uC758\uC2EC \xB7 \uADF8\uB974\uB801=\uCD94\uACA9
+      \xB7 \uB4DC\uB974\uB801=\uAE4A\uC740 \uC7A0 \xB7 \uB538\uB791=\uBC29\uC6B8
+      \uB2E8 \uACE0\uC591\uC774"
+    En: "Sounds \u2014 mrrp?=suspicious \xB7 growl=chasing \xB7 snore=deep sleep
+      \xB7 jingle=belled cat"

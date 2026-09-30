@@ -9,6 +9,7 @@ namespace RatGame.EditorTools
         {
             // 결과 화면
             ["지치면 — 손에 든 치즈를 E 길게로 먹기 (값은 사라짐)"] = "Tired — hold E with cheese in hand to eat it (its value is lost)",
+            ["소리 — 냐?=의심 · 그르렁=추격 · 드르렁=깊은 잠 · 딸랑=방울 단 고양이"] = "Sounds — mrrp?=suspicious · growl=chasing · snore=deep sleep · jingle=belled cat",
             // 의심 이유 (고양이 305)
             ["봤다"] = "saw you",
             ["발소리"] = "footsteps",

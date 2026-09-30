@@ -92,6 +92,7 @@ namespace RatGame.UI
             sb.Append(Loc.T("고양이 위 <b>?</b> 의심(밑에 이유) · <b>!</b> 추격")).Append('\n');
             sb.Append(Loc.T("오른쪽 아래 — 내 소리 크기 · 냄새 남기는 중")).Append('\n');
             sb.Append(Loc.T("빨간 표시 — 위기인 동료(구해질 때까지)")).Append('\n');
+            sb.Append(Loc.T("소리 — 냐?=의심 · 그르렁=추격 · 드르렁=깊은 잠 · 딸랑=방울 단 고양이")).Append('\n'); // 보이지 않는 고양이는 소리로 (docs/07, 고양이 311)
             // 위기 때 — 쓰러짐·끈끈이에서 돌아오는 길 (고양이 188, 181~187 흐름)
             sb.Append('\n').Append("<color=").Append(key).Append(">").Append(Loc.T("위기 때")).Append("</color>\n");
             sb.Append(Loc.T("쓰러짐 — 동료가 몸을 쥐구멍(창고)에 넣으면 삶")).Append('\n');
