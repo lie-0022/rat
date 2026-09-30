@@ -75,7 +75,10 @@ namespace RatGame.Core
         public static event Action TrapBaitNear;
         /// <summary>고양이에게 방울이 달림 (모든 클라, 고양이 140).</summary>
         public static event Action<UnityEngine.Vector3> CatBelled;
+        /// <summary>물건이 던져짐 (모든 클라 — CarryableItem.ThrownClientRpc, 고양이 255). 휙 소리.</summary>
+        public static event Action<UnityEngine.Vector3> ItemThrown;
 
+        public static void RaiseItemThrown(UnityEngine.Vector3 pos) => ItemThrown?.Invoke(pos);
         public static void RaiseZoneStarted(int zoneIndex) => ZoneStarted?.Invoke(zoneIndex);
         public static void RaiseZoneEnded(int zoneIndex, bool quotaMet) => ZoneEnded?.Invoke(zoneIndex, quotaMet);
         public static void RaiseRunEnded(RunResult result) => RunEnded?.Invoke(result);

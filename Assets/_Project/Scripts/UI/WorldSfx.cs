@@ -51,6 +51,7 @@ namespace RatGame.UI
             EventBus.NoiseRipple += OnRipple;
             EventBus.HouseEvent += OnHouseEvent;
             EventBus.CatCue += OnCatCue;
+            EventBus.ItemThrown += OnThrown;
             SettingsService.Changed += ApplyHouseLoopVolume; // 켜져 있는 반복음도 효과음 줄을 바로 따른다 (고양이 251)
         }
 
@@ -60,12 +61,14 @@ namespace RatGame.UI
             EventBus.NoiseRipple -= OnRipple;
             EventBus.HouseEvent -= OnHouseEvent;
             EventBus.CatCue -= OnCatCue;
+            EventBus.ItemThrown -= OnThrown;
             SettingsService.Changed -= ApplyHouseLoopVolume;
         }
 
         private static float Sfx => Mathf.Clamp01(SettingsService.Current.SfxVolume);
 
         private void OnSqueak(ulong owner, Vector3 pos) { if (_audio != null) PlayAt(pos, _audio.SqueakClip, _audio.SqueakVolume); }
+        private void OnThrown(Vector3 pos) { if (_audio != null) PlayAt(pos, _audio.ThrowClip, _audio.ThrowVolume); }
         private void OnRipple(Vector3 pos, float loudness) { if (_audio != null) PlayAt(pos, _audio.ImpactClip, _audio.ImpactVolume(loudness)); }
 
         // 돌아가며 쓰는 소리 자리 — 여섯 개가 동시에 울리면 가장 오래된 것부터 끊긴다

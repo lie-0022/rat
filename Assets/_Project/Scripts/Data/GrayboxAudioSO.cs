@@ -99,6 +99,15 @@ namespace RatGame.Data
         public AudioClip RatDownedClip => Core.ToneSynth.Chirp(1500f, 650f, 0.45f);     // 찍… (내려감)
         public AudioClip RatRevivedClip => Core.ToneSynth.Chirp(900f, 1700f, 0.25f);    // 찍! (올라감)
 
+        [Header("잡기·던지기 (고양이 255) — 잡을 때 쥐 자리 톡, 던지면 물건 자리 휙(호스트 신호)")]
+        [SerializeField, Range(0f, 1f)] private float _grabVolume = 0.35f;
+        [SerializeField, Range(0f, 1f)] private float _throwVolume = 0.5f;
+
+        public AudioClip GrabClip => Core.ToneSynth.Tap(320f, 0.06f);
+        public AudioClip ThrowClip => Core.ToneSynth.Swipe(0.32f);
+        public float GrabVolume => _grabVolume;
+        public float ThrowVolume => _throwVolume;
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;

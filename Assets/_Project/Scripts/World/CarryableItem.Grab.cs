@@ -105,9 +105,13 @@ namespace RatGame.World
             {
                 _rb.AddForce(throwDir.normalized * _balance.GetThrowImpulse(charge, _rb.mass) * throwPower, ForceMode.Impulse);
                 _thrownUntil = Time.time + 1.5f;
+                ThrownClientRpc(); // 휙 소리 — 클라에선 위치 변화로 던짐·내려놓기를 못 가른다(보간 지연·약한 던지기, 고양이 255)
             }
             Log.Dev($"놓기: client {clientId} ← {name}{(thrown ? " (던짐)" : "")}");
         }
+
+        [ClientRpc]
+        private void ThrownClientRpc() => EventBus.RaiseItemThrown(transform.position);
 
         /// <summary>호스트 전용. 조인트 해제 후 지정 위치에 정지 상태로 놓기 (토글 내려놓기).</summary>
         public void ServerPutDown(ulong clientId, Vector3 position)
