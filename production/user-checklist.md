@@ -344,6 +344,7 @@
 - [ ] **U-325 일시정지 "친구 초대"** — Steam으로 게임을 켜고 호스트 → Esc → "친구 초대"를 누르면 Steam 초대 창이 뜨는지. (Steam 없이 켜면 버튼이 안 보이는 게 정상. 개발 빌드는 왼쪽 아래 DEV 패널의 친구 목록 초대도 그대로)
 - [ ] **U-326 Steam 도전과제** (데모 AppID가 생긴 뒤) — Steamworks에 `steam/README.md`의 API 이름 8개를 등록하고, 도전과제 하나를 깨면 Steam 오버레이에 뜨는지. 이미 깬 것은 다음 실행 때 Steam에 맞춰지는지.
 - [ ] **U-330 플레이 기록** — 친구들과 한 판 한 뒤 호스트 PC의 `playlog.csv`(맥: `~/Library/Application Support/DefaultCompany/Rat/`, 윈도: `%USERPROFILE%\AppData\LocalLow\DefaultCompany\Rat\`)를 엑셀로 열어 스테이지마다 한 줄(걸린 초·다운·결과)이 있는지. 밸런싱(docs/13 3-1)할 때 이 파일을 주시면 됩니다.
+- [ ] **U-338 메인 메뉴 설정의 "소리 자막"** — 메인 메뉴 → 설정 → 소리 열 맨 아래 "소리 자막" 줄이 있는지(전엔 게임 안 Esc 설정에만 있었음).
 - [ ] **U-26 매복** — 커튼 뒤에 꼬리만 내놓고 있다가 덮침.
 
 ## 5. 고양이 — 놀이·유인
