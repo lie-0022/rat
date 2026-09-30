@@ -61,14 +61,12 @@ namespace RatGame.EditorTools
                 rc.ServerSend("sniff"); rc.ServerSend("ping"); rc.ServerSend("squeak");
                 _clientActions++;
                 // 운반 동기화도 스테이지마다 — 상자는 호스트가 띄우고 클라가 제 손으로 잡아 던진다
+                // 순간이동한 클라 위치가 호스트에 늦게 와서 바로 띄우면 상자가 손 밖(첫 판 잡기 10/15) — 0.6초 뒤 지금 자리 앞에
                 var player = nm.ConnectedClients[id].PlayerObject;
-                var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Items/GrayBox_S.prefab");
-                var fwd = player.transform.forward; fwd.y = 0f; fwd.Normalize();
-                var box = Object.Instantiate(prefab, player.transform.position + fwd * 0.7f + Vector3.up * 0.3f, Quaternion.identity);
-                box.GetComponent<NetworkObject>().Spawn(true);
                 double now = EditorApplication.timeSinceStartup;
-                _clientCarry.Add((now + 1.0, player, "grab"));
-                _clientCarry.Add((now + 2.5, player, "throw:0.6"));
+                _clientCarry.Add((now + 0.6, player, "spawnbox"));
+                _clientCarry.Add((now + 1.4, player, "grab"));
+                _clientCarry.Add((now + 2.9, player, "throw:0.6"));
                 _clientThrows++;
             }
         }
@@ -80,7 +78,14 @@ namespace RatGame.EditorTools
             {
                 if (_clientCarry[i].at > now) continue;
                 var c = _clientCarry[i].client;
-                if (c != null && c.IsSpawned) c.GetComponent<RatGame.Net.DevRemoteControl>().ServerSend(_clientCarry[i].cmd);
+                if (c != null && c.IsSpawned && _clientCarry[i].cmd == "spawnbox")
+                {
+                    var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Items/GrayBox_S.prefab");
+                    var fwd = c.transform.forward; fwd.y = 0f; fwd.Normalize();
+                    var box = Object.Instantiate(prefab, c.transform.position + fwd * 0.7f + Vector3.up * 0.3f, Quaternion.identity);
+                    box.GetComponent<NetworkObject>().Spawn(true);
+                }
+                else if (c != null && c.IsSpawned) c.GetComponent<RatGame.Net.DevRemoteControl>().ServerSend(_clientCarry[i].cmd);
                 _clientCarry.RemoveAt(i);
             }
         }
