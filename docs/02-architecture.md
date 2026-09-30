@@ -87,6 +87,21 @@ public enum GameState { Boot, MainMenu, Lobby /*=Hub씬, 파티 대기*/, InRun,
 플레이어 캐릭터는 소유 클라가 직접 움직이고(ClientNetworkTransform 패턴), 잡기·정산 등 **판정**만 서버 검증한다.
 치팅 방어보다 반응성 우선. 이 결정은 문서 03에서 고정한다.
 
+## 소리 (그레이박스 합성음, 2026-09-30 고양이 242~279)
+
+규칙: 소리는 **각 클라 로컬 구독자** — 판정·동기화를 새로 만들지 않는다(예외 하나: 던지기 휙 `CarryableItem.ThrownClientRpc`, 위치 변화로는 던짐을 못 가려서). 볼륨 = 전체(AudioListener) × 효과음/음악/보이스 설정 줄.
+
+| 부품 | 무엇을 듣고 | 소리 |
+|---|---|---|
+| `Core/ToneSynth` (정적) | — | 코드로 짧은 음을 만들어 캐시(소리 파일 없음) |
+| `Data/GrayboxAudioSO` (`Resources/GrayboxAudio`) | — | 소리 고르기·음량·거리 한 곳. 클립 칸을 채우면 합성음 대신 진짜 소리 |
+| `AI/CatVoice` (고양이 프리팹) | State·SleepPhase·BlunderKind·Belled NV, 위치 | 냐?·그르렁·쉭·코골이·하악·가르랑·실패·방울·발소리 |
+| `UI/WorldSfx` (+ .House·.Music·.Ui·.Feedback·.Countdown, 스스로 생김) | EventBus(찍찍·파문·집 이벤트·CatCue·던지기·도전과제·도감·먹기), StashedValue·Quota·DepartAt·ReturnAt NV, 고양이 Chase | 쨍·정산·집 소리·추격 음악·UI 클릭·보상·카운트다운 |
+| `Player/RatFootsteps`·`RatConditionSfx`·`RatHandsSfx` (쥐 프리팹) | 위치·PlayerCondition·CarriedItemNetId | 발소리·덫/끈끈이/쓰러짐/살아남·잡기 |
+| `World/WireShock` | On NV | 지지직 |
+| `UI/HiddenOverlayWidget` | 내 Hidden·고양이 거리 | 심장 |
+| F4 `DevCheckMenu.Sounds` | — | 모든 소리 바로 듣기(개발용) |
+
 ## 싱글톤 규칙
 
 - 허용: GameBootstrap, GameStateMachine, NoiseSystem(정적), SaveService, RunManager(씬 수명)
