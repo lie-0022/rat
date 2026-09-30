@@ -44,6 +44,11 @@ namespace RatGame.Net
             {
                 GetComponent<PlayerCarryController>()?.DevGrabNearest();
             }
+            else if (command == "grab!") // 손이 빌 때만 잡기 — 다시 보내도 든 걸 놓지 않게(잡기는 누를 때마다 들기/놓기, 고양이 286)
+            {
+                var carry = GetComponent<PlayerCarryController>();
+                if (carry != null && !carry.IsHolding) carry.DevGrabNearest();
+            }
             else if (command.StartsWith("throw:") && float.TryParse(command.Substring(6), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float charge))
             {
                 GetComponent<PlayerCarryController>()?.DevThrow(charge);

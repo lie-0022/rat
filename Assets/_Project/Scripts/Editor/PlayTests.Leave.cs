@@ -52,7 +52,7 @@ namespace RatGame.EditorTools
                     if (_client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == _leaveBox.NetworkObjectId) return true;
                     if (EditorApplication.timeSinceStartup - _stepAt > 10) return true;
                     // 잡기는 누를 때마다 들고/놓기가 바뀐다 — 손이 빈 걸 확인했을 때만 다시 (첫 판: 두 번 눌러 첫 상자를 도로 놓음)
-                    if (_client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == 0 && EditorApplication.timeSinceStartup - _lastTp > 1.5) { _lastTp = EditorApplication.timeSinceStartup; _client.GetComponent<DevRemoteControl>().ServerSend("grab"); }
+                    if (_client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == 0 && EditorApplication.timeSinceStartup - _lastTp > 1.5) { _lastTp = EditorApplication.timeSinceStartup; _client.GetComponent<DevRemoteControl>().ServerSend("grab!"); }
                     return false;
                 },
                     Check = () => _client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == _leaveBox.NetworkObjectId ? null : "클라가 상자를 못 잡음" },
@@ -74,7 +74,7 @@ namespace RatGame.EditorTools
                     if (_client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == _leaveBox2.NetworkObjectId) return true;
                     if (EditorApplication.timeSinceStartup - _stepAt > 10) return true;
                     // 잡기는 누를 때마다 들고/놓기가 바뀐다 — 손이 빈 걸 확인했을 때만 다시 (첫 판: 두 번 눌러 첫 상자를 도로 놓음)
-                    if (_client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == 0 && EditorApplication.timeSinceStartup - _lastTp > 1.5) { _lastTp = EditorApplication.timeSinceStartup; _client.GetComponent<DevRemoteControl>().ServerSend("grab"); }
+                    if (_client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == 0 && EditorApplication.timeSinceStartup - _lastTp > 1.5) { _lastTp = EditorApplication.timeSinceStartup; _client.GetComponent<DevRemoteControl>().ServerSend("grab!"); }
                     return false;
                 }, Check = () => _client.GetComponent<PlayerCarryController>().CarriedItemNetId.Value == _leaveBox2.NetworkObjectId ? null : "두 번째 상자를 못 잡음" },
                 new Step { Name = "클라 꺼짐", Act = () =>
