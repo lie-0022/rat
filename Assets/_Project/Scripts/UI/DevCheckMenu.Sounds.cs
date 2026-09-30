@@ -37,10 +37,10 @@ namespace RatGame.UI
             });
             Row("집", new List<(string, AudioClip)>
             {
-                ("딩동", ToneSynth.Chime(659f, 523f, 0.9f)), ("청소기 삐", ToneSynth.Chirp(1800f, 1800f, 0.25f)), ("청소기", ToneSynth.Growl(120f, 6f, 1f)),
-                ("TV", ToneSynth.Babble(4f, 2f)), ("덜컹", ToneSynth.Clink(180f, 0.35f)), ("달그락", ToneSynth.Clink(900f, 0.3f)),
-                ("우르릉", ToneSynth.Growl(40f, 3f, 1f)), ("쏴아", ToneSynth.Rush(0.35f, 2f)), ("나~비야", ToneSynth.CallOut(1.1f)),
-                ("쿵쿵쿵", ToneSynth.HeavySteps(1.1f)), ("전기선", a.WireHumClip), ("루틴 방울", ToneSynth.Clink(2600f, 0.35f)),
+                ("딩동", a.HouseWarnClip(HouseEventKind.Doorbell)), ("청소기 삐", a.HouseWarnClip(HouseEventKind.Vacuum)), ("청소기", a.HouseLoopClip(HouseEventKind.Vacuum)),
+                ("TV", a.HouseLoopClip(HouseEventKind.TV)), ("덜컹", a.HouseWarnClip(HouseEventKind.Window)), ("달그락", a.HouseWarnClip(HouseEventKind.Feeding)),
+                ("우르릉", a.HouseWarnClip(HouseEventKind.Flush)), ("쏴아", a.HouseLoopClip(HouseEventKind.Flush)), ("나~비야", a.OwnerCallClip),
+                ("쿵쿵쿵", a.HouseWarnClip(HouseEventKind.LightOn)), ("전기선", a.WireHumClip), ("루틴 방울", a.RoutineBellClip),
             });
             Row("알림·음악", new List<(string, AudioClip)>
             {

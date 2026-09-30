@@ -169,6 +169,32 @@ namespace RatGame.Data
         public AudioClip CountdownTick => Core.ToneSynth.Chirp(880f, 880f, 0.09f);
         public AudioClip CountdownGo => Core.ToneSynth.Chirp(1320f, 1320f, 0.35f);
 
+        /// <summary>집 이벤트 예고 소리 (없으면 null) — 게임(WorldSfx.House)과 F4 소리 듣기가 같이 쓴다 (고양이 278).</summary>
+        public AudioClip HouseWarnClip(Core.HouseEventKind kind) => kind switch
+        {
+            Core.HouseEventKind.Doorbell => Core.ToneSynth.Chime(659f, 523f, 0.9f),   // 딩동 (내려감)
+            Core.HouseEventKind.Vacuum => Core.ToneSynth.Chirp(1800f, 1800f, 0.25f),  // 삐—
+            Core.HouseEventKind.TV => Core.ToneSynth.Clink(3000f, 0.06f),             // 리모컨 딸깍
+            Core.HouseEventKind.Window => Core.ToneSynth.Clink(180f, 0.35f),          // 덜컹
+            Core.HouseEventKind.Feeding => Core.ToneSynth.Clink(900f, 0.3f),          // 그릇 달그락
+            Core.HouseEventKind.NewTraps => Core.ToneSynth.Clink(2600f, 0.08f),       // 딸깍
+            Core.HouseEventKind.Flush => Core.ToneSynth.Growl(40f, 3f, 1f),           // 벽 속 우르릉
+            Core.HouseEventKind.LightOn => Core.ToneSynth.HeavySteps(1.1f),           // 쿵쿵쿵 — 집주인이 걸어옴
+            _ => null,
+        };
+        /// <summary>집 이벤트가 켜져 있는 동안 반복 (없으면 null).</summary>
+        public AudioClip HouseLoopClip(Core.HouseEventKind kind) => kind switch
+        {
+            Core.HouseEventKind.TV => Core.ToneSynth.Babble(4f, 2f),
+            Core.HouseEventKind.Vacuum => Core.ToneSynth.Growl(120f, 6f, 1f),
+            Core.HouseEventKind.Flush => Core.ToneSynth.Rush(0.35f, 2f),
+            _ => null,
+        };
+        public AudioClip OwnerCallClip => Core.ToneSynth.CallOut(1.1f);          // "나~비야"
+        public AudioClip LightClickClip => Core.ToneSynth.Clink(3000f, 0.05f);   // 불 딸깍
+        public AudioClip RoutineBellClip => Core.ToneSynth.Clink(2600f, 0.35f);  // 루틴 출발 방울
+        public AudioClip KittenCallClip => Core.ToneSynth.Chirp(900f, 1250f, 0.3f);
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;

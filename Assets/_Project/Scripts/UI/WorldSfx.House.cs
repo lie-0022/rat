@@ -7,7 +7,7 @@ namespace RatGame.UI
     /// <summary>
     /// 집 이벤트·고양이 루틴 예고 소리 (고양이 245, plan cat-242 4단계) — 자막(ToastWidget)과 같은 이벤트를 듣는다. 자막은 그대로 둔다(청각 접근성).
     /// 딩동·삐·딸깍·덜컹·달그락은 한 번(2D), TV·청소기·물소리는 Start~End 동안 반복(2D), 루틴 출발 방울은 고양이 자리 3D.
-    /// 음색(높이·길이)은 그레이박스 자리값이라 여기 둔다 — 음량은 GrayboxAudioSO.
+    /// 소리 고르기·음량은 GrayboxAudioSO(F4 소리 듣기와 같은 곳, 고양이 278).
     /// </summary>
     public partial class WorldSfx
     {
@@ -18,35 +18,18 @@ namespace RatGame.UI
             if (_audio == null) return;
             if (phase == HouseEventPhase.Warn)
             {
-                var cue = kind switch
-                {
-                    HouseEventKind.Doorbell => ToneSynth.Chime(659f, 523f, 0.9f),   // 딩동 (내려감)
-                    HouseEventKind.Vacuum => ToneSynth.Chirp(1800f, 1800f, 0.25f),  // 삐—
-                    HouseEventKind.TV => ToneSynth.Clink(3000f, 0.06f),             // 리모컨 딸깍
-                    HouseEventKind.Window => ToneSynth.Clink(180f, 0.35f),          // 덜컹
-                    HouseEventKind.Feeding => ToneSynth.Clink(900f, 0.3f),          // 그릇 달그락
-                    HouseEventKind.NewTraps => ToneSynth.Clink(2600f, 0.08f),       // 딸깍
-                    HouseEventKind.Flush => ToneSynth.Growl(40f, 3f, 1f),           // 벽 속 우르릉
-                    HouseEventKind.LightOn => ToneSynth.HeavySteps(1.1f),           // 쿵쿵쿵 — 집주인이 걸어옴 (고양이 267)
-                    _ => null,
-                };
+                var cue = _audio.HouseWarnClip(kind);
                 if (cue != null) PlayHouse(cue, $"{kind} 예고");
                 if (kind == HouseEventKind.CallAway) // "나비야~" — 목소리는 설정 보이스 볼륨 (고양이 267)
                 {
-                    _ui.PlayOneShot(ToneSynth.CallOut(1.1f), _audio.OwnerVoiceVolume * Mathf.Clamp01(SettingsService.Current.VoiceVolume));
+                    _ui.PlayOneShot(_audio.OwnerCallClip, _audio.OwnerVoiceVolume * Mathf.Clamp01(SettingsService.Current.VoiceVolume));
                     Log.Dev("집 소리: CallAway 예고 (부르는 목소리)");
                 }
             }
             else if (phase == HouseEventPhase.Start)
             {
-                if (kind == HouseEventKind.LightOn) PlayHouse(ToneSynth.Clink(3000f, 0.05f), "불 딸깍");
-                var loop = kind switch
-                {
-                    HouseEventKind.TV => ToneSynth.Babble(4f, 2f),
-                    HouseEventKind.Vacuum => ToneSynth.Growl(120f, 6f, 1f),
-                    HouseEventKind.Flush => ToneSynth.Rush(0.35f, 2f),
-                    _ => null,
-                };
+                if (kind == HouseEventKind.LightOn) PlayHouse(_audio.LightClickClip, "불 딸깍");
+                var loop = _audio.HouseLoopClip(kind);
                 if (loop != null) StartHouseLoop(kind, loop);
             }
             else if (_houseLoops.TryGetValue(kind, out var src) && src != null) { src.Stop(); Log.Dev($"집 소리: {kind} 반복 멈춤"); }
@@ -56,7 +39,7 @@ namespace RatGame.UI
         private void OnCatCue(CatCueKind kind, Vector3 pos, float hearScale)
         {
             if (_audio == null || kind == CatCueKind.Snore || kind == CatCueKind.SnoreStop) return;
-            var clip = kind == CatCueKind.KittenCall ? ToneSynth.Chirp(900f, 1250f, 0.3f) : ToneSynth.Clink(2600f, 0.35f);
+            var clip = kind == CatCueKind.KittenCall ? _audio.KittenCallClip : _audio.RoutineBellClip;
             PlayAt(pos, clip, _audio.CatBellVolume);
         }
 
