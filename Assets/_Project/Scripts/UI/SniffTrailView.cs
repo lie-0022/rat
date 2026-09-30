@@ -18,7 +18,13 @@ namespace RatGame.UI
 
         [SerializeField] private Material _puffMaterial;
 
-        private sealed class Puff { public Transform T; public Vector3 Start; public Vector3 Dir; public float Born; public float Life; public float Scale = 1f; }
+        private sealed class Puff { public Transform T; public MeshRenderer R; public Vector3 Start; public Vector3 Dir; public float Born; public float Life; public float Scale = 1f; }
+
+        // 값 구간별 김 색 (고양이 259) — 싼 건 옅은 회백, 중간은 재료 색(연노랑) 그대로, 비싼 건 진한 금주황. 높이·크기(160)에 색까지 겹쳐 한눈에.
+        // 재료가 반투명(알파 0.75)이라 알파도 같이 준다
+        private static readonly Color[] WispTint = { new(0.86f, 0.88f, 0.9f, 0.6f), Color.clear, new(1f, 0.6f, 0.1f, 0.9f) };
+        private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        private MaterialPropertyBlock _block;
 
         private readonly List<Puff> _pool = new();
         private readonly List<Puff> _live = new();
@@ -45,6 +51,7 @@ namespace RatGame.UI
                 {
                     var p = Take();
                     p.Scale = WispScale[tier];
+                    Tint(p, WispTint[tier]);
                     p.Start = spots[s] + Vector3.up * (Height + i * WispRise);
                     p.Dir = Vector3.up;
                     p.Born = Time.time + 0.3f + s * 0.05f + i * 0.12f; // 줄기가 먼저 뻗고 나서
@@ -72,6 +79,7 @@ namespace RatGame.UI
                 p.Dir = dir;
                 p.Born = Time.time + i * 0.04f; // 발밑부터 차례로 — 줄기가 뻗어 나가는 느낌
                 p.Scale = 1f; // 풀에서 꺼낸 알갱이 크기 되돌림
+                Tint(p, Color.clear); // 색도 되돌림
                 p.Life = seconds;
                 p.T.position = p.Start;
                 p.T.localScale = Vector3.zero;
@@ -90,7 +98,16 @@ namespace RatGame.UI
             var r = go.GetComponent<MeshRenderer>();
             if (_puffMaterial != null) r.sharedMaterial = _puffMaterial;
             r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            return new Puff { T = go.transform };
+            return new Puff { T = go.transform, R = r };
+        }
+
+        // clear = 재료 색 그대로(블록 비움)
+        private void Tint(Puff p, Color c)
+        {
+            if (c.a <= 0f) { p.R.SetPropertyBlock(null); return; }
+            _block ??= new MaterialPropertyBlock();
+            _block.SetColor(BaseColorId, c);
+            p.R.SetPropertyBlock(_block);
         }
 
         private void Update()
