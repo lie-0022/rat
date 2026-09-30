@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEditor;
@@ -47,6 +48,26 @@ namespace RatGame.Tests
                 }
             Assert.IsEmpty(wrong, "문서와 BalanceConfig가 다름 — 문서를 먼저 고치고 SO를 맞춘다:\n" + string.Join("\n", wrong));
             Assert.Greater(checkedRows, 20, "비교한 줄이 너무 적음 — 표 형식이 바뀌었나");
+        }
+
+        [Test]
+        public void BalanceConfig_필드가_모두_문서_표에() // 새 필드를 더하고 문서를 안 고치면 (메뉴 Tools/RatGame/Docs/Write Balance Table, 고양이 334)
+        {
+            var so = AssetDatabase.LoadAssetAtPath<ScriptableObject>("Assets/_Project/Data/Balance/BalanceConfig.asset");
+            var docs = new StringBuilder();
+            foreach (var file in Directory.GetFiles("docs", "*.md")) docs.AppendLine(File.ReadAllText(file));
+            string all = docs.ToString();
+            var missing = new List<string>();
+            var it = new SerializedObject(so).GetIterator();
+            bool enter = true;
+            while (it.NextVisible(enter))
+            {
+                enter = false;
+                if (it.name == "m_Script") continue;
+                string name = it.name.TrimStart('_');
+                if (!Regex.IsMatch(all, @"^\|\s*`?" + name + @"`?\s*\|", RegexOptions.Multiline)) missing.Add(name);
+            }
+            Assert.IsEmpty(missing, "문서 표에 없는 수치 — Tools/RatGame/Docs/Write Balance Table:\n" + string.Join(", ", missing));
         }
     }
 }
