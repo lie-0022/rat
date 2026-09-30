@@ -63,6 +63,26 @@ namespace RatGame.Tests
         }
 
         [Test]
+        public void 네트워크_프리팹은_모두_목록에() // 빠지면 스폰 때 클라 오류 (고양이 293)
+        {
+            var nm = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Resources/NetworkManager.prefab").GetComponent<Unity.Netcode.NetworkManager>();
+            var registered = new HashSet<GameObject>();
+            foreach (var list in nm.NetworkConfig.Prefabs.NetworkPrefabsLists)
+                if (list != null) foreach (var p in list.PrefabList) if (p.Prefab != null) registered.Add(p.Prefab);
+            foreach (var p in nm.NetworkConfig.Prefabs.Prefabs) if (p.Prefab != null) registered.Add(p.Prefab);
+            int count = 0;
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/_Project/Prefabs" }))
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (go.GetComponent<Unity.Netcode.NetworkObject>() == null) continue;
+                count++;
+                Assert.IsTrue(registered.Contains(go), $"네트워크 프리팹 목록에 없음: {path}");
+            }
+            Assert.Greater(count, 50);
+        }
+
+        [Test]
         public void 세이브_JSON_왕복() // 파일은 안 쓴다 — 메모리에서만
         {
             var d = new Core.SaveData { HaulTotal = 1234, BestStage = 5, Endings = 2, BodyColorHex = "#59CCD9" };

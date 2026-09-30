@@ -4,7 +4,8 @@
     "references": [
         "RatGame.Runtime",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Unity.Netcode.Runtime"
     ],
     "includePlatforms": [
         "Editor"
