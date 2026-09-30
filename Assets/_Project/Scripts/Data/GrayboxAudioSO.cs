@@ -131,6 +131,22 @@ namespace RatGame.Data
         public float CatStepMaxDistance => _catStepMaxDistance;
         public AudioClip CatStepClip => Core.ToneSynth.Tap(70f, 0.16f); // 발바닥이라 둔하게
 
+        [Header("댕청한 실패 (고양이 273) — 미끄러짐·어질·깜짝·휘청·헤어볼·도망·기지개·재채기마다 짧은 소리")]
+        [SerializeField, Range(0f, 1f)] private float _blunderVolume = 0.7f;
+        public float BlunderVolume => _blunderVolume;
+        public AudioClip BlunderClip(AI.CatBlunderKind kind) => kind switch
+        {
+            AI.CatBlunderKind.Slip => Core.ToneSynth.Rush(0.2f, 0.45f),            // 주르륵
+            AI.CatBlunderKind.Stun => Core.ToneSynth.Tap(60f, 0.35f),              // 쿵
+            AI.CatBlunderKind.Startle => Core.ToneSynth.Chirp(700f, 1500f, 0.2f),  // 냥!
+            AI.CatBlunderKind.Wobble => Core.ToneSynth.Chirp(520f, 360f, 0.55f),   // 어어어
+            AI.CatBlunderKind.Hairball => Core.ToneSynth.Growl(90f, 12f, 0.6f),    // 웩웩
+            AI.CatBlunderKind.Flee => Core.ToneSynth.Chirp(900f, 1350f, 0.25f),    // 히익
+            AI.CatBlunderKind.Stretch => Core.ToneSynth.Chirp(430f, 290f, 0.8f),   // 하암
+            AI.CatBlunderKind.Sneeze => Core.ToneSynth.Chirp(950f, 480f, 0.16f),   // 에취
+            _ => null,
+        };
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;

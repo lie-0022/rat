@@ -59,7 +59,19 @@ namespace RatGame.AI
             if (phase != _lastPhase) OnPhase(phase);
             _lastState = state; _lastPhase = phase;
             UpdateSteps();
+            UpdateBlunder(state);
             UpdateBell();
+        }
+
+        // 댕청한 실패 (고양이 273) — 종류 NV가 상태보다 늦게 올 수 있어 종류가 바뀔 때 낸다
+        private CatBlunderKind _lastBlunder;
+        private void UpdateBlunder(CatState state)
+        {
+            var kind = state == CatState.Blunder ? _brain.BlunderKind.Value : CatBlunderKind.None;
+            if (kind == _lastBlunder) return;
+            _lastBlunder = kind;
+            var clip = _audio.BlunderClip(kind);
+            if (clip != null) PlayOnce(clip, _audio.BlunderVolume);
         }
 
         // 발소리 (고양이 271) — 큰 고양이 화면 흔들림(CatStepShake)과 같은 걸음 폭. 흔들림은 설정으로 끄지만 소리는 정보라 효과음 볼륨만 따른다
