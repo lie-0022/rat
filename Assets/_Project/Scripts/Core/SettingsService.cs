@@ -57,7 +57,10 @@ namespace RatGame.Core
 
         private static string FilePath => Path.Combine(Application.persistentDataPath, FileName);
 
-        public static SettingsData CreateDefaults() => new SettingsData();
+        public static SettingsData CreateDefaults() => new SettingsData { Language = DefaultLanguageFor(Application.systemLanguage) };
+
+        /// <summary>처음 켤 때 언어 — 한국어 시스템만 한국어, 나머지는 영어 (스팀 데모, 고양이 323). 저장된 설정이 있으면 그걸 쓴다.</summary>
+        public static string DefaultLanguageFor(SystemLanguage system) => system == SystemLanguage.Korean ? "ko" : "en";
 
         /// <summary>패널에서 고친 사본을 확정 — 저장하고 바로 적용. 화면 설정은 바뀐 경우에만 건드린다 (깜빡임 방지).</summary>
         public static void Apply(SettingsData data)

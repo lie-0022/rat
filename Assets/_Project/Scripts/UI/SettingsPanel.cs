@@ -125,7 +125,9 @@ namespace RatGame.UI
 
         private void OnDefaults()
         {
+            string language = _draft.Language;
             _draft = SettingsService.CreateDefaults();
+            _draft.Language = language; // 기본값은 조작·화면·소리만 — 언어까지 시스템 기준으로 바뀌면 읽던 글이 갑자기 바뀐다 (고양이 323)
             Refresh();
             SetDirty(true);
             ShowMessage(Loc.T("기본값으로 바꿨어요. [적용]을 눌러야 저장돼요."), UiColorRole.TextMuted);

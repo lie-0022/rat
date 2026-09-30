@@ -94,5 +94,14 @@ namespace RatGame.Tests
             foreach (HouseEventKind k in new[] { HouseEventKind.TV, HouseEventKind.Vacuum, HouseEventKind.Flush })
                 Assert.NotNull(a.HouseLoopClip(k), k.ToString());
         }
+
+        [Test]
+        public void 처음_언어는_한국어_시스템만_한국어() // 스팀 데모에서 외국 사용자가 한국어로 시작하지 않게 (고양이 323)
+        {
+            Assert.AreEqual("ko", RatGame.Core.SettingsService.DefaultLanguageFor(SystemLanguage.Korean));
+            Assert.AreEqual("en", RatGame.Core.SettingsService.DefaultLanguageFor(SystemLanguage.English));
+            Assert.AreEqual("en", RatGame.Core.SettingsService.DefaultLanguageFor(SystemLanguage.Japanese));
+            Assert.AreEqual("en", RatGame.Core.SettingsService.DefaultLanguageFor(SystemLanguage.Unknown));
+        }
     }
 }
