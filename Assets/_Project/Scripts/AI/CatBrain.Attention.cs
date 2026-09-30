@@ -17,6 +17,23 @@ namespace RatGame.AI
         private float _attentionScore;
         private readonly Dictionary<AttentionKind, List<float>> _attentionHistory = new();
 
+        /// <summary>유인 아이템 진입점 (docs/07 — Chase보다 우선순위 낮음). 태스크 1-6에서 호출.</summary>
+        public void ServerDistract(Vector3 pos, float seconds, AttentionKind kind, bool wobbleAfter = false, ulong? fooledBy = null)
+        {
+            if (!IsServer || State.Value == CatState.Chase || State.Value == CatState.Capture || State.Value == CatState.Toy) return;
+            // 찍힌 쥐가 던진 유인엔 안 속는다 — "네가 던진 거잖아" (design/cat-ideas/05)
+            if (fooledBy.HasValue && IsGrudged(fooledBy.Value)) { Log.Dev($"고양이 [{name}]: client {fooledBy.Value}의 유인엔 안 속음"); return; }
+            if (!AttentionWins(kind, out float score)) return; // 더 센 관심에 꽂혀 있음 (고양이 261)
+            seconds *= BoredomScale(kind);
+            _attentionScore = score;
+            _fooledBy = fooledBy;
+            _distractPos = pos;
+            _wobbleAfterDistract = wobbleAfter; // 캣닢 — 끝나면 비틀거림 (design/cat-ideas/11)
+            _distractUntil = Time.time + seconds;
+            _stateBeforeDistract = State.Value == CatState.Distracted ? _stateBeforeDistract : State.Value;
+            SetState(CatState.Distracted);
+        }
+
         /// <summary>이 자극에 반응할지 — 지금 유인 중이고 더 센 것에 꽂혀 있으면 false.</summary>
         private bool AttentionWins(AttentionKind kind, out float score)
         {
