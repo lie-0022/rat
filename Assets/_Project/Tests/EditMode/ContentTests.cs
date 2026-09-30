@@ -138,6 +138,26 @@ namespace RatGame.Tests
         }
 
         [Test]
+        public void UI_코드의_한국어_글자도_모두_표에() // switch로 고른 글자·.text에 바로 넣는 글자 — Loc 검사에 안 잡혀 의심 이유가 한국어로 남았다 (고양이 305)
+        {
+            var table = Resources.Load<LocalizationTableSO>("LocalizationTable");
+            var arm = new Regex(@"(?:=>|\.text\s*=)\s*""((?:[^""\\]|\\.)*)""");
+            var hangul = new Regex("[가-힣]");
+            var missing = new List<string>();
+            foreach (var file in System.IO.Directory.GetFiles("Assets/_Project/Scripts/UI", "*.cs", System.IO.SearchOption.AllDirectories))
+            {
+                string name = System.IO.Path.GetFileName(file);
+                if (name.StartsWith("DevCheckMenu") || name.StartsWith("CatDebugOverlay")) continue; // 개발용 화면
+                foreach (Match m in arm.Matches(System.IO.File.ReadAllText(file)))
+                {
+                    string ko = Regex.Unescape(m.Groups[1].Value);
+                    if (hangul.IsMatch(ko) && !table.TryGetEn(ko, out _)) missing.Add($"{name}: {ko}");
+                }
+            }
+            Assert.IsEmpty(missing, string.Join("\n", missing));
+        }
+
+        [Test]
         public void 세이브_JSON_왕복() // 파일은 안 쓴다 — 메모리에서만
         {
             var d = new Core.SaveData { HaulTotal = 1234, BestStage = 5, Endings = 2, BodyColorHex = "#59CCD9" };
