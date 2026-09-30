@@ -72,7 +72,9 @@ namespace RatGame.Net
                 int agents = FindObjectsByType<UnityEngine.AI.NavMeshAgent>(FindObjectsSortMode.None).Length; // 고양이 수 (NavMeshAgent는 고양이뿐)
                 Log.Dev($"성능: 평균 {AvgMs:F2}ms ({1000f / AvgMs:F0}fps), 1% 최악 {Worst1Ms:F2}ms, 최대 {max:F1}ms, 프레임 {_samples.Count}, " +
                         $"씬 {UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}, 네트 오브젝트 {netObjs}, 고양이 {agents}, " +
-                        $"GC 할당 {(_gcFrames > 0 ? _gcBytes / 1024f / _gcFrames : 0f):F1}KB/프레임, GC {System.GC.CollectionCount(0) - _gcCountAtStart}번");
+                        $"GC 할당 {(_gcFrames > 0 ? _gcBytes / 1024f / _gcFrames : 0f):F1}KB/프레임, GC {System.GC.CollectionCount(0) - _gcCountAtStart}번, " +
+                        // 긴 세션 누수 보기 (고양이 329) — 관리 힙·전체 할당·오브젝트 수가 시간에 따라 계속 오르면 샌다
+                        $"힙 {UnityEngine.Profiling.Profiler.GetMonoUsedSizeLong() / 1048576f:F1}MB, 전체 {UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / 1048576f:F0}MB, 오브젝트 {FindObjectsByType<GameObject>(FindObjectsSortMode.None).Length}");
             }
             _gcBytes = 0; _gcFrames = 0; _gcCountAtStart = System.GC.CollectionCount(0);
             _samples.Clear();
