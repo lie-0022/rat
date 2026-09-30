@@ -18,6 +18,10 @@ namespace RatGame.EditorTools
         [MenuItem("Tools/RatGame/Test/Run All — Full (solo + 2P + 4P + leave)")]
         private static void RunFull() => StartQueue("carry,chase,achv,codexall,attention,rescue2p,glue2p,chase2p,sync4p,leave2p,hostleave2p");
 
+        // 전부 — 짧은 시험 11 + 통째 시험 혼자·영어 2인·4인 (고양이 287, 약 15분). 빌드 클라가 필요하다
+        [MenuItem("Tools/RatGame/Test/Run Everything (Full + soaks)")]
+        private static void RunEverything() => StartQueue("carry,chase,achv,codexall,attention,rescue2p,glue2p,chase2p,sync4p,leave2p,hostleave2p,soak1p,soaken2p,soak4p");
+
         private static void StartQueue(string keys)
         {
             if (EditorApplication.isPlaying) { Debug.LogWarning("[Rat] 시험 묶음은 플레이가 꺼진 상태에서 시작"); return; }
@@ -35,13 +39,14 @@ namespace RatGame.EditorTools
             int comma = queue.IndexOf(',');
             string next = comma < 0 ? queue : queue.Substring(0, comma);
             SessionState.SetString(QueueKey, comma < 0 ? "" : queue.Substring(comma + 1));
+            if (next.StartsWith("soak")) { SoakHarness.ArmFromQueue(next); return; } // 통째 시험은 제 무장·시작 — 끝나면 QueueResult로 돌아온다
             SessionState.SetString(ArmedKey, next);
             // 바로 켠다 — 에디터가 뒤에 있으면 편집 모드에선 delayCall·update가 몇 분씩 안 불려 묶음이 멈췄다(고양이 239·248·249)
             EditorApplication.isPlaying = true;
         }
 
         // 시험 하나가 끝나면 결과를 적고 플레이를 멈춘다(멈추면 ContinueQueue). 묶음이 아니면 아무것도 안 함
-        private static void QueueResult(string name, string mark)
+        internal static void QueueResult(string name, string mark)
         {
             string results = SessionState.GetString(ResultsKey, null);
             if (results == null) return; // 묶음 밖에서 돌린 시험

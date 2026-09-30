@@ -66,6 +66,17 @@ namespace RatGame.EditorTools
         [MenuItem("Tools/RatGame/Test/Full Run Soak (Walls, English)")]
         private static void ArmEnglish() => Arm(true);
 
+        /// <summary>시험 묶음에서 — soak1p(혼자)·soaken2p(영어 2인)·soak4p(4인) (고양이 287).</summary>
+        internal static void ArmFromQueue(string key)
+        {
+            SessionState.SetInt(ClientCountKey, key == "soak4p" ? 3 : key == "soaken2p" ? 1 : 0);
+            _fromQueue = key == "soak4p" ? "통째 4인" : key == "soaken2p" ? "통째 영어 2인" : "통째 혼자";
+            SessionState.SetString(FromQueueKey, _fromQueue);
+            Arm(key == "soaken2p");
+        }
+        private const string FromQueueKey = "RatGame.Soak.FromQueue";
+        private static string _fromQueue;
+
         private static void Arm(bool english)
         {
             SessionState.SetBool(ArmedKey, true);
@@ -259,6 +270,9 @@ namespace RatGame.EditorTools
             if (_bakBackup != null) File.WriteAllText(BakPath, _bakBackup);
             _restorePending = true;
             Debug.Log(sb.ToString());
+            // 묶음에서 왔으면 결과를 적고 플레이를 멈춘다(멈추면 다음 시험) — 혼자 돌릴 땐 전처럼 플레이에 남는다
+            string queued = SessionState.GetString(FromQueueKey, "");
+            if (queued.Length > 0) { SessionState.EraseString(FromQueueKey); PlayTests.QueueResult(queued, failure == null ? "✓" : "✗"); }
         }
     }
 }
