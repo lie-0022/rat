@@ -212,8 +212,10 @@ namespace RatGame.EditorTools
             {
                 var st = Cat().State.Value;
                 if (Transitions.Contains("Chase→Capture")) return true;
-                if (st is CatState.Patrol or CatState.Suspicious or CatState.Return or CatState.Sleep)
+                // 쫓는 중이 아니면 늘 다시 앞에 — 전엔 순찰·의심·복귀·잠만이라 매복·상자 앉기면 3분을 다 썼다 (고양이 272, 추격 2인은 250에서)
+                if (st is not (CatState.Chase or CatState.Capture or CatState.Toy))
                 {
+                    if (st == CatState.Ambush || st == CatState.BoxSit) Cat().ServerWake(); // 숨어 있으면 앞에 서도 못 본다
                     var fwd = Cat().transform.forward; fwd.y = 0f; fwd.Normalize();
                     Put(Cat().transform.position + fwd * 2f + Vector3.up * 0.3f);
                 }
