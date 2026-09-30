@@ -37,10 +37,13 @@ namespace RatGame.EditorTools
                 new Step { Name = "클라 추격당함", Ready = () =>
                 {
                     var client = _client.GetComponent<PlayerCondition>();
+                    // 창고 끈끈이·쥐덫에 걸리면 시험 대상(고양이에게 잡힘)이 아니다 — 풀어 주고 계속 (3연속 중 1판 Trapped, 고양이 250)
+                    if (client.State.Value is ConditionState.Trapped or ConditionState.Stunned) { client.ServerSetState(ConditionState.Active); return false; }
                     if (client.State.Value != ConditionState.Active) return true;
                     if (EditorApplication.timeSinceStartup - _stepAt > 40) return true;
                     var st = Cat().State.Value;
-                    if ((st is CatState.Patrol or CatState.Suspicious or CatState.Return or CatState.Sleep) && EditorApplication.timeSinceStartup - _lastTp > 0.5)
+                    // 쫓는 중이 아니면 다시 앞에 — 전엔 순찰·의심·복귀·잠만이라 놓친 뒤 수색·상자 앉기에서 40초를 다 썼다 (고양이 250)
+                    if (st is not (CatState.Chase or CatState.Capture or CatState.Toy) && EditorApplication.timeSinceStartup - _lastTp > 0.5)
                     {
                         _lastTp = EditorApplication.timeSinceStartup;
                         var fwd = Cat().transform.forward; fwd.y = 0f; fwd.Normalize();
