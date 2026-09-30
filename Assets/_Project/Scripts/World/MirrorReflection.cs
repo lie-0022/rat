@@ -94,6 +94,7 @@ namespace RatGame.World
 
             // 텍스처 x축(카메라 오른쪽)이 Quad의 u축과 반대면 뒤집어 붙인다
             bool flip = xb < xa;
+            _block ??= new MaterialPropertyBlock(); // 도메인 리로드로 비었을 때도
             _glass.GetPropertyBlock(_block);
             _block.SetTexture(BaseMapId, _texture);
             _block.SetVector(BaseMapStId, flip ? new Vector4(-1f, 1f, 1f, 0f) : new Vector4(1f, 1f, 0f, 0f));
@@ -125,7 +126,8 @@ namespace RatGame.World
         private void CacheOwnBody()
         {
             var nm = NetworkManager.Singleton;
-            var player = nm != null && nm.SpawnManager != null ? nm.SpawnManager.GetLocalPlayerObject() : null;
+            // 네트워크가 꺼지는 중엔 GetLocalPlayerObject가 안에서 터진다(기지 → 메뉴, 고양이 263) — 듣는 중일 때만
+            var player = nm != null && nm.IsListening && nm.SpawnManager != null ? nm.SpawnManager.GetLocalPlayerObject() : null;
             if (player == null) { _ownBody = null; _ownBodyRoot = null; return; }
             if (_ownBodyRoot == player.transform && _ownBody != null) return;
             _ownBodyRoot = player.transform;

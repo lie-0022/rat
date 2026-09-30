@@ -41,7 +41,7 @@
 - **거울** `World/Mirror` (북쪽 벽 오른쪽, IInteractable "거울") → `UI/MirrorPanel`: 기본(팀 색) + `Data/Skins` 4종(노란·검은·흰·분홍 쥐, 틴트만·모자 없음). 착용 = `Player/PlayerSkin` NetworkVariable<FixedString32Bytes>(소유 클라 쓰기) → 전 클라 `PlayerVisual.SetBodyColor`. 개인 저장 `SaveData.EquippedSkinId`. **도전과제 미구현이라 전부 해금** (AchievementId 빈 값).
   - **진짜 거울 (2026-09-14, `World/MirrorReflection`)**: 각 클라 로컬 평면 반사. 거울 면 뒤로 뒤집은 눈 위치에서 거울 사각형을 창으로 삼는 off-axis 카메라로 방을 1024px 텍스처에 그려 유리 Quad(URP Unlit)에 입힌다. 근평면 = 거울 면(액자·벽 자동 제외). 1인칭이라 내 몸은 평소 그림자 전용 → 반사 카메라가 그리는 동안만 보이게 해서 스킨 확인 가능. 눈이 10m 밖이거나 거울이 화면에 없으면 갱신 안 함.
 - **도감** `World/CodexBook` (북쪽 벽 왼쪽, "도감") → `UI/CodexPanel` (ScrollRect): ItemDatabase 중 Id `loot_*` 20종. 해금 = 정산 이벤트(EventBus.LootDeposited, 호스트) → 각 플레이어의 `Player/PlayerCodex`가 자기 소유 클라에 ClientRpc → `SaveData.UnlockedCodexIds`에 저장. 미해금은 "???". 토스트는 아직 없음.
-- 상호작용 프롬프트 HUD가 아직 없어 각 배치물 위에 월드 TMP 라벨 "[E] 거울/도감/쥐 상점".
+- 각 배치물 위에 월드 TMP 라벨 "[E] 거울/도감/쥐 상점" — 바라보면 HUD 상호작용 안내(`InteractPromptWidget`, 고양이 187)도 함께 뜬다.
 
 ## Meta/MetaWallet.cs + SaveService
 
