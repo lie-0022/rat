@@ -10,7 +10,7 @@ namespace RatGame.Core
         /// </summary>
         public static void DespawnSafe(this NetworkObject no)
         {
-            if (no != null && no.IsSpawned) no.Despawn(no.IsSceneObject != true);
+            if (no != null && no.IsSpawned) no.Despawn(!no.InScenePlaced);
         }
     }
 }

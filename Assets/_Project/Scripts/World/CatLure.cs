@@ -74,7 +74,7 @@ namespace RatGame.World
         // 씬에 놓인 캣닢·부스러기는 CarryableItem이 없어 여기서 끈다 — 파괴 대신 디스폰만 되므로 (고양이 134)
         public override void OnNetworkDespawn()
         {
-            if (NetworkObject.IsSceneObject == true) gameObject.SetActive(false);
+            if (NetworkObject.InScenePlaced) gameObject.SetActive(false);
         }
 
         private void Consume()

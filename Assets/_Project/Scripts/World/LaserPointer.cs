@@ -62,8 +62,8 @@ namespace RatGame.World
             AimServerRpc(hit.point);
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        private void AimServerRpc(Vector3 point, ServerRpcParams rpc = default)
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)] // 옛 ServerRpc(RequireOwnership=false)와 같음 — NGO 2.x 권장형 (고양이 295)
+        private void AimServerRpc(Vector3 point, RpcParams rpc = default)
         {
             // 보낸 쥐가 정말 이걸 들고 있나
             ulong sender = rpc.Receive.SenderClientId;

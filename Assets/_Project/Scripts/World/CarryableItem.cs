@@ -94,7 +94,7 @@ namespace RatGame.World
         {
             Pocketed.OnValueChanged -= OnPocketedChanged;
             // 씬에 놓인 물건은 적립·파괴·먹기 때 파괴 대신 디스폰만 된다(DespawnSafe) — 모두의 화면에서 끈다 (고양이 134)
-            if (NetworkObject.IsSceneObject != true) return;
+            if (!NetworkObject.InScenePlaced) return;
             gameObject.SetActive(false);
             if (Run.RunManager.Instance != null && Run.RunManager.Instance.AcceptsDeposits) Log.Dev($"씬 물건 끔: {name}"); // 2인 검증용 — 씬 언로드 때 일괄 디스폰은 안 찍게
         }
