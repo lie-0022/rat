@@ -69,7 +69,7 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 
 | 무엇 | 어디 | 시간 | 언제 |
 |---|---|---|---|
-| EditMode 로직 시험 28개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성·빌드 씬·세이브 왕복·네트워크 프리팹 등록·사라진 스크립트·프리팹·코드·데이터 에셋 번역 글자·스팀 업로드 경로·스팀 도전과제 연동·처음 언어) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 2초 | 공식·데이터·생성기를 고친 뒤 |
+| EditMode 로직 시험 29개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성·빌드 씬·세이브 왕복·네트워크 프리팹 등록·사라진 스크립트·프리팹·코드·데이터 에셋 번역 글자·스팀 업로드 경로·스팀 도전과제 연동·처음 언어·문서 표 수치 = BalanceConfig) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 2초 | 공식·데이터·생성기를 고친 뒤 |
 | Run All — Quick (혼자 9) | Tools → RatGame → Test | 2분 | 게임 코드를 고친 뒤 |
 | Run All — Full (혼자 9 + 2·4인·레이저·재접속·이탈 8 = 17) | 〃 (빌드 클라 `Builds/macOS/Rat.app` 필요 — 런타임 코드를 고쳤으면 먼저 빌드) | 8분 | 넷코드·운반을 고친 뒤 |
 | Run Everything (Full 17 + 통째 혼자·영어 2인·4인 = 20) | 〃 | 18분 | 큰 묶음 뒤, 커밋 전 |
@@ -94,9 +94,9 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 
 ## 클로드코드에게 시킬 추가 자동화 (여유 시)
 
-- `Tools/RatGame/Validate Balance`: BalanceConfigSO 값과 docs 표 diff 출력
+- ~~`Tools/RatGame/Validate Balance`: BalanceConfigSO 값과 docs 표 diff 출력~~ → EditMode `BalanceDocsTests`(고양이 328): 표 첫 칸이 필드 이름 그대로(`walkSpeed`)인 줄의 첫 숫자를 SO와 비교. 지금 26줄 — **새 수치를 문서 표에 적을 땐 첫 칸을 필드 이름 그대로** 쓰면 자동으로 지켜진다. (고양이 수치 대부분은 문서에서 다른 이름으로 적혀 아직 비교 밖)
 - `Tools/RatGame/Room Module Checker`: RoomModule 프리팹 규약(소켓 방향·바운즈·스폰 개수) 검사
-- 빌드 스크립트: 커맨드라인 `-batchmode` 빌드 (스팀 업로드 전 단계)
+- ~~빌드 스크립트: 커맨드라인 `-batchmode` 빌드 (스팀 업로드 전 단계)~~ → `BuildTools.BuildWindowsDemoCli` (고양이 320)
 - (P2) 플레이 통계 로컬 CSV 덤프 — 밸런싱 근거용
 
 ## 사양 변경 규칙
