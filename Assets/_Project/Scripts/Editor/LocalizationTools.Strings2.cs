@@ -175,6 +175,15 @@ namespace RatGame.EditorTools
             ["  · 보상: {0}"] = "  · Reward: {0}",
             [" · 도전과제 {0}/{1}"] = " · Achievements {0}/{1}",
             ["도전과제"] = "Achievements",
+            // 네트워크 시작 실패 — 메뉴 상태 줄 (고양이 318, 전엔 번역 없이 그대로 떴다)
+            ["네트워크 설정을 찾지 못했어요."] = "Couldn't find the network setup.",
+            ["Steam 방을 만들지 못했어요. Steam 연결을 확인하세요."] = "Couldn't create a Steam room. Check your Steam connection.",
+            ["호스트 시작 실패"] = "Couldn't start hosting",
+            ["친구가 보낸 Steam 초대를 수락하면 들어갈 수 있어요."] = "Accept a friend's Steam invite to join.",
+            ["친구 방에 들어가지 못했어요. 방이 닫혔거나 가득 찼을 수 있어요."] = "Couldn't join your friend's room. It may be closed or full.",
+            ["내가 연 방에는 참가할 수 없어요."] = "You can't join your own room.",
+            ["클라이언트 접속 실패"] = "Couldn't connect",
+            ["플레이어 없이 멈춘 연결 정리"] = "Dropped a connection that stalled before joining",
         };
     }
 }

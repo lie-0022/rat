@@ -120,7 +120,8 @@ namespace RatGame.Tests
         public void 코드_번역_원문은_모두_표에() // Loc.T/F/Pack("…") 한국어 — 번역 도구 검사와 같은 규칙 (고양이 304)
         {
             var table = Resources.Load<LocalizationTableSO>("LocalizationTable");
-            var call = new Regex(@"Loc\.(?:T|F|Pack)\(([^;\n]*)");
+            // 접속 거절·끊김 사유도 — 호스트가 한국어 원문을 보내고 클라 메뉴가 Loc.T로 번역한다 (고양이 318)
+            var call = new Regex(@"(?:Loc\.(?:T|F|Pack)\(|\.Reason = |DisconnectClient\()([^;\n]*)");
             var lit = new Regex(@"""((?:[^""\\]|\\.)*)""");
             var hangul = new Regex("[가-힣]");
             var missing = new List<string>();

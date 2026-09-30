@@ -155,17 +155,17 @@ namespace RatGame.Net
         {
             var nm = NetworkManager.Singleton;
             if (nm == null || nm.IsListening) return false;
-            if (!ConfigureTransport(nm)) return Fail("네트워크 설정을 찾지 못했어요.");
+            if (!ConfigureTransport(nm)) return Fail(Loc.T("네트워크 설정을 찾지 못했어요."));
 
             // Steam: 친구가 초대받아 들어올 로비를 먼저 만든다
             if (UsingSteam && !await _steam.CreateLobbyAsync(MaxPlayers))
-                return Fail("Steam 방을 만들지 못했어요. Steam 연결을 확인하세요.");
+                return Fail(Loc.T("Steam 방을 만들지 못했어요. Steam 연결을 확인하세요."));
 
             nm.ConnectionApprovalCallback = ApproveConnection;
             if (!nm.StartHost())
             {
                 _steam?.LeaveLobby();
-                return Fail("호스트 시작 실패");
+                return Fail(Loc.T("호스트 시작 실패"));
             }
             Log.Dev($"호스트 시작 ({TransportName})");
             GameStateMachine.Instance.TransitionTo(GameState.Lobby);
@@ -177,17 +177,17 @@ namespace RatGame.Net
         {
             var nm = NetworkManager.Singleton;
             if (nm == null || nm.IsListening) return false;
-            if (!ConfigureTransport(nm)) return Fail("네트워크 설정을 찾지 못했어요.");
+            if (!ConfigureTransport(nm)) return Fail(Loc.T("네트워크 설정을 찾지 못했어요."));
 
             if (UsingSteam)
             {
-                if (lobbyId == 0) return Fail("친구가 보낸 Steam 초대를 수락하면 들어갈 수 있어요.");
+                if (lobbyId == 0) return Fail(Loc.T("친구가 보낸 Steam 초대를 수락하면 들어갈 수 있어요."));
                 ulong owner = await _steam.JoinLobbyAsync(lobbyId);
-                if (owner == 0) return Fail("친구 방에 들어가지 못했어요. 방이 닫혔거나 가득 찼을 수 있어요.");
+                if (owner == 0) return Fail(Loc.T("친구 방에 들어가지 못했어요. 방이 닫혔거나 가득 찼을 수 있어요."));
                 if (owner == _steam.MySteamId)
                 {
                     _steam.LeaveLobby();
-                    return Fail("내가 연 방에는 참가할 수 없어요.");
+                    return Fail(Loc.T("내가 연 방에는 참가할 수 없어요."));
                 }
                 nm.GetComponent<FacepunchTransport>().targetSteamId = owner;
             }
@@ -195,7 +195,7 @@ namespace RatGame.Net
             if (!nm.StartClient())
             {
                 _steam?.LeaveLobby();
-                return Fail("클라이언트 접속 실패");
+                return Fail(Loc.T("클라이언트 접속 실패"));
             }
             nm.OnClientDisconnectCallback -= OnClientDisconnected;
             nm.OnClientDisconnectCallback += OnClientDisconnected;

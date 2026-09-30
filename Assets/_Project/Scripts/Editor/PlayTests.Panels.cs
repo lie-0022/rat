@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using RatGame.Core;
+using RatGame.Data;
 using RatGame.Run;
 using RatGame.UI;
 using RatGame.World;
@@ -20,6 +21,15 @@ namespace RatGame.EditorTools
     {
         [MenuItem("Tools/RatGame/Test/Hub Panels Text (ko+en)")]
         private static void ArmPanels() => Arm("panels");
+
+        private static readonly string[] MenuFailures =
+        {
+            "네트워크 설정을 찾지 못했어요.", "Steam 방을 만들지 못했어요. Steam 연결을 확인하세요.", "호스트 시작 실패",
+            "친구가 보낸 Steam 초대를 수락하면 들어갈 수 있어요.", "친구 방에 들어가지 못했어요. 방이 닫혔거나 가득 찼을 수 있어요.",
+            "내가 연 방에는 참가할 수 없어요.", "클라이언트 접속 실패", "정원 초과 (최대 4명)", "게임 진행 중에는 참가할 수 없음 (로비에서만 합류)",
+            "다음 맵으로 이동 중 — 기지로 돌아오면 참가할 수 있어요", "호스트를 찾지 못했어요. 친구가 방을 열었는지 확인하세요.",
+            "호스트와 연결이 끊겨 메인 메뉴로 돌아왔어요.", "호스트를 시작하지 못했어요. 이미 켜진 게임이 있는지 확인하세요.",
+        };
 
         private static readonly string[] PanelNames = { "상점", "거울", "도감", "설정", "일시정지" };
 
@@ -57,6 +67,22 @@ namespace RatGame.EditorTools
                     System.Action restore = () => { if (settingsBytes != null) File.WriteAllBytes(settingsPath, settingsBytes); };
                     var prev = RestoreAfterPlay; RestoreAfterPlay = () => { prev?.Invoke(); restore(); };
                     OnDone = () => { SetLang("ko"); restore(); };
+                    SetLang("ko");
+                } },
+                // 메뉴 상태 줄 — 접속 실패·거절 사유를 영어로 하나씩 띄워 넘침·한글 (고양이 318, 전엔 실패 문구가 번역 없이 떴다)
+                new Step { Name = "메뉴 실패 문구", Wait = 1f, Ready = () => Object.FindFirstObjectByType<MainMenuController>() != null, Act = () =>
+                {
+                    SetLang("en");
+                    var menu = Object.FindFirstObjectByType<MainMenuController>();
+                    var set = typeof(MainMenuController).GetMethod("SetStatus", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var status = (TMPro.TMP_Text)typeof(MainMenuController).GetField("_statusText", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(menu);
+                    foreach (var ko in MenuFailures)
+                    {
+                        set.Invoke(menu, new object[] { Loc.T(ko), UiColorRole.DangerText });
+                        ScanOverflow("메뉴 상태", status);
+                        ScanHangul("메뉴 상태", status);
+                    }
+                    set.Invoke(menu, new object[] { "", UiColorRole.TextMuted });
                     SetLang("ko");
                 } },
                 HostFromMenu("호스트"), InHub("기지"),

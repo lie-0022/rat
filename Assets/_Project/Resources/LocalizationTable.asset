@@ -996,3 +996,22 @@ MonoBehaviour:
       \uB2E8 \uACE0\uC591\uC774"
     En: "Sounds \u2014 mrrp?=suspicious \xB7 growl=chasing \xB7 snore=deep sleep
       \xB7 jingle=belled cat"
+  - Ko: "\uB124\uD2B8\uC6CC\uD06C \uC124\uC815\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694."
+    En: Couldn't find the network setup.
+  - Ko: "Steam \uBC29\uC744 \uB9CC\uB4E4\uC9C0 \uBABB\uD588\uC5B4\uC694. Steam \uC5F0\uACB0\uC744
+      \uD655\uC778\uD558\uC138\uC694."
+    En: Couldn't create a Steam room. Check your Steam connection.
+  - Ko: "\uD638\uC2A4\uD2B8 \uC2DC\uC791 \uC2E4\uD328"
+    En: Couldn't start hosting
+  - Ko: "\uCE5C\uAD6C\uAC00 \uBCF4\uB0B8 Steam \uCD08\uB300\uB97C \uC218\uB77D\uD558\uBA74
+      \uB4E4\uC5B4\uAC08 \uC218 \uC788\uC5B4\uC694."
+    En: Accept a friend's Steam invite to join.
+  - Ko: "\uCE5C\uAD6C \uBC29\uC5D0 \uB4E4\uC5B4\uAC00\uC9C0 \uBABB\uD588\uC5B4\uC694.
+      \uBC29\uC774 \uB2EB\uD614\uAC70\uB098 \uAC00\uB4DD \uCC3C\uC744 \uC218 \uC788\uC5B4\uC694."
+    En: Couldn't join your friend's room. It may be closed or full.
+  - Ko: "\uB0B4\uAC00 \uC5F0 \uBC29\uC5D0\uB294 \uCC38\uAC00\uD560 \uC218 \uC5C6\uC5B4\uC694."
+    En: You can't join your own room.
+  - Ko: "\uD074\uB77C\uC774\uC5B8\uD2B8 \uC811\uC18D \uC2E4\uD328"
+    En: Couldn't connect
+  - Ko: "\uD50C\uB808\uC774\uC5B4 \uC5C6\uC774 \uBA48\uCD98 \uC5F0\uACB0 \uC815\uB9AC"
+    En: Dropped a connection that stalled before joining
