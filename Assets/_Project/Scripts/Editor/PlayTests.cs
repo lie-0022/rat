@@ -67,6 +67,7 @@ namespace RatGame.EditorTools
                 else if (armed == "codexall") Begin("전리품 전부 정산", CodexAllSteps());
                 else if (armed == "sync4p") Begin("4인 던지기 동기화", SyncSteps(), false);
                 else if (armed == "chase2p") Begin("고양이 추격 2인", Chase2PSteps(), false);
+                else if (armed == "attention") Begin("관심 점수", AttentionSteps());
                 else if (armed == "leave2p") Begin("클라 이탈 2인", LeaveSteps(), false);
                 else if (armed == "hostleave2p") Begin("호스트 이탈 2인", HostLeaveSteps(), false);
             };
