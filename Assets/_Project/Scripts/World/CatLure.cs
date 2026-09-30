@@ -42,7 +42,7 @@ namespace RatGame.World
             foreach (var brain in FindCats())
             {
                 if (Vector3.Distance(brain.transform.position, transform.position) > _balance.LureCatnipRadius) continue;
-                brain.ServerDistract(transform.position, _balance.LureCatnipSeconds, wobbleAfter: true); // 취한 뒤 비틀거림
+                brain.ServerDistract(transform.position, _balance.LureCatnipSeconds, AttentionKind.Catnip, wobbleAfter: true); // 취한 뒤 비틀거림
                 Log.Dev($"캣닢 발동: {brain.name}");
                 Consume();
                 return;
@@ -58,7 +58,7 @@ namespace RatGame.World
             foreach (var brain in FindCats())
             {
                 if (Vector3.Distance(brain.transform.position, transform.position) > _balance.LureYarnRadius) continue;
-                brain.ServerDistract(transform.position, _balance.LureYarnSeconds, fooledBy: _carryable.AttributedClient); // 속은 걸 알면 던진 쥐를 찍는다
+                brain.ServerDistract(transform.position, _balance.LureYarnSeconds, AttentionKind.Yarn, fooledBy: _carryable.AttributedClient); // 속은 걸 알면 던진 쥐를 찍는다
                 any = true;
             }
             if (any)

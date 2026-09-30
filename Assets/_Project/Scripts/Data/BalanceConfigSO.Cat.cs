@@ -255,5 +255,9 @@ namespace RatGame.Data
         public float LureYarnRadius => _lureYarnRadius;
         public float LureCatnipSeconds => _lureCatnipSeconds;
         public float LureCatnipRadius => _lureCatnipRadius;
+        public float AttentionScore(int kind) => _attentionScores != null && kind >= 0 && kind < _attentionScores.Length ? _attentionScores[kind] : 50f;
+        public float BoredomWindowSeconds => _boredomWindowSeconds;
+        public int BoredomCount => _boredomCount;
+        public float BoredomMultiplier => _boredomMultiplier;
     }
 }

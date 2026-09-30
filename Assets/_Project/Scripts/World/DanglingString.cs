@@ -94,7 +94,7 @@ namespace RatGame.World
                 // 끈 자기 기둥에 맞는 건 보이는 것 (기둥 바로 뒤에서 보면 기둥이 선을 막는다)
                 if (Physics.Linecast(eye, toy, out var hit, blockMask, QueryTriggerInteraction.Ignore) && hit.collider.gameObject != gameObject) continue;
                 _catCooldown[cat] = Time.time + _balance.StringCatCooldown;
-                cat.ServerDistract(PlayPoint, _balance.StringDistractSeconds);
+                cat.ServerDistract(PlayPoint, _balance.StringDistractSeconds, AttentionKind.String);
                 Log.Dev($"끈: 고양이 [{cat.name}] 앞발질하러 옴");
             }
         }

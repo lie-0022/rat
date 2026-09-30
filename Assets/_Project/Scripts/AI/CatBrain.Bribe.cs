@@ -39,7 +39,7 @@ namespace RatGame.AI
                 _bribeItem = item;
                 _bribeFrom = item.LastCarrierId;
                 Log.Dev($"고양이 [{name}]: 뇌물 발견 — {item.name} (client {_bribeFrom})");
-                ServerDistract(item.transform.position, _balance.CatBribeEatSeconds);
+                ServerDistract(item.transform.position, _balance.CatBribeEatSeconds, AttentionKind.Bribe);
                 return true;
             }
             return false;

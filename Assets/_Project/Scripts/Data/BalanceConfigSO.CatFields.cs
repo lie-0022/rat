@@ -285,5 +285,11 @@ namespace RatGame.Data
         [SerializeField] private float _houseNewTrapsAvoid = 5f;         // 쥐에서 이만큼(m) 넘게 떨어진 자리에만
         [SerializeField] private float _flushSeconds = 6f;               // 배관 물 내려가는 시간 (고양이 97)
         [SerializeField] private float _flushMaskLoudness = 30f;          // 물소리 — 이 미만 소리는 묻힘
+
+        [Header("관심 점수 (design/cat-ideas/13, 고양이 261) — 유인 중엔 이보다 낮은 자극을 무시")]
+        [SerializeField] private float[] _attentionScores = { 40f, 50f, 60f, 80f, 90f }; // AttentionKind 순서: 먹이 떨굼·끈·털실·레이저·캣닢
+        [SerializeField] private float _boredomWindowSeconds = 60f;     // 같은 종류에 이 안에서
+        [SerializeField] private int _boredomCount = 3;                  // 이만큼 반응했으면
+        [SerializeField] private float _boredomMultiplier = 0.5f;        // 다음 반응 시간 ×
     }
 }

@@ -15,11 +15,14 @@ namespace RatGame.AI
             if (!IsServer) return;
             var st = State.Value;
             if (st != CatState.Patrol && st != CatState.Return && st != CatState.Search && st != CatState.Curious && st != CatState.Distracted) return;
+            if (!AttentionWins(AttentionKind.Laser, out float score)) return; // 캣닢에 취했으면 점을 안 본다 (고양이 261)
             bool entering = st != CatState.Distracted;
+            bool fresh = entering || _attentionScore != score; // 다른 유인에서 넘어와도 새로 꽂힌 것
+            _attentionScore = score;
             _fooledBy = null;
             _wobbleAfterDistract = false;
             _distractPos = dot;
-            _distractUntil = Time.time + linger;
+            _distractUntil = Time.time + (fresh ? linger * BoredomScale(AttentionKind.Laser) : linger); // 지루함은 새로 꽂힐 때만 센다(0.2초마다 불림)
             if (entering)
             {
                 _stateBeforeDistract = st;
