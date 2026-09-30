@@ -28,6 +28,30 @@ namespace RatGame.EditorTools
         [MenuItem("Tools/RatGame/Build/macOS (dev)")]
         private static void MacDev() => Build(BuildTarget.StandaloneOSX, true);
 
+        /// <summary>
+        /// 릴리스 연기 시험 (고양이 336) — macOS 릴리스를 `-smokehost`로 켜서 호스트·기지·벽 속 스테이지 1을 돌고 결과 한 줄을 콘솔에.
+        /// 세이브는 안 쓴다(SaveService). Windows 릴리스는 윈도 PC에서 `Rat.exe -smokehost -unitytransport`로 같은 확인.
+        /// </summary>
+        [MenuItem("Tools/RatGame/Build/Run Release Smoke (macOS)")]
+        private static void RunReleaseSmoke()
+        {
+            string app = OutputPath(BuildTarget.StandaloneOSX, false) + "/Contents/MacOS/Rat";
+            if (!File.Exists(app)) { Debug.LogError("[Rat] 스모크 안 함 — macOS 릴리스 빌드부터 (Tools/RatGame/Build/macOS (release))"); return; }
+            string log = Path.GetFullPath("Temp/release-smoke.log");
+            if (File.Exists(log)) File.Delete(log);
+            var p = System.Diagnostics.Process.Start(app, $"-smokehost -unitytransport -port 7790 -screen-fullscreen 0 -screen-width 960 -screen-height 540 -logFile \"{log}\"");
+            Debug.Log("[Rat] 릴리스 스모크 시작 — 약 40초");
+            void Poll()
+            {
+                if (!p.HasExited) return;
+                EditorApplication.update -= Poll;
+                string line = File.Exists(log) ? File.ReadAllLines(log).LastOrDefault(l => l.Contains("스모크")) : null;
+                if (p.ExitCode == 0) Debug.Log(line ?? "[Rat] 스모크: 결과 줄 없음");
+                else Debug.LogError(line ?? $"[Rat] 스모크 실패 — 종료 코드 {p.ExitCode}, 로그 {log}");
+            }
+            EditorApplication.update += Poll;
+        }
+
         /// <summary>배치 모드용 — 실패하면 종료 코드 1 (CI·스크립트가 알아채게).</summary>
         public static void BuildWindowsDemoCli()
         {

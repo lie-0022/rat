@@ -27,12 +27,13 @@
 
 1. 유니티: **Tools → RatGame → Build → Windows x64 Demo (release)**
    → `Builds/Release/Windows/` (Windows Build Support 모듈이 있어야 한다 — 없으면 메뉴가 이유를 말하고 멈춘다)
-2. 미리 보기 (`"Preview" "1"` 그대로): 올리지 않고 올라갈 파일 목록만 만든다 → `Builds/SteamOutput/`에서 확인.
+2. 올리기 전 연기 시험: 윈도 PC에서 `Builds/Release/Windows/Rat.exe -smokehost -unitytransport` → 창이 스스로 호스트·기지·스테이지 1을 돌고 꺼진다. `Player.log`에 "스모크 통과"가 있어야 한다(맥 릴리스는 유니티 메뉴 Run Release Smoke).
+3. 미리 보기 (`"Preview" "1"` 그대로): 올리지 않고 올라갈 파일 목록만 만든다 → `Builds/SteamOutput/`에서 확인.
    ```bash
    steamcmd +login <업로드 계정> +run_app_build "$(pwd)/steam/app_build_demo.vdf" +quit
    ```
-3. 목록이 맞으면 `"Preview"`를 `"0"`으로 바꾸고 같은 명령 → 업로드.
-4. Steamworks 웹 → 앱 → SteamPipe → 빌드에서 올라간 빌드를 브랜치(먼저 비공개 `beta`)에 연결한다.
+4. 목록이 맞으면 `"Preview"`를 `"0"`으로 바꾸고 같은 명령 → 업로드.
+5. Steamworks 웹 → 앱 → SteamPipe → 빌드에서 올라간 빌드를 브랜치(먼저 비공개 `beta`)에 연결한다.
    `"SetLive"`를 비워 둔 건 실수로 바로 공개되지 않게 하려는 것.
 
 ## 싣지 않는 것

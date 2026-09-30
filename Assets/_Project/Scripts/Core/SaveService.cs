@@ -64,8 +64,10 @@ namespace RatGame.Core
         }
 
         // 개발 빌드 성능 측정(-autostage)·-nosave는 세이브를 쓰지 않는다 — 스테이지 5로 바로 가서 "깊은 쥐" 통계·도전과제가 실제 세이브에 남았다 (고양이 324)
-        private static readonly bool NoWrite = Debug.isDebugBuild && !Application.isEditor &&
-            (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-autostage") >= 0 || System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-nosave") >= 0);
+        private static readonly bool NoWrite = !Application.isEditor &&
+            ((Debug.isDebugBuild && (HasArg("-autostage") || HasArg("-nosave"))) || HasArg("-smokehost")); // 릴리스 연기 시험도 (고양이 336)
+
+        private static bool HasArg(string arg) => System.Array.IndexOf(System.Environment.GetCommandLineArgs(), arg) >= 0;
 
         /// <summary>개발 빌드 측정 실행(-autostage·-nosave) — 세이브·플레이 기록을 쓰지 않는다.</summary>
         public static bool WritesDisabled => NoWrite;
