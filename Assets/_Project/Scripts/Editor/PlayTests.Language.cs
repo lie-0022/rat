@@ -60,12 +60,15 @@ namespace RatGame.EditorTools
                     SetLang("ko");
                 } },
             };
+            // 메인 메뉴에서도 (고양이 312)
+            steps.Add(new Step { Name = "메뉴에서 영어로", Wait = 1f, Ready = () => Object.FindFirstObjectByType<MainMenuController>() != null, Act = () => SetLang("en") });
+            steps.Add(new Step { Name = "메뉴 글자", Wait = 1.5f, Act = () => { ScanHangul("메뉴"); SetLang("ko"); } });
             steps.AddRange(ToWarehouse()); // 메뉴 → 호스트 → 기지 → 창고 (언어는 한국어로)
             steps.Add(new Step { Name = "창고에서 영어로", Wait = 2f, Act = () => SetLang("en") });
             steps.Add(new Step { Name = "창고 글자", Wait = 1.5f, Check = () =>
             {
                 ScanHangul("창고");
-                Report.Append($" | 창고 한글 남음 {_koreanLeft.Count}");
+                Report.Append($" | 메뉴·창고 한글 남음 {_koreanLeft.Count}");
                 foreach (var s in _koreanLeft) Report.Append($" | {s}");
                 return _koreanLeft.Count == 0 ? null : "영어로 바꿨는데 한글이 남음";
             } });
