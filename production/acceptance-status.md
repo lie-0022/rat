@@ -43,7 +43,7 @@
 | Stage Modifiers All 7 | 벽 속을 오늘의 집 7종(없음·정전·덫·간식·외출·분주·손님)으로 하나씩 다시 열어 맵·조건·오류 0 | 통과 49초 (고양이 296) |
 | Leave And Rehost Twice | 호스트→기지→세션 나가기 두 번 되풀이 뒤 세 번째 세션에서 창고 출발, 오류 0 | 통과 25초 (고양이 298) |
 | Client Leaves And Rejoins 2P | 기지에서 클라 "세션 나가기" → 호스트 0.1초에 앎 → 새 클라 다시 접속, 쥐 겹침 없음, 오류 0 | 통과 42초 (고양이 299) |
-| Switch Language Mid-Play | 한국어로 창고까지 간 뒤 English로 — 1.5초 뒤 화면 한글 0 (바뀔 때만 다시 쓰는 표시 잡기) | 통과 24초 (고양이 302) |
+| Switch Language Mid-Play | 메뉴·창고에서 English로 바꿔 화면 한글 0 + 귀환해 결과 화면 한글 0 + 영어 글자 넘침 0(TMP isTextOverflowing) | 통과 33초 (고양이 302·312·313) |
 | Achievement Checks | 추격 있으면 유령 쥐 안 됨·계란 택배·혼자 살아남기 | 통과 (고양이 222) |
 | Codex Deposit All | 전리품 21종 정산·도감 21/21·수집가 | 통과 (고양이 233) |
 | Glue Rescue E Hold 2P | 끈끈이 동료를 E 길게로 구출(짧게는 안 풀림) | 통과 — 창 초점 없이도 (고양이 235) |

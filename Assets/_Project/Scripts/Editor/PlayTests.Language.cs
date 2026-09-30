@@ -44,6 +44,22 @@ namespace RatGame.EditorTools
             }
         }
 
+        private static readonly List<string> _overflow = new();
+
+        // 글자가 칸을 넘치는지 (TMP isTextOverflowing) — 영어가 한국어보다 길어 잘리거나 삐져나오는 곳 (고양이 313)
+        private static void ScanOverflow(string where)
+        {
+            foreach (var t in Object.FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None))
+            {
+                if (!t.isActiveAndEnabled || string.IsNullOrEmpty(t.text) || t.text.StartsWith("[DEV]")) continue;
+                if (t.GetComponentInParent<CatDebugOverlay>() != null || t.GetComponentInParent<DevCheckMenu>() != null) continue;
+                t.ForceMeshUpdate();
+                if (!t.isTextOverflowing) continue;
+                string s = $"{where}: {t.transform.parent?.name}/{t.name} \"{t.text.Replace("\n", " / ")}\"";
+                if (!_overflow.Contains(s)) _overflow.Add(s);
+            }
+        }
+
         private static List<Step> LanguageSteps()
         {
             string settingsPath = Path.Combine(Application.persistentDataPath, "settings.json");
@@ -52,7 +68,7 @@ namespace RatGame.EditorTools
             {
                 new Step { Name = "설정 뜨기", Act = () =>
                 {
-                    _koreanLeft.Clear();
+                    _koreanLeft.Clear(); _overflow.Clear();
                     settingsBytes = File.Exists(settingsPath) ? File.ReadAllBytes(settingsPath) : null;
                     System.Action restore = () => { if (settingsBytes != null) File.WriteAllBytes(settingsPath, settingsBytes); };
                     var prev = RestoreAfterPlay; RestoreAfterPlay = () => { prev?.Invoke(); restore(); }; // 멈춘 뒤에도
@@ -68,9 +84,27 @@ namespace RatGame.EditorTools
             steps.Add(new Step { Name = "창고 글자", Wait = 1.5f, Check = () =>
             {
                 ScanHangul("창고");
+                ScanOverflow("창고");
                 Report.Append($" | 메뉴·창고 한글 남음 {_koreanLeft.Count}");
                 foreach (var s in _koreanLeft) Report.Append($" | {s}");
                 return _koreanLeft.Count == 0 ? null : "영어로 바꿨는데 한글이 남음";
+            } });
+            // 귀환해서 결과 화면도 (영어) — 한글·넘침
+            steps.Add(new Step { Name = "귀환", Act = () =>
+            {
+                var zone = Object.FindFirstObjectByType<DepositZone>().Area.bounds;
+                Put(zone.center + Vector3.up * 0.2f);
+            } });
+            steps.Add(new Step { Name = "결과 화면 글자", Wait = 1f, Ready = () => RunManager.Instance != null && RunManager.Instance.IsShowingResult || EditorApplication.timeSinceStartup - _stepAt > 15, Check = () =>
+            {
+                if (RunManager.Instance == null || !RunManager.Instance.IsShowingResult) return "결과 화면이 안 뜸";
+                int before = _koreanLeft.Count;
+                ScanHangul("결과");
+                ScanOverflow("결과");
+                Report.Append($" | 결과 한글 {_koreanLeft.Count - before} · 넘침 {_overflow.Count}");
+                foreach (var o in _overflow) Report.Append($" | 넘침 {o}");
+                if (_koreanLeft.Count != before) return "결과 화면에 한글";
+                return _overflow.Count == 0 ? null : "영어 글자가 칸을 넘침";
             } });
             return steps;
         }
