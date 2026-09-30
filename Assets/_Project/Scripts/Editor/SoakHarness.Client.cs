@@ -65,7 +65,7 @@ namespace RatGame.EditorTools
                 var player = nm.ConnectedClients[id].PlayerObject;
                 double now = EditorApplication.timeSinceStartup;
                 _clientCarry.Add((now + 0.6, player, "spawnbox"));
-                _clientCarry.Add((now + 1.4, player, "grab"));
+                _clientCarry.Add((now + 1.4, player, "grab!")); // 손이 빌 때만 — 다시 보내도 든 걸 놓지 않게 (4인 빗나감 1~2번은 한 번 더 보내도 그대로였다, 고양이 335)
                 _clientCarry.Add((now + 2.9, player, "throw:0.6"));
                 _clientThrows++;
             }
