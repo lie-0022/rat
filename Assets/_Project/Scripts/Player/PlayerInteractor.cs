@@ -18,6 +18,9 @@ namespace RatGame.Player
         [SerializeField] private InputActionAsset _inputAsset;
 
         private InputAction _interactAction;
+        /// <summary>테스트: E를 누르고 있는 셈 (PlayerController.DevForcedInput과 같은 자리) — 유니티 창에 초점이 없으면 가짜 키가 버려져 끈끈이 시험이 건너뛰어졌다 (고양이 332).</summary>
+        public static bool DevForcedInteract;
+        private bool _devHeldLast;
         private NetworkBehaviour _holdTarget; // IInteractable이기도 한 대상
         private float _holdStartTime;
 
@@ -47,8 +50,12 @@ namespace RatGame.Player
         private void Update()
         {
             if (!IsOwner || _interactAction == null) return;
+            bool devDown = DevForcedInteract && !_devHeldLast;
+            _devHeldLast = DevForcedInteract;
+            bool pressed = _interactAction.IsPressed() || DevForcedInteract;
+            bool pressedNow = _interactAction.WasPressedThisFrame() || devDown;
 
-            if (!_interactAction.IsPressed() || InputFocus.IsUiOpen) // 메뉴가 떠 있으면 E로 또 열지 않게
+            if (!pressed || InputFocus.IsUiOpen) // 메뉴가 떠 있으면 E로 또 열지 않게
             {
                 _holdTarget = null;
                 UpdateFocus();
@@ -59,7 +66,7 @@ namespace RatGame.Player
             if (_holdTarget == null)
             {
                 // 새로 누른 E로만 시작 — 패널을 닫은 E를 계속 누르고 있으면 곧바로 다시 열리던 문제
-                if (!_interactAction.WasPressedThisFrame() || InputFocus.PanelClosedThisFrame) return;
+                if (!pressedNow || InputFocus.PanelClosedThisFrame) return;
                 _holdTarget = FindTarget();
                 _holdStartTime = Time.time;
                 if (_holdTarget != null)

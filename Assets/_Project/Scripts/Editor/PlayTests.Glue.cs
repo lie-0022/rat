@@ -18,6 +18,14 @@ namespace RatGame.EditorTools
         [MenuItem("Tools/RatGame/Test/Glue Rescue E Hold 2P (build client)")]
         private static void ArmGlue() => Arm("glue2p");
 
+        private static bool _glueDevInput;
+
+        private static void PressE(bool down)
+        {
+            if (_glueDevInput) PlayerInteractor.DevForcedInteract = down;
+            else InputSystem.QueueStateEvent(Keyboard.current, down ? new KeyboardState(Key.E) : new KeyboardState());
+        }
+
         private static List<Step> GlueSteps()
         {
             var steps = new List<Step>(ClientWarehouse("glue-client.log"));
@@ -54,15 +62,23 @@ namespace RatGame.EditorTools
                     Report.Append($" | 대상 안내 \"{focus}\"");
                     return focus != null ? null : "동료를 대상으로 못 잡음";
                 } },
-                new Step { Name = "짧게 누름", Wait = 0.5f, Act = () => InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.E)) },
-                new Step { Name = "짧게 누름", Wait = 0.4f, Act = () => InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState()),
+                // 창 초점이 없으면 가짜 키가 버려진다(고양이 239) — 그땐 개발 입력(PlayerInteractor.DevForcedInteract)으로 눌러 구출 규칙은 그대로 본다 (고양이 332)
+                new Step { Name = "짧게 누름", Wait = 0.5f, Act = () =>
+                {
+                    _glueDevInput = !UnityEditorInternal.InternalEditorUtility.isApplicationActive;
+                    var before = OnDone;
+                    OnDone = () => { PlayerInteractor.DevForcedInteract = false; before?.Invoke(); };
+                    PressE(true);
+                } },
+                new Step { Name = "짧게 누름", Wait = 0.4f, Act = () => PressE(false),
                     Check = () => _client.GetComponent<PlayerCondition>().State.Value == ConditionState.Trapped ? null : "짧게 눌렀는데 풀림" },
-                new Step { Name = "길게 누름", Wait = 0.5f, Act = () => InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.E)) },
+                new Step { Name = "길게 누름", Wait = 0.5f, Act = () => PressE(true) },
                 new Step { Name = "입력 상태", Wait = 0.3f, Check = () =>
                 {
                     var pi = Me().GetComponent<PlayerInteractor>();
                     var ia = typeof(PlayerInteractor).GetField("_interactAction", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(pi) as InputAction;
                     Report.Append($" | E키 {Keyboard.current.eKey.isPressed} · 액션 눌림 {ia?.IsPressed()} · 액션 켜짐 {ia?.enabled} · 창 초점 {UnityEditorInternal.InternalEditorUtility.isApplicationActive}");
+                    if (_glueDevInput) { Report.Append(" · 창 초점 없음 → 개발 입력으로"); return null; }
                     // 초점 없는 에디터는 가상 키 입력을 버릴 때가 있다(Run All Full에서 3연속, 고양이 239) — 게임 탓이 아니니 건너뜀으로 보고
                     if (!Keyboard.current.eKey.isPressed && ia != null && !ia.IsPressed() && !UnityEditorInternal.InternalEditorUtility.isApplicationActive)
                         _skip = "유니티 창 초점 없음 — 키 입력이 버려짐, 창을 누르고 다시";
@@ -73,7 +89,7 @@ namespace RatGame.EditorTools
                     Check = () =>
                     {
                         float held = (float)(EditorApplication.timeSinceStartup - _stepAt);
-                        InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
+                        PressE(false);
                         var st = _client.GetComponent<PlayerCondition>().State.Value;
                         if (_skip != null) return null;
                         Report.Append($" | 누른 시간 {held:0.0}초 → 클라 {st}");
