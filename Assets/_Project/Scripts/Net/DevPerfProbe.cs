@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using RatGame.Core;
 using Unity.Netcode;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace RatGame.Net
@@ -21,6 +22,10 @@ namespace RatGame.Net
         private readonly List<float> _samples = new(2048);
         private float _windowStart;
         private bool _log;
+        // GC 할당 — 스크립트 시간(0.23ms)은 작아도 할당이 쌓이면 GC 멈춤이 1% 최악을 만든다 (고양이 324)
+        private ProfilerRecorder _gcAlloc;
+        private long _gcBytes;
+        private int _gcFrames, _gcCountAtStart;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Boot()
@@ -36,10 +41,15 @@ namespace RatGame.Net
             _log = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-perflog") >= 0;
             if (_log) { QualitySettings.vSyncCount = 0; Application.targetFrameRate = 1000; }
             _windowStart = Time.unscaledTime;
+            _gcAlloc = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Allocated In Frame");
+            _gcCountAtStart = System.GC.CollectionCount(0);
         }
+
+        private void OnDestroy() => _gcAlloc.Dispose();
 
         private void Update()
         {
+            if (_gcAlloc.Valid) { _gcBytes += _gcAlloc.LastValue; _gcFrames++; }
             float dt = Time.unscaledDeltaTime;
             if (dt <= 1f) _samples.Add(dt * 1000f); // 1초 넘는 프레임은 로딩·에디터 멈춤 — 게임 프레임이 아님 (DEV 패널에 "FPS 0"이 뜨던 것)
             if (_samples.Count == 0) { _windowStart = Time.unscaledTime; return; }
@@ -61,8 +71,10 @@ namespace RatGame.Net
                 int netObjs = nm != null && nm.SpawnManager != null ? nm.SpawnManager.SpawnedObjectsList.Count : 0;
                 int agents = FindObjectsByType<UnityEngine.AI.NavMeshAgent>(FindObjectsSortMode.None).Length; // 고양이 수 (NavMeshAgent는 고양이뿐)
                 Log.Dev($"성능: 평균 {AvgMs:F2}ms ({1000f / AvgMs:F0}fps), 1% 최악 {Worst1Ms:F2}ms, 최대 {max:F1}ms, 프레임 {_samples.Count}, " +
-                        $"씬 {UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}, 네트 오브젝트 {netObjs}, 고양이 {agents}");
+                        $"씬 {UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}, 네트 오브젝트 {netObjs}, 고양이 {agents}, " +
+                        $"GC 할당 {(_gcFrames > 0 ? _gcBytes / 1024f / _gcFrames : 0f):F1}KB/프레임, GC {System.GC.CollectionCount(0) - _gcCountAtStart}번");
             }
+            _gcBytes = 0; _gcFrames = 0; _gcCountAtStart = System.GC.CollectionCount(0);
             _samples.Clear();
         }
     }

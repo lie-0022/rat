@@ -1,6 +1,6 @@
 # 자율 개발 루프 상태 (매 틱 시작 때 읽고, 단계가 바뀔 때마다 갱신)
 
-## ▶ 지금 (2026-09-30 오후, 고양이 323까지)
+## ▶ 지금 (2026-09-30 오후, 고양이 324까지)
 - 크론 8db17288 `2-59/5` (이 세션). 사용자 지시(10:5x): **멈추라고 할 때까지 멈추지 마 — 한 단계 끝나면 틱 기다리지 말고 바로 다음 단계.**
 - **사용자 판단 대기**: 체크리스트 맨 아래 판단 부탁 1~14 (13 대형 운반, 14 도전과제 보상·모자·ach_rich·ach_troll). 이것들 전엔 운반 물리·스킨 잠금 손대지 않음.
 - **사람만**: Windows 빌드 모듈 설치(없어서 데모 목표 빌드 불가 — 설치 뒤 Tools/RatGame/Build/Windows x64 Demo), 스팀 데모 AppID·DepotID(steam/README.md), 에디터 재시작(7777 누수 — 시험은 7778로 돔).
@@ -120,6 +120,7 @@
 ## 테스트 요령
 - **시험 도구 밖에서 손으로 플레이(execute_code로 호스트·발판)하면 세이브가 바뀐다** — 고양이 312 뒤 결과 화면 확인하다 누계 +360이 저장됨 → scratchpad `save.before191.json`·`save.bak.before191`·`settings.before258.json`으로 되돌림. 손 플레이 뒤엔 꼭 cmp.
 - 결과 화면은 실제 시간으로 넘어간다(Time.timeScale 0으로 못 멈춤).
+- GC 할당 원인 찾기(고양이 324): 통째 시험이 스테이지에 있을 때 `ProfilerDriver.profileEditor=false; enabled=true` 5초 → 프레임마다 `GetHierarchyFrameDataView`의 PlayerLoop 아래 GC.Alloc self를 부모 이름별로 더함. 빌드 `-profiler-log-file`은 09-30 밤엔 6MB에서 멈췄다.
 - 성능 원인 찾기: 개발 빌드 `-profiler-enable -profiler-log-file <경로>.raw` → 에디터 `ProfilerDriver.LoadProfile` + `GetHierarchyFrameDataView`로 이름별 평균 (고양이 232). raw는 30초에 수백 MB — 끝나면 지움.
 - **키보드 입력 시험**: 유니티 창에 초점이 없으면 키가 입력 액션까지 안 간다 → 시험 동안 `InputSystem.settings.editorInputBehaviorInPlayMode = AllDeviceInputAlwaysGoesToGameView` **하나만** 바꾸고 끝나면 되돌림(메모리 설정). `backgroundBehavior`까지 바꾸면 키 상태가 막힘 (고양이 226·235). 그래도 초점 없으면 운 — 239에서 3연속 키가 버려짐(IgnoreFocus·osascript 앞으로 가져오기 모두 소용없음) → 끈끈이 시험은 그 경우 "건너뜀"으로 보고. 창을 누른 채 돌리면 확인 가능.
 - Scene 뷰 확인이 필요하면: `EditorWindow.GetWindow<SceneView>()`로 열고 `LookAt` → `manage_camera screenshot capture_source=scene_view` (유니티 창 안 캡처라 전체 화면 캡처 금지 규칙과 무관), 끝나면 창 닫기.

@@ -63,9 +63,13 @@ namespace RatGame.Core
             Log.Dev($"저장 불러오기: 누계 {_data.HaulTotal} ({FilePath})");
         }
 
+        // 개발 빌드 성능 측정(-autostage)·-nosave는 세이브를 쓰지 않는다 — 스테이지 5로 바로 가서 "깊은 쥐" 통계·도전과제가 실제 세이브에 남았다 (고양이 324)
+        private static readonly bool NoWrite = Debug.isDebugBuild && !Application.isEditor &&
+            (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-autostage") >= 0 || System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-nosave") >= 0);
+
         public static void Save()
         {
-            if (_data == null) return;
+            if (_data == null || NoWrite) return;
             try
             {
                 string json = JsonUtility.ToJson(_data, true);

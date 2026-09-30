@@ -73,7 +73,7 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 | Run All — Quick (혼자 9) | Tools → RatGame → Test | 2분 | 게임 코드를 고친 뒤 |
 | Run All — Full (혼자 9 + 2·4인·레이저·재접속·이탈 8 = 17) | 〃 (빌드 클라 `Builds/macOS/Rat.app` 필요 — 런타임 코드를 고쳤으면 먼저 빌드) | 8분 | 넷코드·운반을 고친 뒤 |
 | Run Everything (Full 17 + 통째 혼자·영어 2인·4인 = 20) | 〃 | 18분 | 큰 묶음 뒤, 커밋 전 |
-| 성능 | 개발 빌드 `-perflog -autohost -autostage 5` | 1분 | docs/13 성능 표 |
+| 성능 | 개발 빌드 `-perflog -autohost -autostage 5` (평균·1% 최악·GC 할당. `-autostage`·`-nosave`면 세이브를 안 씀) | 1분 | docs/13 성능 표 |
 
 - 시험은 세이브·직전본·설정을 떠 두고 플레이를 멈춘 뒤에도 한 번 더 되돌린다. 7777이 막혀 있으면 7778로 돈다(`Editor/DevPort`). 플레이 중 컴파일은 `Editor/PlayModeReloadGuard`가 네트워크를 닫는다.
 - 통째 시험을 혼자 돌리면 끝나도 플레이에 남는다(결과 화면 확인용) — 컴파일 전에 멈출 것.
