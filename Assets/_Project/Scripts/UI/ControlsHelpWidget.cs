@@ -96,6 +96,7 @@ namespace RatGame.UI
             sb.Append('\n').Append("<color=").Append(key).Append(">").Append(Loc.T("위기 때")).Append("</color>\n");
             sb.Append(Loc.T("쓰러짐 — 동료가 몸을 쥐구멍(창고)에 넣으면 삶")).Append('\n');
             sb.Append(Loc.T("끈끈이 — 동료가 옆에서 E 길게")).Append('\n');
+            sb.Append(Loc.T("지치면 — 손에 든 치즈를 E 길게로 먹기 (값은 사라짐)")).Append('\n'); // 들어야만 뜨는 안내라 몰랐다 (고양이 310)
             if (Debug.isDebugBuild) sb.Append("<color=#9a9a9a>").Append(Loc.T("F3  고양이 정보 · F4  확인 메뉴 (개발용)")).Append("</color>");
             return sb.ToString();
         }

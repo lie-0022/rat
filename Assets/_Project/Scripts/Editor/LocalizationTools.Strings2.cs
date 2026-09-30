@@ -8,6 +8,7 @@ namespace RatGame.EditorTools
         private static readonly Dictionary<string, string> DummyEn2 = new()
         {
             // 결과 화면
+            ["지치면 — 손에 든 치즈를 E 길게로 먹기 (값은 사라짐)"] = "Tired — hold E with cheese in hand to eat it (its value is lost)",
             // 의심 이유 (고양이 305)
             ["봤다"] = "saw you",
             ["발소리"] = "footsteps",
