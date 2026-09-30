@@ -78,6 +78,18 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 - 시험은 세이브·직전본·설정을 떠 두고 플레이를 멈춘 뒤에도 한 번 더 되돌린다. 7777이 막혀 있으면 7778로 돈다(`Editor/DevPort`). 플레이 중 컴파일은 `Editor/PlayModeReloadGuard`가 네트워크를 닫는다.
 - 통째 시험을 혼자 돌리면 끝나도 플레이에 남는다(결과 화면 확인용) — 컴파일 전에 멈출 것.
 
+## 빌드 (고양이 320, `Editor/BuildTools`)
+
+| 메뉴 (Tools → RatGame → Build) | 나오는 곳 | 비고 |
+|---|---|---|
+| Windows x64 Demo (release) | `Builds/Release/Windows/Rat.exe` | 데모 목표. Windows Build Support 모듈 필요 — 없으면 이유를 말하고 안 만든다 |
+| Windows x64 (dev) | `Builds/Windows/Rat.exe` | 원격 2대 시험용 |
+| macOS (release) / (dev) | `Builds/Release/macOS/Rat.app` / `Builds/macOS/Rat.app` | dev 자리가 시험 도구 클라 — 릴리스로 덮지 않게 자리를 나눔 |
+
+- 빌드 전 검사: 플레이·컴파일 중 아님, 모듈 있음, 빌드 씬 0번 = Boot. 릴리스는 Burst 디버그 기호(`*_BurstDebugInformation_DoNotShip`)를 `Builds/Symbols/{플랫폼}-{버전}`으로 옮겨 싣지 않는다(크래시 분석용으로 보관).
+- 배치 모드: `Unity -batchmode -quit -projectPath . -executeMethod RatGame.EditorTools.BuildTools.BuildWindowsDemoCli` (실패하면 종료 코드 1).
+- 확인 (09-30): macOS 릴리스 124MB·82초·경고 0, 켜서 메뉴까지 오류 0. Windows는 모듈이 없어 "모듈 없음"으로 멈춤 확인.
+
 ## 클로드코드에게 시킬 추가 자동화 (여유 시)
 
 - `Tools/RatGame/Validate Balance`: BalanceConfigSO 값과 docs 표 diff 출력
