@@ -34,6 +34,7 @@ namespace RatGame.EditorTools
         private static readonly Dictionary<string, int> Issues = new();
         private static readonly List<string> StageLines = new();
         private static string _saveBackup, _bakBackup, _languageBefore;
+        private static bool _restorePending;
         private static bool _english;
         private static float _scanAt;
         private static readonly Dictionary<string, string> KoreanSeen = new(); // 영어 모드에서 화면에 남은 한국어 (글자 → 오브젝트)
@@ -46,6 +47,15 @@ namespace RatGame.EditorTools
             EditorApplication.playModeStateChanged += s =>
             {
                 if (s == PlayModeStateChange.EnteredPlayMode && SessionState.GetBool(ArmedKey, false)) Begin();
+                // 끝난 뒤 플레이를 멈추면 게임이 메모리의 진행(도전과제 통계 등)을 한 번 더 저장해 되돌린 파일을 덮는다 — 멈춘 뒤 한 번 더
+                // (짧은 시험은 고양이 234에서 같은 걸 고침, 통째 시험 4인에서 deepestStage·ach_deep_rat가 남아 발견 — 고양이 281)
+                if (s == PlayModeStateChange.EnteredEditMode && _restorePending)
+                {
+                    _restorePending = false;
+                    if (_saveBackup != null) File.WriteAllText(SaveService.FilePath, _saveBackup);
+                    if (_bakBackup != null) File.WriteAllText(BakPath, _bakBackup);
+                    Debug.Log("[Rat] 통째 시험: 플레이 멈춘 뒤 세이브 한 번 더 되돌림");
+                }
             };
         }
 
@@ -247,6 +257,7 @@ namespace RatGame.EditorTools
             sb.Append(CloseClientAndReport());
             if (_saveBackup != null) { File.WriteAllText(SaveService.FilePath, _saveBackup); sb.Append(" | 세이브 되돌림"); }
             if (_bakBackup != null) File.WriteAllText(BakPath, _bakBackup);
+            _restorePending = true;
             Debug.Log(sb.ToString());
         }
     }
