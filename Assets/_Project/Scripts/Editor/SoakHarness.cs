@@ -83,6 +83,7 @@ namespace RatGame.EditorTools
 
         private static void Arm(bool english)
         {
+            if (!EditorApplication.isPlaying && !PlayTests.EnsureBootScene()) return;
             SessionState.SetBool(ArmedKey, true);
             SessionState.SetBool(EnglishKey, english);
             if (EditorApplication.isPlaying) Begin();

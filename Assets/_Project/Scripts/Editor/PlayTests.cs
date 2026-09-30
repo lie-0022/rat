@@ -88,6 +88,7 @@ namespace RatGame.EditorTools
         private static void Arm(string which)
         {
             if (EditorApplication.isPlaying) { Debug.LogWarning("[Rat] 플레이 시험은 플레이 모드가 꺼진 상태에서 시작 (메인 메뉴부터)"); return; }
+            if (!EnsureBootScene()) return;
             SessionState.SetString(ArmedKey, which);
             EditorApplication.isPlaying = true;
         }

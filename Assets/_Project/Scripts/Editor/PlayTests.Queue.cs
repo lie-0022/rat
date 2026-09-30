@@ -1,5 +1,7 @@
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RatGame.EditorTools
 {
@@ -25,10 +27,25 @@ namespace RatGame.EditorTools
         private static void StartQueue(string keys)
         {
             if (EditorApplication.isPlaying) { Debug.LogWarning("[Rat] 시험 묶음은 플레이가 꺼진 상태에서 시작"); return; }
+            if (!EnsureBootScene()) return;
             SessionState.SetString(QueueKey, keys);
             SessionState.SetString(ResultsKey, "");
             Debug.Log($"[Rat] 시험 묶음 시작: {keys}");
             ContinueQueue();
+        }
+
+        // 시험은 늘 Boot 씬에서 켠다 — 빌드 뒤 빈 씬(Untitled)이 열려 있으면 AutoBoot가 시험 포트를 고르기 전에 자동 호스트해
+        // (7777은 새어 있고) 17개가 모두 3분 초과로 실패했다 (고양이 327). 저장 안 한 변경이 있으면 건드리지 않고 멈춘다
+        internal static bool EnsureBootScene()
+        {
+            const string boot = "Assets/_Project/Scenes/Boot.unity";
+            var active = SceneManager.GetActiveScene();
+            if (active.path == boot) return true;
+            string name = string.IsNullOrEmpty(active.path) ? "이름 없는 씬" : active.path;
+            if (active.isDirty) { Debug.LogError($"[Rat] 시험 안 함 — {name}에 저장 안 한 변경이 있음. 저장하거나 버린 뒤 다시"); return false; }
+            EditorSceneManager.OpenScene(boot, OpenSceneMode.Single);
+            Debug.Log($"[Rat] 시험 씬: {name} → Boot");
+            return true;
         }
 
         // 편집 모드로 돌아올 때마다 — 남은 게 있으면 다음 시험을 건다
