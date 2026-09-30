@@ -377,7 +377,7 @@
 ## 친구 시험 때 문제가 생기면 (고양이 333)
 
 - 게임 로그: 맥 `~/Library/Logs/DefaultCompany/Rat/Player.log`, 윈도 `%USERPROFILE%\AppData\LocalLow\DefaultCompany\Rat\Player.log` — 다시 켜면 덮이니 **끄기 전에** 복사(직전 판은 `Player-prev.log`).
-- 판마다 기록: 호스트 PC 같은 폴더의 `playlog.csv`(U-330). 세이브는 `save.json`(직전본 `save.bak`), 설정은 `settings.json`.
+- 판마다 기록·세이브·설정: 맥 `~/Library/Application Support/DefaultCompany/Rat/`(로그와 다른 폴더), 윈도는 로그와 같은 폴더 — 호스트 PC의 `playlog.csv`(U-330), `save.json`(직전본 `save.bak`), `settings.json`.
 - 이 셋을 주시면 제가 원인을 찾습니다. 개발 빌드면 로그에 `[Rat]` 줄이 많아 더 잘 보여요.
 
 ## 사람만 할 수 있는 것 (제가 못 하는 확인)
