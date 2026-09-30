@@ -57,7 +57,7 @@ public class SteamLobbyService
 
 1. 두 PC 모두 Steam 로그인(서로 친구인 계정 2개 — 한 PC에서 두 계정 동시 로그인은 불가), 같은 개발 빌드 준비. Windows PC면 Unity에 Windows Build Support 모듈 설치 후 Windows 빌드.
 2. A: 게임 실행 → 호스트 시작 → 기지. B: 게임 실행해서 메인 메뉴에 둔다 (480은 Spacewar라 게임이 꺼진 상태로 초대를 수락하면 Steam이 Spacewar를 실행하려 함 — **B는 먼저 게임을 켜 둔다**).
-3. A: Esc로 커서를 풀고 DEV 패널 "친구 초대 (목록)" → B 이름 클릭 (오버레이가 켜진 환경이면 "친구 초대 (Steam 오버레이)").
+3. A: Esc로 커서를 풀고 DEV 패널 "친구 초대 (목록)" → B 이름 클릭 (오버레이가 켜진 환경이면 "친구 초대 (Steam 오버레이)" 또는 일시정지 창 "친구 초대"). DEV 패널은 개발 빌드만 — 릴리스는 일시정지 창 버튼(고양이 325).
 4. B: Steam 채팅의 초대 수락 → 메인 메뉴 "A의 방에 접속 중…" → 기지 입장, 팀 2/4 · 토스트 "…가 들어왔어요".
 5. 막히면: A의 DEV 패널 로비 번호로 B를 `Rat.app/Contents/MacOS/Rat +connect_lobby <번호>`(Windows는 `Rat.exe +connect_lobby <번호>`)로 실행.
 
