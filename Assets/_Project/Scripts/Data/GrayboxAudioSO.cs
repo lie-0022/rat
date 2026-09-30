@@ -163,6 +163,12 @@ namespace RatGame.Data
         public AudioClip QuotaClip => Core.ToneSynth.Fanfare(523f, 1.1f);
         public AudioClip EatClip => Core.ToneSynth.HeavySteps(0.36f); // 짧은 쿵 셋 = 오독오독
 
+        [Header("출발·귀환 카운트다운 (고양이 276) — 1초마다 삑, 0에서 삐익")]
+        [SerializeField, Range(0f, 1f)] private float _countdownVolume = 0.35f;
+        public float CountdownVolume => _countdownVolume;
+        public AudioClip CountdownTick => Core.ToneSynth.Chirp(880f, 880f, 0.09f);
+        public AudioClip CountdownGo => Core.ToneSynth.Chirp(1320f, 1320f, 0.35f);
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
