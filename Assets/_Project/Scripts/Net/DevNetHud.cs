@@ -4,12 +4,19 @@ using UnityEngine;
 namespace RatGame.Net
 {
     /// <summary>
-    /// 임시 IMGUI 네트워크 패널 — 진짜 메뉴 UI(태스크 2-6)가 생기면 삭제한다.
+    /// 개발용 IMGUI 네트워크 패널 (에디터·개발 빌드만). 오버레이 없는 환경의 친구 목록 초대는 여기만 있다(docs/03 원격 시험 순서).
     /// MPPM 가상 플레이어에서도 버튼만으로 호스트/참가할 수 있게 하는 게 목적.
     /// 호스트는 시작 후 기지(Hub)를 로드한다 (docs/03 — 씬은 호스트가 로드, 클라 자동 동기화; docs/11 — 런은 기지에서 출발).
     /// </summary>
     public class DevNetHud : MonoBehaviour
     {
+        // 릴리스에선 끈다 — "[DEV]" 상자가 플레이어 화면에 뜨고, 매 프레임 IMGUI가 약 3.9KB를 할당했다 (고양이 324·325).
+        // 초대는 일시정지 창 "친구 초대"(Steam 오버레이)로
+        private void Awake()
+        {
+            if (!Debug.isDebugBuild) enabled = false;
+        }
+
         // 개발용: 에디터에서 스테이지 씬을 직접 플레이할 때만 쓰는 출발 (정식 흐름은 기지 출발 발판 — docs/11).
         // 버튼은 Esc로 커서를 풀어야 눌러져 테스트가 번거로워 Enter도 받는다
         private void Update()

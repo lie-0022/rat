@@ -41,7 +41,15 @@ namespace RatGame.EditorTools
                 case 1: EventBus.RaiseWorldPanelRequested(WorldPanelKind.Mirror, Object.FindFirstObjectByType<Mirror>()); break;
                 case 2: EventBus.RaiseWorldPanelRequested(WorldPanelKind.Codex, Object.FindFirstObjectByType<CodexBook>()); break;
                 case 3: Object.FindFirstObjectByType<SettingsPanel>(FindObjectsInactive.Include).Open(); break;
-                case 4: Object.FindFirstObjectByType<PauseMenu>(FindObjectsInactive.Include).Open(); break;
+                case 4:
+                {
+                    var pause = Object.FindFirstObjectByType<PauseMenu>(FindObjectsInactive.Include);
+                    pause.Open();
+                    // 초대 버튼은 Steam 오버레이가 있을 때만 — 시험에선 억지로 켜서 글자도 검사 (고양이 325)
+                    var invite = (UnityEngine.UI.Button)typeof(PauseMenu).GetField("_inviteButton", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(pause);
+                    if (invite != null) invite.gameObject.SetActive(true);
+                    break;
+                }
             }
         }
 

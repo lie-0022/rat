@@ -1015,3 +1015,5 @@ MonoBehaviour:
     En: Couldn't connect
   - Ko: "\uD50C\uB808\uC774\uC5B4 \uC5C6\uC774 \uBA48\uCD98 \uC5F0\uACB0 \uC815\uB9AC"
     En: Dropped a connection that stalled before joining
+  - Ko: "\uCE5C\uAD6C \uCD08\uB300"
+    En: Invite friends

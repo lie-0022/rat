@@ -21,6 +21,8 @@ namespace RatGame.UI
         [SerializeField] private UnityEngine.UI.Button _resumeButton;
         [SerializeField] private UnityEngine.UI.Button _settingsButton;
         [SerializeField] private UnityEngine.UI.Button _leaveButton;
+        /// <summary>Steam 초대 창 (고양이 325) — HUD는 커서가 잠겨 버튼을 못 누르니 일시정지 창에. 오버레이가 켜졌을 때만 보인다.</summary>
+        [SerializeField] private UnityEngine.UI.Button _inviteButton;
         [SerializeField] private UnityEngine.UI.Button _confirmLeaveButton;
         [SerializeField] private UnityEngine.UI.Button _cancelLeaveButton;
         [SerializeField] private SettingsPanel _settings;
@@ -36,6 +38,7 @@ namespace RatGame.UI
             _resumeButton.onClick.AddListener(() => Close(false));
             _settingsButton.onClick.AddListener(OpenSettings);
             _leaveButton.onClick.AddListener(ShowConfirm);
+            if (_inviteButton != null) _inviteButton.onClick.AddListener(OpenInvite);
             _confirmLeaveButton.onClick.AddListener(LeaveSession);
             _cancelLeaveButton.onClick.AddListener(HideConfirm);
             _settings.Closed += OnSettingsClosed;
@@ -78,6 +81,7 @@ namespace RatGame.UI
             _mainWindow.SetActive(true);
             _confirmWindow.SetActive(false);
             _sessionText.text = DescribeSession();
+            if (_inviteButton != null) _inviteButton.gameObject.SetActive(CanInvite());
             _root.SetActive(true);
             InputFocus.PanelOpened();
         }
@@ -89,6 +93,17 @@ namespace RatGame.UI
             _open = false;
             _root.SetActive(false);
             InputFocus.PanelClosed(byEscape);
+        }
+
+        private static bool CanInvite()
+        {
+            var steam = RatGame.Net.NetworkLauncher.Instance != null ? RatGame.Net.NetworkLauncher.Instance.Steam : null;
+            return steam != null && steam.IsOverlayEnabled && steam.CurrentLobbyId != 0;
+        }
+
+        private void OpenInvite()
+        {
+            if (CanInvite()) RatGame.Net.NetworkLauncher.Instance.Steam.OpenInviteOverlay();
         }
 
         private void OpenSettings()

@@ -184,6 +184,7 @@ namespace RatGame.EditorTools
             ["내가 연 방에는 참가할 수 없어요."] = "You can't join your own room.",
             ["클라이언트 접속 실패"] = "Couldn't connect",
             ["플레이어 없이 멈춘 연결 정리"] = "Dropped a connection that stalled before joining",
+            ["친구 초대"] = "Invite friends", // 일시정지 창 Steam 초대 버튼 (고양이 325)
         };
     }
 }
