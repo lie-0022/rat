@@ -117,6 +117,27 @@ namespace RatGame.Tests
         }
 
         [Test]
+        public void 코드_번역_원문은_모두_표에() // Loc.T/F/Pack("…") 한국어 — 번역 도구 검사와 같은 규칙 (고양이 304)
+        {
+            var table = Resources.Load<LocalizationTableSO>("LocalizationTable");
+            var call = new Regex(@"Loc\.(?:T|F|Pack)\(([^;\n]*)");
+            var lit = new Regex(@"""((?:[^""\\]|\\.)*)""");
+            var hangul = new Regex("[가-힣]");
+            var missing = new List<string>();
+            foreach (var file in System.IO.Directory.GetFiles("Assets/_Project/Scripts", "*.cs", System.IO.SearchOption.AllDirectories))
+            {
+                if (file.Replace('\\', '/').Contains("/Editor/")) continue;
+                foreach (Match c in call.Matches(System.IO.File.ReadAllText(file)))
+                    foreach (Match l in lit.Matches(c.Groups[1].Value))
+                    {
+                        string ko = Regex.Unescape(l.Groups[1].Value);
+                        if (hangul.IsMatch(ko) && !table.TryGetEn(ko, out _)) missing.Add($"{System.IO.Path.GetFileName(file)}: {ko}");
+                    }
+            }
+            Assert.IsEmpty(missing, string.Join("\n", missing));
+        }
+
+        [Test]
         public void 세이브_JSON_왕복() // 파일은 안 쓴다 — 메모리에서만
         {
             var d = new Core.SaveData { HaulTotal = 1234, BestStage = 5, Endings = 2, BodyColorHex = "#59CCD9" };
