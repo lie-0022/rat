@@ -34,6 +34,8 @@ namespace RatGame.EditorTools
         private static readonly Dictionary<string, int> Issues = new();
         private static readonly List<string> StageLines = new();
         private static string _saveBackup, _bakBackup, _languageBefore;
+        private static byte[] _settingsBackup;
+        private static string SettingsPath => Path.Combine(Application.persistentDataPath, "settings.json");
         private static bool _restorePending;
         private static bool _english;
         private static float _scanAt;
@@ -54,6 +56,7 @@ namespace RatGame.EditorTools
                     _restorePending = false;
                     if (_saveBackup != null) File.WriteAllText(SaveService.FilePath, _saveBackup);
                     if (_bakBackup != null) File.WriteAllText(BakPath, _bakBackup);
+                    if (_english && _settingsBackup != null) File.WriteAllBytes(SettingsPath, _settingsBackup);
                     Debug.Log("[Rat] 통째 시험: 플레이 멈춘 뒤 세이브 한 번 더 되돌림");
                 }
             };
@@ -95,6 +98,8 @@ namespace RatGame.EditorTools
             _english = SessionState.GetBool(EnglishKey, false);
             BeginClient();
             _languageBefore = SettingsService.Current.Language;
+            // 영어로 바꿨다 되돌리면 설정이 새 필드까지 다시 써진다 — 파일 그대로 되돌리게 떠 둔다 (고양이 288)
+            _settingsBackup = File.Exists(SettingsPath) ? File.ReadAllBytes(SettingsPath) : null;
             if (_english) SetLanguage("en");
             _saveBackup = File.Exists(SaveService.FilePath) ? File.ReadAllText(SaveService.FilePath) : null;
             _bakBackup = File.Exists(BakPath) ? File.ReadAllText(BakPath) : null;
@@ -268,6 +273,7 @@ namespace RatGame.EditorTools
             sb.Append(CloseClientAndReport());
             if (_saveBackup != null) { File.WriteAllText(SaveService.FilePath, _saveBackup); sb.Append(" | 세이브 되돌림"); }
             if (_bakBackup != null) File.WriteAllText(BakPath, _bakBackup);
+            if (_english && _settingsBackup != null) File.WriteAllBytes(SettingsPath, _settingsBackup);
             _restorePending = true;
             Debug.Log(sb.ToString());
             // 묶음에서 왔으면 결과를 적고 플레이를 멈춘다(멈추면 다음 시험) — 혼자 돌릴 땐 전처럼 플레이에 남는다
