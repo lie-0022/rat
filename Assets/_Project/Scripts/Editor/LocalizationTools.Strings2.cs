@@ -8,6 +8,12 @@ namespace RatGame.EditorTools
         private static readonly Dictionary<string, string> DummyEn2 = new()
         {
             // 결과 화면
+            // 의심 이유 (고양이 305)
+            ["봤다"] = "saw you",
+            ["발소리"] = "footsteps",
+            ["물건 소리"] = "item noise",
+            ["찍찍"] = "squeak",
+            ["쨍그랑"] = "crash",
             ["다음 맵으로"] = "to the next map",
             ["기지로"] = "to base",
             ["굶었다..."] = "Starved...",

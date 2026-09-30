@@ -74,13 +74,14 @@ namespace RatGame.UI
         private const float CauseGapPx = 4f;
         private const float CauseFontSize = 20f;
 
+        // 영어 모드에서도 번역되게 Loc.T로 (고양이 305 — 전엔 한국어 그대로 떴다)
         private static string CauseText(StimulusCause c) => c switch
         {
-            StimulusCause.Sight => "봤다",
-            StimulusCause.Footstep => "발소리",
-            StimulusCause.Item => "물건 소리",
-            StimulusCause.Squeak => "찍찍",
-            StimulusCause.Crash => "쨍그랑",
+            StimulusCause.Sight => Loc.T("봤다"),
+            StimulusCause.Footstep => Loc.T("발소리"),
+            StimulusCause.Item => Loc.T("물건 소리"),
+            StimulusCause.Squeak => Loc.T("찍찍"),
+            StimulusCause.Crash => Loc.T("쨍그랑"),
             _ => "",
         };
 
@@ -173,7 +174,7 @@ namespace RatGame.UI
             if (_lastLogged != symbol) { _lastLogged = symbol; Log.Dev($"의심 표시: {symbol} ({_cat.name} {_cat.State.Value})"); }
             if (_symbol.text != symbol) _symbol.text = symbol;
             var causeSenses = _cat.GetComponent<CatSenses>();
-            string cause = symbol != "?" ? "" : _trackingMe ? "냄새" : causeSenses != null ? CauseText((StimulusCause)causeSenses.LastCause.Value) : "";
+            string cause = symbol != "?" ? "" : _trackingMe ? Loc.T("냄새") : causeSenses != null ? CauseText((StimulusCause)causeSenses.LastCause.Value) : "";
             if (!_causeStyled && cause.Length > 0)
             {
                 // 테두리는 켜진 뒤에 — 꺼진 표시 밑에서 막 만든 글자에 주면 재질이 없어 예외가 났다(클라 로그)

@@ -978,3 +978,13 @@ MonoBehaviour:
   - Ko: "(\uD765 \u2014 \uAC19\uC740 \uC720\uC778\uC5D4 \uC9C8\uB838\uB2E4, \uAE08\uBC29
       \uB3CC\uC544\uC628\uB2E4)"
     En: "(Hmph \u2014 bored of that lure, back soon)"
+  - Ko: "\uBD24\uB2E4"
+    En: saw you
+  - Ko: "\uBC1C\uC18C\uB9AC"
+    En: footsteps
+  - Ko: "\uBB3C\uAC74 \uC18C\uB9AC"
+    En: item noise
+  - Ko: "\uCC0D\uCC0D"
+    En: squeak
+  - Ko: "\uCA0D\uADF8\uB791"
+    En: crash
