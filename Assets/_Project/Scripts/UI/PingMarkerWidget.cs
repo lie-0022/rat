@@ -34,6 +34,7 @@ namespace RatGame.UI
             public UnityEngine.UI.Image Icon;
             public TMP_Text Name;
             public TMP_Text Distance;
+            public RectTransform Arrow; // 화면 밖일 때 돌아볼 방향 (고양이 260)
             public Transform Follow;   // 고양이를 찍었으면 그 고양이 (고양이 165)
             public Vector3 FollowOffset;
         }
@@ -139,7 +140,34 @@ namespace RatGame.UI
                 Distance = rect.Find("DistanceBox/Distance").GetComponent<TMP_Text>()
             };
             marker.Icon.color = PlayerVisual.ColorFor(owner);
+            marker.Arrow = BuildArrow(rect, marker.Icon);
             return marker;
+        }
+
+        // 화면 밖 화살표 (고양이 260) — 마름모 아이콘과 같은 그림을 가늘게 늘려 바늘처럼. 가장자리 마커가 반투명 점만이면 어느 쪽으로 돌지 헷갈렸다
+        private const float ArrowOffset = 46f;
+        private static RectTransform BuildArrow(RectTransform marker, UnityEngine.UI.Image icon)
+        {
+            var go = new GameObject("OffscreenArrow", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+            var rt = (RectTransform)go.transform;
+            rt.SetParent(marker, false);
+            rt.sizeDelta = new Vector2(12f, 30f);
+            var img = go.GetComponent<UnityEngine.UI.Image>();
+            img.sprite = icon.sprite;
+            img.color = icon.color;
+            img.raycastTarget = false;
+            go.SetActive(false);
+            return rt;
+        }
+
+        private static void PointArrow(Marker m, bool onScreen)
+        {
+            if (m.Arrow == null) return;
+            if (m.Arrow.gameObject.activeSelf == onScreen) m.Arrow.gameObject.SetActive(!onScreen);
+            if (onScreen) return;
+            Vector2 dir = m.Rect.anchoredPosition.sqrMagnitude > 1f ? m.Rect.anchoredPosition.normalized : Vector2.down;
+            m.Arrow.anchoredPosition = m.Icon.rectTransform.anchoredPosition + dir * ArrowOffset;
+            m.Arrow.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f);
         }
 
         // 위기인 동료 (고양이 156) — 잡힘·다운·끈끈이면 구해질 때까지 그 쥐 위에. 상태·위치는 이미 모두에게 있어 각자 계산
@@ -195,6 +223,7 @@ namespace RatGame.UI
                 // 바로 옆이면 옅게 — 구출할 몸을 가리지 않게 (고양이 161). 이름은 남긴다
                 float near = Mathf.InverseLerp(HelpNearMin, HelpNearMax, meters);
                 m.Group.alpha = (onScreen ? 1f : OffscreenAlpha) * Mathf.Lerp(HelpNearAlpha, 1f, near);
+                PointArrow(m, onScreen);
                 if (Mathf.Abs(m.Group.alpha - _lastHelpAlpha) > 0.2f) { _lastHelpAlpha = m.Group.alpha; Log.Dev($"동료 위기 표시 알파: {m.Group.alpha:0.00} ({meters:0.0}m)"); } // 2인 검증용
                 string dist = $"{Mathf.RoundToInt(meters)}m";
                 if (m.Distance.text != dist) m.Distance.text = dist;
@@ -211,6 +240,7 @@ namespace RatGame.UI
                 if (m.Follow != null) m.World = m.Follow.position + m.FollowOffset;
                 m.Rect.anchoredPosition = ScreenAnchor.ToCanvas(cam, _canvasRect, m.World, EdgeMargins, out bool onScreen);
                 m.Group.alpha = Mathf.Clamp01(left / FadeSeconds) * (onScreen ? 1f : OffscreenAlpha);
+                PointArrow(m, onScreen);
                 string dist = $"{Mathf.RoundToInt(Vector3.Distance(cam.transform.position, m.World))}m";
                 if (m.Distance.text != dist) m.Distance.text = dist;
             }
