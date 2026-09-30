@@ -119,9 +119,12 @@ namespace RatGame.AI
         {
             if (state == CatState.Suspicious) PlayOnce(_audio.SuspiciousClip, _audio.SuspiciousVolume);
             else if (state == CatState.Capture) PlayOnce(_audio.CaptureClip, _audio.CaptureVolume);
+            else if (state == CatState.Fight) PlayOnce(_audio.HissClip, _audio.HissVolume); // 앙숙 싸움 하악 (고양이 274)
 
+            // 반복음: 추격 그르렁 / 가지고 노는 동안 가르랑(동료가 잡혀 있다는 소리, 고양이 274)
             if (state == CatState.Chase) Loop(_audio.ChaseClip, _audio.ChaseVolume);
-            else if (_lastState == CatState.Chase) StopLoop();
+            else if (state == CatState.Toy) Loop(_audio.PurrClip, _audio.PurrVolume);
+            else if (_lastState is CatState.Chase or CatState.Toy) StopLoop();
         }
 
         private void OnPhase(CatSleepPhase phase)

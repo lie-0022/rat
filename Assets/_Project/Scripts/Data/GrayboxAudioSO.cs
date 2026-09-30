@@ -147,6 +147,14 @@ namespace RatGame.Data
             _ => null,
         };
 
+        [Header("싸움 하악·놀이 가르랑 (고양이 274)")]
+        [SerializeField, Range(0f, 1f)] private float _hissVolume = 0.75f;
+        [SerializeField, Range(0f, 1f)] private float _purrVolume = 0.4f;
+        public float HissVolume => _hissVolume;
+        public float PurrVolume => _purrVolume;
+        public AudioClip HissClip => Core.ToneSynth.Rush(0.9f, 0.6f);            // 하악 — 거친 잡음
+        public AudioClip PurrClip => Core.ToneSynth.Growl(26f, 23f, 1f);         // 가르랑 — 아주 낮은 떨림(26×1·23×1 정수라 이음매 없음)
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
