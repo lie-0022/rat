@@ -100,6 +100,7 @@ namespace RatGame.EditorTools
             if (!EditorApplication.isPlaying) { Finish("플레이 모드가 끝남"); return; }
             if (Time.realtimeSinceStartup - _startAt > 600f) { Finish("10분 초과"); return; }
             string scene = SceneManager.GetActiveScene().name;
+            TickClientCarry(); // 클라 잡기·던지기 예약 (고양이 280)
             if (_english && Time.realtimeSinceStartup >= _scanAt) { _scanAt = Time.realtimeSinceStartup + 0.5f; ScanKorean(); }
             switch (_step)
             {
@@ -181,6 +182,7 @@ namespace RatGame.EditorTools
                 }
                 return;
             }
+            if (_clientCarry.Count > 0) return; // 클라가 잡고 던질 때까지 창고로 안 옮긴다 — 옮기면 관절이 늘어나 던지기 전에 놓침 (고양이 280)
             MoveLocalPlayer(into);
             MoveClients(into);
         }
@@ -232,7 +234,7 @@ namespace RatGame.EditorTools
             sb.Append(failure == null ? "[Rat] 통째 시험 끝 — 성공" : $"[Rat] 통째 시험 끝 — 실패: {failure}");
             sb.Append($" | {Time.realtimeSinceStartup - _startAt:0}초 · 스테이지 {_stagesSeen} · 옮긴 물건 {_itemsMoved} · 엔딩 {(_sawFinished ? "봄" : "못 봄")}");
             foreach (var line in StageLines) sb.Append(" | ").Append(line);
-            if (_twoPlayer) sb.Append($" | 클라 행동 {_clientActions}번 → 호스트가 받은 핑 {_pingsSeen} · 찍찍 자막 {_squeaksSeen}");
+            if (_twoPlayer) sb.Append($" | 클라 행동 {_clientActions}번 → 호스트가 받은 핑 {_pingsSeen} · 찍찍 자막 {_squeaksSeen} · 잡고 던지기 {_clientThrows} → 휙 {_throwsSeen}");
             if (_english)
             {
                 sb.Append($" | 영어 모드 화면 한국어 {KoreanSeen.Count}종");

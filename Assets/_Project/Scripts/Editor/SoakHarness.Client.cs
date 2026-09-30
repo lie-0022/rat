@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using RatGame.Player;
@@ -44,7 +45,9 @@ namespace RatGame.EditorTools
             Arm(true);
         }
 
-        private static int _clientActions, _pingsSeen, _squeaksSeen;
+        private static int _clientActions, _pingsSeen, _squeaksSeen, _clientThrows, _throwsSeen;
+        // 클라 잡기·던지기 예약 (고양이 280) — 스테이지마다 각 클라 앞에 작은 상자, 1초 뒤 잡기, 2.5초 뒤 던지기
+        private static readonly List<(double at, NetworkObject client, string cmd)> _clientCarry = new();
 
         // 스테이지마다 모든 클라가 킁킁·핑·찍찍 (예전 소크 3~13처럼) — 호스트에서 핑(EventBus.PingReceived)·찍찍(RatSqueak)이 도착하는지 센다
         private static void ClientActions()
@@ -57,15 +60,41 @@ namespace RatGame.EditorTools
                 var rc = nm.ConnectedClients[id].PlayerObject.GetComponent<RatGame.Net.DevRemoteControl>();
                 rc.ServerSend("sniff"); rc.ServerSend("ping"); rc.ServerSend("squeak");
                 _clientActions++;
+                // 운반 동기화도 스테이지마다 — 상자는 호스트가 띄우고 클라가 제 손으로 잡아 던진다
+                var player = nm.ConnectedClients[id].PlayerObject;
+                var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/Items/GrayBox_S.prefab");
+                var fwd = player.transform.forward; fwd.y = 0f; fwd.Normalize();
+                var box = Object.Instantiate(prefab, player.transform.position + fwd * 0.7f + Vector3.up * 0.3f, Quaternion.identity);
+                box.GetComponent<NetworkObject>().Spawn(true);
+                double now = EditorApplication.timeSinceStartup;
+                _clientCarry.Add((now + 1.0, player, "grab"));
+                _clientCarry.Add((now + 2.5, player, "throw:0.6"));
+                _clientThrows++;
             }
         }
+
+        private static void TickClientCarry()
+        {
+            double now = EditorApplication.timeSinceStartup;
+            for (int i = _clientCarry.Count - 1; i >= 0; i--)
+            {
+                if (_clientCarry[i].at > now) continue;
+                var c = _clientCarry[i].client;
+                if (c != null && c.IsSpawned) c.GetComponent<RatGame.Net.DevRemoteControl>().ServerSend(_clientCarry[i].cmd);
+                _clientCarry.RemoveAt(i);
+            }
+        }
+
+        private static void OnThrowSeen(Vector3 _) => _throwsSeen++;
 
         private static void OnPingSeen(ulong owner, Vector3 _) { if (owner != NetworkManager.Singleton.LocalClientId) _pingsSeen++; }
         private static void OnSqueakSeen(ulong owner, Vector3 _) { if (owner != NetworkManager.Singleton.LocalClientId) _squeaksSeen++; }
 
         private static void BeginClient()
         {
-            _clientActions = _pingsSeen = _squeaksSeen = 0;
+            _clientActions = _pingsSeen = _squeaksSeen = _clientThrows = _throwsSeen = 0;
+            _clientCarry.Clear();
+            RatGame.Core.EventBus.ItemThrown -= OnThrowSeen; RatGame.Core.EventBus.ItemThrown += OnThrowSeen;
             RatGame.Core.EventBus.PingReceived -= OnPingSeen; RatGame.Core.EventBus.PingReceived += OnPingSeen;
             RatGame.Core.EventBus.RatSqueak -= OnSqueakSeen; RatGame.Core.EventBus.RatSqueak += OnSqueakSeen;
             _clientCount = SessionState.GetInt(ClientCountKey, 0);
