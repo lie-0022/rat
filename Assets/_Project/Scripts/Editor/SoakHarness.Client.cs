@@ -45,7 +45,7 @@ namespace RatGame.EditorTools
             Arm(true);
         }
 
-        private static int _clientActions, _pingsSeen, _squeaksSeen, _clientThrows, _throwsSeen;
+        private static int _clientActions, _pingsSeen, _squeaksSeen, _clientThrows, _throwsSeen, _heldAtThrow;
         // 클라 잡기·던지기 예약 (고양이 280) — 스테이지마다 각 클라 앞에 작은 상자, 1초 뒤 잡기, 2.5초 뒤 던지기
         private static readonly List<(double at, NetworkObject client, string cmd)> _clientCarry = new();
 
@@ -85,7 +85,12 @@ namespace RatGame.EditorTools
                     var box = Object.Instantiate(prefab, c.transform.position + fwd * 0.7f + Vector3.up * 0.3f, Quaternion.identity);
                     box.GetComponent<NetworkObject>().Spawn(true);
                 }
-                else if (c != null && c.IsSpawned) c.GetComponent<RatGame.Net.DevRemoteControl>().ServerSend(_clientCarry[i].cmd);
+                else if (c != null && c.IsSpawned)
+                {
+                    // 던질 때 손에 든 게 있었는지 — 휙이 모자라면 잡기가 빗나간 건지 소리가 빠진 건지 가른다 (고양이 319, 4인 휙 10~14/15)
+                    if (_clientCarry[i].cmd.StartsWith("throw") && c.GetComponent<RatGame.Player.PlayerCarryController>().CarriedItemNetId.Value != 0) _heldAtThrow++;
+                    c.GetComponent<RatGame.Net.DevRemoteControl>().ServerSend(_clientCarry[i].cmd);
+                }
                 _clientCarry.RemoveAt(i);
             }
         }
@@ -97,7 +102,7 @@ namespace RatGame.EditorTools
 
         private static void BeginClient()
         {
-            _clientActions = _pingsSeen = _squeaksSeen = _clientThrows = _throwsSeen = 0;
+            _clientActions = _pingsSeen = _squeaksSeen = _clientThrows = _throwsSeen = _heldAtThrow = 0;
             _clientCarry.Clear();
             RatGame.Core.EventBus.ItemThrown -= OnThrowSeen; RatGame.Core.EventBus.ItemThrown += OnThrowSeen;
             RatGame.Core.EventBus.PingReceived -= OnPingSeen; RatGame.Core.EventBus.PingReceived += OnPingSeen;
