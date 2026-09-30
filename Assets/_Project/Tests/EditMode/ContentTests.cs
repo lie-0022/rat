@@ -83,6 +83,21 @@ namespace RatGame.Tests
         }
 
         [Test]
+        public void 프리팹에_사라진_스크립트_없음() // 스크립트를 지우거나 옮기다 남은 빈 부품 (고양이 294)
+        {
+            int prefabs = 0;
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/_Project/Prefabs" }))
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                prefabs++;
+                foreach (var t in go.GetComponentsInChildren<Transform>(true))
+                    Assert.AreEqual(0, GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(t.gameObject), $"사라진 스크립트: {path} / {t.name}");
+            }
+            Assert.Greater(prefabs, 50);
+        }
+
+        [Test]
         public void 세이브_JSON_왕복() // 파일은 안 쓴다 — 메모리에서만
         {
             var d = new Core.SaveData { HaulTotal = 1234, BestStage = 5, Endings = 2, BodyColorHex = "#59CCD9" };

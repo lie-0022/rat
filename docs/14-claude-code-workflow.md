@@ -69,7 +69,7 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 
 | 무엇 | 어디 | 시간 | 언제 |
 |---|---|---|---|
-| EditMode 로직 시험 16개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성·빌드 씬·세이브 왕복·네트워크 프리팹 등록) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 2초 | 공식·데이터·생성기를 고친 뒤 |
+| EditMode 로직 시험 17개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성·빌드 씬·세이브 왕복·네트워크 프리팹 등록·사라진 스크립트) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 2초 | 공식·데이터·생성기를 고친 뒤 |
 | Run All — Quick (혼자 5) | Tools → RatGame → Test | 2분 | 게임 코드를 고친 뒤 |
 | Run All — Full (2·4인·이탈 포함 11) | 〃 (빌드 클라 `Builds/macOS/Rat.app` 필요 — 런타임 코드를 고쳤으면 먼저 빌드) | 8분 | 넷코드·운반을 고친 뒤 |
 | Run Everything (Full + 통째 혼자·영어 2인·4인) | 〃 | 15분 | 큰 묶음 뒤, 커밋 전 |
