@@ -21,7 +21,7 @@ namespace RatGame.Net
     ///   trace:초        : 이 클라에서 호스트 쥐 움직임을 매 프레임 재서 요약 — 프레임 간 최대 이동·튐 횟수 (보간 확인, 고양이 137)
     ///   tp:x,y,z        : 소유 클라에서 순간이동 (InvariantCulture 소수점)
     ///   hud:이름        : 이름에 그 낱말이 든 UI 아래 켜진 글자를 로그 (클라 화면 글자 확인, 고양이 182 — 전체 화면 찍기 대신)
-    /// 협동 운반처럼 두 플레이어가 동시에 움직여야 하는 검증에 쓴다. 릴리즈엔 영향 없음(호출부 없음).
+    /// 협동 운반처럼 두 플레이어가 동시에 움직여야 하는 검증에 쓴다. 릴리스 빌드는 명령을 무시한다.
     /// </summary>
     public class DevRemoteControl : NetworkBehaviour
     {
@@ -38,7 +38,8 @@ namespace RatGame.Net
         [ClientRpc]
         private void DevCommandClientRpc(string command, ClientRpcParams rpcParams = default)
         {
-            if (!IsOwner) return;
+            // 릴리스에선 받지 않는다 — 고친 호스트가 친구 쥐를 조종하지 못하게 (고양이 322). 에디터·개발 빌드(시험 도구)만
+            if (!IsOwner || !Debug.isDebugBuild) return;
             Log.Dev($"[DevRC] client {OwnerClientId} ← {command}");
             if (command == "grab")
             {

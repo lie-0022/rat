@@ -88,6 +88,7 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 
 - 빌드 전 검사: 플레이·컴파일 중 아님, 모듈 있음, 빌드 씬 0번 = Boot. 릴리스는 Burst 디버그 기호(`*_BurstDebugInformation_DoNotShip`)를 `Builds/Symbols/{플랫폼}-{버전}`으로 옮겨 싣지 않는다(크래시 분석용으로 보관).
 - 배치 모드: `Unity -batchmode -quit -projectPath . -executeMethod RatGame.EditorTools.BuildTools.BuildWindowsDemoCli` (실패하면 종료 코드 1).
+- 릴리스 빌드는 개발 도구를 닫는다: F3·F4·`-perflog`·원격 명령(DevRemoteControl)·자동 접속(`-autohost`·`-autostage`) — 시험·성능 측정은 개발 빌드로 (고양이 322).
 - 스팀 업로드: `steam/`(앱·디포 VDF 틀 + README) — 숫자 채우기·업로드는 사람. 기본 `Preview 1`(올리지 않고 목록만), `SetLive` 빈칸(바로 공개 금지). EditMode가 업로드 폴더 = 윈도 릴리스 빌드 폴더, 디포 번호 일치를 검사.
 - 확인 (09-30): macOS 릴리스 124MB·82초·경고 0, 켜서 메뉴까지 오류 0. Windows는 모듈이 없어 "모듈 없음"으로 멈춤 확인.
 

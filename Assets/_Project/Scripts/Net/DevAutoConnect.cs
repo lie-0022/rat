@@ -12,12 +12,14 @@ namespace RatGame.Net
     ///   -autojoin   : 부팅 후 127.0.0.1 접속 (재시도 5회)
     ///   -autowander : 스폰된 자기 플레이어가 자동 배회 (이동 동기화 검증용)
     ///   -autostage N: -autohost와 함께 — 기지 대신 벽 속 스테이지 N으로 바로 (성능 측정용, 고양이 86)
-    /// 릴리즈 빌드에서는 스트립까진 안 하지만 인자 없으면 아무것도 안 한다.
+    /// 릴리스 빌드에서는 인자가 있어도 아무것도 안 한다.
     /// </summary>
     public class DevAutoConnect : MonoBehaviour
     {
         private void Start()
         {
+            // 릴리스에선 인자를 무시 — -autostage로 깊은 스테이지 도전과제를 건너뛰지 못하게 (고양이 322). 시험·성능 측정은 개발 빌드
+            if (!Debug.isDebugBuild) return;
             var args = Environment.GetCommandLineArgs();
             bool host = Array.IndexOf(args, "-autohost") >= 0;
             bool join = Array.IndexOf(args, "-autojoin") >= 0;
