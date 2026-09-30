@@ -15,7 +15,7 @@ namespace RatGame.UI
     /// 무작위로 오는 사건을 기다리거나 맵을 헤매지 않게: 집주인 이벤트 바로 켜기 · 기능 자리로 순간이동 · 고양이 불러오기 · 나 쓰러뜨리기/살리기.
     /// 씬·프리팹을 건드리지 않게 스스로 생긴다. 판정은 전부 기존 호스트 API를 부른다(새 동기화 없음).
     /// </summary>
-    public class DevCheckMenu : MonoBehaviour
+    public partial class DevCheckMenu : MonoBehaviour
     {
         private bool _open;
         private Vector2 _scroll;
@@ -111,6 +111,8 @@ namespace RatGame.UI
             GUILayout.Label("<b>여기로 가기</b>", Rich());
             foreach (var (label, target) in Targets())
                 if (GUILayout.Button(label)) GoTo(target);
+
+            DrawSounds();
 
             GUILayout.EndScrollView();
             GUILayout.EndArea();
