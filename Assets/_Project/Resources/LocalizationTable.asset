@@ -973,3 +973,5 @@ MonoBehaviour:
     En: " \xB7 Achievements {0}/{1}"
   - Ko: "\uB3C4\uC804\uACFC\uC81C"
     En: Achievements
+  - Ko: "\uC18C\uB9AC \uC790\uB9C9"
+    En: Sound captions

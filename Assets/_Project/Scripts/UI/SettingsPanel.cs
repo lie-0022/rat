@@ -24,6 +24,7 @@ namespace RatGame.UI
         [SerializeField] private SettingsSliderRow _sensitivity;
         [SerializeField] private SettingsStepper _crouch;
         [SerializeField] private SettingsStepper _cameraShake;
+        [SerializeField] private SettingsStepper _soundCaptions; // 고양이 258
         [SerializeField] private SettingsStepper _screenMode;
         [SerializeField] private SettingsStepper _resolution;
         [SerializeField] private SettingsSliderRow _masterVolume;
@@ -60,6 +61,7 @@ namespace RatGame.UI
             _voiceVolume.Changed += v => Edit(d => d.VoiceVolume = v);
             _crouch.Changed += i => Edit(d => d.CrouchToggle = i == 1);
             if (_cameraShake != null) _cameraShake.Changed += i => Edit(d => d.CameraShake = i == 0);
+            if (_soundCaptions != null) _soundCaptions.Changed += i => Edit(d => d.SoundCaptions = i == 0);
             _screenMode.Changed += i => Edit(d => d.ScreenMode = (ScreenModeOption)i);
             _resolution.Changed += i => Edit(d => { d.ResolutionWidth = _resolutions[i].x; d.ResolutionHeight = _resolutions[i].y; });
             _language.Changed += i => Edit(d => d.Language = LanguageCodes[i]);
@@ -145,6 +147,7 @@ namespace RatGame.UI
             _voiceVolume.SetValue(_draft.VoiceVolume);
             _crouch.SetOptions(L(CrouchOptions), _draft.CrouchToggle ? 1 : 0);
             if (_cameraShake != null) _cameraShake.SetOptions(L(ShakeOptions), _draft.CameraShake ? 0 : 1);
+            if (_soundCaptions != null) _soundCaptions.SetOptions(L(ShakeOptions), _draft.SoundCaptions ? 0 : 1); // 켬·끔 같은 목록
             _screenMode.SetOptions(L(ScreenModeOptions), (int)_draft.ScreenMode);
             _language.SetOptions(LanguageOptions, Mathf.Max(0, Array.IndexOf(LanguageCodes, _draft.Language)));
 

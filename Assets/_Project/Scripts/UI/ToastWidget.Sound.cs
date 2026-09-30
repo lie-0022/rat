@@ -8,7 +8,7 @@ using UnityEngine;
 namespace RatGame.UI
 {
     /// <summary>
-    /// 토스트 — 소리 대신 자막(오디오 전): 고양이 소리(루틴 예고·코골이·아기·졸음, 방향 붙음)·동료 찍찍, 방향·거리 글자 도우미.
+    /// 토스트 — 소리 자막(설정으로 끔, 고양이 258): 고양이 소리(루틴 예고·코골이·아기·졸음, 방향 붙음)·동료 찍찍, 방향·거리 글자 도우미.
     /// ToastWidget.cs가 300줄을 넘어 나눔. 구독은 본체 OnEnable/OnDisable.
     /// </summary>
     public partial class ToastWidget
@@ -19,6 +19,7 @@ namespace RatGame.UI
         // 고양이 루틴 예고 (design/cat-ideas/02) — 소리 대신 자막. 고양이 가까이 있는 쥐만 듣는다, 같은 문구 연속 금지
         private void OnCatCue(CatCueKind kind, Vector3 catPos, float hearScale)
         {
+            if (!SettingsService.Current.SoundCaptions) return; // 설정 "소리 자막" 끔 (고양이 258)
             var nm = NetworkManager.Singleton;
             if (nm == null || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
             float range = (_balance != null ? _balance.CatCueHearRange : 18f) * Mathf.Max(1f, hearScale); // 벽 속 큰 고양이 18 → 34m — 방이 2배라 예전처럼 방 두 개쯤
@@ -53,6 +54,7 @@ namespace RatGame.UI
         // 동료 찍찍 (고양이 158) — 오디오 전 자막. 소통 수단이라 어디서 났는지까지
         private void OnRatSqueak(ulong owner, Vector3 pos)
         {
+            if (!SettingsService.Current.SoundCaptions) return;
             var nm = NetworkManager.Singleton;
             if (nm == null || owner == nm.LocalClientId || nm.LocalClient == null || nm.LocalClient.PlayerObject == null) return;
             float range = _balance != null ? _balance.SqueakHearMeters : 30f;

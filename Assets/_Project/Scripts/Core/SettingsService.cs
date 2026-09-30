@@ -18,6 +18,8 @@ namespace RatGame.Core
         public bool CrouchToggle;
         /// <summary>화면 흔들림(큰 고양이 발걸음 등) — 멀미 배려로 끌 수 있게 (고양이 145).</summary>
         public bool CameraShake = true;
+        /// <summary>소리 자막(고양이 예고·코골이·동료 찍찍 토스트) — 소리가 생겨 끌 수 있게, 기본 켬(청각 접근성, 고양이 258).</summary>
+        public bool SoundCaptions = true;
         public ScreenModeOption ScreenMode = ScreenModeOption.Borderless;
         /// <summary>0이면 모니터 해상도 그대로.</summary>
         public int ResolutionWidth;

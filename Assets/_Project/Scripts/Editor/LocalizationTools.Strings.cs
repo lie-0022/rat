@@ -41,6 +41,7 @@ namespace RatGame.EditorTools
             ["마우스 감도"] = "Mouse sensitivity",
             ["웅크리기"] = "Crouch",
             ["화면 흔들림"] = "Camera shake",
+            ["소리 자막"] = "Sound captions",
             ["화면"] = "Display",
             ["화면 모드"] = "Screen mode",
             ["해상도"] = "Resolution",
