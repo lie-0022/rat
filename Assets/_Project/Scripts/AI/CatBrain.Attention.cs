@@ -38,6 +38,7 @@ namespace RatGame.AI
             times.Add(now);
             if (times.Count <= _balance.BoredomCount) return 1f;
             Log.Dev($"고양이 [{name}]: {kind} 지루함 ({times.Count}번째) — 시간 ×{_balance.BoredomMultiplier}");
+            if (times.Count == _balance.BoredomCount + 1) CatCueClientRpc((byte)CatCueKind.Bored, transform.position); // 처음 질린 순간 한 번 — 규칙을 알게 (고양이 285)
             return _balance.BoredomMultiplier;
         }
     }

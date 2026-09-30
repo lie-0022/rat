@@ -39,7 +39,7 @@ namespace RatGame.UI
         private void OnCatCue(CatCueKind kind, Vector3 pos, float hearScale)
         {
             if (_audio == null || kind == CatCueKind.Snore || kind == CatCueKind.SnoreStop) return;
-            var clip = kind == CatCueKind.KittenCall ? _audio.KittenCallClip : _audio.RoutineBellClip;
+            var clip = kind == CatCueKind.KittenCall ? _audio.KittenCallClip : kind == CatCueKind.Bored ? _audio.BoredClip : _audio.RoutineBellClip;
             PlayAt(pos, clip, _audio.CatBellVolume);
         }
 

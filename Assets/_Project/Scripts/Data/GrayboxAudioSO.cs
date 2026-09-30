@@ -194,6 +194,7 @@ namespace RatGame.Data
         public AudioClip LightClickClip => Core.ToneSynth.Clink(3000f, 0.05f);   // 불 딸깍
         public AudioClip RoutineBellClip => Core.ToneSynth.Clink(2600f, 0.35f);  // 루틴 출발 방울
         public AudioClip KittenCallClip => Core.ToneSynth.Chirp(900f, 1250f, 0.3f);
+        public AudioClip BoredClip => Core.ToneSynth.Chirp(600f, 380f, 0.3f);    // 흥 (질림, 고양이 285)
 
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;

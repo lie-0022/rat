@@ -42,6 +42,7 @@ namespace RatGame.EditorTools
             ["웅크리기"] = "Crouch",
             ["화면 흔들림"] = "Camera shake",
             ["소리 자막"] = "Sound captions",
+            ["(흥 — 같은 유인엔 질렸다, 금방 돌아온다)"] = "(Hmph — bored of that lure, back soon)",
             ["화면"] = "Display",
             ["화면 모드"] = "Screen mode",
             ["해상도"] = "Resolution",

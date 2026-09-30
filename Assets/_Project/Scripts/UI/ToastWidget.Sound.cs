@@ -35,6 +35,7 @@ namespace RatGame.UI
                 CatCueKind.KittenCall => "(냐앙! — 아기 고양이가 엄마를 부른다)",
                 CatCueKind.GuardNap => "(쿨쿨… 문지기가 졸고 있다 — 지금!)",
                 CatCueKind.PatrolNap => "(꾸벅꾸벅… 순찰꾼이 잠들었다 — 큰길이 빈다)",
+                CatCueKind.Bored => "(흥 — 같은 유인엔 질렸다, 금방 돌아온다)",
                 // 역할별 통문장 — 조사 조각을 끼우면 번역이 안 돼서 (고양이 197)
                 CatCueKind.Snore => RoleName(catPos, "(드르렁… 고양이가 깊이 잠들었다)", "(드르렁… 문지기가 깊이 잠들었다)", "(드르렁… 순찰꾼이 깊이 잠들었다)", "(드르렁… 아기 고양이가 깊이 잠들었다)"),
                 CatCueKind.SnoreStop => RoleName(catPos, "(코골이가 멈췄다 — 곧 깬다!)", "(문지기 코골이가 멈췄다 — 곧 깬다!)", "(순찰꾼 코골이가 멈췄다 — 곧 깬다!)", "(아기 고양이 코골이가 멈췄다 — 곧 깬다!)"),

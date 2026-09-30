@@ -29,7 +29,7 @@ Patrol ──(의심게이지 ≥30)──▶ Suspicious ──(게이지 ≥100
    ▲                            │(게이지 0)                                │
    └────────── Return ◀─────────┘                     (타깃 접촉)──▶ Capture ──▶ Return
 Distracted: 털실뭉치 등 아이템 트리거 → 8s 후 이전 상태로
-- **관심 점수 (고양이 261, design/cat-ideas/13 본체 — `AI/CatBrain.Attention.cs`)**: 유인은 한 저울 — `AttentionKind` 먹이 떨굼 40 · 끈 50 · 털실 60 · 레이저 80 · 캣닢 90 (`BalanceConfigSO.attentionScores`). 유인 중엔 지금 것보다 **낮은** 자극 무시(같거나 높으면 갈아탐). 지루함: 같은 종류에 60s 안 3번 넘게 반응하면 시간 ×0.5. 의심·추격 우선은 그대로(상태 조건이 먼저 거름).
+- **관심 점수 (고양이 261, design/cat-ideas/13 본체 — `AI/CatBrain.Attention.cs`)**: 유인은 한 저울 — `AttentionKind` 먹이 떨굼 40 · 끈 50 · 털실 60 · 레이저 80 · 캣닢 90 (`BalanceConfigSO.attentionScores`). 유인 중엔 지금 것보다 **낮은** 자극 무시(같거나 높으면 갈아탐). 지루함: 같은 종류에 60s 안 3번 넘게 반응하면 시간 ×0.5 — 처음 질린 순간 CatCue Bored → 자막 "(흥 — 같은 유인엔 질렸다, 금방 돌아온다)" + "흥" 소리(고양이 285). 의심·추격 우선은 그대로(상태 조건이 먼저 거름).
 ```
 
 | 상태 | 행동 | 이동속도 |
