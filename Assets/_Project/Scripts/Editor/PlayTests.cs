@@ -221,14 +221,16 @@ namespace RatGame.EditorTools
                 // 쫓는 중이 아니면 늘 다시 앞에 — 전엔 순찰·의심·복귀·잠만이라 매복·상자 앉기면 3분을 다 썼다 (고양이 272, 추격 2인은 250에서)
                 if (st is not (CatState.Chase or CatState.Capture or CatState.Toy))
                 {
-                    if (st == CatState.Ambush || st == CatState.BoxSit) Cat().ServerWake(); // 숨어 있으면 앞에 서도 못 본다
+                    // 숨거나 자면 앞에 서도 못 본다 — 깨움 (게으름뱅이가 잠들어 3분을 쓴 판, 고양이 309)
+                    if (st == CatState.Ambush || st == CatState.BoxSit || st == CatState.Sleep) Cat().ServerWake();
                     var fwd = Cat().transform.forward; fwd.y = 0f; fwd.Normalize();
-                    Put(Cat().transform.position + fwd * 2f + Vector3.up * 0.3f);
+                    Put(Cat().transform.position + fwd * 1.5f + Vector3.up * 0.3f);
                 }
                 return false;
             }, Check = () => Transitions.Exists(t => t.EndsWith("→Chase")) ? null : string.Join(",", Transitions) },
-            new Step { Name = "포획 뒤 복귀", Ready = () => Transitions.Contains("Capture→Return") || EditorApplication.timeSinceStartup - _stepAt > 15,
-                Check = () => Transitions.Contains("Capture→Return") ? null : string.Join(",", Transitions) },
+            // 포획 뒤 언젠가 복귀 — Capture→Chase→Return처럼 한 번 더 쫓다 돌아가는 것도 맞다 (고양이 309, 4번 중 1번)
+            new Step { Name = "포획 뒤 복귀", Ready = () => ReturnedAfterCapture() || EditorApplication.timeSinceStartup - _stepAt > 20,
+                Check = () => ReturnedAfterCapture() ? null : string.Join(",", Transitions) },
             // 복귀를 벗어나면 통과 — 근처에 쥐가 남아 있으면 순찰 대신 다시 의심으로 가는 게 맞다 (첫 시험에서 Return→Suspicious)
             new Step { Name = "복귀 뒤", Ready = () => Transitions.Exists(t => t.StartsWith("Return→")) || EditorApplication.timeSinceStartup - _stepAt > 15,
                 Act = () => CatBrain.ServerStateChanged -= OnCat,
@@ -241,6 +243,14 @@ namespace RatGame.EditorTools
                 return n > 0 ? null : "방울 단 고양이가 움직였는데 소리 없음";
             } },
         };
+
+        private static bool ReturnedAfterCapture()
+        {
+            int cap = Transitions.IndexOf("Chase→Capture");
+            if (cap < 0) return false;
+            for (int i = cap + 1; i < Transitions.Count; i++) if (Transitions[i].EndsWith("→Return")) return true;
+            return false;
+        }
 
         // ---- 도우미 ----
 
