@@ -98,6 +98,25 @@ namespace RatGame.Tests
         }
 
         [Test]
+        public void 프리팹_번역_글자는_모두_표에() // 없으면 영어 모드에서 그 글자만 한국어로 남는다 (고양이 303)
+        {
+            var table = Resources.Load<LocalizationTableSO>("LocalizationTable");
+            int checkedCount = 0;
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/_Project/Prefabs" }))
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                foreach (var lt in go.GetComponentsInChildren<UI.LocalizedText>(true))
+                {
+                    if (string.IsNullOrEmpty(lt.Ko)) continue;
+                    checkedCount++;
+                    Assert.IsTrue(table.TryGetEn(lt.Ko, out _), $"번역 표에 없음: {path} / {lt.name} \"{lt.Ko}\"");
+                }
+            }
+            Assert.Greater(checkedCount, 50);
+        }
+
+        [Test]
         public void 세이브_JSON_왕복() // 파일은 안 쓴다 — 메모리에서만
         {
             var d = new Core.SaveData { HaulTotal = 1234, BestStage = 5, Endings = 2, BodyColorHex = "#59CCD9" };
