@@ -65,6 +65,19 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 4. 통과 시 MPPM 실행 → 이상 동작은 **재현 절차 + Player.log**를 붙여서 전달
 5. 통과 기준(각 문서 수용 기준) 체크 → 커밋
 
+## 시험 도구 (2026-09-30 기준)
+
+| 무엇 | 어디 | 시간 | 언제 |
+|---|---|---|---|
+| EditMode 로직 시험 13개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 2초 | 공식·데이터·생성기를 고친 뒤 |
+| Run All — Quick (혼자 5) | Tools → RatGame → Test | 2분 | 게임 코드를 고친 뒤 |
+| Run All — Full (2·4인·이탈 포함 11) | 〃 (빌드 클라 `Builds/macOS/Rat.app` 필요 — 런타임 코드를 고쳤으면 먼저 빌드) | 8분 | 넷코드·운반을 고친 뒤 |
+| Run Everything (Full + 통째 혼자·영어 2인·4인) | 〃 | 15분 | 큰 묶음 뒤, 커밋 전 |
+| 성능 | 개발 빌드 `-perflog -autohost -autostage 5` | 1분 | docs/13 성능 표 |
+
+- 시험은 세이브·직전본·설정을 떠 두고 플레이를 멈춘 뒤에도 한 번 더 되돌린다. 7777이 막혀 있으면 7778로 돈다(`Editor/DevPort`). 플레이 중 컴파일은 `Editor/PlayModeReloadGuard`가 네트워크를 닫는다.
+- 통째 시험을 혼자 돌리면 끝나도 플레이에 남는다(결과 화면 확인용) — 컴파일 전에 멈출 것.
+
 ## 클로드코드에게 시킬 추가 자동화 (여유 시)
 
 - `Tools/RatGame/Validate Balance`: BalanceConfigSO 값과 docs 표 diff 출력
