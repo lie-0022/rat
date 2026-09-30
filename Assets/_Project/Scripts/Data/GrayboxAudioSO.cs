@@ -64,6 +64,17 @@ namespace RatGame.Data
         public float FootstepRunVolume => _footstepRunVolume;
         public float FootstepMaxDistance => _footstepMaxDistance;
 
+        [Header("추격 배경음 (고양이 248) — 어느 고양이든 추격 중이면 서서히 켜짐, 끝나면 서서히 꺼짐. 음량 = 음악 설정 줄")]
+        [SerializeField] private AudioClip _chaseMusicClip;
+        [SerializeField] private float _chaseMusicBpm = 120f, _chaseMusicRoot = 73.4f;
+        [SerializeField, Range(0f, 1f)] private float _chaseMusicVolume = 0.45f;
+        [SerializeField] private float _chaseMusicFadeIn = 0.6f, _chaseMusicFadeOut = 2.5f; // 초 — 켜짐은 빨리(위험 신호), 꺼짐은 천천히(안도)
+
+        public AudioClip ChaseMusicClip => _chaseMusicClip != null ? _chaseMusicClip : Core.ToneSynth.ChaseMusic(_chaseMusicBpm, _chaseMusicRoot);
+        public float ChaseMusicVolume => _chaseMusicVolume;
+        public float ChaseMusicFadeIn => _chaseMusicFadeIn;
+        public float ChaseMusicFadeOut => _chaseMusicFadeOut;
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;

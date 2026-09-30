@@ -25,6 +25,8 @@ namespace RatGame.EditorTools
             SessionState.SetString(ResultsKey, "");
             Debug.Log($"[Rat] 시험 묶음 시작: {keys}");
             ContinueQueue();
+            // 시작은 편집 모드 한가운데라 바로 켜도 된다 — 에디터가 뒤에 있으면 delayCall이 한참 안 불린다 (고양이 248)
+            EditorApplication.isPlaying = true;
         }
 
         // 편집 모드로 돌아올 때마다 — 남은 게 있으면 다음 시험을 건다

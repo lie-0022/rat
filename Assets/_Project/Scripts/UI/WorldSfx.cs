@@ -79,6 +79,7 @@ namespace RatGame.UI
         // 정산 딸랑 — 적립이 오른 순간. 스테이지가 바뀌어 0이 되거나 RunManager가 바뀌면 기준만 다시 잡는다
         private void Update()
         {
+            UpdateMusic();
             var run = Run.RunManager.Instance;
             if (run == null || !run.IsSpawned) { if (_run != null) StopHouseLoops(); _run = null; return; } // 런이 끝나면 켜져 있던 TV·청소기 소리도 끈다
             int stash = run.StashedValue.Value;

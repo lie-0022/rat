@@ -97,6 +97,16 @@ namespace RatGame.Core
             return decay * (0.7f * _low + 0.5f * Mathf.Sin(2f * Mathf.PI * body * t));
         });
 
+        /// <summary>추격 배경음 — 심장 박동 같은 쿵쿵(분당 bpm, 두 번씩) + 반음 어긋난 저음 두 개가 맥놀이. 반복용 (고양이 248).
+        /// 길이는 박자에 맞춰 정해진다(한 바퀴 = 박 4개) — 이음매가 안 들리게.</summary>
+        public static AudioClip ChaseMusic(float bpm, float root) => Get($"chasemusic{bpm}-{root}", 4f * 60f / bpm, (t, u) =>
+        {
+            float beat = 60f / bpm, b = t % beat;
+            float thump = Mathf.Exp(-b * 18f) * Mathf.Sin(2f * Mathf.PI * 55f * b) + (b > 0.18f ? 0.7f * Mathf.Exp(-(b - 0.18f) * 22f) * Mathf.Sin(2f * Mathf.PI * 50f * (b - 0.18f)) : 0f);
+            float drone = 0.25f * Mathf.Sin(2f * Mathf.PI * root * t) + 0.18f * Mathf.Sin(2f * Mathf.PI * root * 1.0595f * t);
+            return 0.8f * thump + drone;
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }
