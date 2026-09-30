@@ -40,6 +40,7 @@ namespace RatGame.EditorTools
         private static bool _english;
         private static float _scanAt;
         private static readonly Dictionary<string, string> KoreanSeen = new(); // 영어 모드에서 화면에 남은 한국어 (글자 → 오브젝트)
+        private static readonly Dictionary<string, string> OverflowSeen = new(); // 칸을 넘친 글자 — 한·영 모두 (고양이 314)
         private static readonly System.Text.RegularExpressions.Regex Hangul = new("[가-힣]");
         private const string EnglishKey = "RatGame.Soak.English";
         private static string BakPath => Path.Combine(Application.persistentDataPath, "save.bak");
@@ -94,7 +95,7 @@ namespace RatGame.EditorTools
             DevPort.Choose(); // 7777이 새어 막혔으면 7778 (고양이 262)
             _step = Step.Menu; _startAt = _stepAt = Time.realtimeSinceStartup;
             _stagesSeen = 0; _itemsMoved = 0; _sawFinished = false;
-            Issues.Clear(); StageLines.Clear(); KoreanSeen.Clear();
+            Issues.Clear(); StageLines.Clear(); KoreanSeen.Clear(); OverflowSeen.Clear();
             _english = SessionState.GetBool(EnglishKey, false);
             BeginClient();
             _languageBefore = SettingsService.Current.Language;
@@ -127,7 +128,7 @@ namespace RatGame.EditorTools
             if (Time.realtimeSinceStartup - _startAt > 600f) { Finish("10분 초과"); return; }
             string scene = SceneManager.GetActiveScene().name;
             TickClientCarry(); // 클라 잡기·던지기 예약 (고양이 280)
-            if (_english && Time.realtimeSinceStartup >= _scanAt) { _scanAt = Time.realtimeSinceStartup + 0.5f; ScanKorean(); }
+            if (Time.realtimeSinceStartup >= _scanAt) { _scanAt = Time.realtimeSinceStartup + 0.5f; ScanKorean(); } // 넘침은 한국어에서도 (고양이 314)
             switch (_step)
             {
                 case Step.Menu:
@@ -225,7 +226,12 @@ namespace RatGame.EditorTools
         {
             foreach (var t in Object.FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None))
             {
-                if (!t.isActiveAndEnabled || !Hangul.IsMatch(t.text)) continue;
+                if (t.isActiveAndEnabled && t.isTextOverflowing && !t.text.StartsWith("[DEV]") && t.GetComponentInParent<DevCheckMenu>() == null && !Invisible(t))
+                {
+                    string ok = t.text.Replace("\n", " / "); if (ok.Length > 80) ok = ok.Substring(0, 80);
+                    if (!OverflowSeen.ContainsKey(ok)) OverflowSeen[ok] = $"{SceneManager.GetActiveScene().name}/{t.transform.parent?.name}/{t.name}";
+                }
+                if (!_english || !t.isActiveAndEnabled || !Hangul.IsMatch(t.text)) continue;
                 if (t.GetComponentInParent<CatDebugOverlay>() != null || t.GetComponentInParent<DevCheckMenu>() != null) continue;
                 if (Invisible(t)) continue; // 알파 0 그룹 안(숨는 중 화면처럼 안 보일 때) — 보이는 글자만 센다
                 string key = t.text.Replace("\n", " / ");
@@ -267,6 +273,8 @@ namespace RatGame.EditorTools
                 foreach (var kv in KoreanSeen) sb.Append($" | [{kv.Value}] {kv.Key}");
                 SetLanguage(_languageBefore);
             }
+            sb.Append($" | 글자 넘침 {OverflowSeen.Count}종");
+            foreach (var kv in OverflowSeen) sb.Append($" | 넘침 [{kv.Value}] {kv.Key}");
             sb.Append($" | 경고·오류 {Issues.Count}종");
             foreach (var kv in Issues) sb.Append($" | {kv.Value}× {kv.Key}");
             // 파일만 되돌린다 — 게임 안 메모리는 그대로라 이 플레이를 계속하면 다시 쓸 수 있다: 끝나면 플레이를 멈출 것
