@@ -18,12 +18,32 @@ namespace RatGame.Editor
 
         public static string Preview(int seed, string pngPath)
         {
-            var zone = AssetDatabase.LoadAssetAtPath<GridZoneSO>(ZonePath);
-            if (zone == null) return "Zone_Walls 없음 — Create Wall Rooms 먼저";
+            // 이름 없는 씬이 열려 있으면 새 씬을 덧붙일 수 없다(EditMode 시험 뒤 등) — 그땐 지금 씬에 깔고 지운다
+            if (string.IsNullOrEmpty(UnityEngine.SceneManagement.SceneManager.GetActiveScene().path)) return PreviewInActiveScene(seed, pngPath);
             var temp = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             var prevActive = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             UnityEngine.SceneManagement.SceneManager.SetActiveScene(temp);
-            try
+            try { return PreviewIn(temp, seed, pngPath); }
+            finally
+            {
+                UnityEngine.SceneManagement.SceneManager.SetActiveScene(prevActive);
+                EditorSceneManager.CloseScene(temp, true);
+            }
+        }
+
+        /// <summary>지금 씬에 깔고 재고 지운다 — EditMode 시험은 이름 없는 씬이라 새 씬을 덧붙일 수 없다 (고양이 339).</summary>
+        public static string PreviewInActiveScene(int seed, string pngPath)
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            var before = new HashSet<GameObject>(scene.GetRootGameObjects());
+            try { return PreviewIn(scene, seed, pngPath); }
+            finally { foreach (var go in scene.GetRootGameObjects()) if (!before.Contains(go)) Object.DestroyImmediate(go); }
+        }
+
+        private static string PreviewIn(UnityEngine.SceneManagement.Scene temp, int seed, string pngPath)
+        {
+            var zone = AssetDatabase.LoadAssetAtPath<GridZoneSO>(ZonePath);
+            if (zone == null) return "Zone_Walls 없음 — Create Wall Rooms 먼저";
             {
                 var plan = GridLayoutPlanner.Plan(seed, GridZoneLayout.SettingsOf(zone));
                 var root = new GameObject("GridPreview").transform;
@@ -51,13 +71,17 @@ namespace RatGame.Editor
                 NavMesh.SamplePosition(layout.Start.transform.position, out var hs, 2f, NavMesh.AllAreas);
                 foreach (var r in layout.Rooms)
                 {
-                    var path = new NavMeshPath();
-                    // 목적지방은 안전지대라 고양이 길이 없다(고양이 72) — 문 밖까지 오면 된다
-                    Vector3 target = r.transform.position;
-                    if (r == layout.Destination) target = DestDoorOutside(r, layout, plan);
-                    NavMesh.SamplePosition(target, out var ht, 3f, NavMesh.AllAreas);
-                    NavMesh.CalculatePath(hs.position, ht.position, NavMesh.AllAreas, path);
-                    bool ok = path.status == NavMeshPathStatus.PathComplete;
+                    // 목적지방은 안전지대라 고양이 길이 없다(고양이 72) — 문 밖까지 오면 된다. 문이 여럿이면(하나는 쥐 전용 배관일 수 있다) 하나라도 닿으면 됨
+                    // — 전엔 첫 문만 봐서 배관 쪽이 골리면 "막힘"으로 셌다(500시드 중 43, 고양이 339)
+                    var targets = r == layout.Destination ? DestDoorsOutside(r, layout, plan) : new List<Vector3> { r.transform.position };
+                    bool ok = false;
+                    foreach (var target in targets)
+                    {
+                        var path = new NavMeshPath();
+                        NavMesh.SamplePosition(target, out var ht, 3f, NavMesh.AllAreas);
+                        NavMesh.CalculatePath(hs.position, ht.position, NavMesh.AllAreas, path);
+                        if (path.status == NavMeshPathStatus.PathComplete) { ok = true; break; }
+                    }
                     if (!ok) unreachable++;
                     if (r == layout.Destination) destOk = ok;
                 }
@@ -65,18 +89,19 @@ namespace RatGame.Editor
                 surface.RemoveData();
                 return $"시드 {seed}: 방 {layout.Rooms.Count}, 통로 {layout.Corridors.Count}(고리 {(plan.HasLoop ? 1 : 0)}), 방 겹침 {overlaps}, 출발→목적지 {(destOk ? "OK" : "막힘")}, 못 가는 방 {unreachable}, 그림 {pngPath}\n{plan.ToAscii()}";
             }
-            finally
-            {
-                UnityEngine.SceneManagement.SceneManager.SetActiveScene(prevActive);
-                EditorSceneManager.CloseScene(temp, true);
-            }
         }
 
-        private static Vector3 DestDoorOutside(GridRoom dest, GridZoneLayout.Result layout, GridPlan plan)
+        private static List<Vector3> DestDoorsOutside(GridRoom dest, GridZoneLayout.Result layout, GridPlan plan)
         {
-            byte sides = layout.Sides[plan.DestinationIndex]; int side = 0; while (side < 4 && (sides & (1 << side)) == 0) side++;
-            Vector3 door = dest.DoorCenter(side), outward = door - dest.transform.position; outward.y = 0f;
-            return door + outward.normalized * 1.5f;
+            var list = new List<Vector3>();
+            byte sides = layout.Sides[plan.DestinationIndex];
+            for (int side = 0; side < 4; side++)
+            {
+                if ((sides & (1 << side)) == 0) continue;
+                Vector3 door = dest.DoorCenter(side), outward = door - dest.transform.position; outward.y = 0f;
+                list.Add(door + outward.normalized * 1.5f);
+            }
+            return list;
         }
 
         private static void RenderTop(Transform root, string pngPath)
