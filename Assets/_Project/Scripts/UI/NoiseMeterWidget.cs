@@ -23,8 +23,10 @@ namespace RatGame.UI
         private float _scentUntil;
         private string _scentText = "";
 
-        private void OnEnable() => EventBus.ScentLeft += OnScentLeft;
-        private void OnDisable() => EventBus.ScentLeft -= OnScentLeft;
+        private void OnEnable() { EventBus.ScentLeft += OnScentLeft; Loc.Changed += OnLanguageChanged; }
+        private void OnDisable() { EventBus.ScentLeft -= OnScentLeft; Loc.Changed -= OnLanguageChanged; }
+        // 단계가 바뀔 때만 글자를 쓰니 가만히 선 채 언어를 바꾸면 한국어가 남았다 — 다시 쓰게 (고양이 301)
+        private void OnLanguageChanged() => _shown = Level.None;
 
         // 강도로 이유를 가른다 — 치즈 60·젖은 발 40·찍힘 20 (PlayerScent)
         private void OnScentLeft(float strength)
