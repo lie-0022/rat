@@ -32,6 +32,8 @@ namespace RatGame.EditorTools
                     Cat().ServerWake();
                     var zone = Object.FindFirstObjectByType<DepositZone>().Area.bounds;
                     Put(zone.center + new Vector3(0f, 0.2f, 0f)); // 호스트는 쥐구멍 안 — 안 잡히게, 귀환은 둘 다 모여야라 안 된다
+                    // 쥐구멍 안이어도 고양이가 호스트를 잡아 가지고 논 판이 있었다(고양이 308) — 숨은 상태로 두어 고양이가 클라만 보게
+                    Me().GetComponent<PlayerCondition>().ServerSetState(ConditionState.Hidden);
                 } },
                 // 클라 쥐를 고양이 앞 1.5m에 — 순간이동은 클라가 하므로 0.5초마다 다시 보낸다
                 new Step { Name = "클라 추격당함", Ready = () =>
