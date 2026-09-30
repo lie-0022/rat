@@ -90,6 +90,15 @@ namespace RatGame.Data
         public float CatBellJingleVolume => _catBellJingleVolume;
         public float CatBellStepMeters => _catBellStepMeters;
 
+        [Header("쥐 상태 소리 (고양이 254) — 덫 딱·끈끈이 찰싹·쓰러짐 찍…·살아남 찍! (그 쥐 자리 3D, 쥐·물건 거리)")]
+        [SerializeField, Range(0f, 1f)] private float _ratStateVolume = 0.6f;
+
+        public float RatStateVolume => _ratStateVolume;
+        public AudioClip RatStunnedClip => Core.ToneSynth.Clink(1900f, 0.12f);          // 딱! (쥐덫·전선·높은 낙하)
+        public AudioClip RatTrappedClip => Core.ToneSynth.Rush(0.08f, 0.3f);             // 찰싹 (끈끈이)
+        public AudioClip RatDownedClip => Core.ToneSynth.Chirp(1500f, 650f, 0.45f);     // 찍… (내려감)
+        public AudioClip RatRevivedClip => Core.ToneSynth.Chirp(900f, 1700f, 0.25f);    // 찍! (올라감)
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;

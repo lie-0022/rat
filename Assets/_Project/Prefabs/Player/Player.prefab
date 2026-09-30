@@ -64,6 +64,7 @@ GameObject:
   - component: {fileID: 4876377713607954583}
   - component: {fileID: 4136094762192414791}
   - component: {fileID: 7094989284037431411}
+  - component: {fileID: 6832297694397411426}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -582,6 +583,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.RatFootsteps
   _balance: {fileID: 11400000, guid: 19c4bb5e5882145119f2990e9ee47194, type: 2}
   _audio: {fileID: 11400000, guid: c1828b91b068544678a92ef8fc524962, type: 2}
+--- !u!114 &6832297694397411426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3696906554664223078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2240b3aa936a6474cac12f7dcd26503f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RatGame.Runtime::RatGame.Player.RatConditionSfx
+  _condition: {fileID: 8218523055754132488}
 --- !u!1 &5417322158775654346
 GameObject:
   m_ObjectHideFlags: 0
