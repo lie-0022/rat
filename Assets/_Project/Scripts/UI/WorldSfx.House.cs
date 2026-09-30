@@ -74,6 +74,12 @@ namespace RatGame.UI
             Log.Dev($"집 소리: {kind} 반복 ({clip.name})");
         }
 
+        private void ApplyHouseLoopVolume()
+        {
+            if (_audio == null) return;
+            foreach (var s in _houseLoops.Values) s.volume = _audio.HouseLoopVolume * Sfx;
+        }
+
         private void StopHouseLoops() { foreach (var s in _houseLoops.Values) s.Stop(); }
     }
 }

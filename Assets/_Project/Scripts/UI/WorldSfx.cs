@@ -51,6 +51,7 @@ namespace RatGame.UI
             EventBus.NoiseRipple += OnRipple;
             EventBus.HouseEvent += OnHouseEvent;
             EventBus.CatCue += OnCatCue;
+            SettingsService.Changed += ApplyHouseLoopVolume; // 켜져 있는 반복음도 효과음 줄을 바로 따른다 (고양이 251)
         }
 
         private void OnDestroy()
@@ -59,6 +60,7 @@ namespace RatGame.UI
             EventBus.NoiseRipple -= OnRipple;
             EventBus.HouseEvent -= OnHouseEvent;
             EventBus.CatCue -= OnCatCue;
+            SettingsService.Changed -= ApplyHouseLoopVolume;
         }
 
         private static float Sfx => Mathf.Clamp01(SettingsService.Current.SfxVolume);
