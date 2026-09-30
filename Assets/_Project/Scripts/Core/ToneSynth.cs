@@ -135,6 +135,14 @@ namespace RatGame.Core
             return Mathf.Exp(-b * 16f) * (Mathf.Sin(2f * Mathf.PI * 48f * b) + 0.3f * Noise() * Mathf.Exp(-b * 60f));
         });
 
+        /// <summary>지지직 — 전기 윙 소리(톱니 100Hz + 가끔 튀는 잡음). 반복용 (고양이 270).</summary>
+        public static AudioClip Buzz(float seconds) => Get($"buzz{seconds}", seconds, (t, u) =>
+        {
+            float saw = 2f * (t * 100f - Mathf.Floor(t * 100f + 0.5f));
+            float crackle = Noise() > 0.93f ? Noise() * 2f : 0f; // 드문드문 탁탁
+            return 0.45f * saw + 0.35f * crackle;
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }

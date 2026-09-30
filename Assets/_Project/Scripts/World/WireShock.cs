@@ -26,8 +26,29 @@ namespace RatGame.World
             ApplyWire();
         }
 
+        private AudioSource _hum;
+
+        // 켜진 동안 지지직 (고양이 270) — 눈으로 못 보는 쪽에서도 "지금 켜졌다"가 들리게. 전 클라가 On NV만 읽는다
+        private void ApplyHum()
+        {
+            var audio = Resources.Load<Data.GrayboxAudioSO>("GrayboxAudio");
+            if (audio == null) return;
+            if (_hum == null)
+            {
+                _hum = gameObject.AddComponent<AudioSource>();
+                _hum.playOnAwake = false; _hum.loop = true; _hum.spatialBlend = 1f;
+                _hum.rolloffMode = AudioRolloffMode.Linear; _hum.minDistance = 1f; _hum.maxDistance = audio.WireHumMaxDistance;
+                _hum.dopplerLevel = 0f;
+                _hum.clip = audio.WireHumClip;
+            }
+            _hum.volume = audio.WireHumVolume * Mathf.Clamp01(SettingsService.Current.SfxVolume);
+            if (On.Value && !_hum.isPlaying) _hum.Play();
+            else if (!On.Value && _hum.isPlaying) _hum.Stop();
+        }
+
         private void ApplyWire()
         {
+            ApplyHum();
             if (_wire == null) return;
             _block.SetColor("_BaseColor", On.Value ? new Color(0.6f, 0.9f, 1f) : new Color(0.15f, 0.15f, 0.2f));
             _wire.SetPropertyBlock(_block);

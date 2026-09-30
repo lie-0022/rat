@@ -117,6 +117,13 @@ namespace RatGame.Data
         [SerializeField, Range(0f, 1f)] private float _ownerVoiceVolume = 0.6f; // 집주인 부르기 — 설정 "보이스" 볼륨 (고양이 267)
         public float OwnerVoiceVolume => _ownerVoiceVolume;
 
+        [Header("전기선 (고양이 270) — 켜진 동안 그 자리에서 지지직, 가까이 가야 들림")]
+        [SerializeField, Range(0f, 1f)] private float _wireHumVolume = 0.35f;
+        [SerializeField] private float _wireHumMaxDistance = 8f;
+        public float WireHumVolume => _wireHumVolume;
+        public float WireHumMaxDistance => _wireHumMaxDistance;
+        public AudioClip WireHumClip => Core.ToneSynth.Buzz(1f);
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
