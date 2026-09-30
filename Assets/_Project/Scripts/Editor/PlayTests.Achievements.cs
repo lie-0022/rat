@@ -74,8 +74,11 @@ namespace RatGame.EditorTools
                         return true;
                     }
                     if (EditorApplication.timeSinceStartup - _stepAt > 30) return true;
+                    // 숨거나 자면 앞에 서도 못 본다 — 계속 깨움 (추격 시험과 같은 규칙, Full에서 30초 추격 0 — 고양이 317)
+                    var st = cat.State.Value;
+                    if (st == CatState.Ambush || st == CatState.BoxSit || st == CatState.Sleep) cat.ServerWake();
                     var fwd = cat.transform.forward; fwd.y = 0f; fwd.Normalize();
-                    Put(cat.transform.position + fwd * 2f + Vector3.up * 0.3f);
+                    Put(cat.transform.position + fwd * 1.5f + Vector3.up * 0.3f);
                     return false;
                 }, Check = () => _sawChase ? null : "30초 안에 추격이 안 일어남" },
                 // ② 계란 3개를 쥐구멍 칸 안에 스폰 — 떨어지며 정산된다

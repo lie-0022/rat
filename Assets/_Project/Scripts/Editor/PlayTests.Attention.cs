@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using RatGame.AI;
+using RatGame.Player;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,8 +23,15 @@ namespace RatGame.EditorTools
 
         private static List<Step> AttentionSteps() => new()
         {
-            new Step { Name = "고양이 깨우기", Wait = 1f, Act = () => Cat().ServerWake() },
-            new Step { Name = "캣닢이 이김", Wait = 1f, Check = () =>
+            // 깨운 고양이가 내 쥐를 보고 쫓으면 유인이 안 먹는다(추격 중엔 무시가 규칙) — 숨은 상태로 두고, 추격이 끝나길 기다린다 (Full에서 Chase로 실패, 고양이 317)
+            new Step { Name = "고양이 깨우기", Wait = 1f, Act = () =>
+            {
+                Me().GetComponent<PlayerCondition>().ServerSetState(ConditionState.Hidden);
+                Cat().ServerWake();
+            } },
+            new Step { Name = "캣닢이 이김", Wait = 1f,
+                Ready = () => Cat().State.Value is not (CatState.Chase or CatState.Capture or CatState.Toy) || EditorApplication.timeSinceStartup - _stepAt > 15,
+                Check = () =>
             {
                 var cat = Cat();
                 Vector3 p = cat.transform.position + cat.transform.forward * 2f;
