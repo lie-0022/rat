@@ -14,6 +14,8 @@ namespace RatGame.AI
         public float SizeScale { get; private set; } = 1f;
         /// <summary>몸 배율 — 모든 클라가 읽는다(큰 고양이 발걸음 흔들림 등, 고양이 145). 스폰 전 초기값으로만 정한다.</summary>
         public NetworkVariable<float> BodyScale = new(1f);
+        /// <summary>연출(발소리 걸음 폭 등)이 읽는 밸런스 — 클라엔 프리팹 원본, 호스트의 큰 고양이는 배율 복사본.</summary>
+        public Data.BalanceConfigSO Balance => _balance;
 
         /// <summary>몸 앞 표면에서 clearance만큼 앞 거리(수평) — 큰 고양이 몸 속에 물건·쥐를 두지 않게 (고양이 167·169). 최소 0.6(예전 고정값).</summary>
         public float FrontDistance(float clearance)

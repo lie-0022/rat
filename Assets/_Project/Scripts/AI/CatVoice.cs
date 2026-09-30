@@ -19,6 +19,8 @@ namespace RatGame.AI
         private CatSleepPhase _lastPhase = (CatSleepPhase)255;
         private float _loopVolume;
         private Vector3 _lastPos;
+        private AudioSource _steps;
+        private float _stepWalked;
         private float _bellTravel;
         private int _jingles; // 시험용
 
@@ -56,8 +58,34 @@ namespace RatGame.AI
             if (state != _lastState) OnState(state);
             if (phase != _lastPhase) OnPhase(phase);
             _lastState = state; _lastPhase = phase;
+            UpdateSteps();
             UpdateBell();
         }
+
+        // 발소리 (고양이 271) — 큰 고양이 화면 흔들림(CatStepShake)과 같은 걸음 폭. 흔들림은 설정으로 끄지만 소리는 정보라 효과음 볼륨만 따른다
+        private void UpdateSteps()
+        {
+            var balance = _brain.Balance;
+            if (balance == null) return;
+            if (_steps == null)
+            {
+                _steps = gameObject.AddComponent<AudioSource>();
+                _steps.playOnAwake = false; _steps.spatialBlend = 1f; _steps.rolloffMode = AudioRolloffMode.Linear;
+                _steps.minDistance = 1.5f; _steps.maxDistance = _audio.CatStepMaxDistance; _steps.dopplerLevel = 0f;
+            }
+            Vector3 d = transform.position - _lastPos; d.y = 0f; // _lastPos는 UpdateBell이 갱신
+            float step = d.magnitude;
+            if (step > 3f) return; // 순간이동
+            _stepWalked += step;
+            float scale = _brain.BodyScale.Value;
+            float stride = balance.CatStrideMeters * scale / 1.9f;
+            if (_stepWalked < stride) return;
+            _stepWalked = 0f;
+            _steps.pitch = Mathf.Clamp(1.9f / Mathf.Max(0.5f, scale), 0.8f, 1.6f); // 작은 고양이는 가볍게
+            _steps.PlayOneShot(_audio.CatStepClip, _audio.CatStepVolume(scale) * Sfx);
+            _stepCount++;
+        }
+        private int _stepCount; // 시험용
 
         // 방울 단 고양이 (고양이 140·253) — 움직인 거리만큼 딸랑. 목 방울과 같은 NV(Belled)만 읽는다
         private void UpdateBell()

@@ -124,6 +124,13 @@ namespace RatGame.Data
         public float WireHumMaxDistance => _wireHumMaxDistance;
         public AudioClip WireHumClip => Core.ToneSynth.Buzz(1f);
 
+        [Header("고양이 발소리 (고양이 271) — 걸음 폭 = 밸런스 catStrideMeters × 몸 배율 / 1.9 (화면 흔들림과 같은 박자), 몸이 클수록 크고 낮게")]
+        [SerializeField, Range(0f, 1f)] private float _catStepVolume = 0.3f;
+        [SerializeField] private float _catStepMaxDistance = 16f;
+        public float CatStepVolume(float bodyScale) => _catStepVolume * Mathf.Clamp(bodyScale / 1.9f, 0.4f, 1.2f);
+        public float CatStepMaxDistance => _catStepMaxDistance;
+        public AudioClip CatStepClip => Core.ToneSynth.Tap(70f, 0.16f); // 발바닥이라 둔하게
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
