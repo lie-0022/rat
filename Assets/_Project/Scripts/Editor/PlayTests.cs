@@ -70,6 +70,7 @@ namespace RatGame.EditorTools
                 else if (armed == "attention") Begin("관심 점수", AttentionSteps());
                 else if (armed == "modifiers") Begin("오늘의 집 7종", ModifierSteps(), false);
                 else if (armed == "rehost") Begin("나갔다 다시 호스트", RehostSteps(), false);
+                else if (armed == "rejoin2p") Begin("클라 나갔다 다시 2인", RejoinSteps(), false);
                 else if (armed == "laser2p") Begin("클라 레이저 2인", LaserSteps(), false);
                 else if (armed == "leave2p") Begin("클라 이탈 2인", LeaveSteps(), false);
                 else if (armed == "hostleave2p") Begin("호스트 이탈 2인", HostLeaveSteps(), false);

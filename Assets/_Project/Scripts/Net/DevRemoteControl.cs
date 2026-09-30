@@ -58,6 +58,11 @@ namespace RatGame.Net
                 var carry = GetComponent<PlayerCarryController>(); // 칸 전환 — 든 물건은 주머니로 (고양이 264 이탈 시험)
                 if (carry != null) carry.SelectedSlot.Value = slot;
             }
+            else if (command == "leave") // 일시정지 창 "세션 나가기"와 같은 길 — 클라가 스스로 나감 (고양이 299 재접속 시험)
+            {
+                var launcher = FindFirstObjectByType<NetworkLauncher>();
+                if (launcher != null) launcher.Shutdown();
+            }
             else if (command == "drop")
             {
                 GetComponent<PlayerCarryController>()?.DevPutDown();
