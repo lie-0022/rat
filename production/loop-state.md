@@ -118,6 +118,8 @@
 - 보류(사용자 결정 필요): 두 축 감각, 선반 층, 고양이 스태미나
 
 ## 테스트 요령
+- **시험 도구 밖에서 손으로 플레이(execute_code로 호스트·발판)하면 세이브가 바뀐다** — 고양이 312 뒤 결과 화면 확인하다 누계 +360이 저장됨 → scratchpad `save.before191.json`·`save.bak.before191`·`settings.before258.json`으로 되돌림. 손 플레이 뒤엔 꼭 cmp.
+- 결과 화면은 실제 시간으로 넘어간다(Time.timeScale 0으로 못 멈춤).
 - 성능 원인 찾기: 개발 빌드 `-profiler-enable -profiler-log-file <경로>.raw` → 에디터 `ProfilerDriver.LoadProfile` + `GetHierarchyFrameDataView`로 이름별 평균 (고양이 232). raw는 30초에 수백 MB — 끝나면 지움.
 - **키보드 입력 시험**: 유니티 창에 초점이 없으면 키가 입력 액션까지 안 간다 → 시험 동안 `InputSystem.settings.editorInputBehaviorInPlayMode = AllDeviceInputAlwaysGoesToGameView` **하나만** 바꾸고 끝나면 되돌림(메모리 설정). `backgroundBehavior`까지 바꾸면 키 상태가 막힘 (고양이 226·235). 그래도 초점 없으면 운 — 239에서 3연속 키가 버려짐(IgnoreFocus·osascript 앞으로 가져오기 모두 소용없음) → 끈끈이 시험은 그 경우 "건너뜀"으로 보고. 창을 누른 채 돌리면 확인 가능.
 - Scene 뷰 확인이 필요하면: `EditorWindow.GetWindow<SceneView>()`로 열고 `LookAt` → `manage_camera screenshot capture_source=scene_view` (유니티 창 안 캡처라 전체 화면 캡처 금지 규칙과 무관), 끝나면 창 닫기.
