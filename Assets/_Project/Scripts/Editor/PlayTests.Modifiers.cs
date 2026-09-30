@@ -40,7 +40,8 @@ namespace RatGame.EditorTools
                     _modErrors = 0;
                     Application.logMessageReceived -= CountModErrors;
                     Application.logMessageReceived += CountModErrors;
-                    OnDone = () => Application.logMessageReceived -= CountModErrors;
+                    var restoreSave = BackupSave("오늘의 집 7종"); // 벽 속에 들어가면 통계(가장 깊은 스테이지)가 저장된다 — 떠 두고 되돌림 (첫 판에서 남음)
+                    OnDone = () => { Application.logMessageReceived -= CountModErrors; restoreSave(); };
                     var menu = Object.FindFirstObjectByType<MainMenuController>();
                     var host = typeof(MainMenuController).GetField("_hostButton", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                     ((UnityEngine.UI.Button)host.GetValue(menu)).onClick.Invoke();
