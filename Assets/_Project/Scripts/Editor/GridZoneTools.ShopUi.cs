@@ -54,6 +54,7 @@ namespace RatGame.Editor
             textCol.gameObject.AddComponent<UnityEngine.UI.LayoutElement>().flexibleWidth = 1f;
             var nameText = Tmp("Name", textCol, "이름", theme, UiColorRole.Text, UiTextRole.Heading, 30);
             var descText = Tmp("Desc", textCol, "설명", theme, UiColorRole.TextMuted, UiTextRole.Small, 22);
+            descText.enableAutoSizing = true; descText.fontSizeMin = 13f; descText.fontSizeMax = theme.GetSize(UiTextRole.Small); // 영어 설명이 칸을 넘침 (고양이 316)
             var priceText = Tmp("Price", row, "0 식량", theme, UiColorRole.AccentText, UiTextRole.Body, 40); Le(priceText.rectTransform, 110, 40);
             var buy = NewRect("BuyButton", row);
             var buyImg = buy.gameObject.AddComponent<UnityEngine.UI.Image>();

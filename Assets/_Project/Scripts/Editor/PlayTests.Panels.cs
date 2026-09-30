@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
 using RatGame.Core;
+using RatGame.Run;
 using RatGame.UI;
 using RatGame.World;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 using SettingsService = RatGame.Core.SettingsService;
 
@@ -75,6 +77,37 @@ namespace RatGame.EditorTools
                         ClosePanels();
                     } });
                 }
+            }
+            // 목적지 판매대 (고양이 316) — 벽 속으로 출발해 한국어로 한 번 연 뒤 영어로 다시
+            steps.Add(new Step { Name = "한국어로 벽 속 출발", Act = () => SetLang("ko") });
+            steps.Add(new Step { Name = "벽 속 도착", Ready = () =>
+            {
+                if (StageUp() || EditorApplication.timeSinceStartup - _stepAt > 60) return true;
+                var pad = Object.FindFirstObjectByType<DeparturePad>();
+                if (pad != null && pad.IsSpawned && SceneManager.GetActiveScene().name == "Hub")
+                {
+                    for (int i = 0; i < 4 && !pad.DestinationName.Contains("벽 속"); i++) pad.ServerCycleDestination();
+                    Put(pad.transform.position + Vector3.up * 0.5f);
+                }
+                return false;
+            }, Check = () => StageUp() ? null : "벽 속 스테이지가 안 열림" });
+            foreach (var lang in new[] { "ko", "en" })
+            {
+                var code = lang;
+                steps.Add(new Step { Name = $"판매대 열기 ({code})", Wait = 1f, Act = () =>
+                {
+                    SetLang(code);
+                    EventBus.RaiseWorldPanelRequested(WorldPanelKind.StageShop, Object.FindFirstObjectByType<StageShopCounter>());
+                } });
+                steps.Add(new Step { Name = $"판매대 글자 ({code})", Wait = 0.8f, Check = () =>
+                {
+                    var panel = Object.FindFirstObjectByType<StageShopPanel>();
+                    if (panel == null || !panel.IsOpen) return "판매대 창이 안 열림";
+                    ScanOverflow($"판매대·{code}", panel);
+                    if (code == "en") ScanHangul($"판매대·{code}", panel);
+                    panel.Close();
+                    return null;
+                } });
             }
             steps.Add(new Step { Name = "결과", Check = () =>
             {

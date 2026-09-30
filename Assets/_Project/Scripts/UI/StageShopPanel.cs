@@ -35,10 +35,14 @@ namespace RatGame.UI
         {
             UiCommon.EnsureEventSystem();
             _closeButton.onClick.AddListener(() => Close(false));
+            Loc.Changed += OnLanguageChanged;
             _root.SetActive(false);
         }
 
-        private void OnDestroy() { if (_open) InputFocus.PanelClosed(false); }
+        private void OnDestroy() { Loc.Changed -= OnLanguageChanged; if (_open) InputFocus.PanelClosed(false); }
+
+        // 줄은 처음 열 때 한 번 만든다 — 언어를 바꾸면 옛 언어로 남아서 다시 만든다 (고양이 316, 기지 상점과 같은 버그)
+        private void OnLanguageChanged() { if (_counter != null) BuildRows(); }
 
         public void Open(StageShopCounter counter)
         {

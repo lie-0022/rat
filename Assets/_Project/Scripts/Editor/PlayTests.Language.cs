@@ -30,11 +30,12 @@ namespace RatGame.EditorTools
             var d = SettingsService.Current.Clone(); d.Language = code; SettingsService.Apply(d);
         }
 
-        private static void ScanHangul(string where)
+        private static void ScanHangul(string where, Component within = null)
         {
             foreach (var t in Object.FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None))
             {
                 if (!t.isActiveAndEnabled || !HangulRx.IsMatch(t.text) || t.text.StartsWith("[DEV]")) continue;
+                if (within != null && !t.transform.IsChildOf(within.transform)) continue; // 한 창만 볼 때 — 바꾸기 전에 뜬 토스트는 제 언어로 사라진다
                 if (t.GetComponentInParent<CatDebugOverlay>() != null || t.GetComponentInParent<DevCheckMenu>() != null) continue;
                 bool hidden = false;
                 foreach (var g in t.GetComponentsInParent<CanvasGroup>()) if (g.alpha < 0.01f) hidden = true;
@@ -47,11 +48,12 @@ namespace RatGame.EditorTools
         private static readonly List<string> _overflow = new();
 
         // 글자가 칸을 넘치는지 (TMP isTextOverflowing) — 영어가 한국어보다 길어 잘리거나 삐져나오는 곳 (고양이 313)
-        private static void ScanOverflow(string where)
+        private static void ScanOverflow(string where, Component within = null)
         {
             foreach (var t in Object.FindObjectsByType<TMPro.TMP_Text>(FindObjectsSortMode.None))
             {
                 if (!t.isActiveAndEnabled || string.IsNullOrEmpty(t.text) || t.text.StartsWith("[DEV]")) continue;
+                if (within != null && !t.transform.IsChildOf(within.transform)) continue;
                 if (t.GetComponentInParent<CatDebugOverlay>() != null || t.GetComponentInParent<DevCheckMenu>() != null) continue;
                 t.ForceMeshUpdate();
                 if (!t.isTextOverflowing) continue;
