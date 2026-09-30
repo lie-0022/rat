@@ -85,6 +85,7 @@ namespace RatGame.UI
         private void Update()
         {
             UpdateMusic();
+            UpdateUiClick();
             var run = Run.RunManager.Instance;
             if (run == null || !run.IsSpawned) { if (_run != null) StopHouseLoops(); _run = null; return; } // 런이 끝나면 켜져 있던 TV·청소기 소리도 끈다
             int stash = run.StashedValue.Value;

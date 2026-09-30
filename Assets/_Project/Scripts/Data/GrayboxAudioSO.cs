@@ -108,6 +108,12 @@ namespace RatGame.Data
         public float GrabVolume => _grabVolume;
         public float ThrowVolume => _throwVolume;
 
+        [Header("UI 클릭 (고양이 256) — 버튼·토글·슬라이더를 누르면 짧은 톡 (2D)")]
+        [SerializeField, Range(0f, 1f)] private float _uiClickVolume = 0.3f;
+
+        public AudioClip UiClickClip => Core.ToneSynth.Clink(1600f, 0.05f);
+        public float UiClickVolume => _uiClickVolume;
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;
