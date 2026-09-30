@@ -48,6 +48,11 @@ namespace RatGame.Net
             {
                 GetComponent<PlayerCarryController>()?.DevThrow(charge);
             }
+            else if (command.StartsWith("slot:") && int.TryParse(command.Substring(5), out int slot))
+            {
+                var carry = GetComponent<PlayerCarryController>(); // 칸 전환 — 든 물건은 주머니로 (고양이 264 이탈 시험)
+                if (carry != null) carry.SelectedSlot.Value = slot;
+            }
             else if (command == "drop")
             {
                 GetComponent<PlayerCarryController>()?.DevPutDown();

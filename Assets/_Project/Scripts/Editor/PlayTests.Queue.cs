@@ -15,8 +15,8 @@ namespace RatGame.EditorTools
         [MenuItem("Tools/RatGame/Test/Run All — Quick (solo 4)")]
         private static void RunQuick() => StartQueue("carry,chase,achv,codexall");
 
-        [MenuItem("Tools/RatGame/Test/Run All — Full (solo + 2P + 4P)")]
-        private static void RunFull() => StartQueue("carry,chase,achv,codexall,rescue2p,glue2p,chase2p,sync4p");
+        [MenuItem("Tools/RatGame/Test/Run All — Full (solo + 2P + 4P + leave)")]
+        private static void RunFull() => StartQueue("carry,chase,achv,codexall,rescue2p,glue2p,chase2p,sync4p,leave2p,hostleave2p");
 
         private static void StartQueue(string keys)
         {

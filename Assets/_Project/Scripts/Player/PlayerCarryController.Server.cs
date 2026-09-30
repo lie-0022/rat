@@ -96,6 +96,26 @@ namespace RatGame.Player
             CarriedItemNetId.Value = 0;
         }
 
+        /// <summary>
+        /// 호스트: 쥐가 사라질 때(클라 이탈) 든 물건·주머니 물건을 풀어 둔다 (docs/03 접속 해제, 고양이 264).
+        /// 없으면 나간 쥐의 캐리어가 물건에 남아 영영 적립이 안 되고(들고 있는 걸로 봄), 주머니 물건은 안 보인 채 사라졌다.
+        /// 사라지는 중이라 내 NV는 안 쓰고 물건 쪽만 고친다. 세션을 통째로 끌 땐 물건도 같이 사라지니 건너뜀.
+        /// </summary>
+        private void ServerReleaseOnLeave()
+        {
+            var nm = NetworkManager;
+            if (nm == null || nm.ShutdownInProgress) return;
+            var held = GetCarriedItem();
+            if (held != null && held.IsSpawned) held.ServerRelease(OwnerClientId);
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                var item = Resolve(Slots[i]);
+                if (item != null && item.IsSpawned && item.Pocketed.Value)
+                    item.ServerUnpocket(transform.position + Vector3.up * 0.5f + Random.insideUnitSphere * 0.3f);
+            }
+            Log.Dev($"이탈한 쥐의 물건 풀기: client {OwnerClientId}");
+        }
+
         /// <summary>호스트 전용 — 다운·속박·접속 해제 시 손·주머니 전부 드랍 (docs/04·05).</summary>
         public void ServerForceDrop()
         {

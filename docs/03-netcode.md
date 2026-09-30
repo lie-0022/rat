@@ -125,7 +125,7 @@ public class SteamLobbyService
 
 ## 접속 해제 처리 (v1 최소 사양)
 
-- 클라 이탈: 들고 있던 아이템 놓기 + 캐릭터 디스폰. 재접속 불가(로비부터).
+- 클라 이탈: 들고 있던 아이템 놓기 + 캐릭터 디스폰. 재접속 불가(로비부터). **고양이 264**: 전엔 놓기가 없어 나간 쥐의 캐리어가 물건에 남아(= 들고 있는 걸로 봐서) 영영 적립이 안 되고 주머니 물건은 안 보인 채 사라졌다 → `PlayerCarryController.ServerReleaseOnLeave`(호스트, 디스폰 때 — 손 물건 놓기·주머니 물건 바닥에, 세션 통째 종료 땐 건너뜀). 프로세스가 죽으면 UnityTransport가 끊김 제한 시간(30초) 뒤에 안다. 시험 `Test/Client Leaves Mid-Stage 2P`·`Host Leaves Mid-Stage 2P`.
 - 호스트 이탈: 세션 종료 → 전원 Hub로. (호스트 마이그레이션은 스코프 제외 — README에 알려진 제한으로 명시)
 - **씬에 놓인 오브젝트 디스폰 (2026-09-25, 고양이 134)**: 창고 데모처럼 씬에 놓인 전리품을 적립·먹기·깨짐·뇌물·유인 소모 때 `Despawn()`(파괴)하면 NGO가 "Destroying in-scene network objects…" 경고. `Core/NetworkObjectExtensions.DespawnSafe()` — 씬 오브젝트면 `Despawn(false)`, 아니면 파괴. 끄기는 각자 `OnNetworkDespawn`(CarryableItem·CatLure)에서 `SetActive(false)`. 확인: 2인 창고에서 씬 치즈 적립 → 호스트 경고 0·비활성, 클라 "씬 물건 끔".
 - **시작 자리 (2026-09-25, 고양이 133)**: `NetPlayerSpawner`가 `clientId % 자리 수`로 골라, 실패한 접속·재접속으로 번호가 밀리면 이미 선 쥐와 겹쳤다(4인에서 client 4 = 호스트 자리 → 서로 밀쳐 튕겨 올라 둘 다 낙하 기절). **다른 쥐에게서 가장 먼 PlayerSpawn**으로 바꿈. 확인: 같은 번호(0·2·3·4)로 4인 접속 → 기절 0, 가장 가까운 두 쥐 1.00m(자리 간격).

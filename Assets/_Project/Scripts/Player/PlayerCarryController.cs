@@ -75,6 +75,7 @@ namespace RatGame.Player
         public override void OnNetworkDespawn()
         {
             if (IsServer) SelectedSlot.OnValueChanged -= OnSelectedSlotChangedServer;
+            if (IsServer) ServerReleaseOnLeave();
             if (!IsOwner) return;
             _grabAction.performed -= OnGrabPressed;
             _throwAction.started -= OnThrowStarted;
