@@ -13,6 +13,16 @@
 4. steamcmd 설치: `brew install --cask steamcmd` (또는 Steamworks SDK의 `tools/ContentBuilder/builder_osx`).
    업로드용 Steam 계정은 파트너 권한이 있어야 하고, 첫 로그인 때 Steam Guard 코드를 묻는다.
 
+## 도전과제 (고양이 326)
+
+게임이 로컬 도전과제를 깨면 같은 이름의 Steam 도전과제를 켠다(시작할 때 이미 깬 것도 맞춤). Steamworks → 통계 및 도전과제에 **아래 API 이름 그대로** 등록한다. 개발 AppID 480에선 꺼져 있다.
+
+<!-- achievements:start -->
+`ach_chef_enemy` `ach_collector` `ach_deep_rat` `ach_egg_courier` `ach_first_extract` `ach_ghost` `ach_medic` `ach_survivor`
+<!-- achievements:end -->
+
+(이 목록은 EditMode 시험이 실제 도전과제와 같은지 검사한다 — 도전과제를 더하면 여기도.)
+
 ## 올릴 때마다
 
 1. 유니티: **Tools → RatGame → Build → Windows x64 Demo (release)**

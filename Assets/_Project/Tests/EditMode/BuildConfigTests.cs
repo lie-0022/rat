@@ -39,5 +39,18 @@ namespace RatGame.Tests
             Assert.IsTrue(File.Exists(depotFile), $"디포 설정 파일 없음: {depotFile}");
             Assert.AreEqual(depots.Groups[1].Value, Value(File.ReadAllText(depotFile), "DepotID"));
         }
+
+        [Test]
+        public void 스팀_안내의_도전과제_이름이_실제와_같음() // Steamworks에 등록할 API 이름 목록 (고양이 326)
+        {
+            string readme = File.ReadAllText("steam/README.md");
+            var block = Regex.Match(readme, "<!-- achievements:start -->(.*?)<!-- achievements:end -->", RegexOptions.Singleline);
+            Assert.IsTrue(block.Success, "README에 도전과제 목록 없음");
+            var listed = new System.Collections.Generic.SortedSet<string>();
+            foreach (Match m in Regex.Matches(block.Groups[1].Value, "`([^`]+)`")) listed.Add(m.Groups[1].Value);
+            var actual = new System.Collections.Generic.SortedSet<string>();
+            foreach (var a in UnityEngine.Resources.LoadAll<RatGame.Data.AchievementSO>("Achievements")) actual.Add(a.Id);
+            CollectionAssert.AreEqual(actual, listed);
+        }
     }
 }

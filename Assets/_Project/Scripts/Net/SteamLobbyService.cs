@@ -30,6 +30,7 @@ namespace RatGame.Net
 
         /// <summary>초대 수락·친구 목록 참가 요청 (로비 Id, 초대한 친구 이름).</summary>
         public event Action<ulong, string> JoinRequested;
+        private SteamAchievementBridge _achievements;
 
         public bool TryInit()
         {
@@ -48,6 +49,14 @@ namespace RatGame.Net
             SteamNetworkingUtils.InitRelayNetworkAccess();
             SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequested;
             Log.Dev($"Steam 연결: {SteamClient.Name}");
+            // 도전과제 연동 (고양이 326) — 개발 AppID 480(Spacewar)은 남의 앱 통계라 건드리지 않는다
+            if (SteamClient.AppId.Value != DevAppId)
+            {
+                _achievements = new SteamAchievementBridge(new SteamAchievementSink());
+                int synced = _achievements.SyncAll(SaveService.Data.CompletedAchievementIds);
+                _achievements.Attach();
+                Log.Dev($"Steam 도전과제 맞춤: {synced}개");
+            }
             return true;
         }
 
@@ -146,6 +155,8 @@ namespace RatGame.Net
         public void Dispose()
         {
             LeaveLobby();
+            _achievements?.Dispose();
+            _achievements = null;
             if (!IsAvailable) return;
             SteamFriends.OnGameLobbyJoinRequested -= OnGameLobbyJoinRequested;
             SteamClient.Shutdown();

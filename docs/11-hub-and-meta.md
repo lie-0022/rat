@@ -128,7 +128,7 @@ public class AchievementSO : ScriptableObject
 | ach_collector | 도감 15종 | 모자: 반지 왕관 |
 | ach_troll | 동료를 던진 아이템으로 비틀거리게 30회 | 모자: 광대 |
 
-- EventBus 구독으로 Stats 가산 → Target 도달 시 해금 + 토스트 UI. 스팀 도전과제 연동은 P1(출시 전).
+- EventBus 구독으로 Stats 가산 → Target 도달 시 해금 + 토스트 UI. 스팀 도전과제 연동은 P1(출시 전) — **코드 준비됨(고양이 326)**: `Net/SteamAchievementBridge`가 깬 도전과제를 같은 API 이름(ach_…)으로 Steam에 켜고, 시작할 때 이미 깬 것을 맞춘다. 개발 AppID 480에선 꺼짐. Steamworks 등록 목록은 `steam/README.md`.
 - **구현 1단계 (2026-09-30 고양이 219)**: `Meta/AchievementService`(자동 생성, 정적 Instance 없음) + `EventBus.AchievementStat(키, 값, keepMax)` → 개인 세이브 `Stats`·`CompletedAchievementIds` → `EventBus.AchievementUnlocked(id, 제목)` → 알림. 에셋 8종은 새 루프에 맞춘 조건(`production/plans/cat-218-achievements-plan.md`) — ach_rich·ach_troll·모자·스킨 잠금은 판단 부탁 14 뒤. 2단계(고양이 220): 호스트가 추격·정산·귀환·구조를 판정해 쥐마다 RPC, 스테이지 도달·도감 수는 각자. 3단계(고양이 221): 기지 도감 책 창 아래에 목록·진행도.
 
 ## 수용 기준 (W9)
