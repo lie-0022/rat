@@ -53,6 +53,36 @@ namespace RatGame.Tests
         }
 
         [Test]
+        public void 빌드_씬_Boot가_0번이고_모두_있음()
+        {
+            var scenes = EditorBuildSettings.scenes;
+            Assert.Greater(scenes.Length, 0);
+            Assert.IsTrue(scenes[0].path.EndsWith("/Boot.unity"), $"0번이 Boot가 아님: {scenes[0].path}"); // CLAUDE.md 빌드 규칙
+            foreach (var sc in scenes)
+                if (sc.enabled) Assert.NotNull(AssetDatabase.LoadAssetAtPath<SceneAsset>(sc.path), $"빌드 씬 파일 없음: {sc.path}");
+        }
+
+        [Test]
+        public void 세이브_JSON_왕복() // 파일은 안 쓴다 — 메모리에서만
+        {
+            var d = new Core.SaveData { HaulTotal = 1234, BestStage = 5, Endings = 2, BodyColorHex = "#59CCD9" };
+            d.UnlockedCodexIds.Add("loot_egg");
+            d.Stats.Add(new Core.StatEntry { Key = "deepestStage", Value = 5 });
+            d.CompletedAchievementIds.Add("ach_deep_rat");
+            var back = JsonUtility.FromJson<Core.SaveData>(JsonUtility.ToJson(d));
+            Assert.AreEqual(1234, back.HaulTotal);
+            Assert.AreEqual(5, back.BestStage);
+            Assert.AreEqual("#59CCD9", back.BodyColorHex);
+            Assert.AreEqual("loot_egg", back.UnlockedCodexIds[0]);
+            Assert.AreEqual("deepestStage", back.Stats[0].Key);
+            Assert.AreEqual(5, back.Stats[0].Value);
+            Assert.AreEqual("ach_deep_rat", back.CompletedAchievementIds[0]);
+            var empty = JsonUtility.FromJson<Core.SaveData>("{}"); // 옛 세이브(필드 없음)도 목록이 비어 있지 null이 아님
+            Assert.NotNull(empty.Stats);
+            Assert.NotNull(empty.CompletedAchievementIds);
+        }
+
+        [Test]
         public void 아이템_아이디_해시_겹침_없고_전리품은_값과_프리팹()
         {
             var db = AssetDatabase.LoadAssetAtPath<ItemDatabase>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("t:ItemDatabase")[0]));
