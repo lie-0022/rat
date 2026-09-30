@@ -85,6 +85,7 @@ public class SteamLobbyService
 - 잡은 뒤 물리 연결은 **호스트에서만** 만든다 (05 문서의 조인트 방식).
 - 클라 소유 플레이어가 움직이면: 플레이어 위치는 클라 권한으로 흐르고, 호스트가 그 위치를 읽어
   조인트 타깃을 갱신 → 아이템이 따라온다. 지연으로 인한 고무줄은 감쇠(스프링) 조인트가 흡수.
+- **전송 큐 (고양이 257)**: UnityTransport `MaxPacketQueueSize` 512 → **2048** (Resources/NetworkManager). 4인이 결과 화면 뒤 기지로 돌아올 때 호스트 씬 로드 동안 "Receive queue is full" 1~2번 → 2048에서 0.
 - **던지기**: ThrowRequestServerRpc(방향, 차지 0~1) → 호스트가 조인트 해제 + AddForce + `CarryableItem.ThrownClientRpc`(연출 전용 — 모든 클라 휙 소리, 고양이 255. 위치 변화로는 던짐·내려놓기를 못 갈라서).
 
 ### 레이턴시 허용 기준

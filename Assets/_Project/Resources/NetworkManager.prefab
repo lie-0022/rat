@@ -94,7 +94,7 @@ MonoBehaviour:
   m_ProtocolType: 0
   m_UseWebSockets: 0
   m_UseEncryption: 0
-  m_MaxPacketQueueSize: 512
+  m_MaxPacketQueueSize: 2048
   m_MaxPayloadSize: 6144
   m_HeartbeatTimeoutMS: 500
   m_ConnectTimeoutMS: 1000
@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RatGame.Runtime::RatGame.Net.NetPlayerSpawner
   _playerPrefab: {fileID: 3468535543866643919, guid: 83caac13408fc4faebb90dc6da817375, type: 3}
+  _ghostSeconds: 20
 --- !u!114 &7443264682999748402
 MonoBehaviour:
   m_ObjectHideFlags: 0
