@@ -27,9 +27,15 @@ namespace RatGame.UI
                     HouseEventKind.Feeding => ToneSynth.Clink(900f, 0.3f),          // 그릇 달그락
                     HouseEventKind.NewTraps => ToneSynth.Clink(2600f, 0.08f),       // 딸깍
                     HouseEventKind.Flush => ToneSynth.Growl(40f, 3f, 1f),           // 벽 속 우르릉
-                    _ => null,                                                      // 부르기·불은 목소리·발소리라 음성 단계에서
+                    HouseEventKind.LightOn => ToneSynth.HeavySteps(1.1f),           // 쿵쿵쿵 — 집주인이 걸어옴 (고양이 267)
+                    _ => null,
                 };
                 if (cue != null) PlayHouse(cue, $"{kind} 예고");
+                if (kind == HouseEventKind.CallAway) // "나비야~" — 목소리는 설정 보이스 볼륨 (고양이 267)
+                {
+                    _ui.PlayOneShot(ToneSynth.CallOut(1.1f), _audio.OwnerVoiceVolume * Mathf.Clamp01(SettingsService.Current.VoiceVolume));
+                    Log.Dev("집 소리: CallAway 예고 (부르는 목소리)");
+                }
             }
             else if (phase == HouseEventPhase.Start)
             {

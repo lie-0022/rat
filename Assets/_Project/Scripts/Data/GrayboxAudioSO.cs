@@ -114,6 +114,9 @@ namespace RatGame.Data
         public AudioClip UiClickClip => Core.ToneSynth.Clink(1600f, 0.05f);
         public float UiClickVolume => _uiClickVolume;
 
+        [SerializeField, Range(0f, 1f)] private float _ownerVoiceVolume = 0.6f; // 집주인 부르기 — 설정 "보이스" 볼륨 (고양이 267)
+        public float OwnerVoiceVolume => _ownerVoiceVolume;
+
         public float HouseCueVolume => _houseCueVolume;
         public float HouseLoopVolume => _houseLoopVolume;
         public float CatBellVolume => _catBellVolume;

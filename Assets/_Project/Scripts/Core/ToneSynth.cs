@@ -116,6 +116,25 @@ namespace RatGame.Core
             return lub + dub;
         });
 
+        /// <summary>부르는 소리 — 사람 목소리 높이의 "나~비야" 세 토막(올라갔다 내려옴). 음성 볼륨으로 (고양이 267).</summary>
+        public static AudioClip CallOut(float seconds) => Get($"call{seconds}", seconds, (t, u) =>
+        {
+            int seg = Mathf.Min(2, Mathf.FloorToInt(u * 3f));
+            float su = u * 3f - seg;
+            float[] f0 = { 330f, 392f, 294f };
+            float f = f0[seg] * (1f + 0.04f * Mathf.Sin(2f * Mathf.PI * 5f * t)); // 비브라토
+            _phase += 2f * Mathf.PI * f / Rate;
+            float env = Mathf.Sin(Mathf.Clamp01(su) * Mathf.PI) * (seg == 2 ? 1.2f : 0.9f);
+            return env * (0.6f * Mathf.Sin(_phase) + 0.25f * Mathf.Sin(2f * _phase) + 0.12f * Mathf.Sin(3f * _phase));
+        });
+
+        /// <summary>쿵쿵쿵 — 사람 발소리 세 번 (집주인이 걸어옴, 고양이 267).</summary>
+        public static AudioClip HeavySteps(float seconds) => Get($"steps{seconds}", seconds, (t, u) =>
+        {
+            float gap = seconds / 3f, b = t % gap;
+            return Mathf.Exp(-b * 16f) * (Mathf.Sin(2f * Mathf.PI * 48f * b) + 0.3f * Noise() * Mathf.Exp(-b * 60f));
+        });
+
         private static float _phase, _low;
         private static uint _seed = 1;
         private static float Noise() { _seed = _seed * 1664525u + 1013904223u; return (_seed >> 8) / 8388608f - 1f; }
