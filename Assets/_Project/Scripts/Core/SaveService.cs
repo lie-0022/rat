@@ -73,7 +73,8 @@ namespace RatGame.Core
                 string tmp = $"{FilePath}.{System.Diagnostics.Process.GetCurrentProcess().Id}.tmp";
                 File.WriteAllText(tmp, json);
                 // 쓰는 도중 꺼져도 직전본이 남게: 기존 파일 → .bak, 임시 파일 → 본 파일
-                if (File.Exists(FilePath)) File.Copy(FilePath, BackupPath, true);
+                // 본 파일이 깨져 있으면(직전본에서 불러온 경우) 직전본에 덮지 않는다 — 덮으면 둘 다 깨진다 (고양이 268)
+                if (File.Exists(FilePath) && TryRead(FilePath, quiet: true) != null) File.Copy(FilePath, BackupPath, true);
                 File.Copy(tmp, FilePath, true);
                 File.Delete(tmp);
                 Log.Dev($"저장: 누계 {_data.HaulTotal}");
@@ -84,16 +85,18 @@ namespace RatGame.Core
             }
         }
 
-        private static SaveData TryRead(string path)
+        private static SaveData TryRead(string path, bool quiet = false)
         {
             try
             {
                 if (!File.Exists(path)) return null;
-                return JsonUtility.FromJson<SaveData>(File.ReadAllText(path));
+                string text = File.ReadAllText(path);
+                if (string.IsNullOrWhiteSpace(text)) { if (!quiet) Log.DevWarn($"저장 파일이 비어 있음 ({Path.GetFileName(path)})"); return null; } // 쓰다 꺼진 빈 파일
+                return JsonUtility.FromJson<SaveData>(text);
             }
             catch (Exception e)
             {
-                Log.Error($"저장 파일 읽기 실패 ({Path.GetFileName(path)}): {e.Message}");
+                if (!quiet) Log.Error($"저장 파일 읽기 실패 ({Path.GetFileName(path)}): {e.Message}");
                 return null;
             }
         }
