@@ -14,15 +14,15 @@ namespace RatGame.EditorTools
         private const string QueueKey = "RatGame.PlayTest.Queue";
         private const string ResultsKey = "RatGame.PlayTest.QueueResults";
 
-        [MenuItem("Tools/RatGame/Test/Run All — Quick (solo 9)")]
-        private static void RunQuick() => StartQueue("carry,chase,achv,codexall,attention,modifiers,rehost,langswitch,panels");
+        [MenuItem("Tools/RatGame/Test/Run All — Quick (solo 10)")]
+        private static void RunQuick() => StartQueue("carry,chase,achv,codexall,attention,modifiers,rehost,langswitch,panels,throwstress");
 
         [MenuItem("Tools/RatGame/Test/Run All — Full (solo + 2P + 4P + leave)")]
-        private static void RunFull() => StartQueue("carry,chase,achv,codexall,attention,modifiers,rehost,langswitch,panels,rescue2p,glue2p,chase2p,sync4p,laser2p,rejoin2p,leave2p,hostleave2p");
+        private static void RunFull() => StartQueue("carry,chase,achv,codexall,attention,modifiers,rehost,langswitch,panels,throwstress,rescue2p,glue2p,chase2p,sync4p,laser2p,rejoin2p,leave2p,hostleave2p");
 
         // 전부 — 짧은 시험 11 + 통째 시험 혼자·영어 2인·4인 (고양이 287, 약 15분). 빌드 클라가 필요하다
         [MenuItem("Tools/RatGame/Test/Run Everything (Full + soaks)")]
-        private static void RunEverything() => StartQueue("carry,chase,achv,codexall,attention,modifiers,rehost,langswitch,panels,rescue2p,glue2p,chase2p,sync4p,laser2p,rejoin2p,leave2p,hostleave2p,soak1p,soaken2p,soak4p");
+        private static void RunEverything() => StartQueue("carry,chase,achv,codexall,attention,modifiers,rehost,langswitch,panels,throwstress,rescue2p,glue2p,chase2p,sync4p,laser2p,rejoin2p,leave2p,hostleave2p,soak1p,soaken2p,soak4p");
 
         private static void StartQueue(string keys)
         {

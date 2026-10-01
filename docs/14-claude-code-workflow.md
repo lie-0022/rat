@@ -70,9 +70,9 @@ Multiplayer Play Mode 4인으로 테스트할 거야. 물리 동기화 방식은
 | 무엇 | 어디 | 시간 | 언제 |
 |---|---|---|---|
 | EditMode 로직 시험 35개 (번역·공식·관심 점수·합성음·맵 설계도 시드 200·데이터 무결성·빌드 씬·세이브 왕복·네트워크 프리팹 등록·사라진 스크립트·프리팹·코드·데이터 에셋 번역 글자·스팀 업로드 경로·스팀 도전과제 연동·처음 언어·문서 표 수치 = BalanceConfig·플레이 기록 형식·방 프리팹 규약·UI 연결·벽 속 맵 100시드 실제 배치·전리품 띄움 높이) | Window → General → Test Runner → EditMode (`Assets/_Project/Tests/EditMode`) | 10초 | 공식·데이터·생성기를 고친 뒤 |
-| Run All — Quick (혼자 9) | Tools → RatGame → Test | 2분 | 게임 코드를 고친 뒤 |
-| Run All — Full (혼자 9 + 2·4인·레이저·재접속·이탈 8 = 17) | 〃 (빌드 클라 `Builds/macOS/Rat.app` 필요 — 런타임 코드를 고쳤으면 먼저 빌드) | 8분 | 넷코드·운반을 고친 뒤 |
-| Run Everything (Full 17 + 통째 혼자·영어 2인·4인 = 20) | 〃 | 18분 | 큰 묶음 뒤, 커밋 전 |
+| Run All — Quick (혼자 10) | Tools → RatGame → Test | 2분 | 게임 코드를 고친 뒤 |
+| Run All — Full (혼자 10 + 2·4인·레이저·재접속·이탈 8 = 18) | 〃 (빌드 클라 `Builds/macOS/Rat.app` 필요 — 런타임 코드를 고쳤으면 먼저 빌드) | 8분 | 넷코드·운반을 고친 뒤 |
+| Run Everything (Full 18 + 통째 혼자·영어 2인·4인 = 21) | 〃 | 18분 | 큰 묶음 뒤, 커밋 전 |
 | 성능 | 개발 빌드 `-perflog -autohost -autostage 5` (평균·1% 최악·GC 할당. `-autostage`·`-nosave`면 세이브를 안 씀) | 1분 | docs/13 성능 표 |
 
 - 시험은 세이브·직전본·설정을 떠 두고 플레이를 멈춘 뒤에도 한 번 더 되돌린다. 7777이 막혀 있으면 7778로 돈다(`Editor/DevPort`). 플레이 중 컴파일은 `Editor/PlayModeReloadGuard`가 네트워크를 닫는다.

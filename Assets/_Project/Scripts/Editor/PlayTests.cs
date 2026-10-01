@@ -73,6 +73,7 @@ namespace RatGame.EditorTools
                 else if (armed == "rejoin2p") Begin("클라 나갔다 다시 2인", RejoinSteps(), false);
                 else if (armed == "langswitch") Begin("도중 언어 바꾸기", LanguageSteps(), false);
                 else if (armed == "panels") Begin("기지 창 글자", PanelSteps(), false);
+                else if (armed == "throwstress") Begin("세게 던지기 뚫림", ThrowStressSteps(), false);
                 else if (armed == "laser2p") Begin("클라 레이저 2인", LaserSteps(), false);
                 else if (armed == "leave2p") Begin("클라 이탈 2인", LeaveSteps(), false);
                 else if (armed == "hostleave2p") Begin("호스트 이탈 2인", HostLeaveSteps(), false);

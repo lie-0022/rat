@@ -137,6 +137,8 @@ namespace RatGame.World
         private void FixedUpdate()
         {
             if (!IsServer) return;
+            // 던진 뒤 1.5초 지나면 다시 Discrete — 연속 충돌은 비싸고, 들고 다닐 땐 조인트라 필요 없다 (고양이 342)
+            if (_rb.collisionDetectionMode != CollisionDetectionMode.Discrete && Time.time > _thrownUntil) _rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
             if (Pocketed.Value && _pocketOwner != null)
             {
                 _rb.MovePosition(_pocketOwner.position); // 주머니 안: 주인과 함께 이동 (동기화 범위 유지)

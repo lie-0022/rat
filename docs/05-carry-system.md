@@ -124,3 +124,5 @@ sprint 금지  = loadPerRat > 3
 | carrySlotStandDistance (물건 면 → 쥐 중심) | 0.45 m |
 | carrySlotSnapTime (자리로 붙는 시간) | 0.2 s |
 | 대형 자리 수 | 2 (폰 기준 — 긴 변 양쪽) |
+
+- **던진 물건 연속 충돌 (2026-10-01 고양이 342)**: 던진 뒤 1.5초(맞으면 비틀거리는 그 시간) 동안만 `ContinuousDynamic`, 지나면 Discrete. Discrete만이면 작은 물건이 얇은 벽(0.2m)·바닥(0.1m)을 가끔 뚫어 영영 잃었다(11m/s 45발 중 2, 15m/s 30발 중 1). 시험 `Test/Throw Through Floor·Wall`: 15m/s(게임 최대 약 10m/s의 1.5배) 30발 × 3판 뚫림 0.

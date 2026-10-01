@@ -104,10 +104,18 @@ namespace RatGame.World
             if (thrown)
             {
                 _rb.AddForce(throwDir.normalized * _balance.GetThrowImpulse(charge, _rb.mass) * throwPower, ForceMode.Impulse);
-                _thrownUntil = Time.time + 1.5f;
+                BeginFlight();
                 ThrownClientRpc(); // 휙 소리 — 클라에선 위치 변화로 던짐·내려놓기를 못 가른다(보간 지연·약한 던지기, 고양이 255)
             }
             Log.Dev($"놓기: client {clientId} ← {name}{(thrown ? " (던짐)" : "")}");
+        }
+
+        /// <summary>호스트: 던져져 날기 시작 — 1.5초 동안 맞으면 비틀거림(docs/05), 날아가는 동안만 연속 충돌
+        /// (Discrete는 빠른 작은 물건이 얇은 벽 0.2m·바닥 0.1m를 가끔 뚫어 영영 잃었다 — 11m/s 45발 중 2, 고양이 342).</summary>
+        private void BeginFlight()
+        {
+            _thrownUntil = Time.time + 1.5f;
+            if (!_rb.isKinematic) _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         }
 
         [ClientRpc]

@@ -114,17 +114,7 @@ namespace RatGame.EditorTools
             }
             // 목적지 판매대 (고양이 316) — 벽 속으로 출발해 한국어로 한 번 연 뒤 영어로 다시
             steps.Add(new Step { Name = "한국어로 벽 속 출발", Act = () => SetLang("ko") });
-            steps.Add(new Step { Name = "벽 속 도착", Ready = () =>
-            {
-                if (StageUp() || EditorApplication.timeSinceStartup - _stepAt > 60) return true;
-                var pad = Object.FindFirstObjectByType<DeparturePad>();
-                if (pad != null && pad.IsSpawned && SceneManager.GetActiveScene().name == "Hub")
-                {
-                    for (int i = 0; i < 4 && !pad.DestinationName.Contains("벽 속"); i++) pad.ServerCycleDestination();
-                    Put(pad.transform.position + Vector3.up * 0.5f);
-                }
-                return false;
-            }, Check = () => StageUp() ? null : "벽 속 스테이지가 안 열림" });
+            steps.Add(ToWalls("벽 속 도착"));
             foreach (var lang in new[] { "ko", "en" })
             {
                 var code = lang;
