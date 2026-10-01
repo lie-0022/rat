@@ -61,5 +61,49 @@ namespace RatGame.Tests
             Assert.IsEmpty(problems, string.Join("\n", problems));
             Assert.Greater(rooms, 10);
         }
+
+        [Test]
+        public void 자리가_방_안_가구에_파묻히지_않음() // 쥐가 상자 속에서 시작하거나 물건이 가구 안에 나지 않게 (고양이 344)
+        {
+            var problems = new List<string>();
+            int points = 0;
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/_Project/Prefabs/Rooms" }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab.GetComponent<RoomModule>() == null) continue;
+                var go = Object.Instantiate(prefab, new Vector3(5000f, 0f, 5000f), Quaternion.identity); // 에셋 상태론 콜라이더 바운즈가 0
+                try
+                {
+                    Physics.SyncTransforms();
+                    var room = go.GetComponent<RoomModule>();
+                    var cols = new List<Collider>();
+                    foreach (var c in go.GetComponentsInChildren<Collider>(true))
+                        if (!c.isTrigger && c.gameObject != go && c.name != "Floor") cols.Add(c);
+                    void Check(string label, IList<Transform> pts, float r)
+                    {
+                        if (pts == null) return;
+                        foreach (var p in pts)
+                        {
+                            if (p == null) continue;
+                            points++;
+                            Vector3 q = p.position + Vector3.up * 0.4f;
+                            foreach (var c in cols)
+                            {
+                                var b = c.bounds; b.Expand(r * 2f);
+                                if (b.Contains(q)) problems.Add($"{prefab.name}: {label} {p.name} ⟂ {c.name}");
+                            }
+                        }
+                    }
+                    Check("PlayerSpawns", room.PlayerSpawns, 0.3f);
+                    Check("LootSpawns", room.LootSpawns, 0.1f);
+                    Check("HideSpawns", room.HideSpawns, 0.3f);
+                    if (room.CatSpawn != null) Check("CatSpawn", new[] { room.CatSpawn }, 0.5f);
+                }
+                finally { Object.DestroyImmediate(go); }
+            }
+            Assert.IsEmpty(problems, string.Join("\n", problems));
+            Assert.Greater(points, 100);
+        }
     }
 }
