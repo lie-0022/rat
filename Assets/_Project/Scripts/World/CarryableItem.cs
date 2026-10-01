@@ -71,6 +71,7 @@ namespace RatGame.World
         private CarrySlot[] _carrySlots;
 
         private Rigidbody _rb;
+        private Vector3 _spawnPos;  // 맵 밖으로 떨어지면 돌아올 자리 (고양이 343)
         private float _thrownUntil; // 던져진 직후 1.5s — 이 동안 플레이어 맞으면 비틀거림 (docs/05)
 
         /// <summary>던져진 직후인가 (CatLure 털실뭉치 착지 판정용 — docs/07).</summary>
@@ -86,6 +87,7 @@ namespace RatGame.World
             Pocketed.OnValueChanged += OnPocketedChanged;
             ApplyPocketVisual(Pocketed.Value);
             if (!IsServer) return;
+            _spawnPos = transform.position;
             if (_data != null) _rb.mass = _data.Mass; // SO가 물리 질량의 SSOT
             if (Has(ItemTrait.Rolling)) _rb.angularDamping = 0.05f; // 놓으면 굴러간다 (docs/05)
         }
@@ -137,6 +139,14 @@ namespace RatGame.World
         private void FixedUpdate()
         {
             if (!IsServer) return;
+            // 맵 밖으로 떨어진 물건은 처음 놓인 자리로 — 쥐(PlayerController)와 같은 기준. 뚫림은 막았지만(고양이 342) 다른 길로 빠져도 영영 잃지 않게 (고양이 343)
+            if (transform.position.y < _balance.FallRescueY && _joints.Count == 0 && !Pocketed.Value)
+            {
+                _rb.linearVelocity = Vector3.zero; _rb.angularVelocity = Vector3.zero;
+                _rb.position = _spawnPos + Vector3.up * 0.5f;
+                transform.position = _rb.position;
+                Log.Dev($"물건 떨어짐 구조: {name} → {_spawnPos:F1}");
+            }
             // 던진 뒤 1.5초 지나면 다시 Discrete — 연속 충돌은 비싸고, 들고 다닐 땐 조인트라 필요 없다 (고양이 342)
             if (_rb.collisionDetectionMode != CollisionDetectionMode.Discrete && Time.time > _thrownUntil) _rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
             if (Pocketed.Value && _pocketOwner != null)

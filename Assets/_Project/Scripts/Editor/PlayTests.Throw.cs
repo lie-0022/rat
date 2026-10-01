@@ -94,6 +94,19 @@ namespace RatGame.EditorTools
                 Report.Append($" | 30개 {ShotSpeed:0}m/s → 바닥 아래 {below} · 벽 밖 {escaped} · 사라짐 {gone}");
                 return below + escaped == 0 ? null : "세게 던진 물건이 바닥·벽을 뚫음";
             } },
+            // 그래도 맵 밖으로 빠지면 처음 자리로 (고양이 343) — 하나를 떨어짐 기준 아래로 보낸다
+            new Step { Name = "떨어짐 구조", Act = () =>
+            {
+                var rb = _shot[0];
+                rb.position = new Vector3(rb.position.x, -30f, rb.position.z);
+                rb.transform.position = rb.position;
+            } },
+            new Step { Name = "돌아옴", Wait = 1f, Check = () =>
+            {
+                var rb = _shot[0];
+                Report.Append($" | 맵 밖에 보낸 물건 → y {rb.position.y:0.0}");
+                return rb.position.y > _shotRoom.min.y - 0.3f ? null : "맵 밖으로 떨어진 물건이 안 돌아옴";
+            } },
         };
     }
 }
