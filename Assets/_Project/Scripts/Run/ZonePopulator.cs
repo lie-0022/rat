@@ -111,7 +111,7 @@ namespace RatGame.Run
                 Vector3 p = anchor + new Vector3(Mathf.Cos(a) * r, 0f, Mathf.Sin(a) * r);
                 if (NavMesh.SamplePosition(p, out var hit, 0.4f, NavMesh.AllAreas) && Vector3.Distance(hit.position, anchor) <= 2f) { at = hit.position; break; }
             }
-            Spawn(ring.Prefab, at + Vector3.up * 0.1f, Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
+            Spawn(ring.Prefab, at + Vector3.up * SpawnLift(ring.Prefab, 0.1f), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
             LootSpawned++; LootValue += ring.BaseValue;
             RingPos = at; RingAnchor = anchor;
             Log.Dev($"반지: 침대 {anchor:F1} 옆 {Vector3.Distance(at, anchor):0.0}m");
