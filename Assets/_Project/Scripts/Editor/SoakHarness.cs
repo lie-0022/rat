@@ -159,6 +159,7 @@ namespace RatGame.EditorTools
                     if (Object.FindFirstObjectByType<DepositZone>() == null || InStep < 2f) return; // 맵 생성·스폰 여유
                     _stagesSeen++; _stageStartAt = Time.realtimeSinceStartup;
                     ClientActions(); // 클라 킁킁·핑·찍찍 (고양이 224)
+                    CheckEmbeddedLoot(); // 벽·가구에 끼어 난 물건 (고양이 341)
                     Go(Step.Stage);
                     return;
 

@@ -24,7 +24,8 @@ namespace RatGame.EditorTools
             int endings = 0;
             foreach (var l in lines) if (l.Contains(",엔딩,")) endings++;
             if (failure == null && rows != _stagesSeen) failure = $"플레이 기록 {rows}줄 — 스테이지 {_stagesSeen}개와 다름";
-            return $"플레이 기록 {rows}줄(엔딩 {endings})";
+            if (failure == null && (_lootEmbedded > 0 || _lootSunk > 0)) failure = $"물건이 벽·가구에 끼어 남 {_lootEmbedded} · 바닥에 묻혀 남 {_lootSunk} (고양이 341)";
+            return $"플레이 기록 {rows}줄(엔딩 {endings}) | {EmbeddedReport()}";
         }
     }
 }

@@ -76,7 +76,7 @@ namespace RatGame.Run
                     var item = PickLoot(table, rng, zoneIndex, bigMul, high, counts);
                     if (item == null || item.Prefab == null) continue;
                     counts[item] = (counts.TryGetValue(item, out int c) ? c : 0) + 1;
-                    Spawn(item.Prefab, p.position + Vector3.up * (item.Tier == LootTier.Large ? 0.4f : 0.1f), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
+                    Spawn(item.Prefab, p.position + Vector3.up * SpawnLift(item.Prefab, item.Tier == LootTier.Large ? 0.4f : 0.1f), Quaternion.Euler(0f, (float)rng.NextDouble() * 360f, 0f));
                     LootSpawned++;
                     LootValue += item.BaseValue;
                 }
@@ -242,6 +242,27 @@ namespace RatGame.Run
                 cat.GetComponent<NetworkObject>().Spawn(true);
                 CatsSpawned++;
             }
+        }
+
+        /// <summary>
+        /// 바닥에서 띄울 높이 — 콜라이더 밑면이 바닥 위에 오게(최소 fallback). 고정 0.4m였을 땐 큰 통닭(높이 1.6m)이 바닥에 41cm 묻힌 채 나서
+        /// 물리가 첫 프레임에 위로 튕겨 냈다(통째 시험 "가라앉음", 고양이 341).
+        /// </summary>
+        public static float SpawnLift(GameObject prefab, float fallback)
+        {
+            Vector3 sc = prefab.transform.localScale; sc = new Vector3(Mathf.Abs(sc.x), Mathf.Abs(sc.y), Mathf.Abs(sc.z));
+            float below; // 피벗 아래로 내려가는 길이 (월드 크기)
+            if (prefab.TryGetComponent(out BoxCollider box)) below = (box.size.y * 0.5f - box.center.y) * sc.y;
+            else if (prefab.TryGetComponent(out CapsuleCollider cap))
+            {
+                // 유니티 캡슐: 반지름은 다른 두 축 크기 중 큰 쪽으로, 높이는 지름보다 짧아질 수 없다 (납작한 접시 = 0.59×0.07)
+                float r = cap.radius * (cap.direction == 1 ? Mathf.Max(sc.x, sc.z) : Mathf.Max(sc.y, cap.direction == 0 ? sc.z : sc.x));
+                float half = cap.direction == 1 ? Mathf.Max(cap.height * 0.5f * sc.y, r) : r;
+                below = half - cap.center.y * sc.y;
+            }
+            else if (prefab.TryGetComponent(out SphereCollider sphere)) below = sphere.radius * Mathf.Max(sc.x, Mathf.Max(sc.y, sc.z)) - sphere.center.y * sc.y;
+            else return fallback;
+            return Mathf.Max(fallback, below + 0.02f);
         }
 
         public static void Spawn(GameObject prefab, Vector3 pos, Quaternion rot)

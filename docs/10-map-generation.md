@@ -126,7 +126,7 @@ public class ZoneGenerator
 - `Run/ZoneBuilder`(NetworkBehaviour + NavMeshSurface, 씬 오브젝트): 호스트가 스폰될 때 존을 만든다. 순서: 방 NetworkObject 스폰 → NavMesh 굽기(RoomStatic·NoiseBlocker 레이어만) → 쥐구멍(DepositZone) → 전리품 → 함정 → 고양이 → `PlayerPlacement.TeleportAllToSpawns`. 클라는 스폰을 받기만 한다.
 - 방 프리팹은 정적 지오메트리 + 루트 NetworkObject만(중첩 NetworkObject 없음). 움직이는 건 전부 따로 스폰.
 - `Data/SpawnTableSO`(항목·가중치·최대 개수, Large/Special 보정 `× (1 + DeepZoneBonusPerIndex(0.3) × 존 인덱스)`, 보너스방은 ×3에 스폰 지점 전부 사용) · `Data/TrapTableSO`. `ZoneDefinitionSO`에 LootTable·TrapTable·RatHolePrefab·CatPrefab.
-- 규칙: 전리품은 LootSpawns의 70%, y>1m 지점엔 Large 금지. 함정은 TrapSpawns의 50%, 쥐구멍방엔 없음. 고양이는 CatSpawn 있는 방 중 CatCount곳(NavMesh 위로 보정).
+- 규칙: 전리품은 LootSpawns의 70%, y>1m 지점엔 Large 금지. 놓는 높이 = 자리 + 콜라이더 밑면 깊이(최소 대형 0.4m·나머지 0.1m, `ZonePopulator.SpawnLift`, 고양이 341 — 고정값일 땐 큰 통닭이 바닥에 반쯤 묻혀 났다). 함정은 TrapSpawns의 50%, 쥐구멍방엔 없음. 고양이는 CatSpawn 있는 방 중 CatCount곳(NavMesh 위로 보정).
 - `RunManager.UpdateReturn`은 쥐구멍을 늦게 찾는다(생성 스테이지는 쥐구멍이 런매니저보다 늦게 생긴다).
 - 에디터: `Tools/RatGame/Zone/Create Generated Stage` → 쥐구멍·함정 프리팹, `LootTable_Kitchen`·`TrapTable_Kitchen`, `Scenes/Stage_Generated`(빌드 세팅 등록). 그레이박스 색은 `Art/Materials/Greybox/`에 머티리얼 에셋으로 저장(프리팹은 메모리 머티리얼을 못 들고 있어 마젠타가 됐음).
 - 아직: ~~방 안 HideSpot·LightZone~~(고양이 60), ~~기지 출발 발판 → 생성 스테이지~~(고양이 59 목적지 게시판), 존 전환, 반지 스폰 규칙.
